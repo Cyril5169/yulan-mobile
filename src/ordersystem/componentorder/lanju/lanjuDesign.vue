@@ -1,0 +1,508 @@
+<template>
+  <div class="lanju">
+    <top :top="set"></top>
+   
+    <div class="search">
+      <ul class="ulhead" id="ulhead">
+        <li class="licenter" @click="showks = true"><input class="time time-ks" type="text" v-model="ksDataSet"
+                                                           disabled></li>
+        <li><span>至</span></li>
+        <li class="liright" @click="showjs = true"><input class="time time-js" type="text" v-model="jsDataSet"
+                                                          disabled></li>
+        <li class="licenter" @click="getList()" ><span>服务须知</span></li>
+      </ul>
+      <ul class="ulheadNew" id="ulheadNew">
+        <li class="licenter" @click="showType = true"><input class="time time-ks" type="text" v-model="myType"
+                                                             disabled></li>
+        <li class="licenter">
+           <div class="searchKeyStyle" >
+              <van-cell-group>
+                  <van-field v-model="searchKey" placeholder="请输入方案名称" />
+              </van-cell-group>
+           </div>
+        </li>
+
+        <li class="licenter" @click="getList()" ><span>查询</span></li>
+      </ul>
+    </div>
+   
+    <div class="tableData">
+      <div class="singleData" @click="checkDetails(index)" v-for="(item,index) in allLists">
+        <div class="single-title">
+          <span class="single-title-left">单据号：{{item.ID}}</span>
+          <span class="single-title-right">{{item.STATUS}}</span>
+      </div>
+        <table>
+          <tr>
+            <td>提交时间：</td>
+            <td>{{item.SUBMIT_DATE}}</td>
+          </tr>
+          <tr>
+            <td>经销商名称：</td>
+            <td>{{item.DISTRIBUTOR_NAME}}</td>
+          </tr>
+          <tr>
+            <td>经销商代码：</td>
+            <td>{{item.DISTRIBUTOR_CODE}}</td>
+          </tr>
+          <tr>
+            <td>联系人：</td>
+            <td>{{item.CUSTOMER_AGENT}}</td>
+          </tr>
+          <tr>
+            <td>方案名称：</td>
+            <td>{{item.SOLUTION_NAME}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="createBank" @click="addRecord()">+</div>
+    <!--开始日期选择-->
+    <van-popup v-model="showks" position="bottom">
+      <van-datetime-picker
+        v-model="ksData"
+        type="date"
+        :show-toolbar = 'true'
+        :title = "'选择时间'"
+        @confirm="confirmTimeks"
+      />
+    </van-popup>
+    <van-popup v-model="showjs" position="bottom">
+      <van-datetime-picker
+        class="reset"
+        v-model="jsData"
+        type="date"
+        :title = "'选择时间'"
+        @confirm="confirmTimejs"
+      />
+    </van-popup>
+    <!--状态选择-->
+    <van-popup v-model="showType" position="bottom">
+      <van-picker
+        show-toolbar
+        title="订单类型"
+        :columns="statusArray"
+        @confirm="onConfirmType"
+      />
+    </van-popup>
+    <!--底部分页-->
+    <div class="fy-contain">
+      <van-pagination
+        class="fy-bottom"
+        v-model="currentPage"
+        :page-count="totalPage"
+        :items-per-page="itemsPerPage"
+        :total-items="totalLists"
+        mode="simple"
+        @change="changePage"
+      />
+    </div>
+    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+  </div>
+</template>
+
+<script>
+  import axios from 'axios'
+  import top from '../../../components/Top'
+  import {
+  GetAllDataForApp,
+} from "../../../api/lanjuASP";
+  import Vue from 'vue';
+  import {DatetimePicker, Popup, Picker, Pagination,Toast,Loading,Field} from 'vant';
+  Vue.use(Field);
+
+
+  export default {
+    name: "lanjuDesign",
+    data() {
+      return {
+        set: 95,
+        ksData:'',
+        ksDataSet: '',//  开始时间
+        searchKey:'',//搜索栏关键字
+        showks:false, //开始时间组件显示
+        showjs:false, //结束时间组件显示
+        jsData:'',
+        jsDataSet: '',//结束时间
+        myType: '全部状态',//当前状态
+        myTypeCode:0,
+        showType:false, //状态选择显示
+        statusArray:["全部状态","未审核",'市场部审核未通过','市场部审核通过','市场部审核通过','广美审核未通过','广美审核通过','设计图已出'],
+        //当前页数
+        currentPage: 1,
+        //总记录数
+        totalLists: 0,
+        //每页记录数
+        itemsPerPage: 10,
+        //总页数
+        totalPage: 0,
+        allLists: [],
+        loading:false,
+      }
+    },
+    components: {
+      top,
+      [DatetimePicker.name]: DatetimePicker,
+      [Popup.name]: Popup,
+      [Pagination.name]: Pagination,
+      [Toast.name]: Toast,
+      [Loading.name]: Loading
+    },
+    methods: {
+      //开始时间选择
+      confirmTimeks(value) {
+        console.log(value)
+        this.ksSet2(this.ksData);
+        this.showks = false
+      },
+      //结束时间选择
+      confirmTimejs(value) {
+        console.log(value)
+        this.jsSet(this.jsData);
+        this.showjs = false
+      },
+      //开始时间设置
+      ksSet2(time) {
+        let current_date = time.getDate();
+        let current_month = time.getMonth() + 1;
+        let current_year = time.getFullYear();
+        this.ksDataSet = current_year + '-' + current_month + '-' + current_date
+      },
+      //初始化结束时间
+      jsSet(time) {
+        let current_date = time.getDate();
+        let current_month = time.getMonth() + 1;
+        let current_year = time.getFullYear();
+        this.jsDataSet = current_year + '-' + current_month + '-' + current_date
+      },
+      //初始化开始时间
+      ksSet(time) {
+        this.ksDataSet = "起始时间"
+      },
+      //状态选择
+      onConfirmType(index){
+        this.myType = index
+        if (this.myType == "全部状态") {
+          this.myTypeCode = 0
+        }else if (this.myType == "未审核") {
+          this.myTypeCode = 1
+        }else if (this.myType == "市场部审核未通过") {
+          this.myTypeCode = 2
+        } else if (this.myType == "市场部审核通过") {
+          this.myTypeCode = 3
+        }else if (this.myType == "广美审核未通过") {
+          this.myTypeCode = 4
+        } else if (this.myType == "广美审核通过") {
+          this.myTypeCode = 5
+        }else if (this.myType == "设计图已出") {
+          this.myTypeCode = 6
+        }
+        this.showType = false
+      },
+      //获取列表
+      getList () {
+        this.allLists = []
+        this.loading = true
+        let ksTime
+        let jsTime
+        if (this.ksDataSet === "起始时间") {
+          ksTime = "0001-1-1 00:00:00"
+        } else {
+          ksTime = this.ksDataSet + " 00:00:00"
+        }
+        if (this.jsDataSet === "结束时间") {
+          jsTime = ''
+        } else {
+          jsTime = this.jsDataSet + " 23:59:59"
+        }
+        let data = {
+          "cid":this.$store.getters.getCId,//公司id
+          "STATUS":this.myTypeCode,
+          "SEARCHKEY":this.searchKey,
+          "beginTime":ksTime,//起始时间
+          "finishTime":jsTime,//结束时间
+          "limit":10,//限制数
+          "page":this.currentPage//页数
+        }
+        console.log(data)
+        GetAllDataForApp(data).then(res => {
+          this.loading = false;
+          if(res.count==0)
+          {
+            return;
+          }
+          this.totalLists = res.count;
+          //获取总页数
+          this.totalPage = parseInt(res.count / 10) + 1
+          this.allLists = res.data;
+          if (this.allLists.length == 0) {
+              Toast({
+                message:"暂无数据",
+                duration:2000
+              })
+            } else {
+              for (let i = 0; i < this.allLists.length; i++) {
+                this.allLists[i].SUBMIT_DATE = this.exchangeTime(this.allLists[i].SUBMIT_DATE)
+                this.allLists[i].AUDIT_TIME = this.exchangeTime(this.allLists[i].AUDIT_TIME)
+                this.allLists[i].CHECK_TIME = this.exchangeTime(this.allLists[i].CHECK_TIME)
+                switch (this.allLists[i].STATUS) {
+                  case 1:
+                    this.allLists[i].STATUS = "未审核"
+                    continue;
+                  case 2:
+                    this.allLists[i].STATUS = "市场部审核未通过"
+                    continue;
+                  case 3:
+                    this.allLists[i].STATUS = "市场部审核通过"
+                    continue;
+                  case 4:
+                    this.allLists[i].STATUS = "广美审核未通过"
+                    continue;
+                  case 5:
+                    this.allLists[i].STATUS = "广美审核通过"
+                    continue;
+                  case 6:
+                    this.allLists[i].STATUS = "设计图已出"
+                    continue;
+                }
+              }
+            }
+        });
+      },
+      // 时间戳转换为固定格式时间
+      exchangeTime(time){
+        var date = new Date(time);
+        var Y = date.getFullYear() + '-';
+        var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        var D = date.getDate() + ' ';
+        return Y+M+D
+      },
+      changePage () {
+        this.getList()
+      },
+    //  查看详情
+    checkDetails (index) {
+        this.$router.push({
+          name: "createbank",
+          params: {
+            "id":this.allLists[index].id,//流水号
+            "state":this.allLists[index].state,//流水号
+            'data': this.allLists[index]
+          }
+        })
+    },
+    //  修改凭证
+    editBank (index) {
+        this.$router.push({
+          name: "bankdetails",
+          params: {
+            "id":this.allLists[index].id,//流水号
+            "state":this.allLists[index].state,//流水号
+            'data': this.allLists[index]
+          }
+        })
+    },
+    //新增记录
+    addRecord() {
+        this.$router.push({
+          name: "addLJRecord",
+          params: {
+            'data': {
+              "cid": this.$store.getters.getCId,//公司id
+              "cname": this.$store.getters.getrealName,//客户名
+              "ID": "", 
+              "DISTRIBUTOR_CODE": "", 
+              "DISTRIBUTOR_NAME": "", 
+              "CONTACTS": "", 
+              "CONTACTS_TEL": "", 
+              "MANAGER": "", 
+              "MANAGER_TEL": "", 
+              "EMAIL": "", 
+              "SOLUTION_NAME": "", 
+              "ESTATE_TYPE": 1, 
+              "PAY_NOTE": "", 
+              "PAY_DETAIL": "", 
+              "MEMO": "", 
+              "EXPECTED_DRAW_DATE": "", 
+              "SUBMIT_DATE": "", 
+              "STATUS": 1, 
+            }
+          }
+        })
+      }
+    },
+    created(){
+      let time = new Date();
+      this.jsSet(time);
+      this.ksSet(time)
+      this.getList()
+    }
+  }
+</script>
+
+<style scoped>
+  .lanju {
+    background-color: rgb(239, 239, 239);
+    height: 100vh;
+    position: relative;
+    overflow: scroll;
+  }
+  .search-button {
+    position: fixed;
+    top: 13px;
+    right: 15px;
+    color: #a0cb8d;
+    font-size: 13px;
+    padding: 5px 20px;
+    border-radius: 15px;
+    background: white;
+    z-index: 99;
+  }
+
+  #ulhead {
+    position: fixed;
+    top: 50px;
+    line-height: 37px;
+    width: 100%;
+    height: 37px;
+    /*font-size: 15px;*/
+    background: -webkit-linear-gradient(left, #F2F2F2, #E1E1E1);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    font-size: 15px;
+    z-index: 999;
+  }
+
+    #ulheadNew {
+    position: fixed;
+    top: 87px;
+    line-height: 37px;
+    width: 100%;
+    height: 37px;
+    /*font-size: 15px;*/
+    background: -webkit-linear-gradient(left, #F2F2F2, #E1E1E1);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    font-size: 15px;
+    z-index: 999;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  li {
+    display: inline-block;
+  }
+
+  input {
+    background-color: hsla(0, 0%, 100%, .3);
+    border-radius: 3.467vw;
+    outline: none;
+    border: none;
+    text-decoration: none;
+    height: 25px;
+    line-height: 25px;
+  }
+
+  .time {
+    width: 90px;
+    height: 20px;
+    line-height: 20px;
+    background-color: hsl(0, 0%, 100%);
+    font-size: 13px;
+    border: none;
+    padding-left: 15px;
+    text-align: left;
+    background-image: url("../../assetsorder/time-zk.png");
+    background-repeat: no-repeat;
+    background-position-x: 80px;
+    background-position-y: 1vw;
+    background-size: 15PX;
+  }
+  .searchKeyStyle {
+    width: 140px;
+    height: 20px;
+    line-height: 20px;
+    background-color: hsl(0, 0%, 100%);
+    font-size: 13px;
+    border: none;
+    text-align: left;
+    background-repeat: no-repeat;
+    background-position-x: 80px;
+    background-position-y: 1vw;
+    background-size: 15PX;
+  }
+  
+  .tableData {
+    margin: 130px 10px 80px;
+  }
+  .tableData td,.tableData th {
+    text-align: left;
+  }
+  .singleData {
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    position: relative;
+  }
+
+  .single-title {
+    border-bottom: 1px solid #a0cb8d;
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
+  }
+  .single-title-right {
+    float: right;
+    color: #ff8259;
+  }
+  .single-title-left {
+    float: left;
+  }
+  .createBank {
+    position: fixed;
+    bottom: 55px;
+    right: 30px;
+    width: 55px;
+    height: 55px;
+    line-height: 55px;
+    border-radius: 50%;
+    color: white;
+    background: #89cb81;
+    font-size: 40px;
+  }
+  .single-details {
+    position: absolute;
+    bottom: 15px;
+    right: 10px;
+    background: #89cb81;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 15px;
+  }
+  .fy-contain {
+    width: 100%;
+    height: 50px;
+    background: white;
+    position: fixed;
+    bottom: 0px;
+    border-top: 1px solid #e8e8e8;
+  }
+
+  .fy-bottom {
+    background: #f8f8f8;
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    bottom: 0;
+    color: white !important;
+  }
+
+  .fy-bottom .van-pagination__item {
+    color: #89cb81;
+  }
+</style>
