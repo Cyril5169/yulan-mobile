@@ -267,7 +267,8 @@ p {
   right: 0;
   position: relative;
   background-color: #efefef;
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: scroll;
   transition: margin-left 0.3s;
   -webkit-transition: margin-left 0.3s;
   -moz-transition: margin-left 0.3s; /* Firefox 4 */
@@ -290,7 +291,7 @@ p {
   float: left;
   position: relative;
   z-index: 10;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 }
 .line {
   width: 100%;
