@@ -33,13 +33,13 @@ export default {
             });
           } else
             this.$router.push({
-              path: "/salesman"
+              path: "/customer"
             });
           break;
         case 2:
           if (this.$store.state.info.data.type != "ECWEB") {
             this.$router.push({
-              path: "/salesman"
+              path: "/customer"
             });
             break;
           }
@@ -286,7 +286,7 @@ export default {
       //     })
       //   }else if(this.top == 2){
       //     this.$router.push({
-      //     path:'/salesman'
+      //     path:'/customer'
       //     })
       //   }else if(this.top ==7){
       //     this.$router.push({

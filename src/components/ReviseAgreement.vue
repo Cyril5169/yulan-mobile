@@ -75,10 +75,8 @@ export default {
   },
   methods:{
     back() {
-      console.log(111);
-
       this.$router.push({
-        path: '/salesman'
+        path: '/customer'
       })
     },
     listennext(data) {

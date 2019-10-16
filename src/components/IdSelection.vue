@@ -43,7 +43,7 @@ export default {
       this.$store.commit('getposition',this.pos[idx].position);
       // console.log('this.pos[idx].position : '+this.pos[idx].position);
       this.$router.push({
-        path:'/salesman'
+        path:'/customer'
       })
     }
   }
