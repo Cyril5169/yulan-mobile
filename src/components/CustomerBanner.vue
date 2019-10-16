@@ -10,7 +10,7 @@
     <div class="announce" v-show="newAnounces.length > 0">
       <!-- <div class="suona-img" @click="toAnnouncement"></div> -->
       <van-icon class="suona1" slot="icon" name="volume-o" size="18px" dot color="#89cb81" />
-      <span class="notice" >
+      <span class="notice">
         <a href="javascript:void(0);" @click="toAnnouncement">{{noticeTitle}}</a>
       </span>
     </div>
@@ -26,7 +26,7 @@ import Protocol from "./Protocol";
 import { bus } from "../utils/eventBus.js";
 import { Icon } from 'vant';
 import { getNewNotification } from "@/api/notificationASP";
-// import Salesman from './Salesman'
+
 
 export default {
   name: "Banner",
@@ -78,18 +78,18 @@ export default {
         this.newAnounces.push(res.data[i]);
       }
       if (this.newAnounces.length > 0) {
-        _this.currentNotice=_this.newAnounces[0];
+        _this.currentNotice = _this.newAnounces[0];
         this.noticeTitle = this.newAnounces[0].TITLE;
         if (this.newAnounces.length > 1) {
           if (this.timer == null) {
             this.timer = setInterval(function () {
-              if(_this.currentNoticeIndex+1>=_this.newAnounces.length){
-                _this.currentNoticeIndex=0;
-              }else{
+              if (_this.currentNoticeIndex + 1 >= _this.newAnounces.length) {
+                _this.currentNoticeIndex = 0;
+              } else {
                 _this.currentNoticeIndex++;
               }
-              _this.currentNotice=_this.newAnounces[_this.currentNoticeIndex];
-              _this.noticeTitle=_this.newAnounces[_this.currentNoticeIndex].TITLE;
+              _this.currentNotice = _this.newAnounces[_this.currentNoticeIndex];
+              _this.noticeTitle = _this.newAnounces[_this.currentNoticeIndex].TITLE;
 
             }, 5000);
           }
@@ -123,7 +123,7 @@ export default {
         name: "notificationlist",
         params: {
           showNotification: true,
-          CONTENT:this.currentNotice.CONTENT,
+          CONTENT: this.currentNotice.CONTENT,
           from: 'customer',
         }
       });
