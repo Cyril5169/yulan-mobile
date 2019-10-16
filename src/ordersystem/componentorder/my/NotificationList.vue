@@ -44,7 +44,6 @@ import axios from "axios";
 
 
 export default {
-  name: "",
   components: {
     top,
     [Popup.name]: Popup,
@@ -72,7 +71,6 @@ export default {
     onLoad() {
       // 异步更新数据
       setTimeout(() => {
-        let url = "/NOTIFICATION/GetPageDataTable";
         let data = {
           cid: this.$store.getters.getCId, //客户号
           condition: '',

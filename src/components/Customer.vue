@@ -30,6 +30,9 @@
       </section>
       <navBottom :change-style="style"></navBottom>
     </div>
+    <van-popup v-model="showStudyForm" class="study-form">
+      <StudyForm></StudyForm>
+    </van-popup>
   </div>
 </template>
 
@@ -37,21 +40,26 @@
 import { bus } from "../utils/eventBus.js";
 import CustomerBanner from "./CustomerBanner";
 import navBottom from "@/components/navBottom";
-import { Toast } from "vant";
+import { Toast, Popup } from "vant";
 import { QueryAppMenuByUserId } from "@/api/webMenuASP";
+import { getCustomerMustWriteStudy, getGroupContextOption } from "@/api/studyASP";
+import StudyForm from './StudyForm'
 
 export default {
   data() {
     return {
       IsSidebarOut: false,
-      style: "customer"
+      style: "customer",
+      showStudyForm: false,
     };
   },
   components: {
     CustomerBanner,
     bus,
     navBottom,
-    [Toast.name]: Toast
+    StudyForm,
+    [Toast.name]: Toast,
+    [Popup.name]: Popup
   },
   computed: {
     customer() {
@@ -63,6 +71,19 @@ export default {
         item => item.MENU_TYPE == "appmenu"
       );
     }
+  },
+  mounted() {
+    getCustomerMustWriteStudy(this.$store.getters.getCId).then((res) => {
+      if (res.data.length > 0) {
+        //this.showStudyForm = true;
+      }
+      getGroupContextOption(res.data[0].SID).then((res)=>{
+
+      }).catch((err)=>{
+
+      });
+    }).catch((err) => {
+    })
   },
   methods: {
     //获得菜单数组并传入store ,await并不会阻塞主线程，这里并不起作用
@@ -246,7 +267,7 @@ p {
   right: 0;
   position: relative;
   background-color: #efefef;
-  overflow: hidden;
+  overflow: scroll;
   transition: margin-left 0.3s;
   -webkit-transition: margin-left 0.3s;
   -moz-transition: margin-left 0.3s; /* Firefox 4 */
@@ -264,7 +285,8 @@ p {
 }
 .content {
   width: 375px;
-  height: 100vh;
+  margin-bottom: 60px;
+  /* height: 100vh; */
   float: left;
   position: relative;
   z-index: 10;
@@ -394,5 +416,9 @@ p {
   flex-wrap: wrap;
   justify-content: left;
   padding: 0 21px;
+}
+.study-form {
+  height: 100%;
+  width: 100%;
 }
 </style>
