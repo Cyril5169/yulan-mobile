@@ -87,9 +87,12 @@ import AreaQuery from '@/ordersystem/componentorder/query/areaQuery'
 import BillDetailsQuery from '@/ordersystem/componentorder/query/billDetailsQuery'
 import OrderQuery from '@/ordersystem/componentorder/query/orderQuery'
 import OrderDetailsQuery from '@/ordersystem/componentorder/query/orderDetailsQuery'
-兰居设计
+//兰居设计
 import lanjuDesign from '@/ordersystem/componentorder/lanju/lanjuDesign'
-import addLJRecord from '@/ordersystem/componentorder/lanju/addLJRecord'
+import lanjuDetail from '@/ordersystem/componentorder/lanju/lanjuDetail'
+//物流投诉
+import complaint from '@/ordersystem/componentorder/complaint/complaint'
+import complaintDetail from '@/ordersystem/componentorder/complaint/complaintDetail'
 
 Vue.use(Router)
 var router = new Router({
@@ -493,9 +496,19 @@ var router = new Router({
       component: lanjuDesign
     },
     {
-      path: '/addLJRecord',
-      name: 'addLJRecord',
-      component: addLJRecord
+      path: '/lanjuDetail',
+      name: 'lanjuDetail',
+      component: lanjuDetail
+    },
+    {
+      path: '/complaint',
+      name: 'complaint',
+      component: complaint
+    },
+    {
+      path: '/complaintDetail',
+      name: 'complaintDetail',
+      component: complaintDetail
     },
 
   ]

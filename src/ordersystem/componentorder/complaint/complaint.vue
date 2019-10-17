@@ -1,5 +1,5 @@
 <template>
-  <div class="lanju">
+  <div>
     <top :top="set"></top>
     <div class="search">
       <ul class="ulhead" id="ulhead">
@@ -17,7 +17,7 @@
         <li class="licenter">
           <div style="height:40px">
             <van-cell-group>
-              <van-field v-model="searchKey" placeholder="请输入方案名称" />
+              <van-field v-model="searchKey" placeholder="请输入提货单号" />
             </van-cell-group>
           </div>
         </li>
@@ -38,29 +38,33 @@
         :key="index"
       >
         <div class="single-title">
-          <span class="single-title-left">单据号：{{item.ID}}</span>
+          <span class="single-title-left">单据号：{{item.SALE_NO}}</span>
           <span class="single-title-right">{{item.STATUS}}</span>
         </div>
         <table>
           <tr>
-            <td>提交时间：</td>
-            <td>{{item.SUBMIT_DATE}}</td>
+            <td>客户代码</td>
+            <td>{{item.CUSTOMER_CODE}}</td>
           </tr>
           <tr>
-            <td>经销商名称：</td>
-            <td>{{item.DISTRIBUTOR_NAME}}</td>
+            <td>客户名称</td>
+            <td>{{item.CUSTOMER_NAME}}</td>
           </tr>
           <tr>
-            <td>经销商代码：</td>
-            <td>{{item.DISTRIBUTOR_CODE}}</td>
+            <td>物流单号</td>
+            <td>{{item.C_TRANSBILL}}</td>
           </tr>
           <tr>
-            <td>联系人：</td>
-            <td>{{item.CUSTOMER_AGENT}}</td>
+            <td>投诉类型</td>
+            <td>{{item.TYPE}}</td>
           </tr>
           <tr>
-            <td>方案名称：</td>
-            <td>{{item.SOLUTION_NAME}}</td>
+            <td>投诉内容</td>
+            <td>{{item.MEMO}}</td>
+          </tr>
+          <tr>
+            <td>投诉时间</td>
+            <td>{{item.SUBMITTS}}</td>
           </tr>
         </table>
       </div>
@@ -109,7 +113,7 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import { GetAllDataForApp } from "../../../api/lanjuASP";
+import { GetAllComplaintForAPP } from "../../../api/complaintASP";
 import Vue from "vue";
 import {
   DatetimePicker,
@@ -124,10 +128,10 @@ import {
 Vue.use(Field);
 
 export default {
-  name: "lanjuDesign",
+  name: "complaint",
   data() {
     return {
-      set: 95,
+      set: 98,
       ksData: "",
       ksDataSet: "", //  开始时间
       searchKey: "", //搜索栏关键字
@@ -138,15 +142,7 @@ export default {
       myType: "全部状态", //当前状态
       myTypeCode: 0,
       showType: false, //状态选择显示
-      statusArray: [
-        "全部状态",
-        "未审核",
-        "市场部未通过",
-        "市场部通过",
-        "广美未通过",
-        "广美通过",
-        "设计图已出"
-      ],
+      statusArray: ["全部状态", "未处理", "已处理未评价", "已处理已评价"],
       //当前页数
       currentPage: 1,
       //总记录数
@@ -205,18 +201,12 @@ export default {
       this.myType = index;
       if (this.myType == "全部状态") {
         this.myTypeCode = 0;
-      } else if (this.myType == "未审核") {
+      } else if (this.myType == "未处理") {
         this.myTypeCode = 1;
-      } else if (this.myType == "市场部未通过") {
+      } else if (this.myType == "已处理未评价") {
         this.myTypeCode = 2;
-      } else if (this.myType == "市场部通过") {
+      } else if (this.myType == "已处理已评价") {
         this.myTypeCode = 3;
-      } else if (this.myType == "广美未通过") {
-        this.myTypeCode = 4;
-      } else if (this.myType == "广美通过") {
-        this.myTypeCode = 5;
-      } else if (this.myType == "设计图已出") {
-        this.myTypeCode = 6;
       }
       this.showType = false;
     },
@@ -237,6 +227,7 @@ export default {
         jsTime = this.jsDataSet + " 23:59:59";
       }
       let data = {
+        companyId:this.$store.getters.getCMId,
         cid: this.$store.getters.getCId, //公司id
         STATUS: this.myTypeCode,
         SEARCHKEY: this.searchKey,
@@ -246,7 +237,7 @@ export default {
         page: this.currentPage //页数
       };
       console.log(data);
-      GetAllDataForApp(data).then(res => {
+      GetAllComplaintForAPP(data).then(res => {
         this.loading = false;
         if (res.count == 0) {
           return;
@@ -264,22 +255,13 @@ export default {
           for (let i = 0; i < this.allLists.length; i++) {
             switch (this.allLists[i].STATUS) {
               case 1:
-                this.allLists[i].STATUS = "未审核";
+                this.allLists[i].STATUS = "未处理";
                 continue;
               case 2:
-                this.allLists[i].STATUS = "市场部审核未通过";
+                this.allLists[i].STATUS = "已处理未评价";
                 continue;
               case 3:
-                this.allLists[i].STATUS = "市场部审核通过";
-                continue;
-              case 4:
-                this.allLists[i].STATUS = "广美审核未通过";
-                continue;
-              case 5:
-                this.allLists[i].STATUS = "广美审核通过";
-                continue;
-              case 6:
-                this.allLists[i].STATUS = "设计图已出";
+                this.allLists[i].STATUS = "已处理已评价";
                 continue;
             }
           }
@@ -292,7 +274,7 @@ export default {
     //  查看详情
     checkDetails(index) {
       this.$router.push({
-        name: "lanjuDetail",
+        name: "complaintDetail",
         params: {
           ID: this.allLists[index].ID, //单据号
           data: this.allLists[0] //表头数据
@@ -316,7 +298,6 @@ export default {
     this.jsSet(time);
     this.ksSet(time);
     this.getList();
-    console.log("lanju");
   }
 };
 </script>
