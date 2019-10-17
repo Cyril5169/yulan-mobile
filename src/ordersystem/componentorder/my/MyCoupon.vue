@@ -51,15 +51,7 @@
     </div>
     <!--优惠券使用记录-->
     <van-popup v-model="showUseCouponRecord" class="youhuiquan" position="right">
-      <div class="coupon-title">
-        <img
-          class="backCoupon"
-          @click="showUseCouponRecord = false"
-          src="../../assetsorder/back.png"
-          alt
-        />
-        <span>优惠券使用记录</span>
-      </div>
+      <top @backclick="showUseCouponRecord=false" msgtitle = "优惠券使用记录"/>
       <div class="all-record" style="margin-top: 30px;">
         <div class="record-title">
           <span style="margin-left:10px;">累计使用金额：{{accMoney}}元</span>
@@ -100,15 +92,7 @@
     </van-popup>
     <!--优惠券返利记录-->
     <van-popup v-model="showCouponRecord" class="youhuiquan" position="right">
-      <div class="coupon-title">
-        <img
-          class="backCoupon"
-          @click="showCouponRecord = false"
-          src="../../assetsorder/back.png"
-          alt
-        />
-        <span>优惠券返利记录</span>
-      </div>
+      <top @backclick="showCouponRecord=false" msgtitle = "优惠券返利记录"/>
       <div class="all-record">
         <div class="singleRecord" v-for="(couponRecord,index) in allflRecord" :key="index">
           <table>
@@ -416,33 +400,14 @@ export default {
   width: 100%;
   height: 100%;
 }
-.coupon-title {
-  background: #363636;
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  top: 0;
-  color: white;
-  font-size: 15px;
-  position: fixed;
-}
-
-.backCoupon {
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  left: 17px;
-  top: 50%;
-  margin-top: -10px;
-}
 .all-record {
   background: #f8f8f8;
   position: fixed;
   overflow-y: scroll;
   top: 50px;
+  bottom: 0;
   left: 0;
   width: 100%;
-  height: 90%;
   -webkit-overflow-scrolling: touch; /*这句是为了滑动更顺畅*/
   font-size: 13px;
 }

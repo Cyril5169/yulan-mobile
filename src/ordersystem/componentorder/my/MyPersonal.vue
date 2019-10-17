@@ -24,7 +24,7 @@
         <span>检查新版本</span>
         <img class="item-more" src="../../assetsorder/more.png" alt />
       </div>
-      <div class="item" @click="changePassword()">
+      <div class="item" @click="clickToPath('changepassword')">
         <img class="item-icon" src="../../assetsorder/change_password.png" alt />
         <span>修改密码</span>
         <img class="item-more" src="../../assetsorder/more.png" alt />
