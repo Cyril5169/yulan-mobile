@@ -266,6 +266,22 @@ export default {
             path: "/customer"
           });
           break;
+
+        case 97:
+          this.$router.push({
+            path: "/lanjuDesign"
+          });
+          break;
+        case 98:
+          this.$router.push({
+            path: "/customer"
+          });
+          break;
+        case 99:
+          this.$router.push({
+            path: "/complaint"
+          });
+          break;
       }
 
       //   if(this.top == 0|| this.top ==1 || this.top ==5  ){
@@ -465,6 +481,22 @@ export default {
       let a = this.$refs.top;
       a.className = "top-green";
     }
+     if (this.top == 97) {
+      this.msg = "兰居设计";
+      let a = this.$refs.top;
+      a.className = "top-green";
+    }
+    if (this.top == 98) {
+      this.msg = "物流投诉";
+      let a = this.$refs.top;
+      a.className = "top-green";
+    }
+    if (this.top == 99) {
+      this.msg = "物流投诉";
+      let a = this.$refs.top;
+      a.className = "top-green";
+    }
+
   },
   beforeRouteLeave(to, from, next) {
     // ...
