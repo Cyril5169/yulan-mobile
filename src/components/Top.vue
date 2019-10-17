@@ -33,13 +33,13 @@ export default {
             });
           } else
             this.$router.push({
-              path: "/salesman"
+              path: "/customer"
             });
           break;
         case 2:
           if (this.$store.state.info.data.type != "ECWEB") {
             this.$router.push({
-              path: "/salesman"
+              path: "/customer"
             });
             break;
           }
@@ -188,7 +188,7 @@ export default {
           }
           break;
         case 27.1://最新公告
-           if (this.from) {
+          if (this.from) {
             this.$router.push({
               path: "/" + this.from
             });
@@ -197,6 +197,11 @@ export default {
               path: "/mypersonal"
             });
           }
+          break;
+        case 27.2://我的调查表
+          this.$router.push({
+            path: "/mypersonal"
+          });
           break;
         case 28:
           this.$router.push({
@@ -286,7 +291,7 @@ export default {
       //     })
       //   }else if(this.top == 2){
       //     this.$router.push({
-      //     path:'/salesman'
+      //     path:'/customer'
       //     })
       //   }else if(this.top ==7){
       //     this.$router.push({
@@ -388,6 +393,11 @@ export default {
     }
     if (this.top == 27.1) {
       this.msg = "最新公告";
+      let a = this.$refs.top;
+      a.className = "top-green";
+    }
+    if (this.top == 27.2) {
+      this.msg = "我的调查表";
       let a = this.$refs.top;
       a.className = "top-green";
     }

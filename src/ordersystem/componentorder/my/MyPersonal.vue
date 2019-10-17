@@ -9,6 +9,11 @@
         <span>我的优惠券</span>
         <img class="item-more" src="../../assetsorder/more.png" alt />
       </div>
+      <div class="item" @click="clickToPath('studylist')">
+        <img class="item-icon" src="../../assetsorder/studyform.png" alt />
+        <span>我的调查表</span>
+        <img class="item-more" src="../../assetsorder/more.png" alt />
+      </div>
       <div class="item" @click="clickToPath('notificationlist')">
         <img class="item-icon" src="../../assetsorder/notification.png" alt />
         <span>最新公告</span>
@@ -17,6 +22,11 @@
       <div class="item" @click="checkVersion()">
         <img class="item-icon" src="../../assetsorder/version_update.png" alt />
         <span>检查新版本</span>
+        <img class="item-more" src="../../assetsorder/more.png" alt />
+      </div>
+      <div class="item" @click="changePassword()">
+        <img class="item-icon" src="../../assetsorder/change_password.png" alt />
+        <span>修改密码</span>
         <img class="item-more" src="../../assetsorder/more.png" alt />
       </div>
       <div style="height:20px;"></div>
@@ -74,6 +84,9 @@ export default {
       } else {
         UpdateVersion(true);
       }
+    },
+    changePassword(){
+
     },
     logout() {
       this.$router.push({
