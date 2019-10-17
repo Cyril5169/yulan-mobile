@@ -71,6 +71,7 @@ import MyPersonal from '@/ordersystem/componentorder/my/MyPersonal'
 import MyCoupon from '@/ordersystem/componentorder/my/MyCoupon'
 import NotificationList from '@/ordersystem/componentorder/my/NotificationList'
 import StudyList from '@/ordersystem/componentorder/my/StudyList'
+import ChangePassword from '@/ordersystem/componentorder/my/ChangePassword'
 //银行汇款
 import Bank from '@/ordersystem/componentorder/bankHk/Bank'
 import BankDetails from '@/ordersystem/componentorder/bankHk/BankDetails'
@@ -87,7 +88,7 @@ import AreaQuery from '@/ordersystem/componentorder/query/areaQuery'
 import BillDetailsQuery from '@/ordersystem/componentorder/query/billDetailsQuery'
 import OrderQuery from '@/ordersystem/componentorder/query/orderQuery'
 import OrderDetailsQuery from '@/ordersystem/componentorder/query/orderDetailsQuery'
-兰居设计
+//兰居设计
 import lanjuDesign from '@/ordersystem/componentorder/lanju/lanjuDesign'
 import addLJRecord from '@/ordersystem/componentorder/lanju/addLJRecord'
 
@@ -397,6 +398,11 @@ var router = new Router({
       path: "/studylist",
       name: 'studylist',
       component: StudyList,
+    },
+    {
+      path: "/changepassword",
+      name: 'changepassword',
+      component: ChangePassword,
     },
     {
       path: "/tasksearch",

@@ -1,8 +1,9 @@
 import Axios from 'axios'
+import {Notify} from "vant"
 // import Cookies from "js-cookie";
 
-var baseUrl = 'http://localhost:49438/';//本地
-//var baseUrl = 'http://47.107.56.156:666/';//测试
+//var baseUrl = 'http://localhost:49438/';//本地
+var baseUrl = 'http://47.107.56.156:666/';//测试
 //var baseUrl = 'http://14.29.223.114:568/';//正式
 
 export {
@@ -113,7 +114,11 @@ export function post(url, data = {}, config = {}) {
             .catch(err => {
                 Axios.defaults.withCredentials = true;
                 console.log(err.msg);
-                reject(err);
+                if(err.request && err.request.status == 0){
+                    Notify({ type: 'warning', message: '网络连接失败' });
+                }else{
+                    reject(err);
+                }
             })
     })
 }
