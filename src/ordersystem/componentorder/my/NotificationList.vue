@@ -131,5 +131,6 @@ export default {
   width: 100%;
   -webkit-overflow-scrolling: touch; /*这句是为了滑动更顺畅*/
   font-size: 13px;
+  text-align: left;
 }
 </style>

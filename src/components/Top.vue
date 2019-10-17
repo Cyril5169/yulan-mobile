@@ -19,6 +19,12 @@ export default {
   methods: {
     back() {
       this.$emit('backclick');//自定义事件，提供外部使用
+      if(this.from){
+        this.$router.push({
+              path: "/" + this.from
+            });
+            return;
+      }
       switch (this.top) {
         case 0:
           if (this.$store.state.info.data.type == "ECWEB") {
@@ -122,15 +128,9 @@ export default {
           }
         //order
         case 11://墙纸详情
-          if (this.from) {
-            this.$router.push({
-              path: "/" + this.from
-            });
-          } else {
-            this.$router.push({
+          this.$router.push({
               path: "/mycart/wallcart"
             });
-          }
           break;
         case 12:
           this.$router.push({
@@ -148,15 +148,9 @@ export default {
           });
           break;
         case 15: //订单详情
-          if (this.from) {
-            this.$router.push({
-              path: "/" + this.from
-            });
-          } else {
-            this.$router.push({
+          this.$router.push({
               path: "/myorder"
             });
-          }
           break;
         case 16:
           this.$router.push({
@@ -178,26 +172,14 @@ export default {
         //   this.$router.go(-1);
         //   break;
         case 27://优惠券
-          if (this.from) {
-            this.$router.push({
-              path: "/" + this.from
-            });
-          } else {
-            this.$router.push({
+          this.$router.push({
               path: "/mypersonal"
             });
-          }
           break;
         case 27.1://最新公告
-          if (this.from) {
-            this.$router.push({
-              path: "/" + this.from
-            });
-          } else {
-            this.$router.push({
+          this.$router.push({
               path: "/mypersonal"
             });
-          }
           break;
         case 27.2://我的调查表
           this.$router.push({
