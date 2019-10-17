@@ -21,21 +21,21 @@
     <div class="all-bank">
       <div class="single-bank" @click.stop="checkWt(index)" v-for="(singleBank,index) in allLists" :key="index">
         <div class="single-title">
-          <span class="single-title-left">编号：{{singleBank.id}}</span>
-          <span class="single-title-right">{{singleBank.state}}</span>
+          <span class="single-title-left">编号：{{singleBank.ID}}</span>
+          <span class="single-title-right">{{singleBank.STATE}}</span>
         </div>
         <table>
           <tr>
             <td>创建时间：</td>
-            <td>{{singleBank.createTs}}</td>
+            <td>{{singleBank.CREATE_TS}}</td>
           </tr>
           <tr>
             <td>玉兰业务员：</td>
-            <td>{{singleBank.erpCreatorname}}</td>
+            <td>{{singleBank.ERP_CREATORNAME}}</td>
           </tr>
           <tr>
             <td>货品数：</td>
-            <td>{{singleBank.itemCount}}</td>
+            <td>{{singleBank.ITEM_COUNT}}</td>
           </tr>
         </table>
         <!-- <span class="single-details" @click.stop="checkWt(index)">查看详情</span> -->
@@ -99,6 +99,7 @@ import {
   Toast,
   Loading
 } from "vant";
+import {GetAllCompensation} from "@/api/paymentASP";
 
 export default {
   name: "bank",
@@ -197,7 +198,7 @@ export default {
     //  获取列表
     getList() {
       this.allLists = [];
-      this.loading = true;
+      //this.loading = true;
       if (this.myType == "客户同意") {
         this.myTypeCode = "APPROVED";
       } else if (this.myType == "客户不同意") {
@@ -208,37 +209,49 @@ export default {
       let ksTime;
       let jsTime;
       if (this.ksDataSet === "起始时间") {
-        ksTime = null;
+        ksTime = "0001/1/1";
       } else {
         ksTime = this.ksDataSet;
       }
       if (this.jsDataSet === "结束时间") {
-        jsTime = "";
+        jsTime = "9999/12/31";
       } else {
-        jsTime = this.jsDataSet;
+        jsTime = this.jsDataSet + " 23:59:59";
       }
       // this.ksDataSet === "起始时间" ? '':this.ksDataSet + " 00:00:00";
       // this.jsDataSet === "结束时间" ? '':this.jsDataSet + " 23:59:59";
-      let url =
-        this.capitalUrl +
-        "/returnCompensationBill/getReturnCompensationBills.do";
-      axios
-        .get(url, {
-          params: {
-            CID: this.$store.getters.getCId, //公司id
-            startDate: ksTime, //开始日期
-            endDate: jsTime, //结束日期
-            state: this.myTypeCode, //确认书状态
-            number: 8, //一页几条
-            page: this.currentPage //页数
-          }
-        })
+      let obj = {
+        CID: this.$store.getters.getCId, //客户ID
+        page: this.currentPage, //第几页
+        number: 8, //一页有多少数据
+        startDate: ksTime, //开始日期
+        endDate: jsTime, //结束日期
+        state: this.myTypeCode, //状态
+        createName: '', //创建者名称
+        cName: '', //客户名称
+        itemNo: '' //产品号
+      };
+      // let url =
+      //   this.capitalUrl +
+      //   "/returnCompensationBill/getReturnCompensationBills.do";
+      // axios
+      //   .get(url, {
+      //     params: {
+      //       CID: this.$store.getters.getCId, //公司id
+      //       startDate: ksTime, //开始日期
+      //       endDate: jsTime, //结束日期
+      //       state: this.myTypeCode, //确认书状态
+      //       number: 8, //一页几条
+      //       page: this.currentPage //页数
+      //     }
+      //   })
+        GetAllCompensation(obj)
         .then(res => {
-          this.loading = false;
-          this.allLists = res.data.data;
-          this.totalLists = res.data.count;
+          //this.loading = false;
+          this.allLists = res.data;
+          this.totalLists = res.count;
           //获取总页数
-          this.totalPage = parseInt(this.totalLists / 10) + 1;
+          this.totalPage = parseInt(this.totalLists / 8) + 1;
           if (this.allLists.length == 0) {
             Toast({
               message: "暂无该状态退货赔偿书",
@@ -246,30 +259,30 @@ export default {
             });
           } else {
             for (let i = 0; i < this.allLists.length; i++) {
-              this.allLists[i].payDate = this.exchangeTime(
-                this.allLists[i].payDate
-              );
-              this.allLists[i].createTs = this.exchangeTime(
-                this.allLists[i].createTs
-              );
-              this.allLists[i].submitTs = this.exchangeTime(
-                this.allLists[i].submitTs
-              );
-              this.allLists[i].reassureTs = this.exchangeTime(
-                this.allLists[i].reassureTs
-              );
-              this.allLists[i].erpProcessTs = this.exchangeTime(
-                this.allLists[i].erpProcessTs
-              );
-              switch (this.allLists[i].state) {
+              // this.allLists[i].payDate = this.exchangeTime(
+              //   this.allLists[i].payDate
+              // );
+              // this.allLists[i].createTs = this.exchangeTime(
+              //   this.allLists[i].createTs
+              // );
+              // this.allLists[i].submitTs = this.exchangeTime(
+              //   this.allLists[i].submitTs
+              // );
+              // this.allLists[i].reassureTs = this.exchangeTime(
+              //   this.allLists[i].reassureTs
+              // );
+              // this.allLists[i].erpProcessTs = this.exchangeTime(
+              //   this.allLists[i].erpProcessTs
+              // );
+              switch (this.allLists[i].STATE) {
                 case "APPROVED":
-                  this.allLists[i].state = "客户同意";
+                  this.allLists[i].STATE = "客户同意";
                   continue;
                 case "CANCELED":
-                  this.allLists[i].state = "客户不同意";
+                  this.allLists[i].STATE = "客户不同意";
                   continue;
                 case "CUSTOMERAFFIRM":
-                  this.allLists[i].state = "客户确认中";
+                  this.allLists[i].STATE = "客户确认中";
                   continue;
               }
             }
@@ -301,20 +314,11 @@ export default {
       this.$router.push({
         name: "tuihdetails",
         params: {
-          id: this.allLists[index].id,
-          state: this.allLists[index].state
+          id: this.allLists[index].ID,
+          state: this.allLists[index].STATE
         }
       });
     },
-    //  修改凭证
-    file(index) {
-      this.$router.push({
-        name: "wtdetails",
-        params: {
-          data: this.allLists[index]
-        }
-      });
-    }
   },
   created() {
     let time = new Date();

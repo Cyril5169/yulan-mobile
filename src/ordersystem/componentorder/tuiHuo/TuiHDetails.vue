@@ -4,7 +4,7 @@
     <span class="bank-state">{{state}}</span>
     <div class="bank-details-msg">
       <div class="msg">
-        <p style="text-align: left;">To：{{bankDetails.cname}}</p>
+        <p style="text-align: left;">To：{{bankDetails.CNAME}}</p>
         <p style="text-align: left;">我公司现收到以下拟申请退货产品，经调查、检验核实，做如下处理</p>
       </div>
       <div class="msg-tb">
@@ -12,27 +12,27 @@
         <div class="product-item" v-for="(items,index) in bankDetails.rtcbItems" :key="index">
           <div>
             <span class="left">产品/项目</span>
-            <span class="right">{{items.productionVersion}}</span>
+            <span class="right">{{items.PRODUCTION_VERSION}}</span>
           </div>
           <div>
             <span class="left">型号</span>
-            <span class="right">{{items.itemNo}}</span>
+            <span class="right">{{items.ITEM_NO}}</span>
           </div>
           <div>
             <span class="left">数量</span>
-            <span class="right">{{items.qty}}{{items.unit}}</span>
+            <span class="right">{{items.QTY}}{{items.UNIT}}</span>
           </div>
           <div>
             <span class="left">金额</span>
-            <span class="right">{{items.totalmoney}}</span>
+            <span class="right">{{items.TOTALMONEY}}</span>
           </div>
           <div>
             <span class="left">质量问题</span>
-            <span class="right">{{items.notes}}</span>
+            <span class="right">{{items.NOTES}}</span>
           </div>
           <div>
             <span class="left">处理意见</span>
-            <span class="right">{{items.process}}</span>
+            <span class="right">{{items.PROCESS}}</span>
           </div>
         </div>
         <!--<div class="product-item" v-for="items in bankDetails.rtcbItems">-->
@@ -63,11 +63,11 @@
         <p style="text-align: left;">地址：东莞市莞城莞龙路段狮龙路莞城科技园内</p>
         <p style="text-align: left;">电话：0769-23321708</p>
         <p style="text-align: left;">邮箱：yulan315@yulangroup.cn</p>
-        <p style="text-align: left;">广东玉兰集团股份有限公司市场部 2019年07月29日</p>
-        <p style="text-align: left;">经销商：{{bankDetails.cname}} 2019年07月30日</p>
+        <p style="text-align: left;">广东玉兰集团股份有限公司市场部 {{bankDetails.CREATE_TS | datatrans}}</p>
+        <p style="text-align: left;">经销商：{{bankDetails.CNAME}} {{bankDetails.REASSURE_TS | datatrans}}</p>
       </div>
     </div>
-    <div class="edit-bank" v-show="bankDetails.state === 'CUSTOMERAFFIRM'">
+    <div class="edit-bank" v-show="bankDetails.STATE === 'CUSTOMERAFFIRM'">
       <span class="edit-bank-xg" @click="toAgree('同意')">同意</span>
       <span class="edit-bank-dl" @click="toAgree('不同意')">不同意</span>
     </div>
@@ -87,6 +87,8 @@ import {
   Uploader,
   Button
 } from "vant";
+import {GetCompensationById} from "@/api/paymentASP";
+
 export default {
   name: "",
   components: {
@@ -105,21 +107,42 @@ export default {
       bigPicUrl: ""
     };
   },
+  filters:{
+     datatrans(value) {
+      //时间戳转化大法
+      if (value == null || value == "9999/12/31 00:00:00") {
+        return "";
+      }
+      let date = new Date(value);
+      let y = date.getFullYear();
+      let MM = date.getMonth() + 1;
+      MM = MM < 10 ? "0" + MM : MM;
+      let d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      let h = date.getHours();
+      h = h < 10 ? "0" + h : h;
+      let m = date.getMinutes();
+      m = m < 10 ? "0" + m : m;
+      let s = date.getSeconds();
+      s = s < 10 ? "0" + s : s;
+      return y + "年" + MM + "月" + d + "日"; /* + h + ':' + m + ':' + s; */
+    },
+  },
   methods: {
     initDetails() {
-      let url =
-        this.capitalUrl +
-        "/returnCompensationBill/getReturnCompensationBillByID.do\t";
-      axios
-        .get(url, {
-          params: {
-            id: this.$route.params.id //流水号
-          }
-        })
-        .then(res => {
-          this.bankDetails = res.data.data;
+      // let url =
+      //   this.capitalUrl +
+      //   "/returnCompensationBill/getReturnCompensationBillByID.do\t";
+      // axios
+      //   .get(url, {
+      //     params: {
+      //       id: this.$route.params.id //流水号
+      //     }
+      //   })
+        GetCompensationById({id: this.$route.params.id}).then(res => {
+          this.bankDetails = res.data[0];
           this.bankDetails.rtcbItems.forEach(item => {
-            this.totleAcount += item.totalmoney;
+            this.totleAcount += item.TOTALMONEY;
           });
         });
     },

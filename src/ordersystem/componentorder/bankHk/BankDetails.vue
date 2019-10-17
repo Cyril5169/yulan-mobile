@@ -47,12 +47,12 @@
         </div>
         <div>
           <span class="left">付款银行账号</span>
-          <img class="right more-slet" src="../../assetsorder/more.png" alt />
-          <input placeholder="填写付款银行账号" class="right bank-input" v-model="bankDetails.payerAccount" />
+          <!-- <img class="right more-slet" src="../../assetsorder/more.png" alt /> -->
+          <input placeholder="填写付款银行账号" class="right bank-input" v-model="bankDetails.payerAccount" @input="oninput2" />
         </div>
         <div>
           <span class="left">付款金额</span>
-          <img class="right more-slet" src="../../assetsorder/more.png" alt />
+          <!-- <img class="right more-slet" src="../../assetsorder/more.png" alt /> -->
           <input
             placeholder="填写付款金额"
             class="right bank-input"
@@ -73,7 +73,7 @@
         </div>
         <div>
           <span class="left">备注</span>
-          <img class="right more-slet" src="../../assetsorder/more.png" alt />
+          <!-- <img class="right more-slet" src="../../assetsorder/more.png" alt /> -->
           <input class="right bank-input" placeholder="填写备注" v-model="bankDetails.memo" />
         </div>
       </div>
@@ -109,7 +109,7 @@
         show-toolbar
         :title="'汇入银行'"
         :columns="bank"
-        :default-index="bankDetails.yulanBank"
+        :default-index="bankDetails.yulanBank?bankDetails.yulanBank:0"
         @cancel="showBank = false"
         @confirm="onConfirmBank"
       />
@@ -196,9 +196,9 @@ export default {
       showPic: false,
       showBank: false,
       bank: [
-        "中信银行",
-        "中国工商银行9761",
         "中国工商银行8881",
+        "中国工商银行9761",
+        "中信银行",
         "中国邮政储蓄"
       ],
       hKHistory: [],
@@ -368,7 +368,11 @@ export default {
       // 通过正则过滤小数点后两位
       e.target.value = e.target.value.match(/^\d*(\.?\d{0,2})/g)[0] || null;
       that.bankDetails.payAmount = e.target.value;
-    }
+    },
+    oninput2(e){
+      e.target.value = e.target.value.match(/^\d*/g)[0] || null;
+      this.bankDetails.payerAccount = e.target.value;
+    },
   },
   created() {
     // this.initDetails()

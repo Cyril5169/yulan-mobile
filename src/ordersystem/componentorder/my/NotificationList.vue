@@ -19,9 +19,8 @@
       </van-list>
     </div>
     <van-popup v-model="showNotification" class="nt-detail">
-      <top @backclick="showNotification=false" msgtitle = "公告详情"/>
-      <div class="nt-content" v-html="CONTENT">
-      </div>
+      <top @backclick="showNotification=false" msgtitle="公告详情" />
+      <div class="nt-content" v-html="CONTENT"></div>
     </van-popup>
   </div>
 </template>
@@ -31,10 +30,6 @@ import top from "../../../components/Top";
 import { Popup, Toast, List, Cell, Icon } from "vant";
 import { getPageDataTable } from "@/api/notificationASP";
 
-import axios from "axios";
-
-
-
 export default {
   components: {
     top,
@@ -42,7 +37,7 @@ export default {
     [Toast.name]: Toast,
     [List.name]: List,
     [Cell.name]: Cell,
-    [Icon.name]: Icon,
+    [Icon.name]: Icon
   },
   data() {
     return {
@@ -54,41 +49,39 @@ export default {
       finished: false,
       page: 1,
       showNotification: false,
-      CONTENT:'',
+      CONTENT: ""
     };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     onLoad() {
       // 异步更新数据
       setTimeout(() => {
         let data = {
           cid: this.$store.getters.getCId, //客户号
-          condition: '',
+          condition: "",
           limit: 20,
-          page: this.page,
+          page: this.page
         };
-        getPageDataTable(data).then((res) => {
-          for (let i = 0; i < res.data.length; i++) {
-            this.list.push(res.data[i]);
-          }
-          this.page = this.page + 1;
-          // 加载状态结束
-          this.loading = false;
-          // 数据全部加载完成
-          if (this.list.length >= res.count) {
-            this.finished = true;
-          }
-        }).catch((err) => {
-
-        })
+        getPageDataTable(data)
+          .then(res => {
+            for (let i = 0; i < res.data.length; i++) {
+              this.list.push(res.data[i]);
+            }
+            this.page = this.page + 1;
+            // 加载状态结束
+            this.loading = false;
+            // 数据全部加载完成
+            if (this.list.length >= res.count) {
+              this.finished = true;
+            }
+          })
+          .catch(err => {});
       }, 500);
     },
-    onClick(e,a){
-      this.CONTENT=e.CONTENT;
+    onClick(e, a) {
+      this.CONTENT = e.CONTENT;
       this.showNotification = true;
-
     }
   },
   created() {
@@ -118,17 +111,17 @@ export default {
 .nt-detail {
   width: 100%;
   height: 100%;
+  background: #f8f8f8;
   overflow: hidden;
 }
 
 .nt-content {
-  background: #f8f8f8;
   position: fixed;
   overflow-y: scroll;
   top: 50px;
   bottom: 0;
-  left: 0;
-  width: 100%;
+  left: 5px;
+  right: 5px;
   -webkit-overflow-scrolling: touch; /*这句是为了滑动更顺畅*/
   font-size: 13px;
   text-align: left;

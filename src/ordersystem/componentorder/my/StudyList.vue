@@ -15,7 +15,8 @@
           <div slot="title" class="cell">
             <span>{{item.TITLE}}</span>
           </div>
-          <van-icon v-if="item.completeStatus==1"
+          <van-icon
+            v-if="item.completeStatus==2"
             slot="right-icon"
             name="success"
             style="line-height: inherit;"
@@ -25,7 +26,15 @@
       </van-list>
     </div>
     <van-popup v-model="showStudyForm" class="study-form">
-      <StudyForm></StudyForm>
+      <keep-alive>
+        <StudyForm
+          v-if="showStudyForm"
+          @closePop="closePop"
+          @refresh="refreshStudy"
+          :showClose="true"
+          :selectData="studySelectData"
+        ></StudyForm>
+      </keep-alive>
     </van-popup>
   </div>
 </template>
@@ -34,7 +43,7 @@
 import top from "../../../components/Top";
 import { Popup, Toast, List, Cell, Icon } from "vant";
 import { getCustomerStudy, getGroupContextOption } from "@/api/studyASP";
-import StudyForm from '@/components/StudyForm';
+import StudyForm from "@/components/StudyForm";
 
 export default {
   components: {
@@ -44,7 +53,7 @@ export default {
     [Toast.name]: Toast,
     [List.name]: List,
     [Cell.name]: Cell,
-    [Icon.name]: Icon,
+    [Icon.name]: Icon
   },
   data() {
     return {
@@ -56,33 +65,40 @@ export default {
       finished: false,
       page: 1,
       showStudyForm: false,
+      studySelectData: []
     };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     onLoad() {
+      this.list = [];
       // 异步更新数据
       setTimeout(() => {
-        getCustomerStudy(this.$store.getters.getCId).then((res) => {
-          for (let i = 0; i < res.data.length; i++) {
-            this.list.push(res.data[i]);
-          }
-          // 加载状态结束
-          this.loading = false;
-          // 数据全部加载完成
-          this.finished = true;
-        }).catch((err) => {
-
-        })
+        getCustomerStudy(this.$store.getters.getCId)
+          .then(res => {
+            this.list = res.data;
+            // 加载状态结束
+            this.loading = false;
+            // 数据全部加载完成
+            this.finished = true;
+          })
+          .catch(err => {});
       }, 500);
     },
     onClick(data) {
-      if(data.completeStatus==1){
+      if (data.completeStatus == 2) {
         Toast("该调查表已填写完成");
         return;
       }
+      this.studySelectData = data;
       this.showStudyForm = true;
+    },
+    refreshStudy() {
+      this.showStudyForm = false;
+      this.onLoad();
+    },
+    closePop() {
+      this.showStudyForm = false;
     }
   },
   created() {

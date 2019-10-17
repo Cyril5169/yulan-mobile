@@ -31,7 +31,15 @@
       <navBottom :change-style="style"></navBottom>
     </div>
     <van-popup v-model="showStudyForm" class="study-form">
-      <StudyForm></StudyForm>
+      <keep-alive>
+        <StudyForm
+          v-if="showStudyForm"
+          @refresh="refreshStudy"
+          :showClose="false"
+          :title="studyFormTitle"
+          :selectData="studySelectData"
+        ></StudyForm>
+      </keep-alive>
     </van-popup>
   </div>
 </template>
@@ -42,8 +50,11 @@ import CustomerBanner from "./CustomerBanner";
 import navBottom from "@/components/navBottom";
 import { Toast, Popup } from "vant";
 import { QueryAppMenuByUserId } from "@/api/webMenuASP";
-import { getCustomerMustWriteStudy, getGroupContextOption } from "@/api/studyASP";
-import StudyForm from './StudyForm'
+import {
+  getCustomerMustWriteStudy,
+  getGroupContextOption
+} from "@/api/studyASP";
+import StudyForm from "./StudyForm";
 
 export default {
   data() {
@@ -51,6 +62,7 @@ export default {
       IsSidebarOut: false,
       style: "customer",
       showStudyForm: false,
+      studyFormTitle: "填写完此调查表，才能继续操作"
     };
   },
   components: {
@@ -72,19 +84,7 @@ export default {
       );
     }
   },
-  mounted() {
-    getCustomerMustWriteStudy(this.$store.getters.getCId).then((res) => {
-      if (res.data.length > 0) {
-        //this.showStudyForm = true;
-      }
-      getGroupContextOption(res.data[0].SID).then((res)=>{
-
-      }).catch((err)=>{
-
-      });
-    }).catch((err) => {
-    })
-  },
+  mounted() {},
   methods: {
     //获得菜单数组并传入store ,await并不会阻塞主线程，这里并不起作用
     async getMenuTree() {
@@ -150,6 +150,18 @@ export default {
       this.$router.push({
         path: "/"
       });
+    },
+    getStudy() {
+      getCustomerMustWriteStudy(this.$store.getters.getCId).then(res => {
+        if (res.data.length > 0) {
+          this.studySelectData = res.data[0];
+          this.showStudyForm = true;
+        }
+      });
+    },
+    refreshStudy() {
+      this.showStudyForm = false;
+      this.getStudy();
     }
   },
   created() {
@@ -157,6 +169,7 @@ export default {
       this.IsSidebarOut = true;
     });
     this.getMenuTree(); //获得菜单权限树
+    this.getStudy();
   }
 };
 </script>

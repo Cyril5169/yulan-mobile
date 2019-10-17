@@ -112,6 +112,8 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
+import { getCustomerInfo } from "@/api/orderListASP";
+
 import {
   DatetimePicker,
   Popup,
@@ -145,7 +147,8 @@ export default {
       //总页数
       totalPage: 0,
       allLists: [],
-      loading: false
+      loading: false,
+      chargeData:[]
     };
   },
   components: {
@@ -157,6 +160,15 @@ export default {
     [Loading.name]: Loading
   },
   methods: {
+    chargeQuery() {
+      var data = {
+        cid: this.$store.getters.getCId,
+        companyId: this.$store.getters.getCMId
+      };
+      getCustomerInfo(data).then(res => {
+        this.chargeData = res.data;
+      });
+    },
     //开始时间选择
     confirmTimeks(value) {
       this.ksSet2(this.ksData);
@@ -330,7 +342,7 @@ export default {
           data: {
             id: "提交后自动生成", //流水号
             cid: this.$store.getters.getCId, //公司id
-            cname: this.$store.getters.getrealName, //客户名
+            cname: this.chargeData.CUSTOMER_NAME, //客户名
             // "createTs": 1562816972000,//创建时间
             yulanBank: "", //汇款银行
             payerName: "", //汇款人名
@@ -357,6 +369,7 @@ export default {
     this.jsSet(time);
     this.ksSet(time);
     this.getList();
+    this.chargeQuery();
   }
 };
 </script>

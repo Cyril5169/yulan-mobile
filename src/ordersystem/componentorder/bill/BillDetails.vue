@@ -106,7 +106,7 @@
           </li>
           <li>
             <span class="item-sec">加收物流费：</span>
-            <span class="item-sec2">{{bill.transFlag}} (元)</span>
+            <span class="item-sec2">{{bill.transFlag | NYchange}}</span>
           </li>
         </ul>
       </div>
@@ -135,13 +135,13 @@
       </van-popup>
     </div>
     <!--对账单详情-->
-    <van-popup v-model="showShipment" closeable style="width:80%;max-height:40%;">
+    <van-popup v-model="showShipment" closeable style="width:80%;max-height:50%;">
       <div class="shipment-title">
         <span>{{THtitle}}</span>
       </div>
-      <div v-if="whatType" style="width:95%;height:100%;margin:35px 5px 10px 5px;">
+      <div v-if="whatType" style="width:95%;height:100%;margin:45px 5px 10px 5px;">
         <table
-          style="width:100%;"
+          style="width:100%; margin-bottom:8px;"
           border="1"
           cellspacing="0"
           v-for="(item,index) in THtabledata"
@@ -181,7 +181,7 @@
           </tr>
         </table>
       </div>
-      <div v-if="!whatType" style="width:95%;height:100%;margin:35px 5px 10px 5px;">
+      <div v-if="!whatType" style="width:95%;height:100%;margin:45px 5px 10px 5px;">
         <table style="width:100%;" border="1" cellspacing="0">
           <tr>
             <td>日期：</td>
@@ -243,9 +243,15 @@ export default {
     };
   },
   filters: {
+    NYchange(value) {
+      if (value == "Y") return "是";
+      if (value == "N") return "否";
+      if (value == null) return "";
+    },
     stateChange(value) {
       if (value == "CZSK") return "收款";
       if (value == "TD") return "提单";
+      if (value == "TH") return "退货";
       return value;
     }
   },
@@ -299,12 +305,14 @@ export default {
         if (res.data.code == 0) {
           if (val == "客户确认") {
             Toast.success("状态提交成功");
+            this.billitem.customerCheckState = "客户确认";
           } else {
             Toast.success("反馈成功");
+            this.billitem.customerCheckState = "客户反馈";
           }
         } else {
           if (val == "客户确认") {
-            Toast.success("状态提交成功");
+            Toast.success("状态提交失败");
           } else {
             Toast.success("反馈失败");
           }
