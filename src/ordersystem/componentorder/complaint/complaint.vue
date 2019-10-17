@@ -227,8 +227,8 @@ export default {
         jsTime = this.jsDataSet + " 23:59:59";
       }
       let data = {
-        companyId:this.$store.getters.getCMId,
-        cid: this.$store.getters.getCId, //公司id
+        companyId:this.$store.getters.getCMId,//公司id
+        cid: this.$store.getters.getCId, //用户id
         STATUS: this.myTypeCode,
         SEARCHKEY: this.searchKey,
         beginTime: ksTime, //起始时间
