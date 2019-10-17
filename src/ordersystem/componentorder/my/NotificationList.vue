@@ -19,15 +19,7 @@
       </van-list>
     </div>
     <van-popup v-model="showNotification" class="nt-detail">
-      <div class="nt-title">
-        <img
-          class="backlist"
-          @click="showNotification = false"
-          src="../../assetsorder/back.png"
-          alt
-        />
-        <span>公告详情</span>
-      </div>
+      <top @backclick="showNotification=false" msgtitle = "公告详情"/>
       <div class="nt-content" v-html="CONTENT">
       </div>
     </van-popup>
@@ -126,35 +118,17 @@ export default {
 .nt-detail {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
-.nt-title {
-  background: #363636;
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  top: 0;
-  color: white;
-  font-size: 15px;
-  position: fixed;
-}
-
-.backlist {
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  left: 17px;
-  top: 50%;
-  margin-top: -10px;
-}
 .nt-content {
   background: #f8f8f8;
   position: fixed;
   overflow-y: scroll;
   top: 50px;
+  bottom: 0;
   left: 0;
   width: 100%;
-  height: 100%;
   -webkit-overflow-scrolling: touch; /*这句是为了滑动更顺畅*/
   font-size: 13px;
 }
