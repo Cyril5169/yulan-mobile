@@ -10,7 +10,7 @@
 </template>
 <script>
 export default {
-  props: ["top", "from"],
+  props: ["top", "from", "msgtitle"],
   data() {
     return {
       msg: ""
@@ -18,6 +18,7 @@ export default {
   },
   methods: {
     back() {
+      this.$emit('backclick');//自定义事件，提供外部使用
       switch (this.top) {
         case 0:
           if (this.$store.state.info.data.type == "ECWEB") {
@@ -305,7 +306,10 @@ export default {
     }
   },
   mounted() {
-    // console.log(this.top);
+    if(this.msgtitle){
+      this.msg=this.msgtitle;
+      return;
+    }
     if (this.top == 0) {
       this.msg = "网络协议签订提示书";
     }

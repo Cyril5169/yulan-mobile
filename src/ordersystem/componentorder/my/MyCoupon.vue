@@ -309,10 +309,10 @@ export default {
 
 <style scoped>
 .my-coupoon {
-  margin-top: 50px;
   position: fixed;
+  top: 50px;
+  bottom: 0;
   width: 100%;
-  height: 95%;
   background-color: #f8f8f8;
   overflow: scroll;
 }
