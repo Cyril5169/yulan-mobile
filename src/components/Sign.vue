@@ -88,7 +88,7 @@ export default {
       let year = new Date().getFullYear();
       this.$store.commit("getYear", year);
       this.$http
-        .post("http://14.29.223.114:10250/yulan-order/web_user/login.do", {
+        .post(this.orderBaseUrl + "/web_user/login.do", {
           loginName: this.name.toUpperCase(),
           password: this.password,
           year: this.$store.state.year
