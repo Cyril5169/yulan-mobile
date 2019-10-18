@@ -1,11 +1,119 @@
 <script>
+import Vue from "vue";
 //订单接口地址
 //const orderBaseUrl="http://14.29.223.114:10250/yulan-order";//正式
 const orderBaseUrl = "http://120.79.140.75:567/yulan-order"; //测试
 
 const capitalUrl = "http://14.29.223.114:10250/yulan-capital";
+
+
+
+const updateUrl = "http://47.107.56.156:666/app/version.json";
+
+function UpdateVersion(ischeck) {
+  var showLoading = plus.nativeUI.showWaiting("检查更新...");
+  plus.runtime.getProperty(plus.runtime.appid, function (inf) {
+    console.log("当前版本号为:" + inf.version)
+    mui.ajax(updateUrl + "?v=" + Date.parse(new Date()), {
+      data: {},
+      dataType: 'json',
+      type: 'get',
+      success: function (data) {
+        console.log("服务器版本号为：" + data.version);
+        function checkversion(o, n) {
+          var tempo = o.split('.');
+          var tempn = n.split('.');
+          if ((tempo[0] * 100 + tempo[1] * 10 + tempo[2] * 1) < (tempn[0] * 100 + tempn[1] * 10 + tempn[2] * 1)) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+        function installApp(path) {
+          plus.nativeUI.showWaiting("安装文件...");
+          plus.runtime.install(path, {
+            force: false//是否强制安装
+          }, function (widgetInfo) {
+            plus.nativeUI.closeWaiting();
+            if (widgetInfo.version == inf.version) {
+              console.log("没有安装");
+              plus.nativeUI.alert("应用资源没有完成更新！", function () {
+                plus.runtime.restart();
+              });
+            } else {
+              console.log("安装文件成功！");
+              plus.nativeUI.alert("应用资源更新完成！", function () {
+                plus.runtime.restart();
+              });
+            }
+          }, function (e) {
+            plus.nativeUI.closeWaiting();
+            console.log("安装文件失败[" + e.code + "]：" + e.message);
+            plus.nativeUI.alert("安装文件失败[" + e.code + "]：" + e.message);
+          });
+        }
+
+        // 如果有新版本，则提示需要更新
+        if (checkversion(inf.version, data.version)) {
+          mui.confirm('检查到新版本，是否马上下载并更新？', '检查更新', ['是', '否，将退出程序'], function (e) {
+            if (e.index == 0) {
+              var wgtUrl = data.downloadURI;
+              console.log(wgtUrl);
+              var downToaknew = plus.downloader.createDownload(wgtUrl, {
+                filename: "_doc/update/"
+              }, function (d, status) {
+                //alert(d)
+                if (status == 200) {
+                  Vue.set(app, "showProgress", false);
+                  installApp(d.filename);
+                } else {
+                  showLoading.setTitle("下载失败")
+                }
+
+              });
+              downToaknew.start(); // 开启下载的任务
+              Vue.set(app, "downloadPercent", 0);
+              Vue.set(app, "showProgress", true);
+              var prg = 0;
+              downToaknew.addEventListener("statechanged", function (task, status) {
+                //给下载任务设置一个监听 并根据状态  做操作
+                switch (task.state) {
+                  case 1:
+                    showLoading.setTitle("正在下载");
+                    break;
+                  case 2:
+                    showLoading.setTitle("已连接到服务器");
+                    break;
+                  case 3:
+                    plus.nativeUI.closeWaiting();
+                    prg = parseInt(parseFloat(task.downloadedSize) / parseFloat(task.totalSize) * 100);
+                    Vue.set(app, "downloadPercent", prg);
+                }
+              });
+            } else {
+              plus.runtime.quit(); //退出应用
+            }
+          })
+        }
+        else {
+          if (ischeck) {
+            plus.nativeUI.toast("已是最新版本", {
+              duration: 'long',
+              align: 'center',
+              verticalAlign: 'center',
+            });
+          }
+          plus.nativeUI.closeWaiting();
+        }
+      },
+      error: function (err) {
+      }
+    })
+  });
+}
 export default {
   orderBaseUrl,
-  capitalUrl
+  capitalUrl,
+  UpdateVersion
 };
 </script>
