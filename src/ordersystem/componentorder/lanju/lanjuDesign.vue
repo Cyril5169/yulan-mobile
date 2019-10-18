@@ -109,7 +109,7 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import { GetAllDataForApp } from "../../../api/lanjuASP";
+import { GetAllData } from "../../../api/lanjuASP";
 import Vue from "vue";
 import {
   DatetimePicker,
@@ -237,7 +237,7 @@ export default {
         jsTime = this.jsDataSet + " 23:59:59";
       }
       let data = {
-        companyId:this.$store.getters.getCMId,//公司ID
+        companyId:this.$store.getters.getCMId,//公司id
         cid: this.$store.getters.getCId, //客户id
         STATUS: this.myTypeCode,
         SEARCHKEY: this.searchKey,
@@ -247,7 +247,7 @@ export default {
         page: this.currentPage //页数
       };
       console.log(data);
-      GetAllDataForApp(data).then(res => {
+      GetAllData(data).then(res => {
         this.loading = false;
         if (res.count == 0) {
           return;

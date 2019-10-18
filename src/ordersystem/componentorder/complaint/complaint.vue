@@ -113,7 +113,8 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import { GetAllComplaintForAPP } from "../../../api/complaintASP";
+// import { GetAllComplaint } from "../../../api/complaintASP";
+import { GetAllComplaint } from "@/api/complaintASP";
 import Vue from "vue";
 import {
   DatetimePicker,
@@ -237,7 +238,7 @@ export default {
         page: this.currentPage //页数
       };
       console.log(data);
-      GetAllComplaintForAPP(data).then(res => {
+      GetAllComplaint(data).then(res => {
         this.loading = false;
         if (res.count == 0) {
           return;
@@ -276,8 +277,7 @@ export default {
       this.$router.push({
         name: "complaintDetail",
         params: {
-          ID: this.allLists[index].ID, //单据号
-          data: this.allLists[0] //表头数据
+          SID: this.allLists[index].SID, //单据号
         }
       });
     },
