@@ -1,41 +1,36 @@
 <template>
   <div class="lanju-details">
     <top :top="set"></top>
-    <span class="lanju-details-state">{{checkTable.STATUS}}</span>
+    <span class="lanju-details-state">{{checkTable.STATUS|statusTrans}}</span>
     <div class="lanju-details-msg">
       <div class="msg">
-        <div><span class="left">单据号</span><span class="right">{{checkTable.ID}}</span></div>
-        <div><span class="left">提交时间</span><span class="right">{{checkTable.SUBMIT_DATE|dateTrans}}</span></div>
-        <div><span class="left">单据状态</span><span class="right">{{checkTable.STATUS}}</span></div>
-        <div><span class="left">市场部审核时间</span><span class="right">{{checkTable.AUDIT_TIME|dateTrans}}</span></div>
-        <div><span class="left">广美审核时间</span><span class="right">{{checkTable.CHECK_TIME|dateTrans}}</span></div>
+        <div><span class="left">单据号</span><span class="right">{{checkTable.SALE_NO}}</span></div>
+        <div><span class="left">提交时间</span><span class="right">{{checkTable.SUBMITTS|dateTrans}}</span></div>
+        <div><span class="left">单据状态</span><span class="right">{{checkTable.STATUS|statusTrans}}</span></div>
       </div>
       <div class="msg">
-        <div><span class="left">经销商代码</span><span class="right">{{checkTable.DISTRIBUTOR_CODE}}</span></div>
-        <div><span class="left">经销商名称</span><span class="right">{{checkTable.DISTRIBUTOR_NAME}}</span></div>
-        <div><span class="left">联系人</span><span class="right">{{checkTable.CUSTOMER_AGENT}}</span></div>
-        <div><span class="left">联系电话</span><span class="right">{{checkTable.OFFICE_TEL}}</span></div>
-        <div><span class="left">主管业务经理</span><span class="right">{{checkTable.MANAGER}}</span></div>
-        <div><span class="left">联系电话</span><span class="right">{{checkTable.MANAGER_TEL}}</span></div>
-        <div><span class="left">接收二维码邮箱</span><span class="right">{{checkTable.EMAIL}}</span></div>
+        <div><span class="left">客户代码</span><span class="right">{{checkTable.CUSTOMER_CODE}}</span></div>
+        <div><span class="left">客户名称</span><span class="right">{{checkTable.CUSTOMER_NAME}}</span></div>
       </div>
       <div class="msg">
-        <div><span class="left">方案名称(楼盘)</span><span class="right">{{checkTable.SOLUTION_NAME}}</span></div>
-        <div><span class="left">楼盘定位</span><span class="right">{{checkTable.ESTATE_TYPE|houseTrans}}</span></div>
-      </div>
-      <div v-for="(item,index) of checkDetailTable" :key="index">
-          <div class="msg">
-             <div><span class="left">户型编号</span><span class="right">{{item.HOUSE_CODE}}</span></div>
-             <div><span class="left">建筑面积</span><span class="right">{{item.HOUSING_AREA}}</span></div>
-             <div><span class="left">风格</span><span class="right">{{item.STYLE}}</span></div>
-             <div><span class="left">偏好说明</span><span class="right">{{item.PREFERENCE_NOTE}}</span></div>
-          </div>
+        <div><span class="left">提货单号</span><span class="right">{{checkTable.SALE_NO}}</span></div>
+        <div><span class="left">物流单号</span><span class="right">{{checkTable.C_TRANSBILL}}</span></div>
+        <div><span class="left">订单号</span><span class="right">{{checkTable.DINGDANHAO}}</span></div>
+        <div><span class="left">产品型号</span><span class="right">{{checkTable.SALENO}}</span></div>
       </div>
       <div class="msg">
-        <div><span class="left">备注</span><span class="right">{{checkTable.MEMO}}</span></div>
-        <div><span class="left">出图日期</span><span class="right">{{checkTable.EXPECTED_DRAW_DATE|dateTrans}}</span></div>
+        <div><span class="left">投诉类型</span><span class="right">{{checkTable.TYPE}}</span></div>
+        <div v-show="checkTable.TYPE=='丢失'" ><span  class="left">数量</span><span class="right">{{checkTable.LOSED_QUANTITY}}</span></div>
+        <div v-show="checkTable.TYPE=='破损'" ><span  class="left">数量</span><span class="right">{{checkTable.DAMAGED_QUANTITY}}</span></div>
+        <div><span class="left">投诉内容</span><span class="right">{{checkTable.MEMO}}</span></div>
       </div>
-
+      <div class="msg">
+        <div><span class="left">处理人</span><span class="right">{{checkTable.OPERATOR}}</span></div>
+        <div><span class="left">处理结果</span><span class="right">{{checkTable.PROCESSDESC}}</span></div>
+        <div><span class="left">处理时间</span><span class="right">{{checkTable.PROCESSTS|dateTrans}}</span></div>
+        <div><span class="left">服务评价</span><span class="right">{{checkTable.WLTS_THINK|rateTrans}}</span></div>
+        <div><span class="left">评价时间</span><span class="right">{{checkTable.FEEDBACKTS|dateTrans}}</span></div>
+      </div>
     </div>
   </div>
 </template>
@@ -45,7 +40,7 @@
   import axios from 'axios'
   import {
   CheckDetailByID,
-  } from "../../../api/lanjuASP";
+  } from "../../../api/complaintASP";
   import { Popup,Dialog ,Toast, Collapse, CollapseItem ,DatetimePicker,Uploader ,Button } from 'vant';
   export default {
     name: "complaintDetail",
@@ -57,9 +52,8 @@
     data(){
       return{
         set: 99,
-        ID:this.$route.params.ID,
-        checkTable: this.$route.params.data,
-        checkDetailTable:[],
+        SID:this.$route.params.SID,
+        checkTable:[],
         CNAME:"",
         showPic: false
       }
@@ -84,27 +78,41 @@
       s = s < 10 ? "0" + s : s;
       return y + "-" + MM + "-" + d + " " + h + ':' + m ;
     },
-    houseTrans(value){
+    statusTrans(value){
       switch (value) {
         case  1:
-          return "简装";
+          return "未处理";
         case  2:
-          return "豪宅";
+          return "已处理未评价";
+        case  3:
+          return "已处理已评价";
       }
     },
+    rateTrans(value){
+           switch (value)
+                {
+                    case "1":
+                        return "极差";
+                    case "2":
+                        return "失望";
+                    case "3":
+                        return "一般";
+                    case "4":
+                        return "满意";
+                    case "5":
+                        return "惊喜";
+                };
+    }
     },
     methods: {
       checkDetails() {
-          this.checkDetailTable = [];
-          this.checkTable = this.$route.params.data;
+          this.checkTable = [];
           let data = {
-              DESIGN_ID: this.$route.params.ID
+              SID: this.$route.params.SID
           };
           CheckDetailByID(data).then(res => {
           if (res.count > 0) {
-            this.checkDetailTable = res.data;
-            this.checkTable.CUSTOMER_AGENT = this.checkDetailTable[0].CUSTOMER_AGENT;
-            this.checkTable.OFFICE_TEL= this.checkDetailTable[0].OFFICE_TEL;
+            this.checkTable = res.data[0];
           }
           });
        },

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="lanju">
     <top :top="set"></top>
     <div class="search">
       <ul class="ulhead" id="ulhead">
@@ -14,10 +14,10 @@
         </li>
       </ul>
       <ul class="ulheadNew" id="ulheadNew">
-        <li class="licenter">
-          <div style="height:40px">
-            <van-cell-group>
-              <van-field v-model="searchKey" placeholder="请输入提货单号" />
+        <li >
+          <div style="height:31px;margin-top:7px" >
+            <van-cell-group style="height:31px;">
+               <input  class="searchInput" type="text" v-model="searchKey" placeholder="请输入提货单号" />
             </van-cell-group>
           </div>
         </li>
@@ -78,6 +78,7 @@
         :show-toolbar="true"
         :title="'选择时间'"
         @confirm="confirmTimeks"
+        @cancel="cancelTimeks"
       />
     </van-popup>
     <van-popup v-model="showjs" position="bottom">
@@ -87,11 +88,12 @@
         type="date"
         :title="'选择时间'"
         @confirm="confirmTimejs"
+         @cancel="cancelTimejs"
       />
     </van-popup>
     <!--状态选择-->
     <van-popup v-model="showType" position="bottom">
-      <van-picker show-toolbar title="订单类型" :columns="statusArray" @confirm="onConfirmType" />
+      <van-picker show-toolbar title="单据状态" :columns="statusArray" @confirm="onConfirmType"  @cancel="onCancelType"/>
     </van-popup>
     <!--底部分页-->
     <div class="fy-contain">
@@ -113,7 +115,8 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import { GetAllComplaintForAPP } from "../../../api/complaintASP";
+// import { GetAllComplaint } from "../../../api/complaintASP";
+import { GetAllComplaint } from "@/api/complaintASP";
 import Vue from "vue";
 import {
   DatetimePicker,
@@ -168,14 +171,18 @@ export default {
   methods: {
     //开始时间选择
     confirmTimeks(value) {
-      console.log(value);
       this.ksSet2(this.ksData);
+      this.showks = false;
+    },
+    cancelTimeks() {
       this.showks = false;
     },
     //结束时间选择
     confirmTimejs(value) {
-      console.log(value);
       this.jsSet(this.jsData);
+      this.showjs = false;
+    },
+    cancelTimejs() {
       this.showjs = false;
     },
     //开始时间设置
@@ -184,6 +191,7 @@ export default {
       let current_month = time.getMonth() + 1;
       let current_year = time.getFullYear();
       this.ksDataSet = current_year + "-" + current_month + "-" + current_date;
+      this.ksData = time;
     },
     //初始化结束时间
     jsSet(time) {
@@ -191,10 +199,12 @@ export default {
       let current_month = time.getMonth() + 1;
       let current_year = time.getFullYear();
       this.jsDataSet = current_year + "-" + current_month + "-" + current_date;
+      this.jsData = time;
     },
     //初始化开始时间
     ksSet(time) {
       this.ksDataSet = "起始时间";
+      this.ksData = time;
     },
     //状态选择
     onConfirmType(index) {
@@ -208,6 +218,9 @@ export default {
       } else if (this.myType == "已处理已评价") {
         this.myTypeCode = 3;
       }
+      this.showType = false;
+    },
+    onCancelType() {
       this.showType = false;
     },
     //获取列表
@@ -237,7 +250,7 @@ export default {
         page: this.currentPage //页数
       };
       console.log(data);
-      GetAllComplaintForAPP(data).then(res => {
+      GetAllComplaint(data).then(res => {
         this.loading = false;
         if (res.count == 0) {
           return;
@@ -276,8 +289,7 @@ export default {
       this.$router.push({
         name: "complaintDetail",
         params: {
-          ID: this.allLists[index].ID, //单据号
-          data: this.allLists[0] //表头数据
+          SID: this.allLists[index].SID, //单据号
         }
       });
     },
@@ -309,13 +321,22 @@ export default {
   position: relative;
   overflow: scroll;
 }
+.searchInput{
+  height:25px;
+  font-size:13px;
+  padding:5px;
+  position: relative;
+  top: -3px;
+}
 .search-button {
   color: #a0cb8d;
   font-size: 13px;
   padding: 5px 20px;
   border-radius: 15px;
-  background: white;
+  background: white; 
   z-index: 99;
+  position: relative;
+  top: 3px;
 }
 .search_1 {
   position: relative;
