@@ -86,10 +86,10 @@
           <span>备注</span>
           <span class="good-num">{{good.NOTES}}</span>
         </div>
-        <div class="good-item5" v-if="good.packDetailId">
+        <!-- <div class="good-item5" v-if="good.packDetailId"> -->
           <!--<div class="good-item5">-->
-          <span @click="toThdh(good.ITEM_NO)">出货详情</span>
-        </div>
+          <!-- <span @click="toThdh(good.ITEM_NO)">出货详情</span>
+        </div> -->
       </div>
     </div>
     <div class="order-msg order-msg-item2">

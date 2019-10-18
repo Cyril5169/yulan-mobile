@@ -130,7 +130,7 @@
                 <td>{{detail.AREA}}</td>
               </tr>
               <tr>
-                <td style="width:25%;text-align:left">计划数：</td>
+                <td style="width:25%;text-align:left">发货数：</td>
                 <td>{{detail.QTY_DELIVER}}</td>
               </tr>
               <tr>
