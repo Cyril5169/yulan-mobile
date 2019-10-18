@@ -18,7 +18,7 @@
 
         <div style="margin-top:-20px">
           <van-search
-            placeholder="请输入搜索关键词"
+            placeholder="搜索客户"
             v-model="customer_filter"
             @input="customerFilter"
             style="width:45%;height:37px;margin-left:5px"
@@ -28,6 +28,10 @@
           <van-button class="choose" @click="toggleAll" round>反选</van-button>
           <van-button class="button" @click="clear" round>重置</van-button>
         </div>
+         <div>
+          <span>
+            <van-checkbox  v-model="checked" style="margin-left:70%;margin-top:5px">有效客户</van-checkbox >
+            </span></div>
         <hr />
         <div>
           <span class="licenter" @click="showType_4 = true">
@@ -123,6 +127,7 @@ export default {
   name: "areaQuery",
   data() {
     return {
+      checked:false,
       myStatus: "全部状态",
       myStatusCode: "",
       ksData: "",
@@ -270,8 +275,9 @@ export default {
   //生命周期
   created() {
     this._getAreaCode();
-    this.ksSet(time);
     let time = new Date();
+    this.jsSet(time);
+    this.ksSet(time);
   },
   methods: {
     //开始时间选择
@@ -281,7 +287,6 @@ export default {
     },
     //结束时间选择
     confirmTimejs(value) {
-      console.log(value);
       this.jsSet(this.jsData);
       this.showType_5 = false;
     },
@@ -291,6 +296,7 @@ export default {
       let current_month = time.getMonth() + 1;
       let current_year = time.getFullYear();
       this.ksDataSet = current_year + "-" + current_month + "-" + current_date;
+      this.ksData = time;
     },
     //初始化结束时间
     jsSet(time) {
@@ -299,10 +305,13 @@ export default {
       let current_month = time.getMonth() + 1;
       let current_year = time.getFullYear();
       this.jsDataSet = current_year + "-" + current_month + "-" + current_date;
+      this.jsData = time;
     },
     //初始化开始时间
     ksSet(time) {
-      this.ksDataSet = "起始时间";
+      let current_year = time.getFullYear();
+      this.ksDataSet = current_year + "-" + "01" + "-" + "01";
+      this.ksData = new Date(this.ksDataSet) ;
     },
     //客户筛选
     customerFilter(val) {
@@ -449,8 +458,24 @@ export default {
       this.tableData = [];
       this.customerData = [];
       this.customerDataAll = [];
+      this.AREA_DISTRICT = [];
       this.value_4 = [];
+      let ksTime;
+      let jsTime;
+      if (this.ksDataSet === "起始时间") {
+        ksTime = "";
+      } else {
+        ksTime = this.ksDataSet;
+      }
+      if (this.jsDataSet === "结束时间") {
+        jsTime = "";
+      } else {
+        jsTime = this.jsDataSet;
+      }
       var data = {
+        beginTime: ksTime, //起始时间
+        finishTime: jsTime, //结束时间
+        isall:this.checked,
         areaCode: this.AREACODE[val].AREA_CODE, //市场
         district: this.AREA_DISTRICT, //片区
         customerType: this.customer_type //客户类型
@@ -465,7 +490,22 @@ export default {
       this.tableData = [];
       this.customerDataAll = [];
       this.value_4 = [];
+      let ksTime;
+      let jsTime;
+      if (this.ksDataSet === "起始时间") {
+        ksTime = "";
+      } else {
+        ksTime = this.ksDataSet;
+      }
+      if (this.jsDataSet === "结束时间") {
+        jsTime = "";
+      } else {
+        jsTime = this.jsDataSet;
+      }
       var data = {
+        beginTime: ksTime, //起始时间
+        finishTime: jsTime, //结束时间
+        isall:this.checked,
         areaCode: val.areaCode, //市场
         district: val.AREA_DISTRICT, //片区
         customerType: this.customer_type //客户类型
@@ -480,7 +520,22 @@ export default {
       this.tableData = [];
       this.value_4 = [];
       this.customerDataAll = [];
+      let ksTime;
+      let jsTime;
+      if (this.ksDataSet === "起始时间") {
+        ksTime = "";
+      } else {
+        ksTime = this.ksDataSet;
+      }
+      if (this.jsDataSet === "结束时间") {
+        jsTime = "";
+      } else {
+        jsTime = this.jsDataSet;
+      }
       var data = {
+        beginTime: ksTime, //起始时间
+        finishTime: jsTime, //结束时间
+        isall:this.checked,
         areaCode: val.areaCode, //市场
         district: val.district, //片区
         customerType: val.customerType //客户类型
@@ -572,9 +627,10 @@ export default {
       this.myStatus = "全部状态";
       (this.myStatusCode = ""),
         (this.ksData = ""),
-        (this.ksDataSet = "起始时间"), //  开始时间
-        (this.jsData = ""),
-        (this.jsDataSet = "结束时间"), //结束时间
+        (this.jsData = "")
+        let time = new Date()
+        this.jsSet(time);
+        this.ksSet(time);
         (this.customer_filter = ""),
         (this.customer = []),
         (this.myCustomerType = "客户类型"),
@@ -666,7 +722,7 @@ export default {
   padding-left: 20px;
   background-image: url("../../assetsorder/time-zk.png");
   background-repeat: no-repeat;
-  background-position-x: 90px;
+  background-position-x: 95px;
   background-position-y: 2vw;
   background-size: 14px;
 }
@@ -713,7 +769,7 @@ export default {
 
 .ulhead {
   margin-top: 10px;
-  height: 180px;
+  height: 200px;
   width: 100%;
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
 }

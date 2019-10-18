@@ -94,6 +94,8 @@ import lanjuDetail from '@/ordersystem/componentorder/lanju/lanjuDetail'
 //物流投诉
 import complaint from '@/ordersystem/componentorder/complaint/complaint'
 import complaintDetail from '@/ordersystem/componentorder/complaint/complaintDetail'
+//形象店设计
+import ImageShop from '@/ordersystem/componentorder/design/imageShop'
 
 Vue.use(Router)
 var router = new Router({
@@ -515,6 +517,11 @@ var router = new Router({
       path: '/complaintDetail',
       name: 'complaintDetail',
       component: complaintDetail
+    },
+    {
+      path: '/imageShop',
+      name: 'imageShop',
+      component: ImageShop,
     },
 
   ]
