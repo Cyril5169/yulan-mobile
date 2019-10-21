@@ -1088,8 +1088,10 @@ export default {
 
 <style scoped>
 .contain {
-  padding: 50px 0;
-  /*padding: 10px 20px;*/
+  position: fixed;
+  top: 50px;
+  bottom: 50px;
+  overflow-y: scroll;
   background: #f1f1f1;
 }
 

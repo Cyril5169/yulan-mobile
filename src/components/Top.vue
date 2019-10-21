@@ -164,7 +164,9 @@ export default {
           });
           break;
         case 18:
-          this.$router.go(-1);
+          this.$router.push({
+            path: "/addresslist"
+          });
           break;
         case 25:
           this.$router.go(-1);
