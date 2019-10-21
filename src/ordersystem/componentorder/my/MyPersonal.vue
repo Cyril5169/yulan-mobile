@@ -43,6 +43,7 @@ import top from "../../../components/Top";
 import navBottom from "../../../components/navBottom";
 import { Toast } from "vant";
 
+
 export default {
   name: "",
   components: {
@@ -82,7 +83,7 @@ export default {
       if (!vm.plus) {
         Toast("调试模式，不能检查更新");
       } else {
-        UpdateVersion(true);
+        vm.UpdateVersion(true);
       }
     },
     changePassword(){

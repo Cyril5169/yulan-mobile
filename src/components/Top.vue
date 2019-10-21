@@ -18,6 +18,7 @@ export default {
   },
   methods: {
     back() {
+      window.vTop = null;
       this.$emit('backclick');//自定义事件，提供外部使用
       if(this.from){
         this.$router.push({
@@ -309,6 +310,7 @@ export default {
     }
   },
   mounted() {
+    window.vTop = this;
     if(this.msgtitle){
       this.msg=this.msgtitle;
       return;
@@ -506,6 +508,10 @@ export default {
       let a = this.$refs.top;
       a.className = "top-green";
     }
+  },
+  destroyed(){
+    if(window.vTop==this)
+      window.vTop =  null;
   },
   beforeRouteLeave(to, from, next) {
     // ...
