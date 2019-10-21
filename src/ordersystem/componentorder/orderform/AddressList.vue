@@ -93,7 +93,8 @@
 
 <style scoped>
   #dress-list{
-    margin: 50px 0;
-    padding: 0;
+    position: fixed;
+    overflow-y: scroll;
+    top: 50px;
   }
 </style>

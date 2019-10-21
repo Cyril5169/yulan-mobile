@@ -21,7 +21,7 @@
       </div>
       <div class="address-save">
         <span class="save" @click="saveAddress">保存</span>
-        <span class="save" @click="deleteAddress">删除</span>
+        <span class="delete" @click="deleteAddress">删除</span>
       </div>
     </div>
     <iosselect2 v-on:listen3="listenmore" v-on:listen4="listenselect" v-show="more"></iosselect2>
@@ -172,6 +172,7 @@
 
   .address-save {
     text-align: center;
+    padding: 32px 16px;
   }
 
   .save {
@@ -179,9 +180,21 @@
     width: 300px;
     height: 40px;
     line-height: 40px;
-    margin: 20px;
+    margin-bottom: 15px;
     background: #ff2d41;
     color: white;
+    font-size: 14px;
+  }
+  .delete {
+    display: inline-block;
+    width: 300px;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 15px;
+    background: #fff;
+    color:#323233;
+    border: 1px solid #ebedf0;
+    font-size: 14px;
   }
 
   #form_select {

@@ -159,28 +159,6 @@
     margin: 20px;
     background: #ff2d41;
     color: white;
-  }
-
-  #form_select {
-    /* 清除默认边框 */
-    font-size: 11px;
-    border: 1px solid #7D7D7D;
-    border-radius: 5px;
-    padding-left: 11px;
-    padding-right: 11px;
-    margin-left: 26px;
-    height: 25px;;
-    width: 143px;
-    font-size: 13px;
-    color: #7D7D7D;
-    /* 清除默认的箭头样式 */
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    /* 右侧添加小箭头的背景图 */
-    background: url(http://14.29.221.109:10250/upload/assets/select_arrow.png);
-    background: 148px center no-repeat;
-    background-size: 6px 6px;
-    font-weight: normal;
+    font-size: 14px;
   }
 </style>
