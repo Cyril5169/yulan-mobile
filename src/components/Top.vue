@@ -509,6 +509,10 @@ export default {
       a.className = "top-green";
     }
   },
+  destroyed(){
+    if(window.vTop==this)
+      window.vTop =  null;
+  },
   beforeRouteLeave(to, from, next) {
     // ...
     // to.meta.keepAlive = true;

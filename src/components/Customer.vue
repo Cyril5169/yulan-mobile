@@ -28,7 +28,7 @@
           </div>
         </div>
       </section>
-      <navBottom :change-style="style"></navBottom>
+      <navBottom :change-style="style" :tab-stage="myRoute"></navBottom>
     </div>
     <van-popup v-model="showStudyForm" class="study-form">
       <keep-alive>
@@ -61,6 +61,7 @@ export default {
     return {
       IsSidebarOut: false,
       style: "customer",
+      myRoute: "customer",
       showStudyForm: false,
       studyFormTitle: "填写完此调查表，才能继续操作"
     };

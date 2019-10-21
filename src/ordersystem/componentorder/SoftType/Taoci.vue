@@ -175,6 +175,7 @@ export default {
       });
     },
     back() {
+      window.vTop = null;
       this.$router.push({
         path: "/shopstore"
       });
@@ -236,6 +237,7 @@ export default {
     this.getRzLists();
   },
   mounted() {
+    window.vTop = this;
     // window.onresize监听页面高度的变化
     window.onresize = () => {
       return (() => {
@@ -250,6 +252,10 @@ export default {
       },
       false
     );
+  },
+  destroyed(){
+    if(window.vTop==this)
+      window.vTop =  null;
   },
   watch: {
     showHeight: function() {
@@ -326,7 +332,7 @@ export default {
   z-index: 33;
   position: fixed;
   left: 17px;
-  top: 46px;
+  top: 52px;
   background-image: url(../../assetsorder/back2.png);
   background-repeat: no-repeat;
   background-size: contain;
