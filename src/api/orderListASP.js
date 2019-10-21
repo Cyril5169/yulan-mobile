@@ -128,3 +128,11 @@ export function GetTaskProgress(data, config = {}) {
         return Promise.reject(err);
     })
 }
+//查找订单包含的活动的明细
+export function GetPromotionsById(data, config = {}) {
+    return post('/SAL_PROMOTION/GetPromotionsById', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}

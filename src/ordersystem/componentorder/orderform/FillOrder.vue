@@ -98,7 +98,7 @@
               <span v-else class="price">***</span>
             </div>
             <div class="good-item2">
-              <span>{{product.newactivityId}}</span>
+              <span>活动：{{product.newactivityId}}</span>
               <span v-if="showPrice" class="hd-after">￥{{product.activityPrice}}</span>
               <span v-else class="hd-after">***</span>
               <span class="good-num">折后金额：</span>
@@ -194,7 +194,7 @@
         <span>我的优惠券</span>
       </div>
       <div v-for="(coupon,index) in couponLists" class="allCouponItem" :key="index">
-        <div class="coupon-item">
+        <div class="coupon-item" v-if="coupon.canUse">
           <div class="coupon-top">
             <div class="coupon-notes">{{coupon.notes}}</div>
             <div class="coupon-allmoney">总面值{{coupon.rebateMoney}}元</div>
@@ -213,6 +213,28 @@
             <span @click="UseRecord(coupon.id)">查看使用记录>></span>
             <span @click="couponRecord(coupon.id)">查看返利记录>></span>
           </div>
+        </div>
+        <div class="coupon-item2" v-else>
+          <div class="coupon-top">
+            <div class="coupon-notes">{{coupon.notes}}</div>
+            <div class="coupon-allmoney">总面值{{coupon.rebateMoney}}元</div>
+            <div class="quanhao">券号：{{coupon.id}}</div>
+          </div>
+          <div class="coupon-content">
+            <div>
+              <span class="coupon-remian2">余额：￥</span>
+              <span v-if="showPrice" class="remian-money2">{{coupon.rebateMoneyOver}}</span>
+              <span v-else class="remian-money2">***</span>
+            </div>
+            <div class="coupon-yxq2">有效期：{{coupon.dateStart}}至{{coupon.dateEnd}}</div>
+            <div class="coupon-sy">适用：{{coupon.application}}</div>
+          </div>
+          <div class="coupon-more">
+            <span @click="UseRecord(coupon.id)">查看使用记录>></span>
+            <span @click="couponRecord(coupon.id)">查看返利记录>></span>
+          </div>
+
+          <div style="margin-top:50px;">由于活动："{{ activityArray.ORDER_NAME }}"，该优惠券无法使用</div>
         </div>
       </div>
       <div class="confirmCoupon" @click="backCoupon">确认</div>
@@ -328,7 +350,8 @@ import {
   normalOrderSettlement,
   getUseRecord,
   getCustomerInfo,
-  getTotalRecordSum
+  getTotalRecordSum,
+  GetPromotionsById
 } from "@/api/orderListASP";
 import top from "../../../components/Top";
 
@@ -424,7 +447,8 @@ export default {
       showHeight: document.documentElement.clientHeight, //实时屏幕高度
       hidshow: true, //显示或者隐藏footer
       loading: false,
-      accMoney: 0
+      accMoney: 0,
+      activityArray: [] //活动集合
     };
   },
   computed: {
@@ -493,6 +517,13 @@ export default {
       for (var i = 0; i < this.allProduct.length; i++) {
         if (this.allProduct[i].activityId == null) {
           this.allProduct[i].activityId = "";
+        } else {
+          if (
+            this.activityArray.indexOf(this.allProduct[i].activityId) == -1 &&
+            this.allProduct[i].activityId
+          )
+            //活动集合
+            this.activityArray.push(this.allProduct[i].activityId);
         }
         if (this.allProduct[i].quantity) {
           this.allProduct[i].needNum = this.allProduct[i].quantity;
@@ -708,35 +739,57 @@ export default {
         typeId: this.allProduct[0].item.groupType //商品种类
       };
       axios.post(url, data).then(data => {
-        //优惠券列表（数组）
-        for (let k = 0; k < data.data.data.length; k++) {
-          if (
-            data.data.data[k].dateId == null ||
-            data.data.data[k].dateId == "1"
-          ) {
-            this.couponLists.push(data.data.data[k]);
-          }
-        }
-        if (this.couponLists.length == 0) {
-          this.myCoupon = "暂无返利券";
-          this.haveCoupn = false;
-        } else {
-          this.myCoupon = "选择返利券";
-          this.haveCoupn = true;
-          for (let i = 0; i < this.couponLists.length; i++) {
-            if (this.couponLists[i].rebateType == "year") {
-              this.couponLists[i].rebateType = "年返利券";
-            } else {
-              this.couponLists[i].rebateType = "月返利券";
+        GetPromotionsById({ PID: this.activityArray }).then(ress => {
+          //优惠券列表（数组）
+          for (let k = 0; k < data.data.data.length; k++) {
+            if (
+              data.data.data[k].dateId == null ||
+              data.data.data[k].dateId == "1"
+            ) {
+              this.couponLists.push(data.data.data[k]);
             }
-            this.couponLists[i].dateStart = this.dataExchange(
-              this.couponLists[i].dateStart
-            );
-            this.couponLists[i].dateEnd = this.dataExchange(
-              this.couponLists[i].dateEnd
-            );
           }
-        }
+          if (this.couponLists.length == 0) {
+            this.myCoupon = "暂无返利券";
+            this.haveCoupn = false;
+          } else {
+            this.myCoupon = "选择返利券";
+            this.haveCoupn = true;
+            for (let i = 0; i < this.couponLists.length; i++) {
+              this.couponLists[i].canUse = true;
+              if (this.couponLists[i].rebateType == "year") {
+                this.couponLists[i].rebateType = "年返利券";
+              } else {
+                this.couponLists[i].rebateType = "月返利券";
+              }
+              this.couponLists[i].dateStart = this.dataExchange(
+                this.couponLists[i].dateStart
+              );
+              this.couponLists[i].dateEnd = this.dataExchange(
+                this.couponLists[i].dateEnd
+              );
+            }
+            if (ress.data.length > 0) {
+              this.activityArray = ress.data[0]; //一般只有一个活动参与结算
+              for (let i = 0; i < this.couponLists.length; i++) {
+                if (this.activityArray.REBATE_FLAG == "N") {
+                  //不能使用优惠券
+                  this.couponLists[i].canUse = false;
+                } else {
+                  if (
+                    this.couponLists[i].rebateType ==
+                      this.activityArray.REBATE_TYPE ||
+                    this.activityArray.REBATE_TYPE == "all"
+                  ) {
+                    this.couponLists[i].canUse = true;
+                  } else {
+                    this.couponLists[i].canUse = false;
+                  }
+                }
+              }
+            }
+          }
+        });
       });
     },
     //是否有优惠券
@@ -1163,7 +1216,6 @@ export default {
   /*font-size: 15px;*/
 }
 
-.good-item2,
 .good-item3,
 .good-item4,
 .good-item5 {
@@ -1171,7 +1223,6 @@ export default {
 }
 
 .price {
-  display: inline-block;
   float: right;
   margin: 0 20px;
 }
@@ -1286,7 +1337,14 @@ export default {
   background: url("../../assetsorder/coupon.png") no-repeat center;
   background-size: 100% 100%;
 }
-
+.coupon-item2 {
+  height: 200px;
+  margin: 20px;
+  position: relative;
+  border-radius: 10px;
+  background: url("../../assetsorder/couponNone.png") no-repeat center;
+  background-size: 100% 100%;
+}
 .youhuiquan {
   width: 100%;
   height: 100%;
@@ -1318,7 +1376,10 @@ export default {
   color: rgb(253, 85, 56);
   font-size: 18px;
 }
-
+.coupon-remian2 {
+  color: rgb(133, 133, 133);
+  font-size: 18px;
+}
 .remian-money {
   background: -webkit-linear-gradient(
     left,
@@ -1331,7 +1392,11 @@ export default {
   font-size: 40px;
   font-weight: bold;
 }
-
+.remian-money2 {
+  color: rgb(133, 133, 133);
+  font-size: 40px;
+  font-weight: bold;
+}
 .coupon-yxq {
   background: rgb(253, 59, 49);
   display: inline-block;
@@ -1340,7 +1405,14 @@ export default {
   color: white;
   font-size: 12px;
 }
-
+.coupon-yxq2 {
+  background: rgb(105, 105, 105);
+  display: inline-block;
+  padding: 3px 6px;
+  border-radius: 10px;
+  color: white;
+  font-size: 12px;
+}
 .coupon-sy {
   font-size: 12px;
 }
