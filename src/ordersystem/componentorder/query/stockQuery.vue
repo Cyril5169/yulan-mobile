@@ -58,7 +58,7 @@
               style="font-weight:normal;font-size:15px;align:center"
             >
               <tr>
-                <td style="width:25%;text-align:left">型号:</td>
+                <td style="width:28%;text-align:left">型号:</td>
                 <td>{{ dormitory.ITEM_NO }}</td>
               </tr>
               <tr>
@@ -152,7 +152,7 @@
     </div>
     <!--产品类型-->
     <van-popup v-model="showType" position="bottom">
-      <van-picker show-toolbar title="产品类型" :columns="orderType" @confirm="onConfirmType" />
+      <van-picker show-toolbar title="产品类型" :columns="orderType" @confirm="onConfirmType" @cancel="cancelType" />
     </van-popup>
     <van-loading class="loading" type="spinner" v-if="loading" color="black" />
   </div>
@@ -414,6 +414,9 @@ export default {
     }
   },
   methods: {
+    cancelType(){
+      this.showType = false;
+    },
     //状态选择
     onConfirmType(index) {
       this.myType = index;
@@ -477,10 +480,10 @@ export default {
             this.stockIds.push(res.data[i].STOCK_NO);
           }
         } else {
-          this.$alert("没有仓库权限，请联系管理员配置", "提示", {
-            confirmButtonText: "确定",
-            type: "success"
-          });
+          Toast({
+          duration: 2000,
+          message: "未分配仓库权限，请联系管理员"
+        });
         }
       });
     },
@@ -593,17 +596,16 @@ export default {
 <style scoped>
 .button {
   background: #8bc34a;
-  height: 30px;
+  height: 29px;
   width: 67px;
   text-align: center;
   line-height: 5px;
   color: rgb(255, 255, 255);
 }
 .item_1 {
-  top: 1px;
-  width: 120px;
+  margin-top:3px;
+  width: 140px;
   height: 33px;
-  background-color: hsl(0, 0%, 100%);
   border: none;
   font-size: 10px;
   line-height: 5px;
@@ -632,7 +634,7 @@ export default {
   top: 50px;
   line-height: 37px;
   width: 100%;
-  height: 37px;
+  height: 38px;
   /*font-size: 15px;*/
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
@@ -663,7 +665,7 @@ input {
 
 .time {
   width: 100px;
-  height: 30px;
+  height: 25px;
   line-height: 20px;
   background-color: hsl(0, 0%, 100%);
   font-size: 13px;
@@ -672,7 +674,7 @@ input {
   background-image: url("../../assetsorder/time-zk.png");
   background-repeat: no-repeat;
   background-position-x: 90px;
-  background-position-y: 3vw;
+  background-position-y: 2vw;
   background-size: 15px;
 }
 .table_1 {

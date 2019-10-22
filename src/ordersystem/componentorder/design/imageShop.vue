@@ -426,9 +426,9 @@ export default {
       myStatus: "全部状态",
       myStatusCode: "",
       ksData: "",
-      ksDataSet: "起始时间", //  开始时间
+      ksDataSet: "", //  开始时间
       jsData: "",
-      jsDataSet: "结束时间", //结束时间
+      jsDataSet: "", //结束时间
       activeIndex: 0,
       showType_4: false,
       showType_5: false,
@@ -557,10 +557,10 @@ export default {
   },
   //生命周期
   created() {
-    this.search();
     let time = new Date();
     this.jsSet(time);
     this.ksSet(time);
+    this.search();
   },
   methods: {
     //查看列表详情
@@ -660,12 +660,12 @@ export default {
       if (this.ksDataSet === "起始时间") {
         ksTime = "";
       } else {
-        ksTime = this.ksDataSet;
+        ksTime = this.ksDataSet + " 00:00:00";
       }
       if (this.jsDataSet === "结束时间") {
         jsTime = "";
       } else {
-        jsTime = this.jsDataSet;
+        jsTime = this.jsDataSet + " 23:59:59";
       }
       let data = {
         companyId: this.$store.state.info.data.companyId, //公司id
@@ -676,16 +676,20 @@ export default {
         page: this.currentPage //页数
       };
       if (!data.beginTime) {
-        data.beginTime = "0001/1/1";
-      }
+          data.beginTime = "0001/1/1";
+        }
       if (!data.finishTime) {
-        data.finishTime = "9999/12/31";
-      } else {
-        data.finishTime = data.finishTime + " 23:59:59";
+          data.finishTime = "9999/12/31";
       }
       GetImageCustomer(data).then(res => {
         this.totalLists = res.count;
         this.imageStoreData = res.data;
+        if (this.imageStoreData.length == 0) {
+          Toast({
+            message: "暂无形象店信息",
+            duration: 2000
+          });
+        } 
       });
     },
     // _getBankList() {
@@ -776,6 +780,7 @@ export default {
   top: 35px;
 }
 .time {
+  font-size: 14px;
   margin-top: 50px;
   width: 25%;
   height: 25px;
@@ -789,7 +794,8 @@ export default {
   background-size: 14px;
 }
 .time_1 {
-  margin-top: 50px;
+  font-size: 14px;
+  margin-top: 47px;
   width: 25%;
   height: 25px;
   margin-left: 5px;
