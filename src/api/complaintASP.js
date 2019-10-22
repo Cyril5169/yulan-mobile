@@ -17,3 +17,21 @@ export function CheckDetailByID(data, config = {}) {
         return Promise.reject(err);
     })
 }
+
+//提交投诉单
+export function addSubmit(data, config = {}) {
+    return post('/Complaint/AddRecord', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+
+//修改投诉单
+export function editSubmit(data, config = {}) {
+    return post('/Complaint/EditRecord', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}

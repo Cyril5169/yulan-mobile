@@ -290,6 +290,11 @@ export default {
             path: "/customer"
           });
           break;
+        case 101:
+          this.$router.push({
+            path: "/complaint"
+          });
+          break;
       }
 
       //   if(this.top == 0|| this.top ==1 || this.top ==5  ){
@@ -507,6 +512,11 @@ export default {
     }
     if (this.top == 100) {
       this.msg = "形象店";
+      let a = this.$refs.top;
+      a.className = "top-green";
+    }
+   if (this.top == 101) {
+      this.msg = "物流投诉";
       let a = this.$refs.top;
       a.className = "top-green";
     }

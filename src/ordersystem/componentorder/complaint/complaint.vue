@@ -39,7 +39,7 @@
       >
         <div class="single-title">
           <span class="single-title-left">单据号：{{item.SALE_NO}}</span>
-          <span class="single-title-right">{{item.STATUS}}</span>
+          <span class="single-title-right">{{item.STATUS|statusTrans}}</span>
         </div>
         <table>
           <tr>
@@ -70,6 +70,7 @@
       </div>
     </div>
 
+    <div class="createRecord" @click="toCreateRecord">+</div>
     <!--开始日期选择-->
     <van-popup v-model="showks" position="bottom">
       <van-datetime-picker
@@ -115,7 +116,6 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-// import { GetAllComplaint } from "../../../api/complaintASP";
 import { GetAllComplaint } from "@/api/complaintASP";
 import Vue from "vue";
 import {
@@ -167,6 +167,18 @@ export default {
     [Loading.name]: Loading,
     [Field.name]: Field,
     [CellGroup.name]: CellGroup
+  },
+  filters: {
+    statusTrans(value){
+      switch (value) {
+        case  1:
+          return "未处理";
+        case  2:
+          return "已处理未评价";
+        case  3:
+          return "已处理已评价";
+      }
+    },
   },
   methods: {
     //开始时间选择
@@ -265,31 +277,40 @@ export default {
             duration: 2000
           });
         } else {
-          for (let i = 0; i < this.allLists.length; i++) {
-            switch (this.allLists[i].STATUS) {
-              case 1:
-                this.allLists[i].STATUS = "未处理";
-                continue;
-              case 2:
-                this.allLists[i].STATUS = "已处理未评价";
-                continue;
-              case 3:
-                this.allLists[i].STATUS = "已处理已评价";
-                continue;
-            }
-          }
         }
       });
     },
     changePage() {
       this.getList();
     },
-    //  查看详情
+    //查看详情
     checkDetails(index) {
+      if(this.allLists[index].STATUS!="2")
+      {
+        this.$router.push({
+           name: "complaintDetail",
+           params: {
+              SID: this.allLists[index].SID, //单据号
+           }
+        });
+      }
+      else
+      {
+           this.$router.push({
+           name: "addOrEditComplaint",
+           params: {
+              SID: this.allLists[index].SID, //单据号
+              STATUS: 2, //单据状态
+           }
+        });
+      }
+    },
+    //新增投诉记录
+    toCreateRecord() {
       this.$router.push({
-        name: "complaintDetail",
+        name: "addOrEditComplaint",
         params: {
-          SID: this.allLists[index].SID, //单据号
+          STATUS: 1,
         }
       });
     },
@@ -320,6 +341,18 @@ export default {
   height: 100vh;
   position: relative;
   overflow: scroll;
+}
+.createRecord {
+  position: fixed;
+  bottom: 70px;
+  right: 30px;
+  width: 55px;
+  height: 55px;
+  line-height: 55px;
+  border-radius: 50%;
+  color: white;
+  background: #89cb81;
+  font-size: 40px;
 }
 .searchInput{
   height:25px;
@@ -467,18 +500,6 @@ input {
 }
 .single-title-left {
   float: left;
-}
-.createBank {
-  position: fixed;
-  bottom: 55px;
-  right: 30px;
-  width: 55px;
-  height: 55px;
-  line-height: 55px;
-  border-radius: 50%;
-  color: white;
-  background: #89cb81;
-  font-size: 40px;
 }
 .single-details {
   position: absolute;
