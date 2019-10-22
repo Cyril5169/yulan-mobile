@@ -16,7 +16,7 @@
           </span>
         </div>
 
-        <div style="margin-top:-20px">
+        <div style="margin-top:-24px">
           <van-search
             placeholder="搜索客户"
             v-model="customer_filter"
@@ -30,7 +30,7 @@
         </div>
         <div>
           <span>
-            <van-checkbox  v-model="checked" style="margin-left:70%;margin-top:5px">有效客户</van-checkbox >
+            <van-checkbox  v-model="checked" style="margin-left:75%;margin-top:5px;font-size: 14px;">有效客户</van-checkbox >
             </span></div>
         <hr />
         <div>
@@ -48,11 +48,11 @@
         
       </ul>
     </div>
-    <div class="queryData" style="margin: 30px 10px 80px;">
+    <div class="queryData" style="margin: 20px 10px 80px;">
       <div>
         <van-checkbox-group v-model="customer" ref="checkboxGroup" style="margin-top:20px">
           <van-checkbox
-            style="text-align:left;margin-top:7px"
+            style="text-align:left;margin-top:7px;font-size: 15px;"
             :name="customerData.CUSTOMER_CODE"
             v-for="customerData in customerData"
             :key="customerData.CUSTOMER_CODE"
@@ -62,15 +62,15 @@
     </div>
     <!--市场-->
     <van-popup v-model="showType_1" position="bottom">
-      <van-picker show-toolbar title="请选择市场" :columns="areaCode_name" @confirm="onAreaCode" />
+      <van-picker show-toolbar title="请选择市场" :columns="areaCode_name" @confirm="onAreaCode" @cancel="cancelArea"/>
     </van-popup>
     <!--片区-->
     <van-popup v-model="showType_2" position="bottom">
-      <van-picker show-toolbar title="请选择片区" :columns="district_name" @confirm="onDISTRICT_ID" />
+      <van-picker show-toolbar title="请选择片区" :columns="district_name" @confirm="onDISTRICT_ID" @cancel="cancelDistrict"/>
     </van-popup>
     <!--客户类型-->
     <van-popup v-model="showType_3" position="bottom">
-      <van-picker show-toolbar title="请选择客户类型" :columns="CUSTOMER_TYPE" @confirm="onCUSTOMER_TYPE" />
+      <van-picker show-toolbar title="请选择客户类型" :columns="CUSTOMER_TYPE" @confirm="onCUSTOMER_TYPE" @cancel="cancelCustomer"/>
     </van-popup>
     <!--日期选择-->
     <van-popup v-model="showType_4" position="bottom">
@@ -80,6 +80,7 @@
         :show-toolbar="true"
         :title="'选择时间'"
         @confirm="confirmTimeks"
+        @cancel="cancelTimeks"
       />
     </van-popup>
     <van-popup v-model="showType_5" position="bottom">
@@ -89,11 +90,12 @@
         type="date"
         :title="'选择时间'"
         @confirm="confirmTimejs"
+        @cancel="cancelTimejs"
       />
     </van-popup>
     <!--状态搜索-->
     <van-popup v-model="showType_6" position="bottom">
-      <van-picker show-toolbar title="请选择状态" :columns="STATUS" @confirm="onStatus" />
+      <van-picker show-toolbar title="请选择状态" :columns="STATUS" @confirm="onStatus" @cancel="cancelStatus"/>
     </van-popup>
     <van-loading class="loading" type="spinner" v-if="loading" color="black" />
   </div>
@@ -260,6 +262,24 @@ export default {
     this.ksSet(time);
   },
   methods: {
+    cancelArea(){
+      this.showType_1 = false
+    },
+    cancelDistrict(){
+      this.showType_2 = false
+    },
+    cancelCustomer(){
+      this.showType_3 = false
+    },
+    cancelTimeks(){
+      this.showType_4 = false
+    },
+    cancelTimejs(){
+      this.showType_5 = false
+    },
+    cancelStatus(){
+      this.showType_6 = false
+    },
     //开始时间选择
     confirmTimeks(value) {
       this.ksSet2(this.ksData);
@@ -673,6 +693,7 @@ export default {
   top: 35px;
 }
 .time {
+  font-size: 14px;
   margin-top: 50px;
   width: 25%;
   height: 25px;
@@ -681,7 +702,7 @@ export default {
   padding-left: 17px;
   background-image: url("../../assetsorder/time-zk.png");
   background-repeat: no-repeat;
-  background-position-x: 90px;
+  background-position-x: 91px;
   background-position-y: 2vw;
   background-size: 14px;
 }
@@ -690,25 +711,28 @@ export default {
   height: 25px;
   margin-left: 5px;
   text-align: left;
-  padding-left: 20px;
+  padding-left: 17px;
+  font-size: 14px;
   background-image: url("../../assetsorder/time-zk.png");
   background-repeat: no-repeat;
   background-position-x: 95px;
   background-position-y: 2vw;
-  background-size: 14px;
+  background-size: 13px;
 }
 .choose {
   background: #8bc34a;
-  height: 33px;
+  height: 30px;
   line-height: 5px;
   color: rgb(255, 255, 255);
+  font-size: 14px;
 }
 .button {
   background: #8bc34a;
-  height: 33px;
+  height: 31px;
   text-align: center;
   line-height: 5px;
   color: rgb(255, 255, 255);
+  font-size: 14px;
 }
 .item_1 {
   top: 1px;

@@ -63,7 +63,7 @@
             </tr>
             <tr>
               <td style="width:30%;text-align:left">优惠券余额：</td>
-              <td v-for="item of couponData" :key="item.index">当前余额: {{item.rebateMoneyOver}}元</td>
+              <td v-for="item of couponData" :key="item.index">当前余额: {{item.rebateMoneyOver}}</td>
             </tr>
             <tr>
               <td style="width:30%;text-align:left">客户余额：</td>
@@ -75,7 +75,7 @@
     </van-popup>
     <!--状态搜索-->
     <van-popup v-model="showType_1" position="bottom">
-      <van-picker show-toolbar title="请选择状态" :columns="STATUS" @confirm="onStatus" />
+      <van-picker show-toolbar title="请选择状态" :columns="STATUS" @confirm="onStatus" @cancel="cancelStatus"/>
     </van-popup>
     <!--底部分页-->
     <div class="fy-contain">
@@ -211,6 +211,9 @@ export default {
     }
   },
   methods: {
+    cancelStatus(){
+      this.showType_1 = false
+    },
     //客户详情
     async customer_info(val) {
       this.customerInfo = val;
@@ -221,7 +224,7 @@ export default {
         companyId: this.customerInfo.COMPANY_ID
       };
       await axios.post(mlUrl_1, data).then(res1 => {
-        this.moneySituation = "当前余额 " + res1.data.data + "元";
+        this.moneySituation = "当前余额 " + res1.data.data ;
       });
       await axios.post(mlUrl_2, data).then(res2 => {
         this.couponData = res2.data.data;

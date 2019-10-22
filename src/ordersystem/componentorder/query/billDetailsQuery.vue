@@ -153,7 +153,7 @@
     </van-popup>
     <!--状态搜索-->
     <van-popup v-model="showType_1" position="bottom">
-      <van-picker show-toolbar title="请选择状态" :columns="STATUS" @confirm="onStatus" />
+      <van-picker show-toolbar title="请选择状态" :columns="STATUS" @confirm="onStatus" @cancel="cancelStatus"/>
     </van-popup>
     <!--底部分页-->
     <div class="fy-contain">
@@ -260,6 +260,9 @@ export default {
     }
   },
   methods: {
+    cancelStatus(){
+      this.showType_1 = false
+    },
     //  提货单详情
     toBillDetails(val) {
       this.showDetail = true;
@@ -331,6 +334,12 @@ export default {
       getPackDetails(data).then(res => {
         this.totalLists = res.count;
         this.tableData = res.data;
+        if (this.tableData.length == 0) {
+          Toast({
+            message: "暂无提货单信息",
+            duration: 2000
+          });
+        } 
       });
     },
 
