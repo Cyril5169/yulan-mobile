@@ -565,7 +565,8 @@ export default {
   height: 40px;
   line-height: 40px;
   font-size: 15px;
-  border-bottom: 0.5px solid rgba(153, 150, 134, 0.5);
+  margin-right: 10px;
+  /* border-bottom: 0.5px solid rgba(153, 150, 134, 0.5); */
 }
 
 .type {
@@ -598,9 +599,12 @@ export default {
 
 .details-content {
   position: relative;
+  margin-right:10px;
   margin-bottom: 5px;
   font-size: 14px;
-  border-bottom: 1px solid #f2f2f2;
+  padding: 10px;
+  /* border-bottom: 1px solid #f2f2f2; */
+  box-shadow: 0 0 5px 0 darkgray;
 }
 
 td {
@@ -615,7 +619,7 @@ td {
   margin-right: 5px;
   position: absolute;
   right: 2px;
-  bottom: 2px;
+  bottom: 10px;
 }
 
 .single-product .van-stepper {
