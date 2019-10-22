@@ -483,7 +483,12 @@ export default {
 }
 
 .all-products {
-  margin: 80px 5px 100px 5px;
+  position: fixed;
+  overflow-y: scroll;
+  bottom: 110px;
+  top: 80px;
+  left: 2px;
+  right: 2px;
   padding: 10px 10px;
 }
 
