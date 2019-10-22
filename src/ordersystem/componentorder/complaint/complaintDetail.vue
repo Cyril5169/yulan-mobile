@@ -24,12 +24,12 @@
         <div v-show="checkTable.TYPE=='破损'" ><span  class="left">数量</span><span class="right">{{checkTable.DAMAGED_QUANTITY}}</span></div>
         <div><span class="left">投诉内容</span><span class="right">{{checkTable.MEMO}}</span></div>
       </div>
-      <div class="msg">
+      <div v-if="checkTable.STATUS!=1" class="msg">
         <div><span class="left">处理人</span><span class="right">{{checkTable.OPERATOR}}</span></div>
         <div><span class="left">处理结果</span><span class="right">{{checkTable.PROCESSDESC}}</span></div>
         <div><span class="left">处理时间</span><span class="right">{{checkTable.PROCESSTS|dateTrans}}</span></div>
-        <div><span class="left">服务评价</span><span class="right">{{checkTable.WLTS_THINK|rateTrans}}</span></div>
-        <div><span class="left">评价时间</span><span class="right">{{checkTable.FEEDBACKTS|dateTrans}}</span></div>
+        <div v-if="checkTable.STATUS==3"><span class="left">服务评价</span><span class="right">{{checkTable.WLTS_THINK|rateTrans}}</span></div>
+        <div v-if="checkTable.STATUS==3"><span class="left">评价时间</span><span class="right">{{checkTable.FEEDBACKTS|dateTrans}}</span></div>
       </div>
     </div>
   </div>

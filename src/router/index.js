@@ -94,6 +94,7 @@ import lanjuDetail from '@/ordersystem/componentorder/lanju/lanjuDetail'
 //物流投诉
 import complaint from '@/ordersystem/componentorder/complaint/complaint'
 import complaintDetail from '@/ordersystem/componentorder/complaint/complaintDetail'
+import addOrEditComplaint from '@/ordersystem/componentorder/complaint/addOrEditComplaint'
 //形象店设计
 import ImageShop from '@/ordersystem/componentorder/design/imageShop'
 
@@ -517,6 +518,11 @@ var router = new Router({
       path: '/complaintDetail',
       name: 'complaintDetail',
       component: complaintDetail
+    },
+    {
+      path: '/addOrEditComplaint',
+      name: 'addOrEditComplaint',
+      component: addOrEditComplaint
     },
     {
       path: '/imageShop',
