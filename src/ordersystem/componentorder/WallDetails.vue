@@ -241,7 +241,7 @@ export default {
           changeArr.push(axios.post(editurl2, obj));
         }
         Promise.all(changeArr).then(data => {
-          if (data[0].data.code == 0 && data[1].data.code == 0) {
+          if (data[0].data.code == 0) {
             Toast({
               duration: 2000,
               message: "修改购物车成功"
