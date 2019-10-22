@@ -201,7 +201,6 @@ export default {
   height: 100vh;
   top: 0px;
   background-color: #f8f8f8;
-  overflow: scroll;
 }
 
 .cart-nav {

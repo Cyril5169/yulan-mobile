@@ -21,7 +21,7 @@
       </div>
       <div class="item" @click="checkVersion()">
         <img class="item-icon" src="../../assetsorder/version_update.png" alt />
-        <span>检查新版本</span>
+        <span v-text="checkVersionText"></span>
         <img class="item-more" src="../../assetsorder/more.png" alt />
       </div>
       <div class="item" @click="clickToPath('changepassword')">
@@ -53,7 +53,8 @@ export default {
   data() {
     return {
       set: 26,
-      myRoute: "personal"
+      myRoute: "personal",
+      checkVersionText:"检查新版本"+(urlSetting.describe?"["+urlSetting.describe+"]":"")
     };
   },
   computed: {
@@ -81,7 +82,7 @@ export default {
     },
     checkVersion() {
       if (!vm.plus) {
-        Toast("调试模式，不能检查更新");
+        Toast("网页版模式，不能检查更新");
       } else {
         vm.UpdateVersion(true);
       }
