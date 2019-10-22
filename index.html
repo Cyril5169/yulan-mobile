@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-        <!-- css，图片等文件尽量放在static文件夹下面，路径编译不会出错 -->
+    <!-- css，图片等文件尽量放在static文件夹下面，路径编译不会出错 -->
     <link rel="icon" type="image/x-icon" href="./static/base/img/headerLogo.jpg" />
     <link rel="stylesheet" href="./static/base/css/swiper.css">
     <title>玉兰B2BAPP</title>
@@ -18,6 +18,7 @@
             width: 100%;
             height: 100%;
         }
+
         img {
             content: normal !important;
         }
@@ -28,6 +29,30 @@
     <div id="app"></div>
     <script>
         var vm, app;
+
+        var urlArr = {
+            local: {
+                baseUrl: 'http://localhost:49438/',
+                orderBaseUrl: "http://120.79.140.75:567/yulan-order"
+            },
+            test: {
+                baseUrl: 'http://47.107.56.156:666/',
+                orderBaseUrl: "http://120.79.140.75:567/yulan-order"
+            },
+            formal: {
+                baseUrl: 'http://14.29.223.114:568/',
+                orderBaseUrl: "http://14.29.223.114:10250/yulan-order"
+            }
+        }
+
+        //var urlSetting = urlArr.local;//本地
+        var urlSetting = urlArr.test;//测试
+        //var urlSetting = urlArr.formal;//正式
+
+        var baseUrl = urlSetting.baseUrl;
+        var orderBaseUrl = urlSetting.orderBaseUrl;
+        var updateUrl = baseUrl + "app/version.json";
+
     </script>
 </body>
 

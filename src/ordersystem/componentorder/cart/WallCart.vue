@@ -324,46 +324,6 @@ export default {
           return this.allCartList;
         })
         .then(cartdata => {
-          //活动组转换为中文
-          // for (let i = 0; i < cartdata.wallpaper.length; i++) {
-          //   let hdUrl = "http://106.13.32.172:8080/yulan-order/activityGroupType/getActivityGroupTypeByName.do?" +
-          //     "name=" + cartdata.wallpaper[i].activityGroupType
-          //   axios.post(hdUrl).then(
-          //     (data) => {
-          //       console.log(data.data.value)
-          //       cartdata.wallpaper[i].activityGroupType = data.data.value
-          //     }
-          //   )
-          //   let cpURL = "http://106.13.32.172:8080/yulan-order/productGroupType/getProductGroupTypeByName.do?" +
-          //     "name=" + cartdata.wallpaper[i].productGroupType
-          //   axios.post(cpURL).then(
-          //     (data) => {
-          //       console.log(data.data.value)
-          //       cartdata.wallpaper[i].productGroupType = data.data.value
-          //     }
-          //   )
-          // }
-          // for (let i = 0; i < cartdata.soft.length; i++) {
-          //   let hdUrl = "http://106.13.32.172:8080/yulan-order/activityGroupType/getActivityGroupTypeByName.do?" +
-          //     "name=" + cartdata.soft[i].activityGroupType
-          //   axios.post(hdUrl).then(
-          //     (data) => {
-          //       console.log(data.data.value)
-          //       cartdata.soft[i].activityGroupType = data.data.value
-          //     }
-          //   )
-          //   let cpURL = "http://106.13.32.172:8080/yulan-order/productGroupType/getProductGroupTypeByName.do?" +
-          //     "name=" + cartdata.soft[i].productGroupType
-          //   axios.post(cpURL).then(
-          //     (data) => {
-          //       console.log(data.data.value)
-          //       cartdata.soft[i].productGroupType = data.data.value
-          //     }
-          //   )
-          // }
-          return cartdata;
-        })
-        .then(cartdata => {
           //单个活动转换为中文
           let hdArray = [];
           for (let i = 0; i < cartdata.wallpaper.length; i++) {
@@ -387,7 +347,7 @@ export default {
                 ) {
                   if (cartdata.wallpaper[i].commodities[j].activityId == null) {
                     cartdata.wallpaper[i].commodities[j].newactivityId =
-                      "未选择活动";
+                      "";
                   } else {
                     cartdata.wallpaper[i].commodities[j].newactivityId =
                       hdRes.data[hdlength++];
@@ -430,7 +390,7 @@ export default {
             for (let i = 0; i < cartdata.soft.length; i++) {
               for (let j = 0; j < cartdata.soft[i].commodities.length; j++) {
                 if (cartdata.soft[i].commodities[j].activityId == null) {
-                  cartdata.soft[i].commodities[j].newactivityId = "未选择活动";
+                  cartdata.soft[i].commodities[j].newactivityId = "";
                 } else {
                   cartdata.soft[i].commodities[j].newactivityId =
                     hdRes.data[hdlength++];

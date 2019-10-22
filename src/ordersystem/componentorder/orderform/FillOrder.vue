@@ -551,11 +551,10 @@ export default {
     },
     wantoSubmit() {
       if (this.allProduct[0].salPromotion) {
-        if (this.allProduct[0].salPromotion.arrearsFlag != "Y") {
-          //如果不是Y就要判断余额
-          this.enoughMony();
-        } else {
+        if (this.allProduct[0].salPromotion.arrearsFlag == "N" || this.orderPrice == 0) {
           this.onSubmitOrder();
+        } else {
+          this.enoughMony();
         }
       } else {
         this.enoughMony();

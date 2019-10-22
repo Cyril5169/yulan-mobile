@@ -1,14 +1,10 @@
 <script>
 import Vue from "vue";
 //订单接口地址
-//const orderBaseUrl="http://14.29.223.114:10250/yulan-order";//正式
-const orderBaseUrl = "http://120.79.140.75:567/yulan-order"; //测试
+const orderBaseUrl="http://14.29.223.114:10250/yulan-order";//正式
+//const orderBaseUrl = "http://120.79.140.75:567/yulan-order"; //测试
 
 const capitalUrl = "http://14.29.223.114:10250/yulan-capital";
-
-
-
-const updateUrl = "http://47.107.56.156:666/app/version.json";
 
 function UpdateVersion(ischeck) {
   var showLoading = plus.nativeUI.showWaiting("检查更新...");

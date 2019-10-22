@@ -9,11 +9,12 @@ import VueAwesomeSwiper from "vue-awesome-swiper";
 import { Picker } from "vant";
 import store from "./store";
 //订单系统的URL
-import orderBaseUrl from "./Global.vue";
+import Global from "./Global.vue";
 import mui from "./assets/mui/js/mui";
-import * as baseUrlASP from "./api/httpASP.js";
+//import * as baseUrlASP from "./api/httpASP.js";
 
 axios.defaults.baseURL = "http://14.29.221.109:10250/yulan";
+//全局loading
 axios.interceptors.request.use(
   config => {
     store.commit("showLoading");
@@ -55,10 +56,10 @@ Vue.use(VueAwesomeSwiper);
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
-Vue.prototype.orderBaseUrl = orderBaseUrl.orderBaseUrl;
-Vue.prototype.capitalUrl = orderBaseUrl.capitalUrl;
+Vue.prototype.orderBaseUrl = orderBaseUrl;
+Vue.prototype.capitalUrl = Global.capitalUrl;
 Vue.prototype.mui = mui;
-Vue.prototype.baseUrlASP = baseUrlASP.baseUrl;
+Vue.prototype.baseUrlASP = baseUrl;
 
 export const $http = axios;
 
@@ -69,7 +70,7 @@ vm = new Vue({
   components: { App },
   template: "<App/>"
 });
-vm.UpdateVersion = orderBaseUrl.UpdateVersion;
+vm.UpdateVersion = Global.UpdateVersion;
 app = vm.$children[0];
 
 document.addEventListener("plusready", function(a) {

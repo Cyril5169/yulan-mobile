@@ -80,32 +80,23 @@ export default {
           return this.allCartList;
         })
         .then(cartdata => {
-          // for (let i = 0; i < cartdata.wallpaper.length; i++) {
-          //   //活动组转换为中文
-          //   let hdUrl = "http://106.13.32.172:8080/yulan-order/activityGroupType/getActivityGroupTypeByName.do?" +
-          //     "name=" + cartdata.wallpaper[i].activityGroupType
-          //   axios.post(hdUrl).then(
-          //     (data) => {
-          //       console.log(data.data.value)
-          //       cartdata.wallpaper[i].activityGroupType = data.data.value
-          //     }
-          //   )
-          //   //产品组转换为中文
-          //   let cpURL = "http://106.13.32.172:8080/yulan-order/productGroupType/getProductGroupTypeByName.do?" +
-          //     "name=" + cartdata.wallpaper[i].productGroupType
-          //   axios.post(cpURL).then(
-          //     (data) => {
-          //       // console.log(data.data.value)
-          //       cartdata.wallpaper[i].productGroupType = data.data.value
-          //     }
-          //   )
-          // }
           //单个活动转换为中文
           let hdArray = [];
           for (let i = 0; i < cartdata.wallpaper.length; i++) {
             for (let j = 0; j < cartdata.wallpaper[i].commodities.length; j++) {
               if (cartdata.wallpaper[i].commodities[j].activityId != null) {
                 hdArray.push(cartdata.wallpaper[i].commodities[j].activityId);
+              }
+              if (cartdata.wallpaper[i].commodities[j].splitShipment == 0) {
+                cartdata.wallpaper[i].commodities[j].newsplitShipment =
+                  "等生产";
+              } else if (
+                cartdata.wallpaper[i].commodities[j].splitShipment == 1
+              ) {
+                cartdata.wallpaper[i].commodities[j].newsplitShipment =
+                  "分批出货";
+              } else {
+                cartdata.wallpaper[i].commodities[j].newsplitShipment = "--";
               }
             }
           }
@@ -120,26 +111,19 @@ export default {
                 j++
               ) {
                 if (cartdata.wallpaper[i].commodities[j].activityId == null) {
-                  cartdata.wallpaper[i].commodities[j].newactivityId =
-                    "未选择活动";
+                  cartdata.wallpaper[i].commodities[j].newactivityId = "";
                 } else {
                   cartdata.wallpaper[i].commodities[j].newactivityId =
                     hdRes.data[hdlength++];
                 }
-                if (cartdata.wallpaper[i].commodities[j].splitShipment == 0) {
-                  cartdata.wallpaper[i].commodities[j].newsplitShipment =
-                    "等生产";
-                } else if (
-                  cartdata.wallpaper[i].commodities[j].splitShipment == 1
-                ) {
-                  cartdata.wallpaper[i].commodities[j].newsplitShipment =
-                    "分批出货";
-                } else {
-                  cartdata.wallpaper[i].commodities[j].newsplitShipment = "--";
-                }
                 //增加一个产品组字段
                 // cartdata.wallpaper[i].commodities[j].newProductType = cartdata.wallpaper[i].productGroupType
               }
+            }
+            if (window.location.href.split("#/")[1] != "wallcart") {
+              this.$router.push({
+                path: "/mycart/wallcart"
+              });
             }
           });
           //单个活动转换为中文
@@ -149,12 +133,17 @@ export default {
               if (cartdata.soft[i].commodities[j].activityId != null) {
                 rzArray.push(cartdata.soft[i].commodities[j].activityId);
               }
+              if (cartdata.soft[i].commodities[j].splitShipment == 0) {
+                cartdata.soft[i].commodities[j].newsplitShipment = "等生产";
+              } else if (cartdata.soft[i].commodities[j].splitShipment == 1) {
+                cartdata.soft[i].commodities[j].newsplitShipment = "分批出货";
+              } else {
+                cartdata.soft[i].commodities[j].newsplitShipment = "--";
+              }
             }
           }
           this.loading = false;
-          this.$router.push({
-            path: "/mycart/wallcart"
-          });
+
           let rzArrayUrl =
             this.orderBaseUrl + "/salPromotion/getSalPromotionsByIDs.do";
           axios.post(rzArrayUrl, rzArray).then(hdRes => {
@@ -162,22 +151,20 @@ export default {
             for (let i = 0; i < cartdata.soft.length; i++) {
               for (let j = 0; j < cartdata.soft[i].commodities.length; j++) {
                 if (cartdata.soft[i].commodities[j].activityId == null) {
-                  cartdata.soft[i].commodities[j].newactivityId = "未选择活动";
+                  cartdata.soft[i].commodities[j].newactivityId = "";
                 } else {
                   cartdata.soft[i].commodities[j].newactivityId =
                     hdRes.data[hdlength++];
-                }
-                if (cartdata.soft[i].commodities[j].splitShipment == 0) {
-                  cartdata.soft[i].commodities[j].newsplitShipment = "等生产";
-                } else if (cartdata.soft[i].commodities[j].splitShipment == 1) {
-                  cartdata.soft[i].commodities[j].newsplitShipment = "分批出货";
-                } else {
-                  cartdata.soft[i].commodities[j].newsplitShipment = "--";
                 }
                 //增加一个产品组字段
                 cartdata.soft[i].commodities[j].newProductType =
                   cartdata.soft[i].productGroupType;
               }
+            }
+            if (window.location.href.split("#/")[1] != "wallcart") {
+              this.$router.push({
+                path: "/mycart/wallcart"
+              });
             }
           });
         });

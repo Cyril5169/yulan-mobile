@@ -71,8 +71,8 @@
           按照本人提供的图片进行相应定制提供给本人，无义务对本人提供的图片进行实质审查。 本人因该图片的
           著作权或使用权问题与第三方发生纠纷，受托人将不承担任何的法律责任，由此造成的损失由本人全部承担。
         </p>
-        <p style="text-align: left;">受托人签名（盖章）：李四</p>
-        <p style="text-align: left;">确认时间：{{bankDetails.reassureTs}}</p>
+        <p style="text-align: left;">受托人签名（盖章）：<span v-if="bankDetails.state != '不同意'">{{bankDetails.customerAgent}}</span></p>
+        <p style="text-align: left;">确认时间：<span v-if="bankDetails.state != '不同意'">{{bankDetails.reassureTs}}</span></p>
       </div>
     </div>
     <div class="edit-bank" v-show="bankDetails.state === '客户确认中'">
@@ -152,6 +152,8 @@ export default {
     }
   },
   created() {
+    console.log(this.bankDetails);
+    
     // this.initDetails()
   }
 };

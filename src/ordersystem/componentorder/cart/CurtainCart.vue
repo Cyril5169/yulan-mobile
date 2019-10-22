@@ -343,7 +343,7 @@ export default {
               ) {
                 if (cartdata.wallpaper[i].commodities[j].activityId == null) {
                   cartdata.wallpaper[i].commodities[j].newactivityId =
-                    "未选择活动";
+                    "";
                 } else {
                   cartdata.wallpaper[i].commodities[j].newactivityId =
                     hdRes.data[hdlength++];
@@ -382,7 +382,7 @@ export default {
                 for (let j = 0; j < cartdata.soft[i].commodities.length; j++) {
                   if (cartdata.soft[i].commodities[j].activityId == null) {
                     cartdata.soft[i].commodities[j].newactivityId =
-                      "未选择活动";
+                      "";
                   } else {
                     cartdata.soft[i].commodities[j].newactivityId =
                       hdRes.data[hdlength++];
