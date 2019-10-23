@@ -345,19 +345,46 @@ var router = new Router({
       path: "/shoppingcart",
       name: 'shoppingcart',
       component: ShoppingCart,
+      meta: {
+        keepAlive: true
+      },
       //redirect:'/mycart/wallcart',
       children: [
         // {path:"/mycart/allcart",name:"allcart",component:AllCart},
-        { path: "/mycart/wallcart", name: "wallcart", component: WallCart },
-        { path: "/mycart/softcart", name: "softcart", component: SoftCart },
-        { path: "/mycart/curtaincart", name: "curtaincart", component: CurtainCart }
+        {
+          path: "/mycart/wallcart",
+          name: "wallcart",
+          component: WallCart,
+          meta: {
+            keepAlive: true
+          }
+        },
+        {
+          path: "/mycart/softcart",
+          name: "softcart",
+          component: SoftCart,
+          meta: {
+            keepAlive: true
+          }
+        },
+        {
+          path: "/mycart/curtaincart",
+          name: "curtaincart",
+          component: CurtainCart,
+          meta: {
+            keepAlive: true
+          }
+        }
       ]
     },
     //我的订单
     {
       path: "/myorder",
       name: 'myorder',
-      component: MyOrder
+      component: MyOrder,
+      meta: {
+        keepAlive: true
+      }
     },
     {
       path: "/fillorder",
@@ -490,13 +517,13 @@ var router = new Router({
       path: '/billDetailsQuery',
       name: 'billDetailsQuery',
       component: BillDetailsQuery,
-      
+
     },
     {
       path: '/orderQuery',
       name: 'orderQuery',
       component: OrderQuery,
-      meta:{
+      meta: {
         keepAlive: true
       }
     },
@@ -504,7 +531,7 @@ var router = new Router({
       path: '/orderDetailsQuery',
       name: 'orderDetailsQuery',
       component: OrderDetailsQuery,
-      meta:{
+      meta: {
         keepAlive: true
       }
     },

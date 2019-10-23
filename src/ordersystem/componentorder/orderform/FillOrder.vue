@@ -703,6 +703,8 @@ export default {
           duration: 2000,
           message: "提交订单成功"
         });
+        this.$root.$emit('refreshWallPaper');
+        this.$root.$emit('refreshSoft');
         this.$router.push({
           path: "/myorder"
         });

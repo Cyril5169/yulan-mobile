@@ -15,7 +15,10 @@
       </ul>
     </div>
     <!--购物车内容-->
-    <router-view></router-view>
+    <!-- <router-view></router-view> -->
+    <keep-alive><wallcart v-if="activeName == '/mycart/wallcart'"></wallcart></keep-alive>
+    <keep-alive><softcart v-if="activeName == '/mycart/softcart'"></softcart></keep-alive>
+    <keep-alive><curtaincart v-if="activeName == '/mycart/curtaincart'"></curtaincart></keep-alive>
     <navBottom :tab-stage="myRoute"></navBottom>
     <van-loading class="loading" type="spinner" v-if="loading" color="black" />
   </div>
@@ -25,6 +28,9 @@
 import axios from "axios";
 import top from "../../../components/Top";
 import navBottom from "../../../components/navBottom";
+import wallcart from "./WallCart"
+import softcart from "./SoftCart"
+import curtaincart from "./CurtainCart"
 import { Loading } from "vant";
 
 export default {
@@ -32,7 +38,10 @@ export default {
   components: {
     top,
     navBottom,
-    [Loading.name]: Loading
+    [Loading.name]: Loading,
+    wallcart,
+    softcart,
+    curtaincart
   },
   data() {
     return {
@@ -45,11 +54,22 @@ export default {
       allCartList: {},
       //墙纸购物车列表
       wallpaper: [],
-      loading: false
+      loading: false,
+      showWall:false,
+      activeName:'/mycart/wallcart'
     };
+  },
+  watch:{
+    $route(val, oldVal){
+      if(val.path == '/mycart/wallcart' || val.path == '/mycart/softcart' ||val.path == '/mycart/curtaincart' )
+      {
+        this.activeName = val.path;
+      }
+    }
   },
   methods: {
     cartList() {
+      var that = this;
       this.loading = true;
       let cartUrl =
         this.orderBaseUrl +
@@ -121,9 +141,9 @@ export default {
               }
             }
             if (window.location.href.split("#/")[1] != "wallcart") {
-              this.$router.push({
-                path: "/mycart/wallcart"
-              });
+              // this.$router.push({
+              //   path: "/mycart/wallcart"
+              // });
             }
           });
           //单个活动转换为中文
@@ -162,9 +182,9 @@ export default {
               }
             }
             if (window.location.href.split("#/")[1] != "wallcart") {
-              this.$router.push({
-                path: "/mycart/wallcart"
-              });
+              // this.$router.push({
+              //   path: "/mycart/wallcart"
+              // });
             }
           });
         });
@@ -188,9 +208,9 @@ export default {
       });
     }
   },
-  created() {
-    this.cartList();
-  }
+  activated() {
+    this.$router.push({path:this.activeName})
+  },
 };
 </script>
 

@@ -21,7 +21,10 @@ export default new Vuex.Store({
     //当前选中地址信息
     address: {},
     //所有购物车列表
-    allCart: {},
+    allCart: {
+      wallpaper:[],
+      soft:[]
+    },
     //loading加载
     LOADING: false,
     orderBaseUrl: "http://14.29.223.114:10250/yulan-order",
@@ -72,7 +75,10 @@ export default new Vuex.Store({
       state.route = "";
       state.orderProduct = [];
       state.address = {};
-      state.allCart = {};
+      state.allCart = {
+        wallpaper:[],
+        soft:[]
+      };
       state.LOADING = false;
       state.orderBaseUrl = "http://14.29.223.114:10250/yulan-order";
       state.cancelTokenArr = [];
