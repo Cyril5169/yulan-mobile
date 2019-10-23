@@ -89,7 +89,7 @@ document.addEventListener("plusready", function(a) {
       }
       if (!first) {
         first = new Date().getTime(); //获取第一次点击的时间戳
-        plus.nativeUI.toast("再按一次切换至桌面", { duration: 1000 }); //通过H5+ API 调用Android 上的toast 提示框
+        mui.toast("再按一次切换至桌面", { duration: 1000 }); // 调用mui 上的toast 提示框
         setTimeout(function() {
           first = null;
         }, 1000);
