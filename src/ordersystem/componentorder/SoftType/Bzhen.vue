@@ -13,7 +13,12 @@
       </van-search>
       <div class="img" @click="back"></div>
     </div>
-    <div class="all-mliao">
+    <van-list
+    class="all-mliao"
+  v-model="loading"
+  :finished="finished"
+  finished-text="没有更多了"
+  @load="onLoad">
       <div
         class="single-wall"
         v-for="(mliao,index) in mliaos"
@@ -49,19 +54,7 @@
         <span class="show-kucun" @click.stop="checkKucun(index)">查看库存</span>
         <iframe :src="storeUrl(mliao.itemNo)" style="display: none" frameborder="0"></iframe>
       </div>
-    </div>
-    <!--底部分页-->
-    <div class="fy-contain" v-show="hidshow1">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        :items-per-page="itemsPerPage"
-        :total-items="totalLists"
-        mode="simple"
-        @change="changePage"
-      />
-    </div>
+    </van-list>
     <!--查看库存-->
     <van-action-sheet class="kucun-popup" v-model="showKucun" title="库存查询结果">
       <div class="kucun-result">
@@ -78,7 +71,7 @@
 
 <script>
 import axios from "axios";
-import { Search, Toast, ActionSheet, Pagination } from "vant";
+import { Search, Toast, ActionSheet, Pagination, List } from "vant";
 import "../../assetsorder/actionsheet.css";
 
 export default {
@@ -86,12 +79,15 @@ export default {
   // props:["isShow"],
   data() {
     return {
+      loading: false,
+      finished: false,
+
       //搜索框输入值
       searchvalue: "",
       //显示库存
       showKucun: false,
       //当前页数
-      currentPage: 1,
+      currentPage: 0,
       //所有面料list
       mliaos: [],
       //总条数
@@ -113,7 +109,8 @@ export default {
     [Search.name]: Search,
     [ActionSheet.name]: ActionSheet,
     [Pagination.name]: Pagination,
-    [Toast.name]: Toast
+    [Toast.name]: Toast,
+    [List.name]: List
   },
   methods: {
     //查看库存
@@ -136,10 +133,9 @@ export default {
     storeUrl(itemNo) {
       return `http://www.luxlano.com/ddkc/ecqueryItemStock.asp?IID=${itemNo}`;
     },
-    //搜索
-    onSearch() {
-      this.mliaos = [];
+    onLoad(){
       let url = this.orderBaseUrl + "/item/getSoftInfoSingle.do";
+      this.currentPage=this.currentPage+1;
       let data = {
         itemType: "BZ",
         // "cid":"C01613",
@@ -157,11 +153,20 @@ export default {
             message: "暂无查询结果"
           });
         } else {
-          this.mliaos = data.data.data;
+          data.data.data.forEach(item => {
+            this.mliaos.push(item);
+          });
           //总页数
           if (this.mliaos.length) {
             this.totalPage = parseInt(this.mliaos[0].total / 10) + 1;
+            // 数据全部加载完成
+            if (this.currentPage >= this.totalPage) {
+              this.finished = true;
+            }
           }
+          // 加载状态结束
+            this.loading = false;
+          
           for (let i = 0; i < this.mliaos.length; i++) {
             if ((this.mliaos[i].fixType = "01")) {
               this.mliaos[i].fixType = "定宽";
@@ -172,6 +177,12 @@ export default {
         }
         //这里面axios的this不指向vue,所以在使用axios是最好使用es6箭头函数
       });
+    },
+    //搜索
+    onSearch() {
+      window.test1=this;
+      this.mliaos = [];
+      this.onLoad();
     },
     back() {
       window.vTop = null;

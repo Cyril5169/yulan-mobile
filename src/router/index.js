@@ -300,14 +300,23 @@ var router = new Router({
       name: 'searchsoft',
       component: SearchSoft,
       redirect: '/searchsoft/hbian',
+      // children: [
+      //   { path: '/searchsoft/bzhen', name: 'bzhen', component: Bzhen },
+      //   { path: '/searchsoft/ghua', name: 'ghua', component: Ghua },
+      //   { path: '/searchsoft/guadai', name: 'guadai', component: Guadai },
+      //   { path: '/searchsoft/hbian', name: 'hbian', component: Hbian },
+      //   { path: '/searchsoft/mliao', name: 'mliao', component: Mliao },
+      //   { path: '/searchsoft/qita', name: 'qita', component: Qita },
+      //   { path: '/searchsoft/taoci', name: 'taoci', component: Taoci },
+      // ]
       children: [
-        { path: '/searchsoft/bzhen', name: 'bzhen', component: Bzhen },
-        { path: '/searchsoft/ghua', name: 'ghua', component: Ghua },
-        { path: '/searchsoft/guadai', name: 'guadai', component: Guadai },
-        { path: '/searchsoft/hbian', name: 'hbian', component: Hbian },
-        { path: '/searchsoft/mliao', name: 'mliao', component: Mliao },
-        { path: '/searchsoft/qita', name: 'qita', component: Qita },
-        { path: '/searchsoft/taoci', name: 'taoci', component: Taoci },
+        { path: '/searchsoft/bzhen', name: 'searchsoft', component: SearchSoft },
+        { path: '/searchsoft/ghua', name: 'searchsoft', component: SearchSoft },
+        { path: '/searchsoft/guadai', name: 'searchsoft', component: SearchSoft },
+        { path: '/searchsoft/hbian', name: 'searchsoft', component: SearchSoft },
+        { path: '/searchsoft/mliao', name: 'searchsoft', component: SearchSoft },
+        { path: '/searchsoft/qita', name: 'searchsoft', component: SearchSoft },
+        { path: '/searchsoft/taoci', name: 'searchsoft', component: SearchSoft },
       ]
     },
     {
