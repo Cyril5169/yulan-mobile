@@ -74,8 +74,8 @@ vm.UpdateVersion = Global.UpdateVersion;
 app = vm.$children[0];
 
 document.addEventListener("plusready", function(a) {
-  //等待plus ready后再调用5+ API：
-  //// 在这里调用5+ API
+  //等待plus ready后再调用H5+ API：
+  // 在这里调用5+ API
   var first = null;
   window.plus = plus;
   vm.plus = plus;
@@ -87,17 +87,17 @@ document.addEventListener("plusready", function(a) {
         window.vTop.back();
         return;
       }
-      //首次按键，提示‘再按一次退出应用’
       if (!first) {
         first = new Date().getTime(); //获取第一次点击的时间戳
-        plus.nativeUI.toast("再按一次退出应用", { duration: 1000 }); //通过H5+ API 调用Android 上的toast 提示框
+        plus.nativeUI.toast("再按一次切换至桌面", { duration: 1000 }); //通过H5+ API 调用Android 上的toast 提示框
         setTimeout(function() {
           first = null;
         }, 1000);
       } else {
         if (new Date().getTime() - first < 1000) {
           //获取第二次点击的时间戳, 两次之差 小于 1000ms 说明1s点击了两次,
-          plus.runtime.quit(); //退出应用
+          plus.android.runtimeMainActivity().moveTaskToBack(false); //返回桌面
+          //plus.runtime.quit(); //退出应用
         }
       }
     },
