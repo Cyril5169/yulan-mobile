@@ -2,7 +2,7 @@
   <div id="app">
     <keep-alive>
       <!--使用keep-alive会将页面缓存-->
-      <router-view v-if="$route.meta.keepAlive"></router-view>
+      <router-view v-if="$route.meta.keepAlive == true"></router-view>
     </keep-alive>
     <router-view v-if="!$route.meta.keepAlive"></router-view>
     <!--遮罩层-->

@@ -2,7 +2,7 @@
   <div class="search-order">
     <div class="soft-nav">
       <ul>
-        <li>
+        <!-- <li>
           <router-link to="/searchsoft/mliao" exact>面料</router-link>
         </li>
         <li>
@@ -22,14 +22,18 @@
         </li>
         <li>
           <router-link to="/searchsoft/qita" exact>其他</router-link>
+        </li> -->
+        <li v-for="(item,index) in types" :key="index">
+          <a @click="typeClick(item,this)" v-bind:class="{ active: item.isActive }">{{item.text}}</a>
         </li>
+        
       </ul>
     </div>
     <div class="searchtop">
       <van-search
         class="search-top"
         v-model="searchvalue"
-        :placeholder="softType"
+        :placeholder="activeType.searchText"
         show-action
         shape="round"
         @search="onSearch"
@@ -49,7 +53,7 @@
         <div
           class="single-wall"
           v-for="(mliao,index) in mliaos"
-          @click="mliaoDetails(index)"
+          @click="mliaoDetails(mliao.itemNo)"
           :key="index"
         >
           <div class="wall-title">{{mliao.note}}</div>
@@ -69,7 +73,6 @@
             <tr>
               <th>尺寸：</th>
               <td>{{mliao.fixGrade}}mm</td>
-              <!--<td class="show-kucun"><span @click.stop="checkKucun">查看库存</span></td>-->
             </tr>
             <!--后台在显示列表的时候这个字段值为null，但是在商品详情页面这个字段有值-->
             <!--<tr>-->
@@ -78,17 +81,27 @@
             <!--<td class="show-kucun"><span @click.stop="checkKucun">查看库存</span></td>-->
             <!--</tr>-->
           </table>
-          <span class="show-kucun" @click.stop="checkKucun(index)">查看库存</span>
-          <iframe :src="storeUrl(mliao.itemNo)" style="display: none" frameborder="0"></iframe>
+          <span class="show-kucun" @click.stop="checkKucun(mliao.itemNo)">查看库存</span>
+          <iframe
+            :src="storeUrl(mliao.itemNo)"
+            v-if="mliao.itemNo == currentItemNo"
+            style="display: none"
+            frameborder="0"
+          ></iframe>
         </div>
       </van-list>
       <div v-if="showTop" @click="backToTop" class="scrollTopCls">
-        <img style="width:50px;height:50px;" src="../../assets/backTop.png" />>
+        <img style="width:50px;height:50px;" src="../../assets/backTop.png" />
       </div>
     </div>
 
     <!--查看库存-->
-    <van-action-sheet class="kucun-popup" v-model="showKucun" title="库存查询结果">
+    <van-action-sheet
+      class="kucun-popup"
+      v-model="showKucun"
+      title="库存查询结果"
+      @closed="currentItemNo=''"
+    >
       <div class="kucun-result">
         <table width="100%">
           <tr v-for="(kucun,index) in singleKuCun" :key="index">
@@ -103,7 +116,7 @@
 
 <script>
 import axios from "axios";
-import { Search, Toast, ActionSheet, List } from "vant";
+import { Search, Toast, ActionSheet, List, Popup } from "vant";
 import "../assetsorder/actionsheet.css";
 import navBottom from "../../components/navBottom";
 
@@ -111,18 +124,26 @@ export default {
   name: "",
   data() {
     return {
+      types:[
+        {text: "面料", itemType: "ML", searchText: "请输入面料型号", isActive:false},
+        {text: "花边", itemType: "XHB", searchText: "请输入花边型号", isActive:true},
+        {text: "挂袋/配件包", itemType: "PJB", searchText: "请输入挂袋/配件包型号", isActive:false},
+        {text: "抱枕", itemType: "BZ", searchText: "请输入抱枕型号", isActive:false},
+        {text: "挂画", itemType: "GH", searchText: "请输入挂画型号", isActive:false},
+        {text: "成品帘", itemType: "TC", searchText: "请输入成品帘型号", isActive:false},
+        {text: "其他", itemType: "other", searchText: "请输入其他软装型号", isActive:false},
+      ],
+      activeType: {text: "花边", itemType: "XHB", searchText: "请输入花边型号"},
       inputValue: "",
       //底部导航栏样式切换
       myRoute: "customer",
-      // route:"/searchsoft/mliao"
-      softType: "请输入花边型号",
-      itemType: "XHB",
       docmHeight: document.documentElement.clientHeight, //默认屏幕高度
       showHeight: document.documentElement.clientHeight, //实时屏幕高度
       loading: false,
       finished: false,
       finishedText: "加载完毕",
       loadingText: "加载中...",
+      currentItemNo: '',
       //搜索框输入值
       searchvalue: "",
       //显示库存
@@ -137,7 +158,6 @@ export default {
       itemsPerPage: 10,
       //总页数
       totalPage: 0,
-      storeMsg: [], //储存当前页面的库存信息。所有的
       singleKuCun: [], //单个库存信息
       docmHeight: document.documentElement.clientHeight, //默认屏幕高度
       showHeight: document.documentElement.clientHeight, //实时屏幕高度
@@ -151,9 +171,19 @@ export default {
     [Search.name]: Search,
     [ActionSheet.name]: ActionSheet,
     [Toast.name]: Toast,
-    [List.name]: List
+    [List.name]: List,
+    [Popup.name]: Popup
   },
   methods: {
+    typeClick(type,e){
+      this.activeType=type;
+      this.types.forEach(item => {
+        item.isActive=false;
+      });
+      this.activeType.isActive=true;
+      this.searchvalue = "";
+      this.onSearch();
+    },
     backToTop(e) {
       //返回顶部
       var me = this;
@@ -161,7 +191,7 @@ export default {
       var distance = this.scrollTop;
       var dParams = 30;
       var time = 1;
-      me.interval = setInterval(function() {
+      me.interval = setInterval(function () {
         dParams += 30 * time;
         time++;
         distance = distance > 0 ? distance : 0;
@@ -172,21 +202,8 @@ export default {
       }, 10);
     },
     //查看库存
-    checkKucun(index) {
-      this.singleKuCun = [];
-      if (this.storeMsg.length) {
-        this.showKucun = true;
-        if (this.storeMsg[index].indexOf("，") != -1) {
-          this.singleKuCun = this.storeMsg[index].split("，");
-        } else {
-          this.singleKuCun.push(this.storeMsg[index]);
-        }
-      } else {
-        Toast({
-          duration: 2000,
-          message: "暂无查询结果"
-        });
-      }
+    checkKucun(itemno) {
+      this.currentItemNo = itemno;
     },
     storeUrl(itemNo) {
       return `http://www.luxlano.com/ddkc/ecqueryItemStock.asp?IID=${itemNo}`;
@@ -196,7 +213,7 @@ export default {
         let url = this.orderBaseUrl + "/item/getSoftInfoSingle.do";
         this.currentPage = this.currentPage + 1;
         let data = {
-          itemType: this.itemType,
+          itemType: this.activeType.itemType,
           cid: this.$store.getters.getCId,
           itemNo: this.searchvalue.toUpperCase(), //模糊查询内容
           limit: 10, //一页限制条数
@@ -258,12 +275,12 @@ export default {
       this.onLoad();
     },
     //详情
-    mliaoDetails(index) {
+    mliaoDetails(itemNo) {
       this.$router.push({
         name: "softdetails",
         params: {
-          itemType: this.itemType,
-          itemNo: this.mliaos[index].itemNo, //模糊查询的内容
+          itemType: this.activeType.itemType,
+          itemNo: itemNo, //模糊查询的内容
           from: window.location.href.split("#/")[1]
         }
       });
@@ -272,10 +289,23 @@ export default {
       this.$router.push({
         path: "/shopstore"
       });
-    }
+    },
+    // 操作指定name的路由的元信息
+    // changeKeepAlive(parentName, name, keepAlive) {
+    //   this.$router.options.routes.map((item) => {
+    //     if (item.name === parentName) {
+    //       item.children.map((a) => {
+    //         if (a.name === name) {
+    //           if (!a.meta)
+    //             a.meta = {};
+    //           a.meta.keepAlive = keepAlive;
+    //         }
+    //       })
+    //     }
+    //   })
+    // },
   },
   mounted() {
-    window.test1 = this;
     window.vTop = this;
     // window.onresize监听页面高度的变化
     window.onresize = () => {
@@ -286,15 +316,23 @@ export default {
     const self = this;
     window.addEventListener(
       "message",
-      function(e) {
-        self.storeMsg.push(e.data);
+      function (e) {
+        if (e.origin && e.origin != "http://www.luxlano.com")
+          return;
+        self.showKucun = true;
+        self.singleKuCun = [];
+        if (e.data.indexOf("，") != -1) {
+          self.singleKuCun = e.data.split("，");
+        } else {
+          self.singleKuCun.push(e.data);
+        }
       },
       false
     );
     //监控滚动条
     window.addEventListener(
       "scroll",
-      function(e) {
+      function (e) {
         self.scrollTop = e.target.scrollTop;
         self.scrollTarget = e.target;
         if (e.target.scrollTop > 100) {
@@ -306,44 +344,23 @@ export default {
       true
     );
   },
+  activated(){
+    //恢复滚动条位置
+    if(this.scrollTop>0){
+      this.scrollTarget.scrollTop = this.scrollTop;
+    }
+  },
   destroyed() {
     if (window.vTop == this) window.vTop = null;
   },
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop
+    next()
+  },
   watch: {
     $route(val, oldVal) {
-      if (val.path == "/searchsoft/mliao") {
-        this.softType = "请输入面料型号";
-        this.itemType = "ML";
-      }
-      if (val.path == "/searchsoft/bzhen") {
-        this.softType = "请输入抱枕型号";
-        this.itemType = "BZ";
-      }
-      if (val.path == "/searchsoft/ghua") {
-        this.softType = "请输入挂画型号";
-        this.itemType = "GH";
-      }
-      if (val.path == "/searchsoft/guadai") {
-        this.softType = "请输入挂袋型号";
-        this.itemType = "PJB";
-      }
-      if (val.path == "/searchsoft/hbian") {
-        this.softType = "请输入花边型号";
-        this.itemType = "XHB";
-      }
-      if (val.path == "/searchsoft/qita") {
-        this.softType = "请输入其他软装型号";
-        this.itemType = "other";
-      }
-      if (val.path == "/searchsoft/taoci") {
-        this.softType = "请输入陶瓷型号";
-        this.itemType = "TC";
-      }
-      this.searchvalue = "";
-
-      this.onSearch();
     },
-    showHeight: function() {
+    showHeight: function () {
       if (this.docmHeight > this.showHeight) {
         this.hidshow = false;
       } else {
@@ -394,6 +411,14 @@ export default {
   padding: 3px 10px;
   background-color: white;
   color: #8cbb44;
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 5px;
+}
+.active {
+  padding: 3px 10px;
+  background-color: white;
+  color: #8cbb44 !important;
   font-size: 15px;
   font-weight: bold;
   border-radius: 5px;
