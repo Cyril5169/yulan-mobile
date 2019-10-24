@@ -32,42 +32,44 @@
               class="checkbox"
               @change.stop="pickOne(product,index,inndex)"
             />
-            <table @click="wallDetails(index,inndex)">
-              <tr>
-                <th>型号：</th>
-                <td>{{product.item.itemNo}}</td>
-              </tr>
-              <!--<tr>-->
-              <!--<th>名称：</th>-->
-              <!--<td>{{product.item.itemVersion }}</td>-->
-              <!--</tr>-->
-              <tr>
-                <th>活动：</th>
-                <td>{{product.newactivityId}}</td>
-              </tr>
-              <tr>
-                <th>说明：</th>
-                <td>{{product.newsplitShipment}}</td>
-              </tr>
-              <tr>
-                <th>单价：</th>
-                <td v-if="showPrice" class="price">￥{{product.price}}</td>
-                <td v-else class="price">***</td>
-                <!--<td class="product-num">数量：{{product.quantity}}卷</td>-->
-              </tr>
-              <tr>
-                <th>小计：</th>
-                <td
-                  class="price"
-                  v-if="showPrice && product.quantity"
-                >￥{{(product.quantity * product.price).toFixed(2)}}</td>
-                <td
-                  class="price"
-                  v-else-if="showPrice && !product.quantity"
-                >￥{{(product.width * product.height * product.price).toFixed(2)}}</td>
-                <td class="price" v-else-if="!showPrice">***</td>
-              </tr>
-            </table>
+            <div style="width:100%;height:100%" @click="wallDetails(index,inndex)">
+              <table>
+                <tr>
+                  <th>型号：</th>
+                  <td>{{product.item.itemNo}}</td>
+                </tr>
+                <!--<tr>-->
+                <!--<th>名称：</th>-->
+                <!--<td>{{product.item.itemVersion }}</td>-->
+                <!--</tr>-->
+                <tr>
+                  <th>活动：</th>
+                  <td>{{product.newactivityId}}</td>
+                </tr>
+                <tr>
+                  <th>说明：</th>
+                  <td>{{product.newsplitShipment}}</td>
+                </tr>
+                <tr>
+                  <th>单价：</th>
+                  <td v-if="showPrice" class="price">￥{{product.price}}</td>
+                  <td v-else class="price">***</td>
+                  <!--<td class="product-num">数量：{{product.quantity}}卷</td>-->
+                </tr>
+                <tr>
+                  <th>小计：</th>
+                  <td
+                    class="price"
+                    v-if="showPrice && product.quantity"
+                  >￥{{(product.quantity * product.price).toFixed(2)}}</td>
+                  <td
+                    class="price"
+                    v-else-if="showPrice && !product.quantity"
+                  >￥{{(product.width * product.height * product.price).toFixed(2)}}</td>
+                  <td class="price" v-else-if="!showPrice">***</td>
+                </tr>
+              </table>
+            </div>
             <div class="product-num">
               <span class v-if="product.quantity">数量：{{product.quantity}}{{product.unit}}</span>
               <span class v-if="!product.quantity">数量：{{product.width}}*{{product.height}}平方米</span>
@@ -177,53 +179,49 @@ export default {
           height: this.cartlist[index].commodities[inndex].height, //高度
           note: this.cartlist[index].commodities[inndex].note,
           tip: this.cartlist[index].commodities[inndex].newsplitShipment,
-          from: "mycart/softcart"
+          from: "shoppingcart"
         }
       });
     },
     //购物车选中一个
     pickOne(product, index, inndex) {
-      if (this.cartlist[index].commodities[inndex].checked) {
-        this.cartlist[index].commodities[inndex].checked = false;
-        // product.checked = false;
-        //触发全选
+      if (this.checkBoxModel.length == 1) {
+        //首次选该，赋予组别
+        //产品组别
+        // this.productType = this.cartlist[index].productGroupType
+        this.thisGroup = this.cartlist[index].cartItemId;
+        this.cartlist[index].commodities[inndex].checked = true;
         if (
-          this.checkBoxModel.length != this.cartlist[index].commodities.length
-        ) {
-          this.checkGroupModel = [];
-          this.cartlist[index].checked = false;
-        }
-        if (this.checkBoxModel.length == 0) {
-          this.thisGroup = "";
-        }
-      } else {
-        // product.checked = true;
-        if (this.checkBoxModel.length == 1) {
-          //产品组别
-          // this.productType = this.cartlist[index].productGroupType
-          this.thisGroup = this.cartlist[index].cartItemId;
-          this.cartlist[index].commodities[inndex].checked = true;
-          if (
-            this.checkBoxModel.length == this.cartlist[index].commodities.length
-          ) {
-            this.checkGroupModel = [];
-            this.checkGroupModel.push(this.cartlist[index]);
-            this.cartlist[index].checked = true;
-          }
-        } else if (this.cartlist[index].cartItemId != this.thisGroup) {
-          this.checkBoxModel.pop();
-          Dialog.alert({
-            message: "不同组别的商品不能一起选择，请重新选择"
-          }).then(() => {
-            // on close
-            this.cartlist[index].commodities[inndex].checked = false;
-          });
-        } else if (
           this.checkBoxModel.length == this.cartlist[index].commodities.length
         ) {
           this.checkGroupModel = [];
           this.checkGroupModel.push(this.cartlist[index]);
           this.cartlist[index].checked = true;
+        } else {
+          this.checkGroupModel = [];
+          this.cartlist[index].checked = false;
+        }
+      } else if (this.cartlist[index].cartItemId != this.thisGroup) {
+        //不同组别
+        //this.checkBoxModel.pop();
+        Dialog.alert({
+          message: "不同组别的商品不能一起选择，请重新选择"
+        }).then(() => {
+          // on close
+          return false;
+          this.cartlist[index].commodities[inndex].checked = false;
+        });
+      } else {
+        if (
+          //通一组勾选
+          this.checkBoxModel.length == this.cartlist[index].commodities.length
+        ) {
+          this.checkGroupModel = [];
+          this.checkGroupModel.push(this.cartlist[index]);
+          this.cartlist[index].checked = true;
+        } else {
+          this.checkGroupModel = [];
+          this.cartlist[index].checked = false;
         }
       }
     },
@@ -315,6 +313,7 @@ export default {
         commodityType: "soft"
       })
         .then(res => {
+          this.checkBoxModel = [];
           this.loading = false;
           var data = res.data;
           for (let i = 0; i < data.length; ) {
@@ -333,7 +332,7 @@ export default {
         .then(cartdata => {
           for (let i = 0; i < cartdata.length; i++) {
             for (let j = 0; j < cartdata[i].commodities.length; j++) {
-              if (cartdata[i].commodities[j].activityId == null) {
+              if (!cartdata[i].commodities[j].activityId) {
                 cartdata[i].commodities[j].newactivityId = "";
               } else {
                 cartdata[i].commodities[j].newactivityId =
@@ -410,14 +409,10 @@ export default {
       return this.total.toFixed(2);
     }
   },
-  created() {
+  activated() {
     this.isShowPrice();
     this.cartlist = [];
     this.searchCartList();
-    this.$root.$on("refreshSoft", () => {
-      this.cartlist = [];
-      this.searchCartList();
-    });
   }
 };
 </script>

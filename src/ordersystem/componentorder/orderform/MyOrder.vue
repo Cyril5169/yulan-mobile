@@ -230,7 +230,7 @@ export default {
       mrksTime: "",
       //订单状态
       orderStatus: [
-        "全部",
+        "全部状态",
         "待提交",
         "余额不足待提交",
         "余额不足可提交",
@@ -249,7 +249,7 @@ export default {
       showType: false,
       showStatus: false,
       //当前状态
-      myStatu: "全部",
+      myStatu: "全部状态",
       //当前类型
       myType: "全部产品",
       myTypeCode: "",
@@ -646,7 +646,7 @@ input {
 }
 
 .search-input {
-  width: 120px;
+  width: 115px;
   position: absolute;
   top: 60px;
   left: 15px;

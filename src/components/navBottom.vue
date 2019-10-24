@@ -2,20 +2,28 @@
   <div class="nav" ref="nav">
     <div class="nav-list" v-cloak>
       <div class="home" @click="clickToPath('customer')">
-        <div class="home-pic1" ref="homePic"></div>
-        <div class="my-font" ref="f_homePic">主页</div>
+        <div class="home-pic2" ref="homePic" v-if="tabStage != 'customer'"></div>
+        <div class="home-pic1" ref="homePic" v-else></div>
+        <div class="my-font" ref="f_homePic" v-if="tabStage != 'customer'">主页</div>
+        <div class="my-font2" ref="f_homePic" v-else>主页</div>
       </div>
       <div v-if="isContainAttr('myorder')" class="form" @click="clickToPath('myorder')">
-        <div class="form-pic1" ref="formPic"></div>
-        <div class="my-font" ref="f_formPic">订单查询</div>
+        <div class="form-pic1" ref="formPic" v-if="tabStage != 'order'"></div>
+        <div class="form-pic1" ref="homePic" v-else></div>
+        <div class="my-font" ref="f_formPic" v-if="tabStage != 'order'">订单查询</div>
+        <div class="my-font2" ref="f_formPic" v-else>订单查询</div>
       </div>
       <div v-if="isContainAttr('shoppingcart')" class="shop" @click="clickToPath('shoppingcart')">
-        <div class="shop-pic1" ref="shopPic"></div>
-        <div class="my-font" ref="f_shopPic">购物车</div>
+        <div class="shop-pic1" ref="shopPic" v-if="tabStage != 'cart'"></div>
+        <div class="shop-pic2" ref="homePic" v-else></div>
+        <div class="my-font" ref="f_shopPic" v-if="tabStage != 'cart'">购物车</div>
+        <div class="my-font2" ref="f_shopPic" v-else>购物车</div>
       </div>
       <div class="my" @click="clickToPath('mypersonal')">
-        <div class="my-pic2" ref="myPic"></div>
-        <div class="my-font" ref="f_myPic">我的</div>
+        <div class="my-pic2" ref="myPic" v-if="tabStage != 'personal'"></div>
+        <div class="my-pic1" ref="myPic" v-else></div>
+        <div class="my-font" ref="f_myPic" v-if="tabStage != 'personal'">我的</div>
+        <div class="my-font2" ref="f_myPic" v-else>我的</div>
       </div>
     </div>
   </div>
@@ -43,132 +51,7 @@ export default {
       }
     }
   },
-  mounted() {
-    // if (this.changeStyle == "customer" || this.changeStyle == "shopstore") {
-    //   let a = this.$refs.nav;
-    //   a.className = "nav2";
-    // }
-    if (this.tabStage == "customer") {
-      if (this.$refs.homePic) {
-        this.$refs.homePic.classList.remove("home-pic2");
-        this.$refs.homePic.classList.add("home-pic1");
-
-        this.$refs.f_homePic.classList.remove("my-font");
-        this.$refs.f_homePic.classList.add("my-font2");
-      }
-      if (this.$refs.myPic) {
-        this.$refs.myPic.classList.remove("my-pic1");
-        this.$refs.myPic.classList.add("my-pic2");
-
-        this.$refs.f_myPic.classList.remove("my-font2");
-        this.$refs.f_myPic.classList.add("my-font");
-      }
-      if (this.$refs.formPic) {
-        this.$refs.formPic.classList.remove("form-pic2");
-        this.$refs.formPic.classList.add("form-pic1");
-
-        this.$refs.f_formPic.classList.remove("my-font2");
-        this.$refs.f_formPic.classList.add("my-font");
-      }
-      if (this.$refs.shopPic) {
-        this.$refs.shopPic.classList.remove("shop-pic2");
-        this.$refs.shopPic.classList.add("shop-pic1");
-
-        this.$refs.f_formPic.classList.remove("my-font2");
-        this.$refs.f_formPic.classList.add("my-font");
-      }
-    }
-    if (this.tabStage == "cart") {
-      if (this.$refs.homePic) {
-        this.$refs.homePic.classList.remove("home-pic1");
-        this.$refs.homePic.classList.add("home-pic2");
-        
-        this.$refs.f_homePic.classList.remove("my-font2");
-        this.$refs.f_homePic.classList.add("home-pic");
-      }
-      if (this.$refs.myPic) {
-        this.$refs.myPic.classList.remove("my-pic1");
-        this.$refs.myPic.classList.add("my-pic2");
-
-        this.$refs.f_myPic.classList.remove("my-font2");
-        this.$refs.f_myPic.classList.add("my-font");
-      }
-      if (this.$refs.formPic) {
-        this.$refs.formPic.classList.remove("form-pic2");
-        this.$refs.formPic.classList.add("form-pic1");
-
-        this.$refs.f_formPic.classList.remove("my-font2");
-        this.$refs.f_formPic.classList.add("my-font");
-      }
-      if (this.$refs.shopPic) {
-        this.$refs.shopPic.classList.remove("shop-pic1");
-        this.$refs.shopPic.classList.add("shop-pic2");
-
-        this.$refs.f_shopPic.classList.remove("my-font");
-        this.$refs.f_shopPic.classList.add("my-font2");
-      }
-    }
-    if (this.tabStage == "order") {
-      if (this.$refs.homePic) {
-        this.$refs.homePic.classList.remove("home-pic1");
-        this.$refs.homePic.classList.add("home-pic2");
-
-        this.$refs.f_homePic.classList.remove("my-font2");
-        this.$refs.f_homePic.classList.add("home-pic");
-      }
-      if (this.$refs.myPic) {
-        this.$refs.myPic.classList.remove("my-pic1");
-        this.$refs.myPic.classList.add("my-pic2");
-
-        this.$refs.f_myPic.classList.remove("my-font");
-        this.$refs.f_myPic.classList.add("my-font2");
-      }
-      if (this.$refs.formPic) {
-        this.$refs.formPic.classList.remove("form-pic1");
-        this.$refs.formPic.classList.add("form-pic2");
-
-        this.$refs.f_formPic.classList.remove("my-font");
-        this.$refs.f_formPic.classList.add("home-pic2");
-      }
-      if (this.$refs.shopPic) {
-        this.$refs.shopPic.classList.remove("shop-pic2");
-        this.$refs.shopPic.classList.add("shop-pic1");
-
-        this.$refs.f_shopPic.classList.remove("my-font");
-        this.$refs.f_shopPic.classList.add("my-font2");
-      }
-    }
-    if (this.tabStage == "personal") {
-      if (this.$refs.myPic) {
-        this.$refs.myPic.classList.remove("my-pic2");
-        this.$refs.myPic.classList.add("my-pic1");
-
-        this.$refs.f_myPic.classList.remove("my-font");
-        this.$refs.f_myPic.classList.add("my-font2");
-      }
-      if (this.$refs.homePic) {
-        this.$refs.homePic.classList.remove("home-pic1");
-        this.$refs.homePic.classList.add("home-pic2");
-
-        this.$refs.f_homePic.classList.remove("my-font2");
-        this.$refs.f_homePic.classList.add("home-pic");
-      }
-      if (this.$refs.formPic) {
-        this.$refs.formPic.classList.remove("form-pic2");
-        this.$refs.formPic.classList.add("form-pic1");
-
-        this.$refs.f_formPic.classList.remove("my-font2");
-        this.$refs.f_formPic.classList.add("home-pic");
-      }
-      if (this.$refs.shopPic) {
-        this.$refs.shopPic.classList.remove("shop-pic2");
-        this.$refs.shopPic.classList.add("shop-pic1");
-
-        this.$refs.f_shopPic.classList.remove("my-font2");
-        this.$refs.f_shopPic.classList.add("home-pic");
-      }
-    }
-  }
+  mounted() {}
 };
 </script>
 
@@ -275,7 +158,7 @@ export default {
   background-image: url("../assets/my2.png");
   background-size: contain;
   background-repeat: no-repeat;
-  color: #89CB81;
+  color: #89cb81;
 }
 
 .my-pic1 {
@@ -292,6 +175,6 @@ export default {
 }
 .my-font2 {
   font-size: 10px;
-  color: #89CB81;
+  color: #89cb81;
 }
 </style>

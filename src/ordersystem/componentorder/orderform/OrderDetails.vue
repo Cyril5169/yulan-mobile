@@ -72,8 +72,9 @@
       <div class="good-contain" v-for="(good,index) in oneOrder.ORDERBODY" :key="index">
         <div class="good-item1">
           <span>{{good.ITEM_NO}} {{good.NOTE}} {{good.PRODUCTION_VERSION}}</span>
-          <span v-if="showPrice" style="float:right;margin-right: 80px;">￥{{good.UNIT_PRICE}}</span>
           <span class="good-num">数量：{{good.QTY_REQUIRED}}</span>
+          <span v-if="showPrice" style="float:right;margin-right:70px;">单价：￥{{good.UNIT_PRICE}}</span>
+          <span v-else style="float:right;margin-right:70px;">***</span>
         </div>
         <div class="good-item2">
           <span>活动类型</span>

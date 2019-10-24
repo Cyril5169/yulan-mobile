@@ -89,12 +89,12 @@
           <div class="good-contain" v-for="(product,index) in allProduct" :key="index">
             <div class="good-item1">
               <span>型号：{{product.item.itemNo}}</span>
-              <span class="good-num" v-if="product.quantity">{{product.quantity}} {{product.unit}}</span>
+              <span class="good-num" v-if="product.quantity">数量：{{product.quantity}} {{product.unit}}</span>
               <span
                 class="good-num"
                 v-if="!product.quantity"
               >{{product.width}} * {{product.height}}(长*宽)</span>
-              <span v-if="showPrice" class="price">￥{{product.price}}</span>
+              <span v-if="showPrice" class="price">单价：￥{{product.price}}</span>
               <span v-else class="price">***</span>
             </div>
             <div class="good-item2">
@@ -703,18 +703,9 @@ export default {
           duration: 2000,
           message: "提交订单成功"
         });
-        this.$root.$emit('refreshWallPaper');
-        this.$root.$emit('refreshSoft');
         this.$router.push({
           path: "/myorder"
         });
-        //   this.updateCart();
-        // } else {
-        //   Toast({
-        //     duration: 1000,
-        //     message: "提交订单失败"
-        //   });
-        // }
       });
     },
     //生成订单后删除购物车的信息
