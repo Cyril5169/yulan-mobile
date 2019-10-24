@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top :top="set" :from ="from"></top>
+    <top :top="set" :from="from"></top>
     <div class="single-msg">
       <ul class="lists">
         <li>
@@ -53,16 +53,15 @@
     <van-popup v-model="showSelect" position="bottom">
       <van-radio-group v-model="hdid">
         <van-cell-group>
-          <template v-for="(hdground,index) in allHd">
-            <template v-for="(hdg,inndex) in hdground.second">
-              <van-cell
-                :title="hdname(hdg.orderName,hdg.orderType)"
-                clickable
-                @click="selectthisHd(index,inndex)"
-              >
-                <van-radio :name="hdg.pId" checked-color="#89cb81" />
-              </van-cell>
-            </template>
+          <template v-for="(hdg,index) in allHd">
+            <van-cell
+              :key="index +'hdground' +  index"
+              :title="hdname(hdg.ORDER_NAME,hdg.ORDER_TYPE)"
+              clickable
+              @click="selectthisHd(index)"
+            >
+              <van-radio :name="hdg.P_ID" checked-color="#89cb81" />
+            </van-cell>
           </template>
           <van-cell title="不参与活动" clickable @click="noActivity">
             <van-radio name checked-color="#89cb81" />
@@ -100,6 +99,7 @@
 <script>
 import axios from "axios";
 import top from "../../components/Top";
+import { GetPromotionByItem } from "@/api/orderListASP";
 import {
   Switch,
   Stepper,
@@ -149,7 +149,7 @@ export default {
       //是否允许分批出货
       separate: false,
       //是否分批出货标志
-      fpfh: "",
+      fpfh: "-1",
       //优惠活动选择
       showSelect: false,
       //选择的活动类型
@@ -383,7 +383,7 @@ export default {
     },
     //返回
     fh() {
-      this.fpfh = "";
+      this.fpfh = "-1";
       this.$router.push({
         path: "/searchsoft/mliao"
       });
@@ -399,22 +399,30 @@ export default {
     },
     //获取活动
     getHd(value) {
-      let hdUrl =
-        this.orderBaseUrl +
-        "/salPromotion/selectSalPromotion.do?" +
-        "CID=" +
-        this.$store.getters.getCId +
-        "&customerType=" +
-        this.$store.getters.getCtype +
-        "&itemNo=" +
-        value.itemNo +
-        "&itemVersion=" +
-        value.itemVersion +
-        "&productType=" +
-        value.productType +
-        "&productBrand=" +
-        value.productBrand;
-      axios.get(hdUrl).then(data => {
+      // let hdUrl =
+      //   this.orderBaseUrl +
+      //   "/salPromotion/selectSalPromotion.do?" +
+      //   "CID=" +
+      //   this.$store.getters.getCId +
+      //   "&customerType=" +
+      //   this.$store.getters.getCtype +
+      //   "&itemNo=" +
+      //   value.itemNo +
+      //   "&itemVersion=" +
+      //   value.itemVersion +
+      //   "&productType=" +
+      //   value.productType +
+      //   "&productBrand=" +
+      //   value.productBrand;
+      // axios.get(hdUrl).then(data => {
+      GetPromotionByItem({
+        cid: this.$store.getters.getCId,
+        customerType: this.$store.getters.getCtype,
+        itemNo: value.itemNo,
+        itemVersion: value.itemVersion,
+        productType: value.productType,
+        productBrand: value.productBrand
+      }).then(data => {
         this.allHd = data.data;
         if (this.allHd.length == 0) {
           this.myActivity = "此产品不参与活动";
@@ -423,16 +431,38 @@ export default {
           this.myActivity = "请选择活动";
           this.showMoreHd = true;
         }
+        var defaultSel = {
+          pri: 0,
+          index: 0
+        };
         if (this.$route.params.commodityID) {
           this.editcart();
+        } else {
+          for (var i = 0; i < this.allHd.length; i++) {
+            if (this.allHd[i].PRIORITY != 0 && defaultSel.pri == 0) {
+              defaultSel.pri = this.allHd[i].PRIORITY;
+              defaultSel.index = i;
+            } else if (
+              this.allHd[i].PRIORITY != 0 &&
+              defaultSel.pri > this.allHd[i].PRIORITY
+            ) {
+              defaultSel.pri = this.allHd[i].PRIORITY;
+              defaultSel.index = i;
+            }
+          }
+          if (defaultSel.pri != 0) {
+            this.myActivity = this.allHd[defaultSel.index].ORDER_NAME;
+            this.hdcode = this.allHd[defaultSel.index].ORDER_TYPE;
+            this.hdid = this.allHd[defaultSel.index].P_ID;
+          }
         }
         //这里面axios的this不指向vue,所以在使用axios是最好使用es6箭头函数
       });
     },
-    selectthisHd(index, inndex) {
-      this.myActivity = this.allHd[index].second[inndex].orderName;
-      this.hdcode = this.allHd[index].second[inndex].orderType;
-      this.hdid = this.allHd[index].second[inndex].pId;
+    selectthisHd(index) {
+      this.myActivity = this.allHd[index].ORDER_NAME;
+      this.hdcode = this.allHd[index].ORDER_TYPE;
+      this.hdid = this.allHd[index].P_ID;
     },
     //选择活动
     comfirmMakeDetails() {

@@ -136,3 +136,11 @@ export function GetPromotionsById(data, config = {}) {
         return Promise.reject(err);
     })
 }
+//查找适应的活动
+export function GetPromotionByItem(data, config = {}) {
+    return post('/SAL_PROMOTION/GetPromotionByItem', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
