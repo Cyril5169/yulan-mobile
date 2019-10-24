@@ -82,6 +82,9 @@
           <iframe :src="storeUrl(mliao.itemNo)" style="display: none" frameborder="0"></iframe>
         </div>
       </van-list>
+      <div v-if="showTop" @click="backToTop" class="scrollTopCls">
+        <img style="width:50px;height:50px;" src="../../assets/backTop.png" />>
+      </div>
     </div>
 
     <!--查看库存-->
@@ -113,7 +116,7 @@ export default {
       myRoute: "customer",
       // route:"/searchsoft/mliao"
       softType: "请输入花边型号",
-      itemType: 'XHB',
+      itemType: "XHB",
       docmHeight: document.documentElement.clientHeight, //默认屏幕高度
       showHeight: document.documentElement.clientHeight, //实时屏幕高度
       loading: false,
@@ -138,6 +141,9 @@ export default {
       singleKuCun: [], //单个库存信息
       docmHeight: document.documentElement.clientHeight, //默认屏幕高度
       showHeight: document.documentElement.clientHeight, //实时屏幕高度
+      showTop: false,
+      scrollTop: 0,
+      scrollTarget: null
     };
   },
   components: {
@@ -148,6 +154,23 @@ export default {
     [List.name]: List
   },
   methods: {
+    backToTop(e) {
+      //返回顶部
+      var me = this;
+      e.preventDefault();
+      var distance = this.scrollTop;
+      var dParams = 30;
+      var time = 1;
+      me.interval = setInterval(function() {
+        dParams += 30 * time;
+        time++;
+        distance = distance > 0 ? distance : 0;
+        me.scrollTarget.scrollTop = distance - dParams;
+        if (me.scrollTop < 10) {
+          clearInterval(me.interval);
+        }
+      }, 10);
+    },
     //查看库存
     checkKucun(index) {
       this.singleKuCun = [];
@@ -179,10 +202,14 @@ export default {
           limit: 10, //一页限制条数
           page: this.currentPage //第几页
         };
-        if(this.mliaos.length>0){
-          this.loadingText="加载中，共"+this.mliaos[0].total+"项，已加载"+this.mliaos.length+"项";
+        if (this.mliaos.length > 0) {
+          this.loadingText =
+            "加载中，共" +
+            this.mliaos[0].total +
+            "项，已加载" +
+            this.mliaos.length +
+            "项";
         }
-        
         axios.post(url, data).then(data => {
           if (data.data.code == 1) {
             this.mliaos = [];
@@ -219,16 +246,15 @@ export default {
             }
           }
         });
-
       }, 500);
     },
     //搜索
     onSearch() {
       this.mliaos = [];
-      this.finished=false;
-      this.currentPage=0;
+      this.finished = false;
+      this.currentPage = 0;
       this.finishedText = "暂无查询结果";
-      this.loadingText="加载中";
+      this.loadingText = "加载中";
       this.onLoad();
     },
     //详情
@@ -265,10 +291,23 @@ export default {
       },
       false
     );
+    //监控滚动条
+    window.addEventListener(
+      "scroll",
+      function(e) {
+        self.scrollTop = e.target.scrollTop;
+        self.scrollTarget = e.target;
+        if (e.target.scrollTop > 100) {
+          self.showTop = true;
+        } else {
+          self.showTop = false;
+        }
+      },
+      true
+    );
   },
   destroyed() {
-    if (window.vTop == this)
-      window.vTop = null;
+    if (window.vTop == this) window.vTop = null;
   },
   watch: {
     $route(val, oldVal) {
@@ -300,11 +339,11 @@ export default {
         this.softType = "请输入陶瓷型号";
         this.itemType = "TC";
       }
-      this.searchvalue="";
-      
+      this.searchvalue = "";
+
       this.onSearch();
     },
-    showHeight: function () {
+    showHeight: function() {
       if (this.docmHeight > this.showHeight) {
         this.hidshow = false;
       } else {
@@ -442,5 +481,10 @@ export default {
   background-repeat: no-repeat;
   background-size: contain;
   z-index: 99;
+}
+.scrollTopCls {
+  position: fixed;
+  right: 10px;
+  bottom: 20px;
 }
 </style>
