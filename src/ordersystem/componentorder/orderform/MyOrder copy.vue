@@ -529,8 +529,7 @@ export default {
       });
     },
     showPrice() {
-      if (this.$store.state.info.data)
-        return this.$store.getters.getIsManage != "0";
+      return this.$store.getters.getIsManage != "0";
     }
   },
   created() {
@@ -556,7 +555,8 @@ export default {
 
   },
   destroyed() {
-    if (window.vTop == this) window.vTop = null;
+    if (window.vTop == this)
+      window.vTop = null;
   },
   watch: {
     showHeight: function () {

@@ -1,5 +1,5 @@
 <template>
-  <div class="top" ref="top">
+  <div v-bind:class="{top:!greenBackground,'top-green':greenBackground}" ref="top">
     <div class="top-bottom">
       <div class="arrow">
         <div class="img" @click="back"></div>
@@ -10,7 +10,7 @@
 </template>
 <script>
 export default {
-  props: ["top", "from", "msgtitle"],
+  props: ["top", "from", "msgtitle","greenBackground"],
   data() {
     return {
       msg: ""

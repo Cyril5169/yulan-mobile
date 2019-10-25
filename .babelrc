@@ -18,6 +18,7 @@
 ],
 "ignore": [
   "src/assets/mui/js/mui.js",
-  "src/assets/mui/js/mui.min.js"
+  "src/assets/mui/js/mui.min.js",
+  "src/assets/iscroll/iscroll.js"
 ]
 }
