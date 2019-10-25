@@ -89,9 +89,9 @@
           <span class="good-num">{{good.NOTES}}</span>
         </div>
         <!-- <div class="good-item5" v-if="good.packDetailId"> -->
-          <!--<div class="good-item5">-->
-          <!-- <span @click="toThdh(good.ITEM_NO)">出货详情</span>
-        </div> -->
+        <!--<div class="good-item5">-->
+        <!-- <span @click="toThdh(good.ITEM_NO)">出货详情</span>
+        </div>-->
       </div>
     </div>
     <div class="order-msg order-msg-item2">
@@ -127,6 +127,7 @@
 import axios from "axios";
 import top from "../../../components/Top";
 import { Toast, Popup, Dialog } from "vant";
+import { InsertOperationRecord, cancelOrderNew } from "@/api/orderListASP";
 
 export default {
   name: "orderdetails",
@@ -257,20 +258,22 @@ export default {
       })
         .then(() => {
           // on confirm
-          let orderUrl = this.orderBaseUrl + "/order/cancelOrder.do";
-          let orderData = {
-            orderNo: this.$route.params.find //订单号
-          };
-          axios.post(orderUrl, orderData).then(res => {
-            if (res.data.msg == "SUCCESS") {
-              Toast({
-                duration: 1000,
-                message: "取消订单成功"
-              });
-              this.$router.push({
-                path: "/myorder"
-              });
-            }
+          // let orderUrl = this.orderBaseUrl + "/order/cancelOrder.do";
+          // let orderData = {
+          //   orderNo: this.$route.params.find //订单号
+          // };
+          //axios.post(orderUrl, orderData).then(res => {
+          cancelOrderNew({
+            cid: this.$store.getters.getCId,
+            cid: this.$route.params.find
+          }).then(res => {
+            Toast({
+              duration: 1000,
+              message: "取消订单成功"
+            });
+            this.$router.push({
+              path: "/myorder"
+            });
           });
         })
         .catch(() => {
@@ -316,6 +319,12 @@ export default {
             duration: 1000,
             message: "订单提交成功"
           });
+          var recordData = {
+            ORDER_NO: this.$route.params.find,
+            OPERATION_PERSON: this.$store.getters.getCId,
+            OPERATION_NAME: "重新提交"
+          };
+          InsertOperationRecord(recordData); //插入操作记录
           this.$router.push({
             path: "/myorder"
           });

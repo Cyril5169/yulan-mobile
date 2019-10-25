@@ -537,7 +537,8 @@ export default {
       });
     },
     showPrice() {
-      return this.$store.getters.getIsManage != "0";
+      if (this.$store.state.info.data)
+        return this.$store.getters.getIsManage != "0";
     }
   },
   created() {
@@ -555,9 +556,8 @@ export default {
       })();
     };
   },
-  destroyed(){
-    if(window.vTop==this)
-      window.vTop =  null;
+  destroyed() {
+    if (window.vTop == this) window.vTop = null;
   },
   watch: {
     showHeight: function() {
