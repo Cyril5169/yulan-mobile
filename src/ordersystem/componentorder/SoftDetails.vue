@@ -574,7 +574,13 @@ export default {
 
 <style scoped>
 .single-msg {
-  margin-top: 60px;
+  position: fixed;
+  overflow-y: scroll;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 50px;
+  -webkit-overflow-scrolling: touch; /*这句是为了滑动更顺畅*/
   padding: 10px 20px;
   font-size: 15px;
 }

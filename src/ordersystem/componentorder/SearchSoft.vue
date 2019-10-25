@@ -2,31 +2,9 @@
   <div class="search-order">
     <div class="soft-nav">
       <ul>
-        <!-- <li>
-          <router-link to="/searchsoft/mliao" exact>面料</router-link>
-        </li>
-        <li>
-          <router-link to="/searchsoft/hbian" exact>花边</router-link>
-        </li>
-        <li>
-          <router-link to="/searchsoft/guadai" exact>挂袋/配件包</router-link>
-        </li>
-        <li>
-          <router-link to="/searchsoft/bzhen" exact>抱枕</router-link>
-        </li>
-        <li>
-          <router-link to="/searchsoft/ghua" exact>挂画</router-link>
-        </li>
-        <li>
-          <router-link to="/searchsoft/taoci" exact>成品帘</router-link>
-        </li>
-        <li>
-          <router-link to="/searchsoft/qita" exact>其他</router-link>
-        </li> -->
         <li v-for="(item,index) in types" :key="index">
           <a @click="typeClick(item,this)" v-bind:class="{ active: item.isActive }">{{item.text}}</a>
         </li>
-        
       </ul>
     </div>
     <div class="searchtop">

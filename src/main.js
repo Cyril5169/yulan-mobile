@@ -11,6 +11,7 @@ import store from "./store";
 //订单系统的URL
 import Global from "./Global.vue";
 import mui from "./assets/mui/js/mui";
+import IScroll from "./assets/iscroll/iscroll"
 //import * as baseUrlASP from "./api/httpASP.js";
 
 axios.defaults.baseURL = "http://14.29.221.109:10250/yulan";
@@ -59,6 +60,7 @@ Vue.prototype.$http = axios;
 Vue.prototype.orderBaseUrl = orderBaseUrl;
 Vue.prototype.capitalUrl = Global.capitalUrl;
 Vue.prototype.mui = mui;
+Vue.prototype.IScroll = IScroll;
 Vue.prototype.baseUrlASP = baseUrl;
 
 export const $http = axios;
@@ -105,3 +107,22 @@ document.addEventListener("plusready", function(a) {
   );
   vm.UpdateVersion();
 });
+document.addEventListener("resume", function(){
+	//从后台切换到前台,检查更新
+	vm.UpdateVersion();
+}, false);
+document.addEventListener("pause", function(){
+	//从前台切换到后台
+  console.log("已切换至后台");
+  mui.toast("温馨提示：玉兰B2B继续在后台运行", { duration: 1500 });
+  
+}, false);
+// 获取错误信息
+document.addEventListener("error",function(e){
+  mui.alert("请求的页面无法打开", '发生错误');
+},false);
+// 禁止选择
+document.oncontextmenu=function(){
+	return false;
+};
+

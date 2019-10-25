@@ -7,9 +7,9 @@ const orderBaseUrl="http://14.29.223.114:10250/yulan-order";//正式
 const capitalUrl = "http://14.29.223.114:10250/yulan-capital";
 
 function UpdateVersion(ischeck) {
-  var showLoading = plus.nativeUI.showWaiting("检查更新...");
+  var showLoading;
   plus.runtime.getProperty(plus.runtime.appid, function (inf) {
-    console.log("当前版本号为:" + inf.version)
+    console.log("当前版本号为:" + plus.runtime.version)
     mui.ajax(updateUrl + "?v=" + Date.parse(new Date()), {
       data: {},
       dataType: 'json',
@@ -31,7 +31,7 @@ function UpdateVersion(ischeck) {
             force: false//是否强制安装
           }, function (widgetInfo) {
             plus.nativeUI.closeWaiting();
-            if (widgetInfo.version == inf.version) {
+            if (widgetInfo.version == plus.runtime.version) {
               console.log("没有安装");
               plus.nativeUI.alert("应用资源没有完成更新！", function () {
                 plus.runtime.restart();
@@ -50,9 +50,10 @@ function UpdateVersion(ischeck) {
         }
 
         // 如果有新版本，则提示需要更新
-        if (checkversion(inf.version, data.version)) {
-          mui.confirm('检查到新版本，是否马上下载并更新？', '检查更新', ['是', '否，将退出程序'], function (e) {
+        if (checkversion(plus.runtime.version, data.version)) {
+          mui.confirm(`当前版本为${plus.runtime.version}，最新版本为${data.version}，检查到新版本，是否马上下载并更新？`, '检查更新', ['是', '否，将退出程序'], function (e) {
             if (e.index == 0) {
+              showLoading = plus.nativeUI.showWaiting("准备更新...");
               var wgtUrl = data.downloadURI;
               console.log(wgtUrl);
               var downToaknew = plus.downloader.createDownload(wgtUrl, {
@@ -63,7 +64,7 @@ function UpdateVersion(ischeck) {
                   Vue.set(app, "showProgress", false);
                   installApp(d.filename);
                 } else {
-                  showLoading.setTitle("下载失败")
+                  showLoading.setTitle("下载失败");
                 }
 
               });
@@ -72,7 +73,7 @@ function UpdateVersion(ischeck) {
               Vue.set(app, "showProgress", true);
               var prg = 0;
               downToaknew.addEventListener("statechanged", function (task, status) {
-                //给下载任务设置一个监听 并根据状态  做操作
+                //给下载任务设置一个监听 并根据状态做操作
                 switch (task.state) {
                   case 1:
                     showLoading.setTitle("正在下载");
