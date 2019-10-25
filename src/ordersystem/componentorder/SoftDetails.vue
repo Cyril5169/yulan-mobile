@@ -99,7 +99,7 @@
 <script>
 import axios from "axios";
 import top from "../../components/Top";
-import { GetPromotionByItem } from "@/api/orderListASP";
+import { getItemById, GetPromotionByItem } from "@/api/orderListASP";
 import {
   Switch,
   Stepper,
@@ -415,48 +415,50 @@ export default {
       //   "&productBrand=" +
       //   value.productBrand;
       // axios.get(hdUrl).then(data => {
-      GetPromotionByItem({
-        cid: this.$store.getters.getCId,
-        customerType: this.$store.getters.getCtype,
-        itemNo: value.itemNo,
-        itemVersion: value.itemVersion,
-        productType: value.productType,
-        productBrand: value.productBrand
-      }).then(data => {
-        this.allHd = data.data;
-        if (this.allHd.length == 0) {
-          this.myActivity = "此产品不参与活动";
-          this.showMoreHd = false;
-        } else {
-          this.myActivity = "请选择活动";
-          this.showMoreHd = true;
-        }
-        var defaultSel = {
-          pri: 0,
-          index: 0
-        };
-        if (this.$route.params.commodityID) {
-          this.editcart();
-        } else {
-          for (var i = 0; i < this.allHd.length; i++) {
-            if (this.allHd[i].PRIORITY != 0 && defaultSel.pri == 0) {
-              defaultSel.pri = this.allHd[i].PRIORITY;
-              defaultSel.index = i;
-            } else if (
-              this.allHd[i].PRIORITY != 0 &&
-              defaultSel.pri > this.allHd[i].PRIORITY
-            ) {
-              defaultSel.pri = this.allHd[i].PRIORITY;
-              defaultSel.index = i;
+      getItemById({ itemNo: value.itemNo }).then(res => {
+        GetPromotionByItem({
+          cid: this.$store.getters.getCId,
+          customerType: this.$store.getters.getCtype,
+          itemNo: value.itemNo,
+          itemVersion: res.data.ITEM_VERSION,
+          productType: res.data.PRODUCT_TYPE,
+          productBrand: res.data.PRODUCT_BRAND
+        }).then(data => {
+          this.allHd = data.data;
+          if (this.allHd.length == 0) {
+            this.myActivity = "此产品不参与活动";
+            this.showMoreHd = false;
+          } else {
+            this.myActivity = "请选择活动";
+            this.showMoreHd = true;
+          }
+          var defaultSel = {
+            pri: 0,
+            index: 0
+          };
+          if (this.$route.params.commodityID) {
+            this.editcart();
+          } else {
+            for (var i = 0; i < this.allHd.length; i++) {
+              if (this.allHd[i].PRIORITY != 0 && defaultSel.pri == 0) {
+                defaultSel.pri = this.allHd[i].PRIORITY;
+                defaultSel.index = i;
+              } else if (
+                this.allHd[i].PRIORITY != 0 &&
+                defaultSel.pri > this.allHd[i].PRIORITY
+              ) {
+                defaultSel.pri = this.allHd[i].PRIORITY;
+                defaultSel.index = i;
+              }
+            }
+            if (defaultSel.pri != 0) {
+              this.myActivity = this.allHd[defaultSel.index].ORDER_NAME;
+              this.hdcode = this.allHd[defaultSel.index].ORDER_TYPE;
+              this.hdid = this.allHd[defaultSel.index].P_ID;
             }
           }
-          if (defaultSel.pri != 0) {
-            this.myActivity = this.allHd[defaultSel.index].ORDER_NAME;
-            this.hdcode = this.allHd[defaultSel.index].ORDER_TYPE;
-            this.hdid = this.allHd[defaultSel.index].P_ID;
-          }
-        }
-        //这里面axios的this不指向vue,所以在使用axios是最好使用es6箭头函数
+          //这里面axios的this不指向vue,所以在使用axios是最好使用es6箭头函数
+        });
       });
     },
     selectthisHd(index) {
