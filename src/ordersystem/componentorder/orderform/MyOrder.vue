@@ -291,7 +291,7 @@ export default {
       hidshow: true, //显示或者隐藏footer
       showShipment: false,
       shipData: [],
-      showTrans: true,
+      showTrans: false,
       transUrl:"https://m.kuaidi100.com/result.jsp?nu=038464072671"
     };
   },
