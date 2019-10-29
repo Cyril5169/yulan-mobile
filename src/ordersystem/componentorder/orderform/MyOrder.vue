@@ -292,7 +292,7 @@ export default {
       showShipment: false,
       shipData: [],
       showTrans: false,
-      transUrl:"https://m.kuaidi100.com/result.jsp?nu=038464072671"
+      transUrl: "https://m.kuaidi100.com/result.jsp?nu=038464072671"
     };
   },
   methods: {
@@ -560,7 +560,6 @@ export default {
     this.ksSet(time);
   },
   mounted() {
-    window.vTop = this;
     // window.onresize监听页面高度的变化
     window.onresize = () => {
       return (() => {
@@ -574,7 +573,9 @@ export default {
       scrollX: true,//横向滚动
       //scrollbars: true,//横向滚动条
     });
-
+  },
+  activated(){
+    window.vTop = this;
   },
   destroyed() {
     if (window.vTop == this) window.vTop = null;

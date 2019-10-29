@@ -92,7 +92,8 @@ export default {
     },
     logout() {
       this.$router.push({
-        path: "/"
+        name: "Sign",
+        params: { autoSign: false }
       });
       this.$store.commit("initState");
     }
