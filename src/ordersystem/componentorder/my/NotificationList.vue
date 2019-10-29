@@ -19,7 +19,7 @@
       </van-list>
     </div>
     <van-popup v-model="showNotification" class="nt-detail">
-      <top @backclick="showNotification=false" msgtitle="公告详情" />
+      <top @backclick="showNotification=false" :msgtitle="TITLE" />
       <div class="nt-content" v-html="CONTENT"></div>
     </van-popup>
   </div>
@@ -49,7 +49,8 @@ export default {
       finished: false,
       page: 1,
       showNotification: false,
-      CONTENT: ""
+      CONTENT: "",
+      TITLE: "",
     };
   },
   computed: {},
@@ -81,6 +82,7 @@ export default {
     },
     onClick(e, a) {
       this.CONTENT = e.CONTENT;
+      this.TITLE = e.TITLE;
       this.showNotification = true;
     }
   },
@@ -88,6 +90,7 @@ export default {
     this.from = this.$route.params.from;
     this.showNotification = this.$route.params.showNotification;
     this.CONTENT = this.$route.params.CONTENT;
+    this.TITLE = this.$route.params.TITLE;
   }
 };
 </script>
