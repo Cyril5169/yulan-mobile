@@ -120,7 +120,7 @@
       </div>
     </div>
     <!--<navBottom :tab-stage="myRoute" v-show="hidshow"></navBottom>-->
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <!-- <van-loading class="loading" type="spinner" v-if="loading" color="black" /> -->
     <!--时间选择-->
     <van-popup v-model="showks" position="bottom">
       <van-datetime-picker
@@ -437,7 +437,6 @@ export default {
       this.myTypeCode = name;
       this.orderSearch();
     },
-
     back() {
       window.vTop = null;
       this.$router.push({
@@ -459,7 +458,7 @@ export default {
           finishTime: this.jsDataSet + " 23:59:59",
           orderType: this.myTypeCode
         };
-        getAllOrders(data)
+        getAllOrders(data, { loading: false })
           .then(data => {
             this.totalLists = data.count;
             //获取总页数
