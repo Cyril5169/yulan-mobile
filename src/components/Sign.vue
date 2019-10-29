@@ -20,7 +20,7 @@
         <input type="password" placeholder="密码" v-model="password" @keyup.enter="normalsign()" />
       </div>
     </div>
-    <div class="remember">
+    <div class="remember" hidden="1">
       <div style="position:relative;left:50px;">
         <input style="width:14px;height:14px;" type="checkbox" value v-model="rememberPassWord" />记住密码
       </div>
@@ -46,7 +46,8 @@ export default {
       realName: "",
       bodyHeight: "",
       warnMsg: "账号或密码错误 ！",
-      rememberPassWord: false
+      rememberPassWord: true,
+      autoSign: true,
     };
   },
   beforeRouteEnter(to, from, next) {
@@ -74,12 +75,20 @@ export default {
     next();
   },
   mounted() {
+    if(this.$route.params && this.$route.params.autoSign != undefined){
+      this.autoSign = this.$route.params.autoSign;
+    }else{
+      this.autoSign = true;
+    }
+    
     this.isai();
     this.$store.commit("initState");
     this.name = window.localStorage.getItem("username");
     this.password = window.localStorage.getItem("password");
-    this.rememberPassWord =
-      window.localStorage.getItem("rememberPassWord") == "true";
+    this.rememberPassWord = window.localStorage.getItem("rememberPassWord") == "true";
+    if(this.autoSign){
+      this.normalsign();
+    }
   },
   methods: {
     normalsign() {

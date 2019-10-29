@@ -84,6 +84,11 @@ document.addEventListener("plusready", function(a) {
   plus.key.addEventListener(
     "backbutton",
     function() {
+      var overlays = document.getElementsByClassName("van-overlay");//获取遮罩层
+      if(overlays.length > 0) {
+        overlays[0].click();//关闭遮罩层
+        return;
+      }
       //监听返回键
       if (window.vTop) {
         window.vTop.back();
