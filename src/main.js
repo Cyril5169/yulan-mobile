@@ -85,12 +85,14 @@ document.addEventListener("plusready", function(a) {
     "backbutton",
     function() {
       var overlays = document.getElementsByClassName("van-overlay");//获取遮罩层
-      if(overlays.length > 0) {
+      if(overlays.length > 0 && overlays[0].style && overlays[0].style.display!="none") {
+        console.log("触发点击了遮罩层");
         overlays[0].click();//关闭遮罩层
         return;
       }
       //监听返回键
       if (window.vTop) {
+        console.log("触发back,from是："+window.vTop.from);
         window.vTop.back();
         return;
       }

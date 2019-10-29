@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top :top="set" :from="from"></top>
+    <top :top="set" :from="from" ref="top"></top>
     <div class="notification-list">
       <van-list
         v-model="loading"
@@ -18,8 +18,8 @@
         </van-cell>
       </van-list>
     </div>
-    <van-popup v-model="showNotification" class="nt-detail">
-      <top @backclick="showNotification=false" :msgtitle="TITLE" />
+    <van-popup v-model="showNotification" @closed="notifyClose" class="nt-detail">
+      <top @backclick="hideNotification()" :msgtitle="TITLE" />
       <div class="nt-content" v-html="CONTENT"></div>
     </van-popup>
   </div>
@@ -84,7 +84,14 @@ export default {
       this.CONTENT = e.CONTENT;
       this.TITLE = e.TITLE;
       this.showNotification = true;
-    }
+    },
+    hideNotification(){
+      this.showNotification=false;
+      window.vTop = this.$refs.top;
+    },
+    notifyClose(){
+      window.vTop = this.$refs.top;
+    },
   },
   created() {
     this.from = this.$route.params.from;

@@ -124,6 +124,7 @@ export default {
         params: {
           showNotification: true,
           CONTENT: this.currentNotice.CONTENT,
+          TITLE: this.currentNotice.TITLE,
           from: 'customer',
         }
       });
