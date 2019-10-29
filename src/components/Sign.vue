@@ -34,6 +34,7 @@
 <script>
 import warn from "@/components/passwordwarn";
 import IDSel from "./IdSelection";
+import UpdateAppClientId from "@/api/webUserASP";
 
 export default {
   data() {
@@ -156,6 +157,13 @@ export default {
               "rememberPassWord",
               this.rememberPassWord
             );
+            //获取clientid
+            if(vm.plus){
+              let clientid = plus.push.getClientInfo().clientid;
+              console.log("clientid为" + clientid);
+              UpdateAppClientId(this.name, clientid);
+            }
+            
             this.$router.push({
               path: "/customer"
             });
