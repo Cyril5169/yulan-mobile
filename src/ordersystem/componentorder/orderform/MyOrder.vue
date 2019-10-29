@@ -59,7 +59,10 @@
             <div class="nav">
               <div class="wall-icon"></div>
               <span class="title">订单号:{{orderList.ORDER_NO}}</span>
-              <span class="state">{{orderList.STATUS_ID}}</span>
+              <span class="state">
+                {{ orderList.STATUS_ID | transStatus
+                }}{{ orderList.CURTAIN_STATUS_ID | curtainStatus }}
+              </span>
             </div>
             <div class="good">
               <table>
@@ -90,12 +93,27 @@
               <span v-if="showPrice" class="allhj">合计：￥{{orderList.ALL_SPEND}}元</span>
               <span v-else class="allhj">合计：***元</span>
             </div>
-            <span v-bind:class="{'detail-button-showstatus':orderList.showStatus,'detail-button':!orderList.showStatus}" @click.stop="toOrderDetails(index)">查看详情</span>
+            <span
+              v-bind:class="{'detail-button-showstatus':orderList.showStatus,'detail-button':!orderList.showStatus}"
+              @click.stop="toOrderDetails(index)"
+            >查看详情</span>
             <!--欠款待提交（提交的话需要做库存判断）-->
             <!--欠款可提交（提交的话不用库存判断）-->
             <div class="next-do" v-if="orderList.showStatus">
-              <span>取消订单</span>
-              <span class="to-pay">提交</span>
+              <span
+                v-if="orderList.STATUS_ID == 5 ||
+                orderList.STATUS_ID == 6 ||
+                orderList.STATUS_ID == 0 ||
+                (orderList.STATUS_ID == 1 &&
+                  orderList.CURTAIN_STATUS_ID !== '' &&
+                  orderList.CURTAIN_STATUS_ID == 0)"
+                @click="cancelOrder(orderList.ORDER_NO)"
+              >取消订单</span>
+              <span
+                class="to-pay"
+                v-if="orderList.STATUS_ID == 5 || orderList.STATUS_ID == 6"
+                @click="tjOrder(orderList)"
+              >提交订单</span>
             </div>
           </div>
         </van-list>
@@ -168,16 +186,24 @@
           </tr>
           <tr>
             <td>物流单号：</td>
-            <td><a href="javascript:void(0);" @click="transDetail(item.TRANS_ID)">{{item.TRANS_ID}}</a></td>
+            <td>
+              <a href="javascript:void(0);" @click="transDetail(item.TRANS_ID)">{{item.TRANS_ID}}</a>
+            </td>
           </tr>
         </table>
       </div>
     </van-popup>
     <van-popup v-model="showTrans" closeable style="width:90%;height:85%;overflow:hidden;">
-      <div style="position: absolute;top:0;left:0;right:18px;height:30px;line-height:30px;vertical-align:center;z-index:10000;background:#3481ed;color:#fff">
+      <div
+        style="position: absolute;top:0;left:0;right:18px;height:30px;line-height:30px;vertical-align:center;z-index:10000;background:#3481ed;color:#fff"
+      >
         <span>物流详情</span>
       </div>
-      <iframe :src="transUrl" style="position: absolute;top:0;left:0;width:100%;height:100%;z-index:9999;" frameborder="0"></iframe>
+      <iframe
+        :src="transUrl"
+        style="position: absolute;top:0;left:0;width:100%;height:100%;z-index:9999;"
+        frameborder="0"
+      ></iframe>
     </van-popup>
   </div>
 </template>
@@ -189,7 +215,11 @@ import {
   Picker,
   Pagination,
   Toast,
-  Loading, Tab, Tabs, List,
+  Loading,
+  Tab,
+  Tabs,
+  List,
+  Dialog
 } from "vant";
 import {
   getAllOrders,
@@ -215,7 +245,8 @@ export default {
     [Loading.name]: Loading,
     [Tab.name]: Tab,
     [List.name]: List,
-    [Tabs.name]: Tabs
+    [Tabs.name]: Tabs,
+    [Dialog.name]: Dialog
   },
   data() {
     return {
@@ -224,7 +255,7 @@ export default {
       finished: false,
       finishedText: "加载完毕",
       loadingText: "加载中...",
-      errorText:"请求失败，点击重新加载",
+      errorText: "请求失败，点击重新加载",
       error: false,
       //底部导航栏样式切换
       myRoute: "order",
@@ -254,15 +285,14 @@ export default {
         { text: "已受理", status: "2" },
         { text: "部分发货", status: "4" },
         { text: "已完成", status: "7" },
-        { text: "已作废", status: "3" },
+        { text: "已作废", status: "3" }
       ],
-      orderType:
-        [
-          { text: "全部产品", code: "" },
-          { text: "墙纸配套类", code: "W" },
-          { text: "软装", code: "Y" },
-          { text: "窗帘", code: "X" }
-        ],
+      orderType: [
+        { text: "全部产品", code: "" },
+        { text: "墙纸配套类", code: "W" },
+        { text: "软装", code: "Y" },
+        { text: "窗帘", code: "X" }
+      ],
       activeOrderType: 0,
       showType: false,
       //当前状态
@@ -294,6 +324,58 @@ export default {
       showTrans: false,
       transUrl: "https://m.kuaidi100.com/result.jsp?nu=038464072671"
     };
+  },
+  filters: {
+    transStatus(value) {
+      switch (value) {
+        case "0":
+          return "待提交";
+          break;
+        case "1":
+          return "已提交";
+          break;
+        case "12":
+          return "已接收";
+          break;
+        case "2":
+          return "已受理";
+          break;
+        case "3":
+          return "已作废";
+          break;
+        case "4":
+          return "部分发货";
+          break;
+        case "5":
+          return "余额不足待提交";
+          break;
+        case "6":
+          return "余额不足可提交";
+          break;
+        case "7":
+          return "已完成";
+          break;
+      }
+    },
+    curtainStatus(value) {
+      switch (value) {
+        case "0":
+          return "待审核";
+          break;
+        case "1":
+          return "待修改";
+          break;
+        case "2":
+          return "待确认";
+          break;
+        case "3":
+          return "兰居待修改";
+          break;
+        case "4":
+          return "已通过";
+          break;
+      }
+    }
   },
   methods: {
     confirmTimeks(value) {
@@ -354,7 +436,6 @@ export default {
     onOrderTypeChange(name, title) {
       this.myTypeCode = name;
       this.orderSearch();
-
     },
 
     back() {
@@ -378,82 +459,47 @@ export default {
           finishTime: this.jsDataSet + " 23:59:59",
           orderType: this.myTypeCode
         };
-        getAllOrders(data).then(data => {
-          this.totalLists = data.count;
-          //获取总页数
-          this.totalPage = parseInt(data.count / 5) + 1;
-          for (let i = 0; i < data.data.length; i++) {
-            this.orderLists.push(data.data[i]);
-          }
+        getAllOrders(data)
+          .then(data => {
+            this.totalLists = data.count;
+            //获取总页数
+            this.totalPage = parseInt(data.count / 5) + 1;
+            for (let i = 0; i < data.data.length; i++) {
+              this.orderLists.push(data.data[i]);
+            }
 
-          this.loadingText =
-            "加载中，共" +
-            this.totalLists +
-            "项，已加载" +
-            this.orderLists.length +
-            "项";
-          if (this.currentPage >= this.totalPage) {
-            this.finished = true;
-            this.finishedText = "加载完毕，总记录数" + this.totalLists;
-          } else {
-            this.finished = false;
-          }
-          // 加载状态结束
-          this.loading = false;
-          for (let i = 0; i < this.orderLists.length; i++) {
-            this.orderLists[i].showStatus = false;
-            if (this.myStatu == "0") {
-              switch (this.orderLists[i].STATUS_ID) {
-                case "0":
-                  this.orderLists[i].STATUS_ID = "待审核";
-                  continue;
-                case "1":
-                  this.orderLists[i].STATUS_ID = "客户待修改";
-                  continue;
-                case "2":
-                  this.orderLists[i].STATUS_ID = "客户待确认";
-                  continue;
-                case "3":
-                  this.orderLists[i].STATUS_ID = "兰居待修改";
-                case "4":
-                  this.orderLists[i].STATUS_ID = "可提交";
-              }
+            this.loadingText =
+              "加载中，共" +
+              this.totalLists +
+              "项，已加载" +
+              this.orderLists.length +
+              "项";
+            if (this.currentPage >= this.totalPage) {
+              this.finished = true;
+              this.finishedText = "加载完毕，总记录数" + this.totalLists;
             } else {
-              switch (this.orderLists[i].STATUS_ID) {
-                case "1":
-                  this.orderLists[i].STATUS_ID = "已提交";
-                  continue;
-                case "12":
-                  this.orderLists[i].STATUS_ID = "已接收";
-                  continue;
-                case "2":
-                  this.orderLists[i].STATUS_ID = "已受理";
-                  continue;
-                case "3":
-                  this.orderLists[i].STATUS_ID = "已作废";
-                  continue;
-                case "5":
-                  this.orderLists[i].STATUS_ID = "余额不足待提交";
-                  continue;
-                case "6":
-                  this.orderLists[i].STATUS_ID = "欠款可提交";
-                  continue;
-                case "7":
-                  this.orderLists[i].STATUS_ID = "已完成";
-                  continue;
+              this.finished = false;
+            }
+            // 加载状态结束
+            this.loading = false;
+            for (let i = 0; i < this.orderLists.length; i++) {
+              this.orderLists[i].showStatus = false;
+              if (
+                this.orderLists[i].STATUS_ID == 5 ||
+                this.orderLists[i].STATUS_ID == 6 ||
+                this.orderLists[i].STATUS_ID == 0 ||
+                (this.orderLists[i].STATUS_ID == 1 &&
+                  this.orderLists[i].CURTAIN_STATUS_ID !== "" &&
+                  this.orderLists[i].CURTAIN_STATUS_ID == 0)
+              ) {
+                this.orderLists[i].showStatus = true;
               }
             }
-            if (
-              this.orderLists[i].STATUS_ID == "余额不足待提交" ||
-              this.orderLists[i].STATUS_ID == "欠款可提交"
-            ) {
-              this.orderLists[i].showStatus = true;
-            }
-          }
-        }).catch((err) => {
-          this.loading=false;
-          this.error=true;
-    });
+          })
+          .catch(err => {
+            this.loading = false;
+            this.error = true;
+          });
       }, 500);
     },
     //获取订单列表及订单查询
@@ -489,10 +535,9 @@ export default {
       });
     },
     //物流详情
-    transDetail(trans_id){
-      this.transUrl =
-        "https://m.kuaidi100.com/result.jsp?nu=" + trans_id;
-      this.showTrans = true
+    transDetail(trans_id) {
+      this.transUrl = "https://m.kuaidi100.com/result.jsp?nu=" + trans_id;
+      this.showTrans = true;
     },
     //状态转换
     statusExchange(myStatu) {
@@ -542,6 +587,73 @@ export default {
       }
       return myStatu;
     },
+    cancelOrder(orderNo) {
+      Dialog.confirm({
+        message: "是否确认取消订单"
+      })
+        .then(() => {
+          cancelOrderNew({
+            cid: this.$store.getters.getCId,
+            orderNo: orderNo
+          }).then(res => {
+            Toast({
+              duration: 1000,
+              message: "取消订单成功"
+            });
+            this.orderSearch();
+          });
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
+    //再次提交订单时的余额判断
+    tjOrder(item) {
+      if (item.STATUS_ID == 5) {
+        //余额查询
+        let monUrl = this.orderBaseUrl + "/order/getResidemoney.do";
+        let mondata = {
+          cid: this.$store.getters.getCId,
+          companyId: this.$store.getters.getCMId //登录客户号
+        };
+        axios.post(monUrl, mondata).then(val => {
+          if (val.data.data > item.ALL_SPEND) {
+            this.onSubmitOrder(item.ORDER_NO);
+          } else {
+            Dialog.alert({
+              message: "余额不足,提交失败"
+            }).then(() => {});
+          }
+        });
+      } else if (item.STATUS_ID == 6) {
+        this.onSubmitOrder(item.ORDER_NO);
+      }
+    },
+    //订单提交
+    onSubmitOrder(orderNo) {
+      let orderURL = this.orderBaseUrl + "/order/putAgainOrder.do";
+      let orderData = {
+        cid: this.$store.getters.getCId, //登录客户号
+        orderNo: orderNo //订单号
+      };
+      axios.post(orderURL, orderData).then(res => {
+        if (res.data.code == 0) {
+          Toast({
+            duration: 1000,
+            message: "订单提交成功"
+          });
+          var recordData = {
+            ORDER_NO: this.$route.params.find,
+            OPERATION_PERSON: this.$store.getters.getCId,
+            OPERATION_NAME: "重新提交"
+          };
+          InsertOperationRecord(recordData); //插入操作记录
+          this.$router.push({
+            path: "/myorder"
+          });
+        }
+      });
+    }
   },
   computed: {
     filteredProduct() {
@@ -570,18 +682,18 @@ export default {
     var myScroll = new this.IScroll(option, {
       click: true,
       //mouseWheel: true,//鼠标滚动
-      scrollX: true,//横向滚动
+      scrollX: true //横向滚动
       //scrollbars: true,//横向滚动条
     });
   },
-  activated(){
+  activated() {
     window.vTop = this;
   },
   destroyed() {
     if (window.vTop == this) window.vTop = null;
   },
   watch: {
-    showHeight: function () {
+    showHeight: function() {
       if (this.docmHeight > this.showHeight) {
         this.hidshow = false;
       } else {

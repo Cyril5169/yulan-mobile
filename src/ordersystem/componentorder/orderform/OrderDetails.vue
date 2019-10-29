@@ -4,7 +4,7 @@
     <div class="banner">
       <div class="wait-time" ref="statusIcon"></div>
       <span class="status-title">{{statusTitle}}</span>
-      <span class="wait-pay-time" v-if="timeRemain">剩余 小时 分钟</span>
+      <!-- <span class="wait-pay-time" v-if="timeRemain">剩余 小时 分钟</span> -->
       <div class="address" v-show="orderStatus">
         <img class="address-icon" src="../../assetsorder/address.png" alt />
         <div class="address-contain">
@@ -71,7 +71,7 @@
       </div>
       <div class="good-contain" v-for="(good,index) in oneOrder.ORDERBODY" :key="index">
         <div class="good-item1">
-          <span>{{good.ITEM_NO}} {{good.NOTE}} {{good.PRODUCTION_VERSION}}</span>
+          <span>{{good.ITEM_NO}} {{good.NOTE}}</span>
           <span class="good-num">数量：{{good.QTY_REQUIRED}}</span>
           <span v-if="showPrice" style="float:right;margin-right:70px;">单价：￥{{good.UNIT_PRICE}}</span>
           <span v-else style="float:right;margin-right:70px;">***</span>
@@ -115,7 +115,7 @@
     </div>
     <div class="bottom-nav" v-show="notpayBottom">
       <span @click="cancelOrder" class="cancel-topay">取消订单</span>
-      <span @click="tjOrder" class="topay">提交</span>
+      <span @click="tjOrder" class="topay">提交订单</span>
     </div>
     <div class="bottom-nav" v-show="completeBottom">
       <span>我要投诉</span>
@@ -265,7 +265,7 @@ export default {
           //axios.post(orderUrl, orderData).then(res => {
           cancelOrderNew({
             cid: this.$store.getters.getCId,
-            cid: this.$route.params.find
+            orderNo: this.$route.params.find
           }).then(res => {
             Toast({
               duration: 1000,
@@ -286,7 +286,8 @@ export default {
         //余额查询
         let monUrl = this.orderBaseUrl + "/order/getResidemoney.do";
         let mondata = {
-          comapnyId: this.$store.getters.getCMId //登录客户号
+          cid: this.$store.getters.getCId,
+          companyId: this.$store.getters.getCMId //登录客户号
         };
         axios.post(monUrl, mondata).then(val => {
           if (val.data.data > this.oneOrder.ALL_SPEND) {

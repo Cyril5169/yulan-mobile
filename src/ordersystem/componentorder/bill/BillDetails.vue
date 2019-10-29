@@ -252,6 +252,7 @@ export default {
       if (value == "CZSK") return "收款";
       if (value == "TD") return "提单";
       if (value == "TH") return "退货";
+      if (value == "CJ") return "冲减";
       return value;
     }
   },

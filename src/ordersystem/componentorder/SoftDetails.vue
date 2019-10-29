@@ -54,17 +54,18 @@
       <van-radio-group v-model="hdid">
         <van-cell-group>
           <template v-for="(hdg,index) in allHd">
-            <van-cell
-              :key="index +'hdground' +  index"
-              :title="hdname(hdg.ORDER_NAME,hdg.ORDER_TYPE)"
-              clickable
-              @click="selectthisHd(index)"
-            >
-              <van-radio :name="hdg.P_ID" checked-color="#89cb81" />
+            <van-cell :key="index +'hdground' +  index" clickable @click="selectthisHd(index)">
+              <div style="text-align:center">
+                <span>{{hdname(hdg.ORDER_NAME,hdg.ORDER_TYPE)}}</span>
+                <van-radio style="display:inline-block" :name="hdg.P_ID" checked-color="#89cb81" />
+              </div>
             </van-cell>
           </template>
-          <van-cell title="不参与活动" clickable @click="noActivity">
-            <van-radio name checked-color="#89cb81" />
+          <van-cell clickable @click="noActivity">
+            <div style="text-align:center">
+              <span>不参与活动</span>
+              <van-radio style="display:inline-block" name checked-color="#89cb81" />
+            </div>
           </van-cell>
         </van-cell-group>
       </van-radio-group>
@@ -149,7 +150,7 @@ export default {
       //是否允许分批出货
       separate: false,
       //是否分批出货标志
-      fpfh: "-1",
+      fpfh: "",
       //优惠活动选择
       showSelect: false,
       //选择的活动类型
@@ -232,6 +233,7 @@ export default {
       ) {
         this.fpfh = "";
       }
+      if (this.fpfh == "") this.fpfh = "-1";
       if (this.$route.params.commodityID) {
         let editurl = this.orderBaseUrl + "/cart/updateCartItem.do";
         let editData = {
