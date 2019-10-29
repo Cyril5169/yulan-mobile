@@ -51,6 +51,8 @@
           :finished="finished"
           :finished-text="finishedText"
           :loading-text="loadingText"
+          :error.sync="error"
+          :error-text="errorText"
           @load="onLoad"
         >
           <div class="single-order" v-for="(orderList,index) in orderLists" :key="index">
@@ -166,10 +168,16 @@
           </tr>
           <tr>
             <td>物流单号：</td>
-            <td>{{item.TRANS_ID}}</td>
+            <td><a href="javascript:void(0);" @click="transDetail(item.TRANS_ID)">{{item.TRANS_ID}}</a></td>
           </tr>
         </table>
       </div>
+    </van-popup>
+    <van-popup v-model="showTrans" closeable style="width:90%;height:85%;overflow:hidden;">
+      <div style="position: absolute;top:0;left:0;right:18px;height:30px;line-height:30px;vertical-align:center;z-index:10000;background:#3481ed;color:#fff">
+        <span>物流详情</span>
+      </div>
+      <iframe :src="transUrl" style="position: absolute;top:0;left:0;width:100%;height:100%;z-index:9999;" frameborder="0"></iframe>
     </van-popup>
   </div>
 </template>
@@ -216,6 +224,8 @@ export default {
       finished: false,
       finishedText: "加载完毕",
       loadingText: "加载中...",
+      errorText:"请求失败，点击重新加载",
+      error: false,
       //底部导航栏样式切换
       myRoute: "order",
       //结束时间
@@ -280,7 +290,9 @@ export default {
       showHeight: document.documentElement.clientHeight, //实时屏幕高度
       hidshow: true, //显示或者隐藏footer
       showShipment: false,
-      shipData: []
+      shipData: [],
+      showTrans: false,
+      transUrl:"https://m.kuaidi100.com/result.jsp?nu=038464072671"
     };
   },
   methods: {
@@ -438,7 +450,10 @@ export default {
               this.orderLists[i].showStatus = true;
             }
           }
-        });
+        }).catch((err) => {
+          this.loading=false;
+          this.error=true;
+    });
       }, 500);
     },
     //获取订单列表及订单查询
@@ -472,6 +487,12 @@ export default {
         this.shipData = res.data[0].packDetails;
         this.showShipment = true;
       });
+    },
+    //物流详情
+    transDetail(trans_id){
+      this.transUrl =
+        "https://m.kuaidi100.com/result.jsp?nu=" + trans_id;
+      this.showTrans = true
     },
     //状态转换
     statusExchange(myStatu) {
