@@ -9,7 +9,7 @@ const capitalUrl = "http://14.29.223.114:10250/yulan-capital";
 function UpdateVersion(ischeck) {
   var showLoading;
   plus.runtime.getProperty(plus.runtime.appid, function (inf) {
-    console.log("当前版本号为:" + plus.runtime.version)
+    console.log("当前版本号为:" + inf.version)
     mui.ajax(updateUrl + "?v=" + Date.parse(new Date()), {
       data: {},
       dataType: 'json',
@@ -31,7 +31,7 @@ function UpdateVersion(ischeck) {
             force: false//是否强制安装
           }, function (widgetInfo) {
             plus.nativeUI.closeWaiting();
-            if (widgetInfo.version == plus.runtime.version) {
+            if (widgetInfo.version == inf.version) {
               console.log("没有安装");
               plus.nativeUI.alert("应用资源没有完成更新！", function () {
                 plus.runtime.restart();
@@ -50,8 +50,8 @@ function UpdateVersion(ischeck) {
         }
 
         // 如果有新版本，则提示需要更新
-        if (checkversion(plus.runtime.version, data.version)) {
-          mui.confirm(`当前版本为${plus.runtime.version}，最新版本为${data.version}，检查到新版本，是否马上下载并更新？`, '检查更新', ['是', '否，将退出程序'], function (e) {
+        if (checkversion(inf.version, data.version)) {
+          mui.confirm(`当前版本为${inf.version}，最新版本为${data.version}，检查到新版本，是否马上下载并更新？`, '检查更新', ['是', '否，将退出程序'], function (e) {
             if (e.index == 0) {
               showLoading = plus.nativeUI.showWaiting("准备更新...");
               var wgtUrl = data.downloadURI;

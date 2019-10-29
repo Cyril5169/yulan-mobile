@@ -316,6 +316,9 @@ export default {
       //   }
     }
   },
+  activated(){
+    window.vTop = this;
+  },
   mounted() {
     window.vTop = this;
     if(this.msgtitle){

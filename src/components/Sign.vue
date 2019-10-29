@@ -34,6 +34,7 @@
 <script>
 import warn from "@/components/passwordwarn";
 import IDSel from "./IdSelection";
+import { UpdateAppClientId } from "@/api/webUserASP";
 
 export default {
   data() {
@@ -85,7 +86,7 @@ export default {
     this.$store.commit("initState");
     this.name = window.localStorage.getItem("username");
     this.password = window.localStorage.getItem("password");
-    this.rememberPassWord = window.localStorage.getItem("rememberPassWord") == "true";
+    //this.rememberPassWord = window.localStorage.getItem("rememberPassWord") == "true";
     if(this.autoSign){
       this.normalsign();
     }
@@ -152,10 +153,20 @@ export default {
               window.localStorage.setItem("username", "");
               window.localStorage.setItem("password", "");
             }
-            window.localStorage.setItem(
-              "rememberPassWord",
-              this.rememberPassWord
-            );
+            // window.localStorage.setItem(
+            //   "rememberPassWord",
+            //   this.rememberPassWord
+            // );
+            //获取clientid
+            if(vm.plus){
+              let clientid = plus.push.getClientInfo().clientid;
+              console.log("clientid为" + clientid);
+              UpdateAppClientId(this.name, clientid).then((res)=>{
+                console.log("更新clientid成功");
+              }).catch((err)=>{
+                console.log("更新clientid失败");
+              });
+            }
             this.$router.push({
               path: "/customer"
             });
