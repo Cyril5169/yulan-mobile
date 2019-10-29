@@ -18,7 +18,10 @@ axios.defaults.baseURL = "http://14.29.221.109:10250/yulan";
 //全局loading
 axios.interceptors.request.use(
   config => {
-    store.commit("showLoading");
+    if (config.loading != undefined && config.loading == false) { }
+    else {
+      store.commit("showLoading");
+    }
     return config;
   },
   error => {
@@ -75,7 +78,7 @@ vm = new Vue({
 vm.UpdateVersion = Global.UpdateVersion;
 app = vm.$children[0];
 
-document.addEventListener("plusready", function(a) {
+document.addEventListener("plusready", function (a) {
   //等待plus ready后再调用H5+ API：
   // 在这里调用5+ API
   var first = null;
@@ -83,9 +86,9 @@ document.addEventListener("plusready", function(a) {
   vm.plus = plus;
   plus.key.addEventListener(
     "backbutton",
-    function() {
+    function () {
       var overlays = document.getElementsByClassName("van-overlay");//获取遮罩层
-      if(overlays.length > 0) {
+      if (overlays.length > 0) {
         overlays[0].click();//关闭遮罩层
         return;
       }
@@ -97,7 +100,7 @@ document.addEventListener("plusready", function(a) {
       if (!first) {
         first = new Date().getTime(); //获取第一次点击的时间戳
         mui.toast("再按一次切换至桌面", { duration: 1000 }); // 调用mui 上的toast 提示框
-        setTimeout(function() {
+        setTimeout(function () {
           first = null;
         }, 1000);
       } else {
@@ -112,22 +115,22 @@ document.addEventListener("plusready", function(a) {
   );
   vm.UpdateVersion();
 });
-document.addEventListener("resume", function(){
-	//从后台切换到前台,检查更新
-	vm.UpdateVersion();
+document.addEventListener("resume", function () {
+  //从后台切换到前台,检查更新
+  vm.UpdateVersion();
 }, false);
-document.addEventListener("pause", function(){
-	//从前台切换到后台
+document.addEventListener("pause", function () {
+  //从前台切换到后台
   console.log("已切换至后台");
   mui.toast("温馨提示：玉兰B2B继续在后台运行", { duration: 1500 });
-  
+
 }, false);
 // 获取错误信息
-document.addEventListener("error",function(e){
+document.addEventListener("error", function (e) {
   mui.alert("请求的页面无法打开", '发生错误');
-},false);
+}, false);
 // 禁止选择
-document.oncontextmenu=function(){
-	return false;
+document.oncontextmenu = function () {
+  return false;
 };
 
