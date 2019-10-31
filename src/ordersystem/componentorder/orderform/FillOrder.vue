@@ -30,13 +30,10 @@
               <input
                 class="delivery-mark"
                 v-model="deliveryBei"
-                placeholder="非普通物流请填写物流公司"
+                placeholder="其他物流需填写物流公司"
                 :disabled="delInput"
                 type="text"
               />
-            </td>
-            <td>
-              <img class="more-right" src="../../assetsorder/more.png" alt />
             </td>
           </tr>
         </table>
@@ -44,52 +41,59 @@
           <tr class="delivery">
             <td class="left">工程单号</td>
             <td class="right">
-              <input class="delivery-mark" v-model="gongchenhao" placeholder="填写工程单号" type="text" />
+              <input class="delivery-mark" v-model="gongchenhao" placeholder="请填写工程单号" type="text" />
             </td>
-            <!--<td><img class="more-right" src="../../assetsorder/more.png" alt=""></td>-->
           </tr>
         </table>
         <table class="order-item1">
           <tr class="delivery">
             <td class="left">订单备注</td>
             <td class="right">
-              <input
-                class="delivery-mark"
-                v-model="orderBei"
-                placeholder="任何订单信息填写在此无效"
-                type="text"
-              />
+              <input class="delivery-mark" v-model="orderBei" placeholder="订单信息填写在此无效" type="text" />
             </td>
-            <!--<td><img class="more-right" src="../../assetsorder/more.png" alt=""></td>-->
+          </tr>
+        </table>
+        <table class="order-item1" v-if="packingShow">
+          <tr class="delivery" @click="showPacking = true">
+            <td class="left">
+              分包提示
+              <span style="color:red;">*</span>
+            </td>
+            <td class="right">{{packingNote}}</td>
+            <td>
+              <img class="more-right" src="../../assetsorder/more.png" alt />
+            </td>
           </tr>
         </table>
         <table class="order-item">
           <tr class="delivery">
             <td class="left">购买人</td>
             <td class="right">
-              <input class="delivery-mark" v-model="buyUser" placeholder="填写购买人姓名" type="text" />
+              <input class="delivery-mark" v-model="buyUser" placeholder="请填写购买人姓名" type="text" />
             </td>
-            <!--<td><img class="more-right" src="../../assetsorder/more.png" alt=""></td>-->
           </tr>
         </table>
         <table class="order-item">
           <tr class="delivery">
             <td class="left">购买人电话</td>
             <td class="right">
-              <input class="delivery-mark" v-model="buyUserPhone" placeholder="填写购买人电话" type="text" />
+              <input
+                class="delivery-mark"
+                v-model="buyUserPhone"
+                placeholder="请填写购买人电话"
+                type="text"
+              />
             </td>
-            <!--<td><img class="more-right" src="../../assetsorder/more.png" alt=""></td>-->
           </tr>
         </table>
         <div class="product">
-          <!--<div class="good-head">-->
-          <!--&lt;!&ndash;<img class="goood-img" src="../../assetsorder/good.png" alt="">&ndash;&gt;-->
-          <!--<span class="good-title">{{this.allProduct[0].newProductType}}</span>-->
-          <!--</div>-->
           <div class="good-contain" v-for="(product,index) in allProduct" :key="index">
             <div class="good-item1">
               <span>型号：{{product.item.itemNo}}</span>
-              <span class="good-num" v-if="product.quantity">数量：{{product.quantity}} {{product.unit}}</span>
+              <span
+                class="good-num"
+                v-if="product.quantity"
+              >数量：{{product.quantity}} {{product.unit}}</span>
               <span
                 class="good-num"
                 v-if="!product.quantity"
@@ -99,9 +103,11 @@
             </div>
             <div class="good-item2">
               <span>活动：{{product.newactivityId}}</span>
-              <span v-if="showPrice" class="hd-after">￥{{product.activityPrice}}</span>
-              <span v-else class="hd-after">***</span>
-              <span class="good-num">折后金额：</span>
+            </div>
+            <div class="good-item3">
+              <span>折后金额</span>
+              <span v-if="showPrice" class="hd-after">{{product.activityPrice}}</span>
+              <span v-else class="hd-after">-***</span>
             </div>
             <div class="good-item3">
               <span>年返利券</span>
@@ -121,10 +127,6 @@
               >{{product.activityPrice - product.mCoupon - product.yCoupon}}</span>
               <span v-else class="hd-after">***</span>
             </div>
-            <!--<div class="good-item5">-->
-            <!--<span>合计：</span>-->
-            <!--<span class="hd-after">￥100</span>-->
-            <!--</div>-->
           </div>
         </div>
         <table class="order-item1">
@@ -138,7 +140,7 @@
         </table>
         <table class="order-item1">
           <tr class="delivery">
-            <td class="left">商品总金额</td>
+            <td class="left">折后总金额</td>
             <td class="right">
               <span v-if="showPrice">￥{{totalHdPrice}}</span>
               <span v-else>***</span>
@@ -152,10 +154,6 @@
             </td>
           </tr>
         </table>
-        <!--<tr class="delivery">-->
-        <!--<td class="left">商品金额</td>-->
-        <!--<td class="right"><span>￥1000.99</span></td>-->
-        <!--</tr>-->
       </div>
     </div>
     <div class="bottom-nav" v-show="hidshow">
@@ -172,20 +170,53 @@
     <van-popup v-model="showDelivery">
       <van-radio-group v-model="deliveryType">
         <van-cell-group>
-          <van-cell title="普通物流(运费由甲方支付)" clickable @click="comfirmDelivery('普通物流(运费由甲方支付)')">
-            <van-radio name="普通物流(运费由甲方支付)" checked-color="#89cb81" />
+          <van-cell clickable @click="comfirmDelivery('普通物流(运费由甲方支付)')">
+            <div style="text-align:center;">
+              <span>普通物流(运费由甲方支付)</span>
+              <van-radio style="display:inline-block" name="普通物流(运费由甲方支付)" checked-color="#89cb81" />
+            </div>
           </van-cell>
-          <!--<van-cell title="快递(运费由乙方支付)*备注" clickable @click="isdeliveryType = '快递(运费由乙方支付)*备注'">-->
-          <!--<van-radio name="快递(运费由乙方支付)*备注" checked-color="#89cb81"/>-->
-          <!--</van-cell>-->
-          <van-cell title="其他(运费由乙方支付)*备注" clickable @click="comfirmDelivery('其他(运费由乙方支付)*备注')">
-            <van-radio name="其他(运费由乙方支付)*备注" checked-color="#89cb81" />
+          <van-cell clickable @click="comfirmDelivery('其他(运费由乙方支付)*备注')">
+            <div style="text-align:center;">
+              <span>其他(运费由乙方支付)*备注</span>
+              <van-radio
+                style="display:inline-block"
+                name="其他(运费由乙方支付)*备注"
+                checked-color="#89cb81"
+              />
+            </div>
           </van-cell>
         </van-cell-group>
       </van-radio-group>
-      <!--<div class="comfirm-bottom" @click="comfirmDelivery">-->
-      <!--<span>确定</span>-->
-      <!--</div>-->
+    </van-popup>
+    <!--分包提示-->
+    <van-popup v-model="showPacking">
+      <van-radio-group v-model="packingNote">
+        <van-cell-group>
+          <van-cell clickable @click="confirmPackingNote('不分包')">
+            <div style="text-align:center;">
+              <span>不分包</span>
+              <van-radio style="display:inline-block" name="不分包" checked-color="#89cb81" />
+            </div>
+          </van-cell>
+          <van-cell clickable @click="confirmPackingNote('同型号不分包，不同型号分包')">
+            <div style="text-align:center;">
+              <span>同型号不分包，不同型号分包</span>
+              <van-radio
+                style="display:inline-block;margin-top:10px;"
+                name="同型号不分包，不同型号分包"
+                checked-color="#89cb81"
+              />
+            </div>
+          </van-cell>
+          <van-cell clickable @click="confirmPackingNote('全部分包')">
+            <div style="text-align:center;">
+              <span>全部分包</span>
+              <van-radio style="display:inline-block" name="全部分包" checked-color="#89cb81" />
+            </div>
+          </van-cell>
+        </van-cell-group>
+      </van-radio-group>
     </van-popup>
     <!--选择优惠券-->
     <van-popup v-model="showCoupon" class="youhuiquan" position="right">
@@ -256,10 +287,6 @@
         </div>
         <div class="singleRecord" v-for="(couponRecord,index) in allCouponRecord" :key="index">
           <table>
-            <!--<tr>-->
-            <!--<td>券号</td>-->
-            <!--<td>{{couponRecord.id}}</td>-->
-            <!--</tr>-->
             <tr>
               <td>订单号</td>
               <td>{{couponRecord.ORDER_NO}}</td>
@@ -325,7 +352,7 @@
         </div>
       </div>
     </van-popup>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <!-- <van-loading class="loading" type="spinner" v-if="loading" color="black" /> -->
   </div>
 </template>
 
@@ -389,6 +416,8 @@ export default {
       url: "http://106.14.159.244:8080/yulan-order",
       set: 14,
       showDelivery: false,
+      showPacking: false,
+      packingShow: false,
       //物流类型
       deliveryType: "普通物流(运费由甲方支付)",
       isdeliveryType: "",
@@ -425,6 +454,8 @@ export default {
       buyUserPhone: "",
       //订单备注
       orderBei: "",
+      //分包提示
+      packingNote: "请选择包装信息",
       //选中地址(对象)
       allAddress: [],
       address: this.$store.getters.getAddress,
@@ -442,7 +473,7 @@ export default {
       needNum: "",
       orderPrice: 0, //订单总价
       hdAllPrice: null, //活动后所有商品总价
-      couponPrice: null, //返利券总价
+      couponPrice: 0, //返利券总价
       docmHeight: document.documentElement.clientHeight, //默认屏幕高度
       showHeight: document.documentElement.clientHeight, //实时屏幕高度
       hidshow: true, //显示或者隐藏footer
@@ -496,6 +527,10 @@ export default {
         this.delInput = false;
         this.$refs.WLbeizhu.focus();
       }
+    },
+    confirmPackingNote(note) {
+      this.packingNote = note;
+      this.showPacking = false;
     },
     //活动转码
     hdExchange(hd) {
@@ -551,7 +586,10 @@ export default {
     },
     wantoSubmit() {
       if (this.allProduct[0].salPromotion) {
-        if (this.allProduct[0].salPromotion.arrearsFlag == "N" || this.orderPrice == 0) {
+        if (
+          this.allProduct[0].salPromotion.arrearsFlag == "N" ||
+          this.orderPrice == 0
+        ) {
           this.onSubmitOrder();
         } else {
           this.enoughMony();
@@ -562,15 +600,6 @@ export default {
     },
     //订单提交余额判断
     enoughMony() {
-      if (this.delInput == false && this.deliveryBei == "") {
-        Toast({
-          duration: 2000,
-          message: "请填写物流公司"
-        });
-        return;
-      }
-      //余额查询
-      // this.loading = true
       let monUrl = this.orderBaseUrl + "/order/getResidemoney.do";
       let mondata = {
         companyId: this.$store.getters.getCMId
@@ -600,7 +629,21 @@ export default {
       });
     },
     onSubmitOrder() {
-      this.loading = true;
+      if (this.delInput == false && this.deliveryBei == "") {
+        Toast({
+          duration: 2000,
+          message: "请填写物流公司"
+        });
+        return;
+      }
+      if (this.packingShow && this.packingNote == "请选择包装信息") {
+        Toast({
+          duration: 2000,
+          message: "请选择分包提示"
+        });
+        return;
+      }
+      if(this.packingNote == "请选择包装信息") this.packingNote = "";
       if (this.deliveryType == "普通物流(运费由甲方支付)") {
         this.deliveryTypeCode = "1";
       } else {
@@ -688,7 +731,8 @@ export default {
           reciverArea3: this.address.reciverArea3,
           allAddress: this.address.address,
           buyUser: this.buyUser,
-          buyUserPhone: this.buyUserPhone
+          buyUserPhone: this.buyUserPhone,
+          packingNote: this.packingNote
         },
         ctm_orders: this.productList,
         cartItemIDs: deleteArray,
@@ -704,7 +748,10 @@ export default {
           message: "提交订单成功"
         });
         this.$router.push({
-          path: "/myorder"
+          name: "myorder",
+          params: {
+            refresh: true
+          }
         });
       });
     },
@@ -1045,6 +1092,12 @@ export default {
     });
   },
   created() {
+    if (
+      this.allProduct[0].item.groupType == "B" ||
+      this.allProduct[0].item.groupType == "B1"
+    )
+      this.packingShow = true;
+    else this.packingShow = false;
     this.activityPrice();
     this.initFl();
     //获取优惠券信息
@@ -1260,7 +1313,6 @@ export default {
 }
 
 .delivery-mark {
-  /*width: 130px;*/
   border: none;
   text-align: right;
 }

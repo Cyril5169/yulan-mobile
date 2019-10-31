@@ -443,7 +443,8 @@ export default {
         path: "/customer"
       });
     },
-    onLoad() {
+    onLoad(config) {
+      var loading = config | false;
       setTimeout(() => {
         let url = this.orderBaseUrl + "/item/getSoftInfoSingle.do";
         this.currentPage = this.currentPage + 1;
@@ -458,7 +459,7 @@ export default {
           finishTime: this.jsDataSet + " 23:59:59",
           orderType: this.myTypeCode
         };
-        getAllOrders(data, { loading: false })
+        getAllOrders(data, { loading: loading })
           .then(data => {
             this.totalLists = data.count;
             //获取总页数
@@ -508,7 +509,7 @@ export default {
       this.currentPage = 0;
       this.finishedText = "暂无查询结果";
       this.loadingText = "加载中";
-      this.onLoad();
+      this.onLoad(true);
     },
     //订单详情
     toOrderDetails(index) {
@@ -687,6 +688,8 @@ export default {
   },
   activated() {
     window.vTop = this;
+    if(this.$route.params.refresh)
+      this.orderSearch();
   },
   destroyed() {
     if (window.vTop == this) window.vTop = null;

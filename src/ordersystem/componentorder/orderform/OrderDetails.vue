@@ -58,6 +58,10 @@
           <th>配送方式：</th>
           <td>普通物流(由甲方支付运费)</td>
         </tr>
+        <tr v-if="oneOrder.PACKING_NOTE">
+          <th>分包备注：</th>
+          <td>{{oneOrder.PACKING_NOTE}}</td>
+        </tr>
         <tr>
           <th>备注：</th>
           <td>{{oneOrder.NOTES}}</td>
@@ -127,7 +131,11 @@
 import axios from "axios";
 import top from "../../../components/Top";
 import { Toast, Popup, Dialog } from "vant";
-import { InsertOperationRecord, cancelOrderNew } from "@/api/orderListASP";
+import {
+  InsertOperationRecord,
+  cancelOrderNew,
+  GetCtmOrder
+} from "@/api/orderListASP";
 
 export default {
   name: "orderdetails",
@@ -180,62 +188,64 @@ export default {
         cid: this.$store.getters.getCId //客户号
       };
       axios.post(orderUrl, data).then(data => {
-        this.oneOrder = data.data.data.data[0];
-        switch (this.oneOrder.STATUS_ID) {
-          case "1":
-            this.statusTitle = "已提交";
-            break;
-          case "12":
-            this.statusTitle = "已接收";
-            break;
-          case "2":
-            this.statusTitle = "已受理";
-            break;
-          case "3":
-            this.statusTitle = "已作废";
-            break;
-          case "4":
-            this.statusTitle = "部分发货";
-            break;
-          case "5":
-            this.statusTitle = "余额不足待提交";
-            break;
-          case "6":
-            this.statusTitle = "余额不足可提交";
-            break;
-          case "7":
-            this.statusTitle = "已完成";
-            break;
-        }
-        for (let i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
-          if (this.oneOrder.ORDERBODY[i].PART_SEND_ID == "0") {
-            this.oneOrder.ORDERBODY[i].productTip = "等生产";
-          } else if (this.oneOrder.ORDERBODY[i].PART_SEND_ID == "1") {
-            this.oneOrder.ORDERBODY[i].productTip = "分批发货";
-          } else {
-            this.oneOrder.ORDERBODY[i].productTip = "--";
+        GetCtmOrder({ orderNo: this.$route.params.find }).then(res => {
+          this.oneOrder = data.data.data.data[0];
+          this.oneOrder.PACKING_NOTE = res.data.PACKING_NOTE; //先这样处理，后台换了后台就不需要了
+          switch (this.oneOrder.STATUS_ID) {
+            case "1":
+              this.statusTitle = "已提交";
+              break;
+            case "12":
+              this.statusTitle = "已接收";
+              break;
+            case "2":
+              this.statusTitle = "已受理";
+              break;
+            case "3":
+              this.statusTitle = "已作废";
+              break;
+            case "4":
+              this.statusTitle = "部分发货";
+              break;
+            case "5":
+              this.statusTitle = "余额不足待提交";
+              break;
+            case "6":
+              this.statusTitle = "余额不足可提交";
+              break;
+            case "7":
+              this.statusTitle = "已完成";
+              break;
           }
-        }
-        if (this.statusTitle == "已完成") {
-          this.orderStatus = false;
-          this.$refs.statusIcon.className = "completed";
-          this.notpayBottom = false;
-          this.completeBottom = true;
-        } else if (
-          this.statusTitle == "余额不足可提交" ||
-          this.statusTitle == "余额不足待提交"
-        ) {
-          this.orderStatus = true;
-          this.$refs.statusIcon.className = "wait-time";
-          this.timeRemain = true;
-          this.notpayBottom = true;
-          this.completeBottom = false;
-        } else {
-          this.orderStatus = true;
-          this.notpayBottom = false;
-          this.completeBottom = false;
-        }
-        // this.checkChuhuo()
+          for (let i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
+            if (this.oneOrder.ORDERBODY[i].PART_SEND_ID == "0") {
+              this.oneOrder.ORDERBODY[i].productTip = "等生产";
+            } else if (this.oneOrder.ORDERBODY[i].PART_SEND_ID == "1") {
+              this.oneOrder.ORDERBODY[i].productTip = "分批发货";
+            } else {
+              this.oneOrder.ORDERBODY[i].productTip = "--";
+            }
+          }
+          if (this.statusTitle == "已完成") {
+            this.orderStatus = false;
+            this.$refs.statusIcon.className = "completed";
+            this.notpayBottom = false;
+            this.completeBottom = true;
+          } else if (
+            this.statusTitle == "余额不足可提交" ||
+            this.statusTitle == "余额不足待提交"
+          ) {
+            this.orderStatus = true;
+            this.$refs.statusIcon.className = "wait-time";
+            this.timeRemain = true;
+            this.notpayBottom = true;
+            this.completeBottom = false;
+          } else {
+            this.orderStatus = true;
+            this.notpayBottom = false;
+            this.completeBottom = false;
+          }
+        });
       });
     },
     //能否查看出货详情

@@ -83,8 +83,6 @@ export default {
       IsWarn: false,
       set: 0,
       kkp: 0,
-
-      //order
       style: "shopstore"
     };
   },
@@ -130,38 +128,37 @@ export default {
   //   next();
   // },
   mounted() {
-    let url = "/infoState/getCustomerInfoCardState.do";
-    let data = {
-      cid: this.CID,
-      year: this.$store.state.year
-    };
-    this.$http.post(url, data).then(res => {
-      if (res.data.memo != null) {
-        if (
-          res.data.customerInfo == "业务员审核中" ||
-          res.data.customerInfo == "资料卡通过" ||
-          res.data.customerInfo == "订单部审核中"
-        ) {
-          this.kkp = 1;
-        } else {
-          this.kkp = 0;
-        }
-      } else {
-        this.kkp = 0;
-      }
-    });
+    // let url = "/infoState/getCustomerInfoCardState.do";
+    // let data = {
+    //   cid: this.CID,
+    //   year: this.$store.state.year
+    // };
+    // this.$http.post(url, data).then(res => {
+    //   if (res.data.memo != null) {
+    //     if (
+    //       res.data.customerInfo == "业务员审核中" ||
+    //       res.data.customerInfo == "资料卡通过" ||
+    //       res.data.customerInfo == "订单部审核中"
+    //     ) {
+    //       this.kkp = 1;
+    //     } else {
+    //       this.kkp = 0;
+    //     }
+    //   } else {
+    //     this.kkp = 0;
+    //   }
+    // });
   },
   methods: {
     Sidebar() {
-      var client = document.getElementsByClassName("client")[0];
-
-      if (this.IsSidebarOut == true) {
-        client.classList.remove("active-option");
-        client.classList.add("noactive-option");
-        setTimeout(() => {
-          this.IsSidebarOut = false;
-        }, 300);
-      }
+      // var client = document.getElementsByClassName("client")[0];
+      // if (this.IsSidebarOut == true) {
+      //   client.classList.remove("active-option");
+      //   client.classList.add("noactive-option");
+      //   setTimeout(() => {
+      //     this.IsSidebarOut = false;
+      //   }, 300);
+      // }
     },
     unlogin() {
       this.$router.push({
@@ -216,14 +213,14 @@ export default {
       });
     }
   },
-  beforeRouteLeave(to, from, next) {
-    if (this.kkp == 1) {
-      to.meta.keepAlive = false;
-    } else if (this.kkp == 0) {
-      to.meta.keepAlive = true;
-    }
-    next();
-  }
+  // beforeRouteLeave(to, from, next) {//这句话让customerkeepalive了
+  //   if (this.kkp == 1) {
+  //     to.meta.keepAlive = false;
+  //   } else if (this.kkp == 0) {
+  //     to.meta.keepAlive = true;
+  //   }
+  //   next();
+  // }
 };
 </script>
 

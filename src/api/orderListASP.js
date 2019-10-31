@@ -1,5 +1,13 @@
 import { get, post, patch, put } from './httpASP'
 
+//根据订单号获得订单
+export function GetCtmOrder(data, config = {}) {
+    return post('/CTM_ORDER/GetCtmOrder', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
 //窗帘审核订单数据
 export function getCurtainOrders(data, config = {}) {
     return post('/CTM_ORDER/getCurtainOrders', data, config).then((res) => {
