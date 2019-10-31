@@ -19,7 +19,7 @@
       </van-list>
     </div>
     <van-popup v-model="showNotification" @closed="notifyClose" class="nt-detail">
-      <top @backclick="hideNotification()" :msgtitle="TITLE" />
+      <top @backclick="hideNotification()" :msgtitle="TITLE" ref="detailTop"></top>
       <div class="nt-content" v-html="CONTENT"></div>
     </van-popup>
   </div>
@@ -84,6 +84,8 @@ export default {
       this.CONTENT = e.CONTENT;
       this.TITLE = e.TITLE;
       this.showNotification = true;
+      if(this.$refs.detailTop)
+        this.$refs.detailTop.setTitle(e.TITLE);
     },
     hideNotification(){
       this.showNotification=false;
