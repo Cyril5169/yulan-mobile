@@ -11,15 +11,15 @@ import store from "./store";
 //订单系统的URL
 import Global from "./Global.vue";
 import mui from "./assets/mui/js/mui";
-import IScroll from "./assets/iscroll/iscroll"
+import IScroll from "./assets/iscroll/iscroll";
 //import * as baseUrlASP from "./api/httpASP.js";
 
 axios.defaults.baseURL = "http://14.29.221.109:10250/yulan";
 //全局loading
 axios.interceptors.request.use(
   config => {
-    if (config.loading != undefined && config.loading == false) { }
-    else {
+    if (config.loading != undefined && config.loading == false) {
+    } else {
       store.commit("showLoading");
     }
     return config;
@@ -78,31 +78,34 @@ vm = new Vue({
 vm.UpdateVersion = Global.UpdateVersion;
 app = vm.$children[0];
 
-document.addEventListener("plusready", function (a) {
+function plusReady() {
   //等待plus ready后再调用H5+ API：
   // 在这里调用5+ API
   var first = null;
   window.plus = plus;
-  vm.plus = plus;
   plus.key.addEventListener(
     "backbutton",
-    function () {
-      var overlays = document.getElementsByClassName("van-overlay");//获取遮罩层
-      if(overlays.length > 0 && overlays[0].style && overlays[0].style.display!="none") {
+    function() {
+      var overlays = document.getElementsByClassName("van-overlay"); //获取遮罩层
+      if (
+        overlays.length > 0 &&
+        overlays[0].style &&
+        overlays[0].style.display != "none"
+      ) {
         console.log("触发点击了遮罩层");
-        overlays[0].click();//关闭遮罩层
+        overlays[0].click(); //关闭遮罩层
         return;
       }
       //监听返回键
       if (window.vTop) {
-        console.log("触发back,from是："+window.vTop.from);
+        console.log("触发back,from是：" + window.vTop.from);
         window.vTop.back();
         return;
       }
       if (!first) {
         first = new Date().getTime(); //获取第一次点击的时间戳
         mui.toast("再按一次切换至桌面", { duration: 1000 }); // 调用mui 上的toast 提示框
-        setTimeout(function () {
+        setTimeout(function() {
           first = null;
         }, 1000);
       } else {
@@ -116,23 +119,29 @@ document.addEventListener("plusready", function (a) {
     false
   );
   vm.UpdateVersion();
-});
-document.addEventListener("resume", function () {
-  //从后台切换到前台,检查更新
+}
+
+if (!window.plus) {
+  document.addEventListener("plusready", function(a) {
+    plusReady();
+  });
+} else {
+  plusReady();
+}
+//从后台切换到前台,检查更新
+document.addEventListener("resume", function() {
   vm.UpdateVersion();
-}, false);
-document.addEventListener("pause", function () {
-  //从前台切换到后台
+});
+//从前台切换到后台
+document.addEventListener("pause", function() {
   console.log("已切换至后台");
   mui.toast("温馨提示：玉兰B2B继续在后台运行", { duration: 1500 });
-
-}, false);
+});
 // 获取错误信息
-document.addEventListener("error", function (e) {
-  mui.alert("请求的页面无法打开", '发生错误');
-}, false);
+document.addEventListener("error", function(e) {
+  mui.alert("请求的页面无法打开", "发生错误");
+});
 // 禁止选择
-document.oncontextmenu = function () {
+document.oncontextmenu = function() {
   return false;
 };
-

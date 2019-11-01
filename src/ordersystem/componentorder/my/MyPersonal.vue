@@ -81,7 +81,7 @@ export default {
       });
     },
     checkVersion() {
-      if (!vm.plus) {
+      if (!window.plus) {
         Toast("网页版模式，不能检查更新");
       } else {
         vm.UpdateVersion(true);
