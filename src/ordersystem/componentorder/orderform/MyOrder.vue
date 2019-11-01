@@ -226,11 +226,14 @@ import {
   InsertOperationRecord,
   cancelOrderNew,
   copyCartItem,
-  getPackDetailInfo
+  getPackDetailInfo,
+  GetPromotionByType,
+  GetOrderUseRebate
 } from "@/api/orderListASP";
 import top from "../../../components/Top";
 import navBottom from "../../../components/navBottom";
 import "../../assetsorder/actionsheet.css";
+import { async } from "q";
 
 export default {
   name: "",
@@ -609,25 +612,69 @@ export default {
     },
     //再次提交订单时的余额判断
     tjOrder(item) {
-      if (item.STATUS_ID == 5) {
-        //余额查询
-        let monUrl = this.orderBaseUrl + "/order/getResidemoney.do";
-        let mondata = {
-          cid: this.$store.getters.getCId,
-          companyId: this.$store.getters.getCMId //登录客户号
-        };
-        axios.post(monUrl, mondata).then(val => {
-          if (val.data.data > item.ALL_SPEND) {
+      //余额查询
+      let monUrl = this.orderBaseUrl + "/order/getResidemoney.do";
+      let mondata = {
+        cid: this.$store.getters.getCId,
+        companyId: this.$store.getters.getCMId //登录客户号
+      };
+      axios.post(monUrl, mondata).then(async val => {
+        if (val.data.data > item.ALL_SPEND) {
+          if (item.STATUS_ID == 5 || item.STATUS_ID == 6) {
+            for (var i = 0; i < item.ORDERBODY.length; i++) {
+              if (item.ORDERBODY[i].PROMOTION_TYPE) {
+                var res = await GetPromotionByType({
+                  proType: item.ORDERBODY[i].PROMOTION_TYPE,
+                  cid: this.$store.getters.getCId
+                });
+                if (!res.data) {
+                  Dialog.alert({
+                    message: `活动‘&${item.ORDERBODY[i].PROMOTION}’不存在`
+                  }).then(() => {});
+                  return;
+                }
+                if (
+                  new Date(res.data.DATE_END) < new Date() ||
+                  res.data.USE_ID == "0"
+                ) {
+                  Dialog.alert({
+                    message: `活动‘&${item.ORDERBODY[i].PROMOTION}’已过期，请删除订单后重新下单`
+                  }).then(() => {});
+                  return;
+                }
+              }
+              if (
+                item.ORDERBODY[i].BACK_Y > 0 ||
+                item.ORDERBODY[i].BACK_M > 0
+              ) {
+                var res = await GetOrderUseRebate({
+                  orderNo: item.ORDERBODY[i].ORDER_NO,
+                  lineNo: item.ORDERBODY[i].LINE_NO
+                });
+                if (res.data.length == 0) {
+                  Dialog.alert({
+                    message: "优惠券不存在"
+                  }).then(() => {});
+                  return;
+                }
+                for (var j = 0; j < res.data.length; j++) {
+                  if (new Date(res.data[j].DATE_END) < new Date()) {
+                    Dialog.alert({
+                      message: "优惠券已过期，请删除订单后重新下单"
+                    }).then(() => {});
+                    return;
+                  }
+                }
+              }
+            }
             this.onSubmitOrder(item.ORDER_NO);
-          } else {
-            Dialog.alert({
-              message: "余额不足,提交失败"
-            }).then(() => {});
           }
-        });
-      } else if (item.STATUS_ID == 6) {
-        this.onSubmitOrder(item.ORDER_NO);
-      }
+        } else {
+          Dialog.alert({
+            message: "余额不足,提交失败"
+          }).then(() => {});
+        }
+      });
     },
     //订单提交
     onSubmitOrder(orderNo) {
@@ -688,8 +735,7 @@ export default {
   },
   activated() {
     window.vTop = this;
-    if(this.$route.params.refresh)
-      this.orderSearch();
+    if (this.$route.params.refresh) this.orderSearch();
   },
   destroyed() {
     if (window.vTop == this) window.vTop = null;

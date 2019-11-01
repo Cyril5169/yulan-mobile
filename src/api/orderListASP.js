@@ -152,3 +152,19 @@ export function GetPromotionByItem(data, config = {}) {
         return Promise.reject(err);
     })
 }
+//查找适应的活动
+export function GetPromotionByType(data, config = {}) {
+    return post('/SAL_PROMOTION/GetPromotionByType', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+//获取使用过的优惠券
+export function GetOrderUseRebate(data, config = {}) {
+    return post('/SAL_REBATE_CERTIFICATE/GetOrderUseRebate', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
