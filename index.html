@@ -49,12 +49,52 @@
         }
 
         //var urlSetting = urlArr.local;//本地
-        var urlSetting = urlArr.test;//测试
-        //var urlSetting = urlArr.formal;//正式
+        //var urlSetting = urlArr.test;//测试
+        var urlSetting = urlArr.formal;//正式
 
         var baseUrl = urlSetting.baseUrl;
         var orderBaseUrl = urlSetting.orderBaseUrl;
         var updateUrl = baseUrl + "app/version.json";
+        document.addEventListener("plusready", function (a) {
+            window.plus = plus;
+            //创建本地消息
+            function createLocalPushMsg(msg) {
+                var options = { cover: false };
+                plus.push.createMessage(msg.content, "LocalMSG", options);
+                if (plus.os.name == "iOS") {
+                    console.log('*如果无法创建消息，请到"设置"->"通知"中配置应用在通知中心显示!');
+                }
+            }
+            //获取推送通知
+            plus.push.addEventListener(
+                "receive",
+                function (msg) {
+                    console.log("接收到的透传推送 " + JSON.stringify(msg));
+                    if (plus.os.name == "iOS") {
+                        switch (msg.payload) {
+                            case "LocalMSG":
+                                alert("本地创建消息的 " + JSON.stringify(msg));
+                                break;
+                            default:
+                                //测试本地推送
+                                createLocalPushMsg(msg);
+                                break;
+                        }
+                    }
+                },
+                false
+            );
+            //点击推送进来
+            plus.push.addEventListener(
+                "click",
+                function (msg) {
+                    // 判断是从本地创建还是离线推送的消息
+                    console.log("点击处理消息 " + JSON.stringify(msg));
+                },
+                false
+            );
+
+        }, false);
 
     </script>
 </body>

@@ -17,6 +17,9 @@ export default {
     };
   },
   methods: {
+    setTitle(title){
+      this.msg = title;
+    },
     back() {
       window.vTop = null;
       this.$emit('backclick');//自定义事件，提供外部使用

@@ -76,24 +76,24 @@ export default {
     next();
   },
   mounted() {
-    if(this.$route.params && this.$route.params.autoSign != undefined){
+    if (this.$route.params && this.$route.params.autoSign != undefined) {
       this.autoSign = this.$route.params.autoSign;
-    }else{
+    } else {
       this.autoSign = true;
     }
-    
+
     this.isai();
     this.$store.commit("initState");
     this.name = window.localStorage.getItem("username");
     this.password = window.localStorage.getItem("password");
     //this.rememberPassWord = window.localStorage.getItem("rememberPassWord") == "true";
-    if(this.autoSign){
+    if (this.autoSign) {
       this.normalsign();
     }
   },
   methods: {
     normalsign() {
-      if(!this.name || !this.password){ return;}
+      if (!this.name || !this.password) { return; }
       let th = this;
       let year = new Date().getFullYear();
       this.$store.commit("getYear", year);
@@ -158,13 +158,23 @@ export default {
             //   this.rememberPassWord
             // );
             //获取clientid
-            if(vm.plus){
+            if (!window.plus) {
+              document.addEventListener("plusready", function (a) {
+                let clientid = plus.push.getClientInfo().clientid;
+                console.log("clientid为" + clientid);
+                UpdateAppClientId(th.name, clientid).then((res) => {
+                  console.log("更新clientid成功");
+                }).catch((err) => {
+                  console.log("更新clientid失败"+JSON.stringify(err));
+                });
+              }, false);
+            } else {
               let clientid = plus.push.getClientInfo().clientid;
               console.log("clientid为" + clientid);
-              UpdateAppClientId(this.name, clientid).then((res)=>{
+              UpdateAppClientId(th.name, clientid).then((res) => {
                 console.log("更新clientid成功");
-              }).catch((err)=>{
-                console.log("更新clientid失败");
+              }).catch((err) => {
+                console.log("更新clientid失败"+JSON.stringify(err));
               });
             }
             this.$router.push({
@@ -175,10 +185,10 @@ export default {
           }
         })
         .catch(err => {
-          if(err.request.status == 0){
+          if (err.request.status == 0) {
             this.warnMsg = "当前网络不可用";
             this.set = true;
-          }else{
+          } else {
             this.warnMsg = err.message;
             this.set = true;
           }
