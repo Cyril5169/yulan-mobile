@@ -109,7 +109,6 @@
         show-toolbar
         :title="'汇入银行'"
         :columns="bank"
-        :default-index="bankDetails.yulanBank?bankDetails.yulanBank:0"
         @cancel="showBank = false"
         @confirm="onConfirmBank"
       />
@@ -199,7 +198,6 @@ export default {
         "中国工商银行8881",
         "中国工商银行9761",
         "中信银行",
-        "中国邮政储蓄"
       ],
       hKHistory: [],
       hKHistoryRecord: [],

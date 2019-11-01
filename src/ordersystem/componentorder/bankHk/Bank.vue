@@ -246,7 +246,7 @@ export default {
       // this.ksDataSet === "起始时间" ? '':this.ksDataSet + " 00:00:00";
       // this.jsDataSet === "结束时间" ? '':this.jsDataSet + " 23:59:59";
       let data = {
-        cid: this.$store.getters.getCId, //公司id
+        cid: this.$store.getters.getCMId, //公司id
         state: this.myTypeCode, //状态状态(SUBMITED（已提交）,PROCESED（已处理）,SENDBACK（退回）,CANCELED（作废）)
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
@@ -341,7 +341,7 @@ export default {
           state: "",
           data: {
             id: "提交后自动生成", //流水号
-            cid: this.$store.getters.getCId, //公司id
+            cid: this.$store.getters.getCMId, //公司id
             cname: this.chargeData.CUSTOMER_NAME, //客户名
             // "createTs": 1562816972000,//创建时间
             yulanBank: "", //汇款银行
