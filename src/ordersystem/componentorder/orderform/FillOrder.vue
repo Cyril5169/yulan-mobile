@@ -53,7 +53,7 @@
             </td>
           </tr>
         </table>
-        <table class="order-item1" v-if="packingShow">
+        <!-- <table class="order-item1" v-if="packingShow">
           <tr class="delivery" @click="showPacking = true">
             <td class="left">
               分包提示
@@ -64,7 +64,7 @@
               <img class="more-right" src="../../assetsorder/more.png" alt />
             </td>
           </tr>
-        </table>
+        </table> -->
         <table class="order-item">
           <tr class="delivery">
             <td class="left">购买人</td>
@@ -636,13 +636,13 @@ export default {
         });
         return;
       }
-      if (this.packingShow && this.packingNote == "请选择包装信息") {
-        Toast({
-          duration: 2000,
-          message: "请选择分包提示"
-        });
-        return;
-      }
+      // if (this.packingShow && this.packingNote == "请选择包装信息") {
+      //   Toast({
+      //     duration: 2000,
+      //     message: "请选择分包提示"
+      //   });
+      //   return;
+      // }
       if(this.packingNote == "请选择包装信息") this.packingNote = "";
       if (this.deliveryType == "普通物流(运费由甲方支付)") {
         this.deliveryTypeCode = "1";
