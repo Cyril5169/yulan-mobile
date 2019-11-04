@@ -1,0 +1,170 @@
+<template>
+  <div class="main">
+    <div class="scan-top" ref="top">
+        <div class="top-left">
+          <van-icon
+            @click="closeScan()"
+            class="top-icon"
+            name="arrow-left"
+            color=""
+            size="25px"
+          />
+        </div>
+        <div class="top-right">
+          <van-icon
+            @click="showAction=true"
+            class="top-icon"
+            name="ellipsis"
+            color=""
+            size="25px"
+          />
+        </div>
+      </div>
+    <div id="bcid"></div>
+    <van-action-sheet
+      v-if="showAction"
+      v-model="showAction"
+      :actions="actions"
+      cancel-text="取消"
+      @cancel="showAction=false"
+      @select="onSelectAction"
+    />
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+import {
+  Popup,
+  Dialog,
+  Toast,
+  Collapse,
+  CollapseItem,
+  DatetimePicker,
+  Uploader,
+  ActionSheet,
+  Icon
+} from "vant";
+import { GetCompensationById } from "@/api/paymentASP";
+
+export default {
+  name: "",
+  components: {
+    [Popup.name]: Popup,
+    [Dialog.name]: Dialog,
+    [Icon.name]: Icon,
+    [ActionSheet.name]: ActionSheet
+  },
+  data() {
+    return {
+      showAction: false,
+      scan: null,
+      actions: [{ name: '从相册中选取二维码' },]
+    };
+  },
+  methods: {
+    startRecognize() {
+      var th = this;
+      this.scan = new plus.barcode.Barcode('bcid', [plus.barcode.QR], {
+        frameColor: '#00FF00',
+        scanbarColor: "#00FF00",
+      });
+      this.scan.onmarked = function (type, result) {
+        console.log(type);
+        console.log(result);
+        th.$emit('scansuccess', result);//自定义事件，提供外部使用
+      };
+      this.scan.onerror = function (error) {
+        Dialog.alert({
+          message: error
+        });
+      };
+      this.scan.start({
+        vibrate: false, //是否震动
+      });
+    },
+    closeScan() {
+      this.$emit('scanclose');//自定义事件，提供外部使用
+    },
+    onCancel() {
+      this.showAction = false;
+    },
+    onSelectAction(item, index) {
+      if (index == 0) {
+        this.scanPicture();
+      }
+    },
+    scanPicture() {  //可以直接识别二维码图片
+      var me = this;
+      plus.gallery.pick(function (path) {
+        plus.barcode.scan(path, me.scan.onmarked, function (error) {
+          plus.nativeUI.alert("无法识别此图片");
+        });
+      }, function (err) {
+        plus.nativeUI.alert("Failed: " + err.message);
+      });
+    }
+  },
+  mounted() {
+    console.log("mounted");
+    this.startRecognize();
+  },
+  destroyed() {
+    console.log("destroyed");
+    if (this.scan) {
+      this.scan.close();
+    }
+  }
+};
+</script>
+
+<style scoped>
+.main {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+  background: #000;
+
+}
+.scan-top {
+  width: 100%;
+  height: 50px;
+  top: 0;
+  left:0;
+  background-color:white;
+}
+#bcid {
+  width: 100%;
+  position:absolute;
+  top: 50px;
+  bottom: 0;
+}
+.top-left {
+  float: left;
+  height: 100%;
+  width: 50px;
+  line-height: 50px;
+  vertical-align: middle;
+}
+.top-icon {
+  height: 100%;
+  width: 100%;
+  line-height: 50px;
+  vertical-align: middle;
+  opacity: 1;
+}
+.top-left :active {
+  background: darkgrey;
+}
+.top-right :active {
+  background: darkgrey;
+}
+.top-right {
+  float: right;
+  height: 100%;
+  width: 50px;
+  line-height: 50px;
+  vertical-align: middle;
+}
+</style>

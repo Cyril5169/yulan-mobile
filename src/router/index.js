@@ -36,6 +36,7 @@ import testcard from '@/components/testcard'
 //orderSystem
 import SelectType from '@/ordersystem/componentorder/SelectType'
 import SearchWall from '@/ordersystem/componentorder/SearchWall'
+import Scan from '@/ordersystem/componentorder/Scan'
 import SearchSoft from '@/ordersystem/componentorder/SearchSoft'
 import SearchCurtain from '@/ordersystem/componentorder/SearchCurtain'
 import TaskSearch from '@/ordersystem/componentorder/TaskSearch'
@@ -294,6 +295,11 @@ var router = new Router({
       path: '/searchwall',
       name: 'searchwall',
       component: SearchWall
+    },
+    {
+      path: '/scan',
+      name: 'scan',
+      component: Scan
     },
     {
       path: '/searchsoft',

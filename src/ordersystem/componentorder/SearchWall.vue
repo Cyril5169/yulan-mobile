@@ -2,7 +2,7 @@
   <div class="search-order">
     <div class="searchtop">
       <van-search
-        class="search-more"
+        class="search-input"
         v-model="inputValue"
         background="linear-gradient(to right, #BEDD81, #87CA81)"
         placeholder="输入墙纸型号"
@@ -11,6 +11,7 @@
         @focus="showSearch = true"
       >
         <div slot="action" @click="onSearchWall(inputValue)" style="color: white">搜索</div>
+        <van-icon slot="right-icon" name="scan" @click="onScanClick()" size="30px" style="color: white"></van-icon>
       </van-search>
       <div class="img" @click="back"></div>
     </div>
@@ -82,14 +83,19 @@
       </div>
     </van-action-sheet>
     <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+
+    <van-popup v-if="showScan" v-model="showScan" class="scan-popup">
+      <scan @scansuccess="onScanSuccess" @scanclose="closeScan()" ref="scan"></scan>
+    </van-popup>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { Search, ActionSheet, Toast, Loading } from "vant";
+import { Search, ActionSheet, Toast, Loading, Icon, Dialog, Popup } from "vant";
 import "../assetsorder/actionsheet.css";
 import navBottom from "../../components/navBottom";
+import scan from "../componentorder/Scan";
 
 export default {
   name: "",
@@ -112,14 +118,20 @@ export default {
       docmHeight: document.documentElement.clientHeight, //默认屏幕高度
       showHeight: document.documentElement.clientHeight, //实时屏幕高度
       hidshow: true, //显示或者隐藏footer
-      loading: false
+      loading: false,
+      showScan: false,
     };
   },
   components: {
+    top,
+    scan,
     [Search.name]: Search,
     [ActionSheet.name]: ActionSheet,
     [Toast.name]: Toast,
     [Loading.name]: Loading,
+    [Icon.name]: Icon,
+    [Popup.name]: Popup,
+    [Dialog.Component.name]: Dialog.Component,
     navBottom
   },
   methods: {
@@ -127,6 +139,9 @@ export default {
       this.$router.push({
         path: "/shopstore"
       });
+    },
+    closeScan:function(){
+      this.showScan = false;
     },
     //查看墙纸库存
     checkKucun() {
@@ -165,16 +180,28 @@ export default {
       this.resY = false;
       this.resN = false;
     },
+    //扫一扫
+    onScanClick() {
+      this.showScan = true;
+      console.log(this.$refs.scan)
+      if (this.$refs.scan) {
+        //this.$refs.scan.startRecognize();
+        startRecognize();
+      }
+    },
+    onScanSuccess(result) {
+      this.inputValue = result;
+      this.showScan = false;
+    },
     //墙纸查询
     onSearchWall(inputValue) {
-      if(inputValue=='')return;
+      if (inputValue == '') return;
       this.wallMegs = {};
       this.loading = true;
       this.inputValue = inputValue;
       let wallUrl = this.orderBaseUrl + "/item/getWallpaperInfo.do";
       let data = {
         paperType: inputValue.toUpperCase(),
-        // "cid": "C01613"
         cid: this.CID
       };
       axios.post(wallUrl, data).then(data => {
@@ -199,7 +226,7 @@ export default {
     },
     setHistoryItems(keyword) {
       keyword = keyword.trim();
-      if(!keyword) return;
+      if (!keyword) return;
       let { historyItems } = localStorage;
       if (historyItems === undefined) {
         localStorage.historyItems = keyword;
@@ -229,11 +256,15 @@ export default {
     }
   },
   created() {
+    var me = this;
     if (localStorage.historyItems == undefined) {
       this.historySearch = "";
     } else {
       this.historySearch = localStorage.historyItems.split("|");
     }
+    window.addEventListener("scansuccess", function (event) {
+      me.inputValue = event.result;
+    });
   },
   mounted() {
     window.vTop = this;
@@ -244,12 +275,12 @@ export default {
       })();
     };
   },
-  destroyed(){
-    if(window.vTop == this)
-      window.vTop =  null;
+  destroyed() {
+    if (window.vTop == this)
+      window.vTop = null;
   },
   watch: {
-    showHeight: function() {
+    showHeight: function () {
       if (this.docmHeight > this.showHeight) {
         this.hidshow = false;
       } else {
@@ -269,6 +300,11 @@ export default {
   background-color: #f8f8f8;
   overflow: scroll;
 }
+.search-input {
+  top: 0;
+  width: 100%;
+  z-index: 99;
+}
 .img {
   display: inline-block;
   width: 20px;
@@ -276,13 +312,14 @@ export default {
   z-index: 999;
   position: absolute;
   left: 17px;
-  top: 12px;
+  top: 16px;
   background-image: url(../../assets/arrow.png);
   background-repeat: no-repeat;
   background-size: contain;
 }
 .searchtop {
   height: 50px;
+  background: linear-gradient(to right, #bedd81, #87ca81);
 }
 .search-page ul {
   text-align: left;
@@ -372,5 +409,15 @@ export default {
   border-radius: 30px;
   border: 1px solid #a0cb8d;
   clear: both;
+}
+.scan-popup {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+}
+#scanid {
+  background: #0f0;
+  height: 480px;
+  width: 360px;
 }
 </style>
