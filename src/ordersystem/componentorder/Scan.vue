@@ -10,25 +10,17 @@
             size="25px"
           />
         </div>
-        <div class="top-right">
+        <div class="top-photo">
           <van-icon
-            @click="showAction=true"
+            @click="scanPicture()"
             class="top-icon"
-            name="ellipsis"
+            name="photo-o"
             color=""
             size="25px"
           />
         </div>
       </div>
     <div id="bcid"></div>
-    <van-action-sheet
-      v-if="showAction"
-      v-model="showAction"
-      :actions="actions"
-      cancel-text="取消"
-      @cancel="showAction=false"
-      @select="onSelectAction"
-    />
   </div>
 </template>
 
@@ -38,10 +30,6 @@ import {
   Popup,
   Dialog,
   Toast,
-  Collapse,
-  CollapseItem,
-  DatetimePicker,
-  Uploader,
   ActionSheet,
   Icon
 } from "vant";
@@ -57,9 +45,7 @@ export default {
   },
   data() {
     return {
-      showAction: false,
       scan: null,
-      actions: [{ name: '从相册中选取二维码' },]
     };
   },
   methods: {
@@ -86,14 +72,6 @@ export default {
     closeScan() {
       this.$emit('scanclose');//自定义事件，提供外部使用
     },
-    onCancel() {
-      this.showAction = false;
-    },
-    onSelectAction(item, index) {
-      if (index == 0) {
-        this.scanPicture();
-      }
-    },
     scanPicture() {  //可以直接识别二维码图片
       var me = this;
       plus.gallery.pick(function (path) {
@@ -101,7 +79,7 @@ export default {
           plus.nativeUI.alert("无法识别此图片");
         });
       }, function (err) {
-        plus.nativeUI.alert("Failed: " + err.message);
+        console.log("Failed: " + err.message);
       });
     }
   },
@@ -157,10 +135,10 @@ export default {
 .top-left :active {
   background: darkgrey;
 }
-.top-right :active {
+.top-photo :active {
   background: darkgrey;
 }
-.top-right {
+.top-photo {
   float: right;
   height: 100%;
   width: 50px;

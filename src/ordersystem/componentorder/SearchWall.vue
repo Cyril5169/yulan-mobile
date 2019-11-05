@@ -415,9 +415,4 @@ export default {
   height: 100%;
   background: #fff;
 }
-#scanid {
-  background: #0f0;
-  height: 480px;
-  width: 360px;
-}
 </style>
