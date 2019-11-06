@@ -4,32 +4,36 @@
     <div class="contain">
       <div class="select-this">
         <div class="title-item">
-          <span class="title-left">窗帘款式</span>
+          <span class="title-left">款号</span>
           <span class="title-right">{{itemNO}}</span>
         </div>
         <div class="title-item">
           <span class="title-left">成品宽度*高度</span>
-          <span class="title-right">{{width}}*{{height}}(米)</span>
+          <span class="title-right">{{width}}*{{height}} (米)</span>
         </div>
         <div class="title-item">
-          <span class="title-left">帘头外包盒单边宽度</span>
-          <span class="title-right">{{WBH}}(米)</span>
+          <span class="title-left">假帘高</span>
+          <span class="title-right">{{highJia}} (米)</span>
         </div>
         <div class="title-item">
           <span class="title-left">褶皱倍数</span>
           <span class="title-right">{{multiple}}</span>
         </div>
         <div class="title-item">
+          <span class="title-left">帘头外包盒单边宽度</span>
+          <span class="title-right">{{WBH=== "" ? "无" :WBH}} (米)</span>
+        </div>
+        <!-- <div class="title-item">
           <span class="title-left">活动</span>
-          <span class="title-right">不参与活动</span>
+          <span class="title-right"></span>
         </div>
         <div class="title-item">
           <span class="title-left">兰居意见</span>
-          <span class="title-right">无意间</span>
-        </div>
+          <span class="title-right"></span>
+        </div>-->
         <div class="title-item">
           <span class="title-left">位置</span>
-          <span class="title-right">{{location}}</span>
+          <span class="title-right">{{location === "" ? "无" :location}}</span>
         </div>
       </div>
       <div class="show-result">
@@ -505,6 +509,10 @@ export default {
       WBH: this.$route.params.WBH, //帘头外包盒宽度
       multiple: this.$route.params.multiple, //褶皱倍数
       location: this.$route.params.location,
+      isWBH: this.$route.params.isWBH,
+      activity: this.$route.params.activity,
+      groupType: this.$route.params.groupType,
+      highJia: 0,
       //帘头制造说明
       showHeadMakeDetails: false,
       heaadMakeDetails: "未选择",
@@ -554,12 +562,16 @@ export default {
         itemNO: this.$route.params.itemNO,
         width: this.$route.params.width, //成品宽度
         height: this.$route.params.height, //成品高度
-        WBH: this.$route.params.WBH, //帘头外包盒宽度
+        WBH:
+          this.$route.params.isWBH === false || this.$route.params.WBH === ""
+            ? "0"
+            : this.$route.params.WBH, //帘头外包盒宽度
         multiple: this.$route.params.multiple, //褶皱倍数
         location: this.$route.params.location
       };
       axios.post(URL, data).then(res => {
         let itemLists = res.data.itemList;
+        this.highJia = res.data.itemList[0].highJia;
         this.lt = [];
         this.ls = [];
         this.sha = [];

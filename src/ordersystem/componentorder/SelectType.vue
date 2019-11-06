@@ -61,7 +61,7 @@
             <p class="middle-div-p3">窗帘产品</p>
             <div class="right-arrow"></div>
           </div>
-        </div>-->
+        </div> -->
       </section>
 
       <navBottom :change-style="style"></navBottom>
@@ -212,7 +212,7 @@ export default {
         path: "/searchcurtain"
       });
     }
-  },
+  }
   // beforeRouteLeave(to, from, next) {//这句话让customerkeepalive了
   //   if (this.kkp == 1) {
   //     to.meta.keepAlive = false;

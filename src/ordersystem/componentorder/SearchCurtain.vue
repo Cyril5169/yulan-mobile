@@ -13,22 +13,11 @@
       </van-search>
       <div class="img" @click="back"></div>
     </div>
-    <!--&lt;!&ndash;历史搜索&ndash;&gt;-->
-    <!--<div v-show="showSearch" class="search-page">-->
-    <!--<div class="recent-search-title">最近搜索</div>-->
-    <!--<div>-->
-    <!--<span class="currItem" v-for="hisSearch in historySearch" @click="onSearchWall(hisSearch)">{{hisSearch}}</span>-->
-    <!--</div>-->
-    <!--<div v-if="historySearch" class="clear-search" @click="clearHistory">-->
-    <!--<span>清空历史搜索</span>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--搜索结果-->
     <div class="search-result">
       <div class="single-wall" v-for="(singleCurtain,index) in allCurtain" :key="index">
         <table width="100%">
           <tr>
-            <th width="40%">窗帘款式：</th>
+            <th width="35%">窗帘款式：</th>
             <td>{{singleCurtain.itemNo}}</td>
           </tr>
           <tr>
@@ -43,7 +32,7 @@
               <input
                 v-model="singleCurtain.height"
                 type="number"
-                class="curtain-width curtain-height"
+                class="curtain-width"
                 placeholder="0.00"
               />
             </td>
@@ -66,18 +55,24 @@
             <th>褶皱倍数：</th>
             <td>
               <input class="select-multiple" disabled v-model="singleCurtain.multiple" />
+              <img style="width:15px;height:15px;" src="../assetsorder/more.png" alt />
             </td>
           </tr>
-          <tr>
+          <tr @click="selecthd(index)">
             <th>活动：</th>
             <td>
-              <input class="select-multiple" disabled v-model="singleCurtain.activity" />
+              <input
+                class="select-multiple"
+                disabled
+                :value="changeActivi(singleCurtain.activity,index)"
+              />
+              <img style="width:15px;height:15px;" src="../assetsorder/more.png" alt />
             </td>
           </tr>
           <tr>
             <th>位置：</th>
             <td>
-              <input class="myposition" v-model="singleCurtain.myposition" />
+              <input class="myposition" placeholder="选填" v-model="singleCurtain.myposition" />
             </td>
           </tr>
         </table>
@@ -87,6 +82,12 @@
           <van-popup v-model="singleCurtain.showMultiple">
             <van-radio-group v-model="singleCurtain.multiple">
               <van-cell-group>
+                <van-cell title="1.8" clickable @click="singleCurtain.multiple = '1.8' ">
+                  <van-radio name="1.8" checked-color="#89cb81" />
+                </van-cell>
+                <van-cell title="1.9" clickable @click="singleCurtain.multiple = '1.9' ">
+                  <van-radio name="1.9" checked-color="#89cb81" />
+                </van-cell>
                 <van-cell title="2.0" clickable @click="singleCurtain.multiple = '2.0' ">
                   <van-radio name="2.0" checked-color="#89cb81" />
                 </van-cell>
@@ -127,6 +128,28 @@
             <!--</div>-->
           </van-popup>
         </div>
+        <van-popup v-model="singleCurtain.showActivity">
+          <van-radio-group v-model="singleCurtain.activity">
+            <van-cell-group>
+              <template v-for="(hdg,indexx) in activityOptions[index]">
+                <van-cell
+                  :key="indexx +'hdground' +  indexx"
+                  clickable
+                  @click="selectthisHd(index,indexx)"
+                >
+                  <div style="text-align:center">
+                    <span>{{hdg.label}}</span>
+                    <van-radio
+                      style="display:inline-block"
+                      :name="hdg.value"
+                      checked-color="#89cb81"
+                    />
+                  </div>
+                </van-cell>
+              </template>
+            </van-cell-group>
+          </van-radio-group>
+        </van-popup>
       </div>
       <!--<div v-show="resN">-->
       <!--暂无查询结果-->
@@ -163,9 +186,11 @@ import {
   CellGroup,
   Collapse,
   CollapseItem,
-  Pagination
+  Pagination,
+  Dialog
 } from "vant";
 import "../assetsorder/actionsheet.css";
+import { getItemById, GetPromotionByItem } from "@/api/orderListASP";
 import navBottom from "../../components/navBottom";
 
 export default {
@@ -197,7 +222,10 @@ export default {
       pageMark: 0,
       docmHeight: document.documentElement.clientHeight, //默认屏幕高度
       showHeight: document.documentElement.clientHeight, //实时屏幕高度
-      hidshow: true //显示或者隐藏footer
+      hidshow: true, //显示或者隐藏footer
+      activityGroup: [],
+      activityOptions: [],
+      isActivity: []
     };
   },
   components: {
@@ -214,6 +242,7 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     [Pagination.name]: Pagination,
+    [Dialog.name]: Dialog,
     navBottom
   },
   methods: {
@@ -222,20 +251,6 @@ export default {
       this.$router.push({
         path: "/shopstore"
       });
-    },
-    //墙纸详情
-    wallDetails() {
-      // let xh = this.wallMegs.itemNo
-      this.$router.push({
-        name: "walldetails",
-        params: {
-          //墙纸类型,获取墙纸信息
-          papertype: this.wallMegs.oldItemNo
-        }
-      });
-      this.inputValue = "";
-      this.resY = false;
-      this.resN = false;
     },
     //窗帘模糊查询
     onSearchWall(inputValue) {
@@ -263,17 +278,16 @@ export default {
             //总页数
             // this.currentPage = 1
             this.allCurtain = data.data.data;
+            this.getActivity();
             this.totalPage = parseInt(this.allCurtain[0].total / 10) + 1;
             for (let i = 0; i < this.allCurtain.length; i++) {
-              // this.allCurtain[i].isCheck = true
-              // this.allCurtain[i].showMultiple = false
               this.allCurtain[i].multiple = "2.2";
               this.allCurtain[i].width = "";
               this.allCurtain[i].height = "";
               this.allCurtain[i].lwbWidth = "";
-              // this.allCurtain[i].isNeed = false
               this.$set(this.$data.allCurtain[i], "isNeed", false);
               this.$set(this.$data.allCurtain[i], "showMultiple", false);
+              this.$set(this.$data.allCurtain[i], "showActivity", false);
               this.allCurtain[i].activity = "";
               this.allCurtain[i].myposition = "";
             }
@@ -281,29 +295,7 @@ export default {
         }
       });
       this.showSearch = false;
-      // this.setHistoryItems(this.inputValue)
-      // this.showSearch = false
     },
-    // //历史搜索
-    // setHistoryItems(keyword) {
-    //   keyword = keyword.trim();
-    //   let { historyItems } = localStorage;
-    //   if (historyItems === undefined) {
-    //     localStorage.historyItems = keyword;
-    //   } else {
-    //     const onlyItem = historyItems.split('|').filter(e => e != keyword);
-    //     if (onlyItem.length > 0) historyItems = keyword + '|' + onlyItem.join('|');
-    //     localStorage.historyItems = historyItems;
-    //   }
-    //   this.historySearch = localStorage.historyItems.split("|")
-    //   console.log(localStorage.historyItems,this.historySearch)
-    // },
-    // //清空历史搜索
-    // clearHistory(){
-    //   localStorage.removeItem('historyItems');
-    //   this.historySearch = localStorage.historyItems
-    // },
-    //获取窗帘型号列表
     getCurtainXh() {
       this.allCurtain = [];
       let url = this.orderBaseUrl + "/item/getCurtainType.do";
@@ -313,24 +305,85 @@ export default {
       };
       axios.post(url, data).then(res => {
         this.allCurtain = res.data.data;
+        this.getActivity();
         this.totalLists = res.data.data[0].total;
         this.pageMark = parseInt(this.allCurtain[0].total / 10) + 1;
         //获取总页数
         this.totalPage = parseInt(this.totalLists / 10) + 1;
         for (let i = 0; i < this.allCurtain.length; i++) {
-          // this.allCurtain[i].isCheck = true
-          // this.allCurtain[i].showMultiple = false
           this.allCurtain[i].multiple = "2.2";
           this.allCurtain[i].width = "";
           this.allCurtain[i].height = "";
           this.allCurtain[i].lwbWidth = "";
-          // this.allCurtain[i].isNeed = false
           this.$set(this.$data.allCurtain[i], "isNeed", false);
           this.$set(this.$data.allCurtain[i], "showMultiple", false);
+          this.$set(this.$data.allCurtain[i], "showActivity", false);
           this.allCurtain[i].activity = "";
           this.allCurtain[i].myposition = "";
         }
       });
+    },
+    async getActivity() {
+      this.activityOptions = [];
+      this.isActivity = [];
+      for (let i = 0; i < this.allCurtain.length; i++) {
+        var defaultSel = {
+          pri: 0,
+          id: 0
+        };
+        let itemRes = await getItemById(
+          { itemNo: this.allCurtain[i].itemNo },
+          { loading: false }
+        );
+        let res = await GetPromotionByItem(
+          {
+            cid: this.$store.getters.getCId,
+            customerType: this.$store.getters.getCtype,
+            itemNo: itemRes.data.ITEM_NO,
+            itemVersion: itemRes.data.ITEM_VERSION,
+            productType: itemRes.data.PRODUCT_TYPE,
+            productBrand: itemRes.data.PRODUCT_BRAND
+          },
+          { loading: false }
+        );
+        if (res.data.length === 0) this.isActivity.push(true);
+        else this.isActivity.push(false);
+        let _obj = [];
+
+        for (var j = 0; j < res.data.length; j++) {
+          var obj = {
+            label: res.data[j].ORDER_TYPE + " -- " + res.data[j].ORDER_NAME,
+            value: res.data[j].P_ID
+          };
+          var obj1 = {
+            pId: res.data[j].P_ID,
+            groupType: res.data[j].GROUP_TYPE
+          };
+          if (res.data[j].PRIORITY != 0 && defaultSel.pri == 0) {
+            defaultSel.pri = res.data[j].PRIORITY;
+            defaultSel.id = res.data[j].P_ID;
+          } else if (
+            res.data[j].PRIORITY != 0 &&
+            defaultSel.pri > res.data[j].PRIORITY
+          ) {
+            defaultSel.pri = res.data[j].PRIORITY;
+            defaultSel.id = res.data[j].P_ID;
+          }
+          let re = this.activityGroup.some(i => i.pId === obj1.pId);
+          if (re === false) this.activityGroup.push(obj1);
+          _obj.push(obj);
+        }
+        _obj.push({
+          label: "不参与活动",
+          value: ""
+        });
+        this.activityOptions.push(_obj);
+
+        if (defaultSel.pri != 0) {
+          this.allCurtain[i].activity = defaultSel.id;
+          this.$set(this.allCurtain, i, this.allCurtain[i]);
+        }
+      }
     },
     //改变页数
     changePage() {
@@ -347,8 +400,63 @@ export default {
     selectzzbs(index) {
       this.allCurtain[index].showMultiple = true;
     },
+    selecthd(index) {
+      if (!this.isActivity[index]) {
+        this.allCurtain[index].showActivity = true;
+      }
+    },
+    selectthisHd(index, indexx) {
+      this.allCurtain[index].showActivity = false;
+      this.allCurtain[index].activity = this.activityOptions[index][
+        indexx
+      ].value;
+    },
     //选择此款
     selectThis(index) {
+      let arr = [];
+      let str = "";
+      if (this.allCurtain[index].width === "") {
+        arr.push("宽度");
+      }
+      if (this.allCurtain[index].height === "") {
+        arr.push("高度");
+      }
+      if (this.allCurtain[index].multiple === "") {
+        arr.push("褶皱倍数");
+      }
+      if (arr.length !== 0) {
+        str = arr.join("、");
+        Dialog.alert({
+          message: `请确保产品${this.allCurtain[index].itemNo}的${str}已经输入!!`
+        });
+        return;
+      }
+      if (
+        this.allCurtain[index].wbhFlag === "1" &&
+        this.allCurtain[index].isNeed === false &&
+        this.allCurtain[index].lwbWidth !== ""
+      ) {
+        Dialog.alert({
+          message: "在填写了帘外包宽度的情况下，请勾选前面的按钮!!"
+        });
+        return;
+      }
+      if (
+        this.allCurtain[index].wbhFlag === "1" &&
+        this.allCurtain[index].isNeed === true &&
+        this.allCurtain[index].lwbWidth === ""
+      ) {
+        Dialog.alert({
+          message: "在勾选了帘外包的情况下，帘外包宽度不能为空!!"
+        });
+        return;
+      }
+      var groupType;
+      this.activityGroup.forEach(item => {
+        if (item.pId === this.allCurtain[index].activity) {
+          groupType = item.groupType;
+        }
+      });
       this.$router.push({
         name: "curtaindetails",
         params: {
@@ -356,8 +464,11 @@ export default {
           width: this.allCurtain[index].width, //成品宽度
           height: this.allCurtain[index].height, //成品高度
           WBH: this.allCurtain[index].lwbWidth, //帘头外包盒宽度
+          isWBH: this.allCurtain[index].isNeed,
           multiple: this.allCurtain[index].multiple, //褶皱倍数
           location: this.allCurtain[index].myposition,
+          activity: this.allCurtain[index].activity,
+          groupType: groupType,
           from: "searchcurtain"
         }
       });
@@ -378,6 +489,20 @@ export default {
     //获取用户cid
     CID() {
       return this.$store.state.info.data.loginName;
+    },
+    changeActivi() {
+      return function(id, index) {
+        if (id) {
+          return this.activityOptions[index].find(item => item.value == id)
+            .label;
+        } else {
+          if (this.isActivity[index]) {
+            return "此产品不参与活动";
+          } else {
+            return "不参与活动";
+          }
+        }
+      };
     }
   },
   mounted() {
@@ -450,12 +575,11 @@ export default {
 }
 .curtain-width {
   width: 50px;
-  border: none;
   /*background-color: #d5d5d5;*/
 }
 .select-multiple {
   display: inline-block;
-  width: 70px;
+  width: 80px;
   height: 15px;
   line-height: 15px;
   /*background: url("../assetsorder/zk.png") no-repeat center;*/
@@ -472,14 +596,9 @@ export default {
 }
 .myposition {
   display: inline-block;
-  width: 70px;
+  width: 80px;
   height: 15px;
   line-height: 15px;
-  background-color: #ebebeb;
-  border-radius: 2px;
-  outline: none;
-  border: none;
-  /*color: white;*/
   text-decoration: none;
   padding: 3px 10px;
 }
@@ -548,8 +667,9 @@ export default {
   bottom: 0;
   z-index: 99;
 }
-.show-multiple .van-cell-group {
-  height: 300px;
+.van-cell-group {
+  width: 300px;
+  max-height: 300px;
   overflow: scroll;
 }
 .fy-bottom {
