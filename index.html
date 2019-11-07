@@ -28,7 +28,7 @@
 <body>
     <div id="app"></div>
     <script>
-        var vm, app;
+        var vm, app, notificationlist;
         var urlArr = {
             local: {
                 baseUrl: 'http://localhost:49438/',
@@ -72,14 +72,7 @@
                     var obj = JSON.parse(msg.content);
                     //公告
                     if (obj.msg_type == "notification") {
-                        app.$router.push({
-                            name: "notificationlist",
-                            params: {
-                                showNotification: true,
-                                ID: obj.bill_id,
-                                from: 'customer',
-                            }
-                        });
+                        vm.showPushNotification(obj.bill_id);
                     } else if (obj.msg_type == "order") {
 
                     }

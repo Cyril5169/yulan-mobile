@@ -77,6 +77,7 @@ vm = new Vue({
   template: "<App/>"
 });
 vm.UpdateVersion = Global.UpdateVersion;
+vm.showPushNotification = Global.showPushNotification;
 vm.UpdatePushResponseTime = UpdatePushResponseTime;
 app = vm.$children[0];
 

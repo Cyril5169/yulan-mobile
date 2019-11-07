@@ -51,6 +51,7 @@ export default {
       showNotification: false,
       CONTENT: "",
       TITLE: "",
+      ID: null,
     };
   },
   computed: {
@@ -98,22 +99,31 @@ export default {
     },
   },
   created() {
+    notificationlist = this;
     var me = this;
     this.from = this.$route.params.from;
-    this.ID = this.$route.params.ID;
     //如果传入ID，就去查找改公告并展示
-    if (this.ID) {
-      GetById(this.ID).then((res) => {
-        me.TITLE = res.data.TITLE;
-        me.CONTENT = res.data.CONTENT;
-        me.showNotification = me.$route.params.showNotification;
-      }).catch(err => {
-        me.TITLE = error;
-      })
+    if (this.$route.params.ID) {
+      this.ID = this.$route.params.ID;
     } else {
       this.CONTENT = this.$route.params.CONTENT;
       this.TITLE = this.$route.params.TITLE;
       this.showNotification = this.$route.params.showNotification;
+    }
+  },
+  destroyed(){
+    notificationlist = null;
+  },
+  watch:{
+    ID: function(val){
+      var me = this;
+      GetById(val).then((res) => {
+        me.TITLE = res.data.TITLE;
+        me.CONTENT = res.data.CONTENT;
+        me.showNotification = true;
+      }).catch(err => {
+        me.TITLE = error;
+      })
     }
   }
 };
