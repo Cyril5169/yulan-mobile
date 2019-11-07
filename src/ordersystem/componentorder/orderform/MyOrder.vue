@@ -466,7 +466,7 @@ export default {
           .then(data => {
             this.totalLists = data.count;
             //获取总页数
-            this.totalPage = parseInt(data.count / 5) + 1;
+            this.totalPage = Math.ceil(data.count / 5);
             for (let i = 0; i < data.data.length; i++) {
               this.orderLists.push(data.data[i]);
             }

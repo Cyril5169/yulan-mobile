@@ -279,7 +279,7 @@ export default {
           );
         }
         if (this.billDetailList.length) {
-          this.totalPage = parseInt(this.billDetailList[0].total / 10) + 1;
+          this.totalPage = 1;
         }
       });
     },

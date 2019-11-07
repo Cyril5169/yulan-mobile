@@ -84,7 +84,7 @@ export default {
         this.billLists = res.data.customerBalancePeriodList;
         this.customerInfo = res.data.customerInfo;
         if (this.billLists) {
-          this.totalPage = parseInt(this.billLists[0].total / 8) + 1;
+          this.totalPage = Math.ceil(this.billLists[0].total / 8);
         }
       });
     },

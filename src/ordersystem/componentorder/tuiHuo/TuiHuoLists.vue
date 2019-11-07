@@ -251,7 +251,7 @@ export default {
           this.allLists = res.data;
           this.totalLists = res.count;
           //获取总页数
-          this.totalPage = parseInt(this.totalLists / 8) + 1;
+          this.totalPage = Math.ceil(this.totalLists / 8);
           if (this.allLists.length == 0) {
             Toast({
               message: "暂无该状态退货赔偿书",

@@ -160,7 +160,7 @@ export default {
           this.mliaos = data.data.data;
           //总页数
           if (this.mliaos.length) {
-            this.totalPage = parseInt(this.mliaos[0].total / 10) + 1;
+            this.totalPage = Math.ceil(this.mliaos[0].total / 10);
           }
           for (let i = 0; i < this.mliaos.length; i++) {
             if ((this.mliaos[i].fixType = "01")) {
@@ -207,10 +207,10 @@ export default {
           this.mliaos = [];
         } else {
           this.mliaos = data.data.data;
-          this.pageMark = parseInt(this.mliaos[0].total / 10) + 1;
+          this.pageMark = Math.ceil(this.mliaos[0].total / 10);
           //总页数
           if (this.mliaos.length) {
-            this.totalPage = parseInt(this.mliaos[0].total / 10) + 1;
+            this.totalPage = Math.ceil(this.mliaos[0].total / 10);
           }
           for (let i = 0; i < this.mliaos.length; i++) {
             if ((this.mliaos[i].fixType = "01")) {

@@ -279,7 +279,7 @@ export default {
             // this.currentPage = 1
             this.allCurtain = data.data.data;
             this.getActivity();
-            this.totalPage = parseInt(this.allCurtain[0].total / 10) + 1;
+            this.totalPage = Math.ceil(this.allCurtain[0].total / 10);
             for (let i = 0; i < this.allCurtain.length; i++) {
               this.allCurtain[i].multiple = "2.2";
               this.allCurtain[i].width = "";
@@ -307,9 +307,9 @@ export default {
         this.allCurtain = res.data.data;
         this.getActivity();
         this.totalLists = res.data.data[0].total;
-        this.pageMark = parseInt(this.allCurtain[0].total / 10) + 1;
+        this.pageMark = Math.ceil(this.allCurtain[0].total / 10);
         //获取总页数
-        this.totalPage = parseInt(this.totalLists / 10) + 1;
+        this.totalPage = Math.ceil(this.totalLists / 10);
         for (let i = 0; i < this.allCurtain.length; i++) {
           this.allCurtain[i].multiple = "2.2";
           this.allCurtain[i].width = "";

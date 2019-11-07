@@ -220,7 +220,7 @@ export default {
             });
             //总页数
             if (this.mliaos.length) {
-              this.totalPage = parseInt(this.mliaos[0].total / 10) + 1;
+              this.totalPage = Math.ceil(this.mliaos[0].total / 10);
               // 数据全部加载完成
               if (this.currentPage >= this.totalPage) {
                 this.finished = true;

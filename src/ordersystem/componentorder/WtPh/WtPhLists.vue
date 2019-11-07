@@ -233,7 +233,7 @@ export default {
         } else {
           this.totalLists = this.allLists[0].total;
           //获取总页数
-          this.totalPage = parseInt(this.totalLists / 10) + 1;
+          this.totalPage = Math.ceil(this.totalLists / 8);
           for (let i = 0; i < this.allLists.length; i++) {
             this.allLists[i].payDate = this.exchangeTime(
               this.allLists[i].payDate

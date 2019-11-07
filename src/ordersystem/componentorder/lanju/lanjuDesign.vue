@@ -266,7 +266,7 @@ export default {
         }
         this.totalLists = res.count;
         //获取总页数
-        this.totalPage = parseInt(res.count / 10) + 1;
+        this.totalPage = Math.ceil(res.count / 10);
         this.allLists = res.data;
         if (this.allLists.length == 0) {
           Toast({

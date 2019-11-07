@@ -33,22 +33,9 @@
             </div>
           </div>
           <div class="middle-div" @click="toSearchWall">
-            <p class="middle-div-p">墙纸配套类产品</p>
+            <p class="middle-div-p">墙纸配套类</p>
             <div class="right-arrow"></div>
           </div>
-        </div>
-
-        <div class="option2">
-          <div class="top-div">
-            <div class="item-box active-item">
-              <div class="item-img2"></div>
-            </div>
-          </div>
-          <div class="middle-div" @click="toSearchSoft">
-            <p class="middle-div-p2">软装产品</p>
-            <div class="right-arrow"></div>
-          </div>
-          <!--<div class="bottom-div"></div>-->
         </div>
 
         <!-- <div class="option3">
@@ -58,10 +45,23 @@
             </div>
           </div>
           <div class="middle-div" @click="toSearchCurtain">
-            <p class="middle-div-p3">窗帘产品</p>
+            <p class="middle-div-p3">定制窗帘</p>
             <div class="right-arrow"></div>
           </div>
         </div> -->
+
+        <div class="option2">
+          <div class="top-div">
+            <div class="item-box active-item">
+              <div class="item-img2"></div>
+            </div>
+          </div>
+          <div class="middle-div" @click="toSearchSoft">
+            <p class="middle-div-p2">软装</p>
+            <div class="right-arrow"></div>
+          </div>
+          <!--<div class="bottom-div"></div>-->
+        </div>
       </section>
 
       <navBottom :change-style="style"></navBottom>
@@ -281,17 +281,6 @@ p {
   color: #7d7d7d;
   text-decoration: underline;
 }
-/* .warn-img{
-      background: url('http://14.29.221.109:10250/upload/assets/warn.png');
-      height: 66px;
-      width: 66px;
-      position: relative;
-      top: 40px;
-      left: 50%;
-      margin-left: -33px;
-      background-size: contain;
-      background-position: center;
-    } */
 .shadow {
   position: absolute;
   z-index: 100;
@@ -529,7 +518,6 @@ p {
 .item-img1 {
   width: 50px;
   height: 50px;
-  /* background-image: url('http://14.29.221.109:10250/upload/assets/people1.png'); */
   background-image: url("../assetsorder/wallpaper.png");
   /* background-position:  20px 0px; */
   background-size: contain;
@@ -589,7 +577,6 @@ p {
 .item-img2 {
   width: 50px;
   height: 50px;
-  /* background-image: url('http://14.29.221.109:10250/upload/assets/aggrement.png'); */
   background-image: url("../assetsorder/softdec.png");
   /* background-position:  20px 0px; */
   background-size: contain;

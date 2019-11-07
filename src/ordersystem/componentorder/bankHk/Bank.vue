@@ -257,7 +257,7 @@ export default {
         this.loading = false;
         this.totalLists = res.data.count;
         //获取总页数
-        this.totalPage = parseInt(res.data.count / 10) + 1;
+        this.totalPage = Math.ceil(res.data.count / 8);
         this.allLists = res.data.data;
         if (this.allLists.length == 0) {
           Toast({
