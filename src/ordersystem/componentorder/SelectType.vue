@@ -38,7 +38,7 @@
           </div>
         </div>
 
-        <!-- <div class="option3">
+        <div class="option3">
           <div class="top-div">
             <div class="item-box">
               <div class="item-img3"></div>
@@ -48,7 +48,7 @@
             <p class="middle-div-p3">定制窗帘</p>
             <div class="right-arrow"></div>
           </div>
-        </div> -->
+        </div>
 
         <div class="option2">
           <div class="top-div">

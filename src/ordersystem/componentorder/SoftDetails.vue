@@ -252,7 +252,10 @@ export default {
               message: "修改购物车成功"
             });
             this.$router.push({
-              path: "/shoppingcart"
+              name: "shoppingcart",
+              params: {
+                activeName: "/mycart/softcart"
+              }
             });
           } else if (data.data.code == 2) {
             Toast({
