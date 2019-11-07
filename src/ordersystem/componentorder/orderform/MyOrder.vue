@@ -735,6 +735,13 @@ export default {
   },
   activated() {
     window.vTop = this;
+    var option = this.$refs.nav;
+    var myScroll = new this.IScroll(option, {
+      click: true,
+      //mouseWheel: true,//鼠标滚动
+      scrollX: true //横向滚动
+      //scrollbars: true,//横向滚动条
+    });
     if (this.$route.params.refresh) this.orderSearch();
   },
   destroyed() {

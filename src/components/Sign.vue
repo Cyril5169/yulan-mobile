@@ -162,19 +162,36 @@ export default {
               document.addEventListener("plusready", function (a) {
                 let clientid = plus.push.getClientInfo().clientid;
                 console.log("clientid为" + clientid);
-                UpdateAppClientId(th.name, clientid).then((res) => {
-                  console.log("更新clientid成功");
-                }).catch((err) => {
-                  console.log("更新clientid失败"+JSON.stringify(err));
+                console.log("OS name: " + plus.os.name);
+                console.log("OS vendor: " + plus.os.vendor);
+                console.log("OS version: " + plus.os.version);
+                console.log("OS language: " + plus.os.language);
+                console.log("Vendor: " + plus.device.vendor);
+                console.log("UUID: " + plus.device.uuid);
+                plus.runtime.getProperty(plus.runtime.appid, function (inf) {
+                  UpdateAppClientId(th.name, clientid, plus.os.name, plus.device.vendor, inf.version).then((res) => {
+                    console.log("更新clientid成功");
+                  }).catch((err) => {
+                    console.log("更新clientid失败" + JSON.stringify(err));
+                  });
                 });
               }, false);
             } else {
               let clientid = plus.push.getClientInfo().clientid;
               console.log("clientid为" + clientid);
-              UpdateAppClientId(th.name, clientid).then((res) => {
-                console.log("更新clientid成功");
-              }).catch((err) => {
-                console.log("更新clientid失败"+JSON.stringify(err));
+              console.log("OS name: " + plus.os.name);
+              console.log("OS vendor: " + plus.os.vendor);
+              console.log("OS version: " + plus.os.version);
+              console.log("OS language: " + plus.os.language);
+              console.log("Vendor: " + plus.device.vendor);
+              console.log("UUID: " + plus.device.uuid);
+              console.log("plus.runtime.version: " + plus.runtime.version);
+              plus.runtime.getProperty(plus.runtime.appid, function (inf) {
+                UpdateAppClientId(th.name, clientid, plus.os.name, plus.device.vendor, inf.version).then((res) => {
+                  console.log("更新clientid成功");
+                }).catch((err) => {
+                  console.log("更新clientid失败" + JSON.stringify(err));
+                });
               });
             }
             this.$router.push({

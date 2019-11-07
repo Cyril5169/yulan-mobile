@@ -16,3 +16,11 @@ export function getPageDataTable(data, config = {}) {
         return Promise.reject(err);
     })
 }
+//根据ID获取公告
+export function GetById(ID) {
+    return post('/NOTIFICATION/GetById', {ID:ID}, {}).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
