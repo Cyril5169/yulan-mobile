@@ -5,7 +5,7 @@
       <div class="select-this">
         <div class="title-item">
           <span class="title-left">款号</span>
-          <span class="title-right">{{itemNO}}</span>
+          <span class="title-right">{{itemNo}}</span>
         </div>
         <div class="title-item">
           <span class="title-left">成品宽度*高度</span>
@@ -46,7 +46,7 @@
                   <div class="title-item2">
                     <span class="title-left">编码</span>
                     <span
-                      @click="changeXh('lt',index,liantou.productType,liantou.itemMLGY.changeFlag,liantou.itemMLGY,liantou.useamount)"
+                      @click="changeXh('lt',index,liantou.productType,liantou.itemMLGY.changeFlag,liantou.itemMLGY,liantou.dosage)"
                       class="title-right title-right2"
                       :class="{'title-right3':liantou.itemMLGY.changeFlag =='Y'}"
                     >{{liantou.itemNo}}</span>
@@ -68,72 +68,53 @@
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.fixGrade/1000}}</span>
                   </div>
-                  <div
-                    class="title-item2"
-                    @click="liantou.showFG = true"
-                    v-if="liantou.fixType != '--' && liantou.itemMLGY.productType =='ML'"
-                  >
-                    <span class="title-left">面料属性</span>
-                    <span class="title-right">{{liantou.fixType}}</span>
-                    <span class="item-icon"></span>
-                  </div>
                   <div class="title-item2">
                     <span class="title-left">用量</span>
                     <span class="title-right">
-                      <span>{{liantou.useamount}}{{liantou.unit}}</span>
+                      <span>{{liantou.dosage}}{{liantou.unit}}</span>
                       <input
                         type="number"
-                        v-show="liantou.itemMLGY.modifyFlag=='Y'"
+                        v-if="liantou.itemMLGY.modifyFlag=='Y'"
                         class="use-num"
                         placeholder="输入用量"
                       />
                     </span>
                   </div>
-                  <div class="title-item2" v-show="liantou.LtZz" @click="liantou.showLtZz = true">
+                  <div class="title-item2" v-if="liantou.creator" @click="liantou.showLtZz = true">
                     <span class="title-left">制造说明</span>
-                    <span class="title-right title-right2">{{liantou.LtZz}}</span>
+                    <span class="title-right title-right2">{{liantou.creator}}</span>
                     <span class="item-icon"></span>
                   </div>
-                  <div class="title-item2" v-show="liantou.notes">
+                  <div class="title-item2">
                     <span class="title-left">说明</span>
-                    <span class="title-right">{{liantou.notes}}</span>
+                    <span class="title-right" style="color:red;">{{liantou.tip}}</span>
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
                     <span class="title-right">
-                      <input type="text" class="curtain-beizhu" placeholder="填写备注" />
+                      <input
+                        type="text"
+                        v-model="liantou.remark"
+                        class="curtain-beizhu"
+                        placeholder="填写备注"
+                      />
                     </span>
-                  </div>
-                  <!--选择风格-->
-                  <div class="show-FG" @click="liantou.showFG = false">
-                    <van-popup v-model="liantou.showFG" position="center">
-                      <van-radio-group v-model="liantou.fixType">
-                        <van-cell-group>
-                          <van-cell title="定宽" clickable @click="changeFG('定宽','lt',liantou)">
-                            <van-radio name="定宽" checked-color="#89cb81" />
-                          </van-cell>
-                          <van-cell title="定高" clickable @click="changeFG('定高','lt',liantou)">
-                            <van-radio name="定高" checked-color="#89cb81" />
-                          </van-cell>
-                        </van-cell-group>
-                      </van-radio-group>
-                    </van-popup>
                   </div>
                   <!--选择帘头制造说明-->
                   <div class="head-make-details" @click="liantou.showLtZz = false">
                     <van-popup v-model="liantou.showLtZz" position="center">
-                      <van-radio-group v-model="liantou.LtZz">
+                      <van-radio-group v-model="liantou.creator">
                         <van-cell-group>
-                          <van-cell title="么术贴正车" clickable @click="liantou.LtZz = '么术贴正车'">
+                          <van-cell title="么术贴正车" clickable @click="liantou.creator = '么术贴正车'">
                             <van-radio name="么术贴正车" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="么术贴反车" clickable @click="liantou.LtZz = '么术贴反车'">
+                          <van-cell title="么术贴反车" clickable @click="liantou.creator = '么术贴反车'">
                             <van-radio name="么术贴反车" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="穿/挂杆款" clickable @click="liantou.LtZz = '穿/挂杆款'">
+                          <van-cell title="穿/挂杆款" clickable @click="liantou.creator = '穿/挂杆款'">
                             <van-radio name="穿/挂杆款" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="特殊见备注" clickable @click="liantou.LtZz = '特殊见备注'">
+                          <van-cell title="特殊见备注" clickable @click="liantou.creator = '特殊见备注'">
                             <van-radio name="特殊见备注" checked-color="#89cb81" />
                           </van-cell>
                         </van-cell-group>
@@ -153,7 +134,7 @@
                   <div class="title-item2">
                     <span class="title-left">编码</span>
                     <span
-                      @click="changeXh('ls',index,liantou.productType,liantou.itemMLGY.changeFlag,liantou.itemMLGY,liantou.useamount)"
+                      @click="changeXh('ls',index,liantou.productType,liantou.itemMLGY.changeFlag,liantou.itemMLGY,liantou.dosage)"
                       class="title-right title-right2"
                       :class="{'title-right3':liantou.itemMLGY.changeFlag =='Y'}"
                     >{{liantou.itemNo}}</span>
@@ -177,37 +158,44 @@
                   <div
                     class="title-item2"
                     @click="liantou.showFG = true"
-                    v-if="liantou.fixType != '--' && liantou.itemMLGY.productType =='ML'"
+                    v-if="liantou.fixType != '' && liantou.itemMLGY.productType =='ML'"
                   >
                     <span class="title-left">面料属性</span>
-                    <span class="title-right">{{liantou.fixType}}</span>
+                    <span class="title-right">{{liantou.fixType | fixTypeFilter}}</span>
                     <span class="item-icon"></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">用量</span>
                     <span class="title-right">
-                      <span>{{liantou.useamount}}{{liantou.unit}}</span>
+                      <span>{{liantou.dosage}}{{liantou.unit}}</span>
                       <input
                         type="number"
-                        v-show="liantou.itemMLGY.modifyFlag =='Y'"
+                        v-if="liantou.itemMLGY.modifyFlag =='Y'"
                         class="use-num"
                         placeholder="输入用量"
                       />
                     </span>
                   </div>
-                  <div class="title-item2" v-show="liantou.MlZz" @click="liantou.showMlZz = true">
+                  <div class="title-item2" v-if="liantou.creator" @click="liantou.showMlZz = true">
                     <span class="title-left">制造说明</span>
-                    <span class="title-right title-right2">{{liantou.MlZz}}</span>
+                    <span class="title-right title-right2">{{liantou.creator}}</span>
                     <span class="item-icon"></span>
                   </div>
-                  <div class="title-item2" v-show="liantou.notes">
+                  <div class="title-item2">
                     <span class="title-left">说明</span>
-                    <span class="title-right">{{liantou.notes}}</span>
+                    <span class="title-right" style="color:red;">{{liantou.tip}}</span>
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
+                    <span style="float:left;margin-left:10px;color:red;">{{getRemark(liantou)}}</span>
                     <span class="title-right">
-                      <input type="text" class="curtain-beizhu" placeholder="填写备注" />
+                      <input
+                        type="text"
+                        class="curtain-beizhu"
+                        :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
+                        placeholder="填写备注"
+                        v-model="liantou.remark"
+                      />
                     </span>
                   </div>
                   <!--选择风格-->
@@ -215,11 +203,11 @@
                     <van-popup v-model="liantou.showFG" position="center">
                       <van-radio-group v-model="liantou.fixType">
                         <van-cell-group>
-                          <van-cell title="定宽" clickable @click="changeFG('定宽','lt',liantou)">
-                            <van-radio name="定宽" checked-color="#89cb81" />
+                          <van-cell title="定宽" clickable @click="changeFG('01','ls',liantou,index)">
+                            <van-radio name="01" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="定高" clickable @click="changeFG('定高','lt',liantou)">
-                            <van-radio name="定高" checked-color="#89cb81" />
+                          <van-cell title="定高" clickable @click="changeFG('02','ls',liantou,index)">
+                            <van-radio name="02" checked-color="#89cb81" />
                           </van-cell>
                         </van-cell-group>
                       </van-radio-group>
@@ -228,16 +216,16 @@
                   <!--选择帘身制造说明-->
                   <div class="head-make-details" @click="liantou.showMlZz = false">
                     <van-popup v-model="liantou.showMlZz" position="center">
-                      <van-radio-group v-model="liantou.MlZz">
+                      <van-radio-group v-model="liantou.creator">
                         <van-cell-group>
-                          <van-cell title="对开" clickable @click="liantou.MlZz = '对开'">
+                          <van-cell title="对开" clickable @click="liantou.creator = '对开'">
                             <van-radio name="对开" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="单开" clickable @click="liantou.MlZz = '单开'">
+                          <van-cell title="单开" clickable @click="liantou.creator = '单开'">
                             <van-radio name="单开" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="特殊见备注" clickable @click="liantou.MlZz = '特殊见备注'">
-                            <van-radio name="特殊见备注" checked-color="#89cb81" />
+                          <van-cell title="特殊开备注" clickable @click="liantou.creator = '特殊开备注'">
+                            <van-radio name="特殊开备注" checked-color="#89cb81" />
                           </van-cell>
                         </van-cell-group>
                       </van-radio-group>
@@ -279,7 +267,7 @@
                   </div>
                   <div class="title-item2" v-if="liantou.fixGrade">
                     <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.fixGrade}}</span>
+                    <span class="title-right">{{liantou.fixGrade/1000}}</span>
                   </div>
                   <div
                     class="title-item2"
@@ -287,13 +275,13 @@
                     v-if="liantou.fixType && liantou.itemMLGY.productType =='ML'"
                   >
                     <span class="title-left">面料属性</span>
-                    <span class="title-right">{{liantou.fixType}}</span>
+                    <span class="title-right">{{liantou.fixType | fixTypeFilter}}</span>
                     <span class="item-icon"></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">用量</span>
                     <span class="title-right">
-                      <span>{{liantou.useamount}}{{liantou.unit}}</span>
+                      <span>{{liantou.dosage}}{{liantou.unit}}</span>
                       <input
                         type="number"
                         v-if="liantou.itemMLGY.modifyFlag =='Y'"
@@ -302,19 +290,26 @@
                       />
                     </span>
                   </div>
-                  <div class="title-item2" v-if="liantou.MlZz" @click="liantou.showMlZz = true">
+                  <div class="title-item2" v-if="liantou.creator" @click="liantou.showMlZz = true">
                     <span class="title-left">制造说明</span>
-                    <span class="title-right title-right2">{{liantou.MlZz}}</span>
+                    <span class="title-right title-right2">{{liantou.creator}}</span>
                     <span class="item-icon"></span>
                   </div>
-                  <div class="title-item2" v-if="liantou.notes">
+                  <div class="title-item2">
                     <span class="title-left">说明</span>
-                    <span class="title-right">{{liantou.notes}}</span>
+                    <span class="title-right" style="color:red;">{{liantou.tip}}</span>
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
+                    <span style="float:left;margin-left:10px;color:red;">{{getRemark(liantou)}}</span>
                     <span class="title-right">
-                      <input type="text" class="curtain-beizhu" placeholder="填写备注" />
+                      <input
+                        type="text"
+                        class="curtain-beizhu"
+                        :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
+                        placeholder="填写备注"
+                        v-model="liantou.remark"
+                      />
                     </span>
                   </div>
                   <!--选择风格-->
@@ -322,11 +317,19 @@
                     <van-popup v-model="liantou.showFG" position="center">
                       <van-radio-group v-model="liantou.fixType">
                         <van-cell-group>
-                          <van-cell title="定宽" clickable @click="changeFG('定宽','lt',liantou)">
-                            <van-radio name="定宽" checked-color="#89cb81" />
+                          <van-cell
+                            title="定宽"
+                            clickable
+                            @click="changeFG('01','sha',liantou,index)"
+                          >
+                            <van-radio name="01" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="定高" clickable @click="changeFG('定高','lt',liantou)">
-                            <van-radio name="定高" checked-color="#89cb81" />
+                          <van-cell
+                            title="定高"
+                            clickable
+                            @click="changeFG('02','sha',liantou,index)"
+                          >
+                            <van-radio name="02" checked-color="#89cb81" />
                           </van-cell>
                         </van-cell-group>
                       </van-radio-group>
@@ -335,16 +338,16 @@
                   <!--选择纱面料制造说明-->
                   <div class="head-make-details" @click="liantou.showMlZz = false">
                     <van-popup v-model="liantou.showMlZz" position="center">
-                      <van-radio-group v-model="liantou.MlZz">
+                      <van-radio-group v-model="liantou.creator">
                         <van-cell-group>
-                          <van-cell title="对开" clickable @click="liantou.MlZz = '对开'">
+                          <van-cell title="对开" clickable @click="liantou.creator = '对开'">
                             <van-radio name="对开" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="单开" clickable @click="liantou.MlZz = '单开'">
+                          <van-cell title="单开" clickable @click="liantou.creator = '单开'">
                             <van-radio name="单开" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="特殊见备注" clickable @click="liantou.MlZz = '特殊见备注'">
-                            <van-radio name="特殊见备注" checked-color="#89cb81" />
+                          <van-cell title="特殊开备注" clickable @click="liantou.creator = '特殊开备注'">
+                            <van-radio name="特殊开备注" checked-color="#89cb81" />
                           </van-cell>
                         </van-cell-group>
                       </van-radio-group>
@@ -375,36 +378,33 @@
                   </div>
                   <div class="title-item2" v-if="liantou.fixGrade">
                     <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.fixGrade}}</span>
-                  </div>
-                  <div
-                    class="title-item2"
-                    v-if="liantou.fixType && liantou.itemMLGY.productType =='ML'"
-                  >
-                    <span class="title-left">面料属性</span>
-                    <span class="title-right">{{liantou.fixType}}</span>
-                    <span class="item-icon"></span>
+                    <span class="title-right">{{liantou.fixGrade/1000}}</span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">用量</span>
                     <span class="title-right">
-                      <span>{{liantou.useamount}}{{liantou.unit}}</span>
+                      <span>{{liantou.dosage}}{{liantou.unit}}</span>
                       <input
                         type="number"
-                        v-show="liantou.itemMLGY.modifyFlag =='Y'"
+                        v-if="liantou.itemMLGY.modifyFlag =='Y'"
                         class="use-num"
                         placeholder="输入用量"
                       />
                     </span>
                   </div>
-                  <div class="title-item2" v-show="liantou.notes">
+                  <div class="title-item2">
                     <span class="title-left">说明</span>
-                    <span class="title-right">{{liantou.notes}}</span>
+                    <span class="title-right" style="color:red;">{{liantou.tip}}</span>
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
                     <span class="title-right">
-                      <input type="text" class="curtain-beizhu" placeholder="填写备注" />
+                      <input
+                        type="text"
+                        class="curtain-beizhu"
+                        placeholder="填写备注"
+                        v-model="liantou.remark"
+                      />
                     </span>
                   </div>
                 </div>
@@ -414,55 +414,7 @@
         </van-collapse>
       </div>
     </div>
-    <!--选择帘身制造说明-->
-    <div class="body-make-details">
-      <van-popup v-model="showBodyMakeDetails" position="bottom">
-        <van-radio-group v-model="bodyMakeDetails">
-          <van-cell-group>
-            <van-cell title="未选择" clickable @click="bodyMakeDetails = '未选择'">
-              <van-radio name="未选择" checked-color="#89cb81" />
-            </van-cell>
-            <van-cell title="对开" clickable @click="bodyMakeDetails = '对开'">
-              <van-radio name="对开" checked-color="#89cb81" />
-            </van-cell>
-            <van-cell title="单开" clickable @click="bodyMakeDetails = '单开'">
-              <van-radio name="单开" checked-color="#89cb81" />
-            </van-cell>
-            <van-cell title="特殊见备注" clickable @click="bodyMakeDetails = '特殊见备注'">
-              <van-radio name="特殊见备注" checked-color="#89cb81" />
-            </van-cell>
-          </van-cell-group>
-        </van-radio-group>
-        <div class="comfirm-bottom" @click="comfirmMakeDetails">
-          <span>确定</span>
-        </div>
-      </van-popup>
-    </div>
-    <!--选择配件包-->
-    <div class="parts-package-details">
-      <van-popup v-model="showPartsPackage" position="bottom">
-        <van-radio-group v-model="partsPackage">
-          <van-cell-group>
-            <van-cell title="上样安装包(罗马杆+方轨)" clickable @click="partsPackage = '上样安装包(罗马杆+方轨)'">
-              <van-radio name="上样安装包(罗马杆+方轨)" checked-color="#89cb81" />
-            </van-cell>
-            <van-cell title="上样安装包(罗马杆)" clickable @click="partsPackage = '上样安装包(罗马杆)'">
-              <van-radio name="上样安装包(罗马杆)" checked-color="#89cb81" />
-            </van-cell>
-            <van-cell title="上样安装包(方轨)" clickable @click="partsPackage = '上样安装包(方轨)'">
-              <van-radio name="上样安装包(方轨)" checked-color="#89cb81" />
-            </van-cell>
-            <van-cell title="未选择配件包" clickable @click="partsPackage = '未选择配件包'">
-              <van-radio name="未选择配件包" checked-color="#89cb81" />
-            </van-cell>
-          </van-cell-group>
-        </van-radio-group>
-        <div class="comfirm-bottom" @click="comfirmMakeDetails">
-          <span>确定</span>
-        </div>
-      </van-popup>
-    </div>
-    <!--制造工艺-->
+    <!--替换item-->
     <van-popup v-model="showGy" position="right" class="show-gy">
       <div class="searchtop">
         <van-search
@@ -530,7 +482,8 @@ import {
   CollapseItem,
   Icon,
   Pagination,
-  Toast
+  Toast,
+  Dialog
 } from "vant";
 
 export default {
@@ -549,14 +502,15 @@ export default {
     [Icon.name]: Icon,
     [Search.name]: Search,
     [Pagination.name]: Pagination,
-    [Toast.name]: Toast
+    [Toast.name]: Toast,
+    [Dialog.name]: Dialog
   },
   data() {
     return {
       set: 28,
       limit: 26,
       activeName: "",
-      itemNO: this.$route.params.itemNO,
+      itemNo: this.$route.params.itemNo,
       width: this.$route.params.width, //成品宽度
       height: this.$route.params.height, //成品高度
       WBH: this.$route.params.WBH, //帘头外包盒宽度
@@ -566,24 +520,18 @@ export default {
       activity: this.$route.params.activity,
       groupType: this.$route.params.groupType,
       highJia: 0,
-      //帘头制造说明
-      showHeadMakeDetails: false,
-      heaadMakeDetails: "未选择",
-      //帘身和纱制造说明
-      showBodyMakeDetails: false,
-      bodyMakeDetails: "未选择",
-      //配件包
-      showPartsPackage: false,
       //制造工艺
       showGy: false,
-      type: "",
-      partsPackage: "无",
-      partsPackageNum: "未选择配件包",
       lt: [], //帘头
+      ltAll: [],
       ls: [], //帘身
+      lsAll: [],
       lspb: [], //帘身配布
+      lspbAll: [],
       sha: [], //纱
+      shaAll: [],
       pjb: [], //配件包
+      pjbAll: [],
       inputValue: "",
       itemNolists: [], //所有可供选择的型号
       chooseBig: [true, true, true, true, true], //是否选择了大类
@@ -602,9 +550,21 @@ export default {
       itemType: "",
       changeFlag: "",
       itemMLGY: {},
-      useamount: "", //用量
-      from: ""
+      dosage: "", //用量
+      from: "",
+      allData: []
     };
+  },
+  filters: {
+    fixTypeFilter(val) {
+      switch (val) {
+        case "01":
+          return "定宽";
+        case "02":
+          return "定高";
+      }
+      return "--";
+    }
   },
   methods: {
     changeLink(type, index) {
@@ -669,9 +629,14 @@ export default {
       if (this.$route.params.WBH == "") {
         this.$route.params.WBH = "0";
       }
+      this.lt = [];
+      this.ls = [];
+      this.lspb = [];
+      this.sha = [];
+      this.pjb = [];
       let URL = this.orderBaseUrl + "/item/getCurtainInfo.do";
       let data = {
-        itemNO: this.$route.params.itemNO,
+        itemNO: this.$route.params.itemNo,
         width: this.$route.params.width, //成品宽度
         height: this.$route.params.height, //成品高度
         WBH:
@@ -684,11 +649,8 @@ export default {
       axios.post(URL, data).then(res => {
         GetDosageAll(data).then(res2 => {
           let itemLists = res.data.itemList;
+          this.allData = JSON.parse(JSON.stringify(res.data));
           this.highJia = res.data.itemList[0].highJia;
-          this.lt = [];
-          this.ls = [];
-          this.sha = [];
-          this.pjb = [];
           //替换用量
           var dosageFilter = res2.data;
           var gy003 = dosageFilter.filter(item => item.ITEM_NO == "GY-003");
@@ -718,95 +680,102 @@ export default {
           //将数据进行分类
           for (let i = 0; i < itemLists.length; i++) {
             itemLists[i].choose = true;
-            //风格
-            if (itemLists[i].fixType == "01") {
-              itemLists[i].fixType = "定宽";
-            } else if (itemLists[i].fixType == "02") {
-              itemLists[i].fixType = "定高";
-            } else {
-              itemLists[i].fixType = "--";
-            }
+            itemLists[i].tip = "";
+            itemLists[i].remark = "";
+
             this.$set(itemLists[i], "showFG", false);
-            //规格
-            // if (itemLists[i].fixGrade == 0) {
-            //   itemLists[i].fixGrade = "--"
-            // }
             //单位乱码转换
             if (itemLists[i].unit == "°ü") {
               itemLists[i].unit = "包";
             }
             if (itemLists[i].itemMLGY.itemType == "lt") {
-              if (itemLists[i].itemMLGY.productType == "LCB") {
-                this.$set(itemLists[i], "useamount", res.data.LCB);
-              } else if (itemLists[i].itemMLGY.productType == "XHB") {
-                this.$set(itemLists[i], "useamount", res.data.XHBlt);
+              if (itemLists[i].itemMLGY.productType == "XHB") {
+                this.$set(
+                  itemLists[i],
+                  "dosage",
+                  Math.round(res.data.XHBlt * 100) / 100
+                );
               } else {
-                this.$set(itemLists[i], "useamount", res.data.lt);
+                this.$set(
+                  itemLists[i],
+                  "dosage",
+                  Math.round(res.data.lt * 100) / 100
+                );
               }
-              this.$set(itemLists[i], "LtZz", "未选");
+              this.$set(itemLists[i], "creator", "未选");
               this.$set(itemLists[i], "showLtZz", false);
               this.lt.push(itemLists[i]);
             } else if (itemLists[i].itemMLGY.itemType == "ls") {
               if (itemLists[i].itemMLGY.productType == "LCB") {
-                this.$set(itemLists[i], "useamount", res.data.LCB);
+                this.$set(
+                  itemLists[i],
+                  "dosage",
+                  Math.round(res.data.LCB * 10) / 10
+                );
               } else if (itemLists[i].itemMLGY.productType == "XHB") {
-                this.$set(itemLists[i], "useamount", res.data.XHBls);
+                this.$set(
+                  itemLists[i],
+                  "dosage",
+                  Math.round(res.data.XHBls * 10) / 10
+                );
               } else {
-                this.$set(itemLists[i], "useamount", res.data.ls);
+                this.$set(
+                  itemLists[i],
+                  "dosage",
+                  Math.round(res.data.ls * 10) / 10
+                );
               }
               //制造说明
               if (itemLists[i].itemMLGY.productType == "ML") {
-                this.$set(itemLists[i], "MlZz", "未选");
+                this.$set(itemLists[i], "creator", "未选");
                 this.$set(itemLists[i], "showMlZz", false);
               }
               this.ls.push(itemLists[i]);
             } else if (itemLists[i].itemMLGY.itemType == "lspb") {
               this.lspb.push(itemLists[i]);
             } else if (itemLists[i].itemMLGY.itemType == "sha") {
-              if (itemLists[i].itemMLGY.productType == "LCB") {
-                this.$set(itemLists[i], "useamount", res.data.LCB);
-              } else {
-                this.$set(itemLists[i], "useamount", res.data.sha);
-              }
+              this.$set(
+                itemLists[i],
+                "dosage",
+                Math.round(res.data.sha * 10) / 10
+              );
               //制造说明
               if (itemLists[i].itemMLGY.productType == "ML") {
-                this.$set(itemLists[i], "MlZz", "未选");
+                this.$set(itemLists[i], "creator", "未选");
                 this.$set(itemLists[i], "showMlZz", false);
               }
               this.sha.push(itemLists[i]);
             } else if (itemLists[i].itemMLGY.itemType == "pjb") {
-              if (itemLists[i].itemMLGY.productType == "LCB") {
-                this.$set(itemLists[i], "useamount", res.data.LCB);
-              } else {
-                this.$set(itemLists[i], "useamount", res.data.pjb);
-              }
+              this.$set(
+                itemLists[i],
+                "dosage",
+                Math.round(res.data.pjb * 10) / 10
+              );
               this.pjb.push(itemLists[i]);
             }
           }
+          this.ltAll = JSON.parse(JSON.stringify(this.lt));
+          this.lsAll = JSON.parse(JSON.stringify(this.ls));
+          this.lspbAll = JSON.parse(JSON.stringify(this.lspb));
+          this.shaAll = JSON.parse(JSON.stringify(this.sha));
+          this.pjbAll = JSON.parse(JSON.stringify(this.pjb));
         });
       });
     },
     //改变型号类型
-    changeXh(itemType, index, productType, changeFlag, itemMLGY, useamount) {
+    changeXh(itemType, index, productType, changeFlag, itemMLGY, dosage) {
       this.inputValue = "";
       this.itemType = itemType;
       this.index = index;
       this.productType = productType;
       this.changeFlag = itemMLGY.changeFlag;
       this.itemMLGY = itemMLGY;
-      this.useamount = useamount;
+      this.dosage = dosage;
       if (this.showGy == false) {
         this.currentPage = 1;
       }
       this.itemNolists = [];
       if (changeFlag == "Y") {
-        if (productType == "ML") {
-          this.type = "面料";
-        } else if (productType == "LCB") {
-          this.type = "里衬布";
-        } else if (productType == "PJB") {
-          this.type = "配件包";
-        }
         if (productType != "GY") {
           let url = this.orderBaseUrl + "/item/getCurtainItemTypeAll.do";
           let data = {
@@ -831,7 +800,7 @@ export default {
         } else {
           let url = this.orderBaseUrl + "/item/getGYList.do";
           let data = {
-            itemNO: this.$route.params.itemNO //所属型号
+            itemNO: this.$route.params.itemNo //所属型号
           };
           axios.post(url, data).then(res => {
             this.itemNolists = res.data.itemList;
@@ -842,50 +811,33 @@ export default {
         this.showGy = true;
       }
     },
-    //风格转码
-    fgChange(fg) {
-      if (fg == "01") {
-        return "定宽";
-      } else if (fg == "02") {
-        return "定高";
-      }
-    },
     //改变风格
-    changeFG(fg, itemType, liantou) {
-      if (fg != liantou.fixType) {
-        if (fg == "定宽") {
-          fg = "01";
-        } else if (fg == "定高") {
-          fg = "02";
+    changeFG(fg, itemType, liantou, index) {
+      liantou.fixType = fg;
+      var data = this.getChangeArray(itemType);
+      let url = this.orderBaseUrl + "/item/changeCurtainItem.do";
+      let obj = {
+        width: this.$route.params.width, //成品宽度
+        height: this.$route.params.height, //成品高度
+        WBH: this.$route.params.WBH, //帘头外包盒宽度
+        multiple: this.$route.params.multiple, //褶皱倍数
+        parentItemNo: this.$route.params.itemNo,
+        itemNO: liantou.itemNo,
+        itemType: itemType,
+        fixType: fg //01--定宽，02--定高，如果客户没有修改也要传入默认值，不能为空
+      };
+      //axios.post(url, data).then(res => {
+      GetDosageByNo(obj).then(res => {
+        var keys;
+        if (itemType == "lt") keys = Math.round(res.data[0].dosage * 100) / 100;
+        else keys = Math.round(res.data[0].dosage * 10) / 10;
+        if (this.productType == "XHB") {
+          data[index].dosage = keys;
+        } else if (this.productType == "ML") {
+          this.updateDosage(itemType, keys);
         }
-        let url = this.orderBaseUrl + "/item/changeCurtainItem.do";
-        let data = {
-          width: this.$route.params.width, //成品宽度
-          height: this.$route.params.height, //成品高度
-          WBH: this.$route.params.WBH, //帘头外包盒宽度
-          multiple: this.$route.params.multiple, //褶皱倍数
-          parentItemNo: this.$route.params.itemNO,
-          itemNO: liantou.itemNo,
-          itemType: itemType,
-          fixType: fg //01--定宽，02--定高，如果客户没有修改也要传入默认值，不能为空
-        };
-        axios.post(url, data).then(res => {
-          if (itemType == "ls") {
-            for (let i = 0; i < this.ls.length; i++) {
-              if (this.ls[i].productType != "LCB") {
-                this.$set(this.ls[i], "useamount", res.data.ls);
-              }
-            }
-          } else if (itemType == "sha") {
-            for (let i = 0; i < this.sha.length; i++) {
-              if (this.sha[i].productType != "LCB") {
-                this.$set(this.sha[i], "useamount", res.data.sha);
-              }
-            }
-          }
-          liantou.fixType = this.fgChange(fg);
-        });
-      }
+        this.judgeTip(data[index], index);
+      });
       liantou.showFG = false;
     },
     //隐藏列表
@@ -937,73 +889,339 @@ export default {
     },
     //选择改变的型号
     selthisItemNo(item) {
-      //说明字段
-      if (this.productType == "ML") {
-        item.notes = "非标配";
-      }
-      if (this.productType == "ML" || this.productType == "XHB") {
-        let url = this.orderBaseUrl + "/item/changeCurtainItem.do";
-        let data = {
+      let status2 = item.fixType === null || this.itemType === "lspb";
+      var data = this.getChangeArray(this.itemType);
+      var oriData = this.getOrignalArray(this.itemType);
+      data[this.index].note = item.note;
+      data[this.index].fixGrade = item.fixGrade;
+      data[this.index].fixType = status2 ? "" : item.fixType;
+      data[this.index].itemNo = item.itemNo;
+      oriData[this.index].fixType = status2 ? "" : item.fixType;
+      if (this.productType != "GY") {
+        //非工艺用量修改
+        if (this.itemType == "lspb") {
+          this.judgeTip(data[this.index], this.index);
+          return;
+        }
+        let obj = {
           width: this.$route.params.width, //成品宽度
           height: this.$route.params.height, //成品高度
           WBH: this.$route.params.WBH, //帘头外包盒宽度
           multiple: this.$route.params.multiple, //褶皱倍数
-          parentItemNo: this.$route.params.itemNO,
+          parentItemNo: this.$route.params.itemNo,
           itemNO: item.itemNo,
           itemType: this.itemType,
           fixType: item.fixType //01--定宽，02--定高，如果客户没有修改也要传入默认值，不能为空
         };
-        axios.post(url, data).then(res => {
-          res.data.item.itemMLGY = this.itemMLGY; //为了保留是否可改变的三个字段
-          res.data.item.fixType = this.fgChange(res.data.item.fixType);
-          this.$set(res.data.item, "showFG", false);
-          if (this.itemType == "ls") {
-            //制造说明
-            if (res.data.item.productType == "ML") {
-              this.$set(this.ls[this.index], "MlZz", "未选");
-              this.$set(this.ls[this.index], "showMlZz", false);
-            }
-            this.$set(this.ls, this.index, res.data.item);
-            for (let i = 0; i < this.ls.length; i++) {
-              if (this.ls[i].productType != "LCB") {
-                this.$set(this.ls[i], "useamount", res.data.ls);
-              } else if (this.ls[i].productType == "XHB") {
-                this.$set(this.ls[i], "useamount", this.useamount);
-              }
-            }
-          } else if (this.itemType == "sha") {
-            //制造说明
-            if (res.data.item.productType == "ML") {
-              this.$set(this.sha[this.index], "MlZz", "未选");
-              this.$set(this.sha[this.index], "showMlZz", false);
-            }
-            this.$set(this.sha, this.index, res.data.item);
-            for (let i = 0; i < this.sha.length; i++) {
-              if (this.sha[i].productType != "LCB") {
-                this.$set(this.sha[i], "useamount", res.data.sha);
-              }
-            }
-          } else if (this.itemType == "lt") {
-            //制造说明
-            this.$set(this.lt[this.index], "LtZz", "未选");
-            this.$set(this.lt[this.index], "showLtZz", false);
-            this.$set(this.lt, this.index, res.data.item);
-            for (let i = 0; i < this.lt.length; i++) {
-              if (this.lt[i].productType == "XHB") {
-                this.$set(this.lt[i], "useamount", this.useamount);
-              }
-            }
+        GetDosageByNo(obj).then(res => {
+          var keys;
+          if (this.itemType == "lt")
+            keys = Math.round(res.data[0].dosage * 100) / 100;
+          else keys = Math.round(res.data[0].dosage * 10) / 10;
+          if (this.productType == "XHB") {
+            data[this.index].dosage = keys;
+          } else if (this.productType == "ML") {
+            this.updateDosage(this.itemType, keys);
           }
+          this.judgeTip(data[this.index], this.index);
         });
+      } else {
+        //工艺修改用量
+        this.judgeTip(data[this.index], this.index);
+        if (data[this.index].itemNo == "GY-003") {
+          data[this.index].dosage = this.allData.GY;
+        } else {
+          var mlData = data.find(item => item.productType == "ML");
+          if (mlData) data[this.index].dosage = mlData.dosage;
+        }
       }
       this.showGy = false;
     },
-    comfirmMakeDetails() {
-      this.showHeadMakeDetails = false;
-      this.showBodyMakeDetails = false;
-      this.showPartsPackage = false;
+    getChangeArray(itemType) {
+      switch (itemType) {
+        case "lt":
+          return this.lt;
+        case "ls":
+          return this.ls;
+        case "lspb":
+          return this.lspb;
+        case "sha":
+          return this.sha;
+        case "pjb":
+          return this.pjb;
+      }
     },
-    toCart() {},
+    getOrignalArray(itemType) {
+      switch (itemType) {
+        case "lt":
+          return this.ltAll;
+        case "ls":
+          return this.lsAll;
+        case "lspb":
+          return this.lspbAll;
+        case "sha":
+          return this.shaAll;
+        case "pjb":
+          return this.pjbAll;
+      }
+    },
+    //动态判断制造说明
+    judgeTip(data, index) {
+      let status = -1;
+      var oriData = this.getOrignalArray(data.itemMLGY.itemType);
+      if (data.fixType === "02" && oriData[index].fixType === "01") {
+        status = 1;
+      }
+      if (data.fixType === "01" && oriData[index].fixType === "02") {
+        status = 2;
+      }
+      if (data.itemNo !== oriData[index].itemNo) {
+        if (status === 1) status = 4;
+        else if (status === 2) status = 5;
+        else status = 3;
+      }
+      if (
+        data.itemMLGY.itemType === "pjb" ||
+        data.productType === "LCB" ||
+        data.productType == "GY"
+      ) {
+        status = -1;
+      }
+      switch (status) {
+        case 1:
+          data.tip = "修改为定高";
+          break;
+        case 2:
+          data.tip = "修改为定宽";
+          break;
+        case 3:
+          data.tip = "非标配";
+          break;
+        case 4:
+          data.tip = "修改为定高，非标配";
+          break;
+        case 5:
+          data.tip = "修改为定宽，非标配";
+          break;
+        default:
+          data.tip = "";
+      }
+    },
+    //加入购物车
+    toCart() {
+      var _curtainData = [];
+      for (var i = 0; i < this.lt.length; i++) {
+        if (this.lt[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.lt[i])));
+        }
+      }
+      for (var i = 0; i < this.ls.length; i++) {
+        if (this.ls[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.ls[i])));
+        }
+      }
+      for (var i = 0; i < this.lspb.length; i++) {
+        if (this.lspb[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.lspb[i])));
+        }
+      }
+      for (var i = 0; i < this.sha.length; i++) {
+        if (this.sha[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.sha[i])));
+        }
+      }
+      for (var i = 0; i < this.pjb.length; i++) {
+        if (this.pjb[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.pjb[i])));
+        }
+      }
+
+      for (var i = 0; i < _curtainData.length; i++) {
+        let _itemType = _curtainData[i].itemMLGY.itemType;
+        if (_itemType === "ls" || _itemType === "sha" || _itemType === "lspb") {
+          if (_curtainData[i].productType === "ML") {
+            if (
+              _curtainData[i].creator === "" ||
+              _curtainData[i].creator === "未选"
+            ) {
+              Dialog.alert({
+                message: "制造说明不能为空!"
+              });
+              return;
+            }
+          }
+        }
+        if (
+          _itemType === "lt" &&
+          _curtainData[i].productType !== "XHB" &&
+          (_curtainData[i].creator === "" || _curtainData[i].creator === "未选")
+        ) {
+          Dialog.alert({
+            message: "制造说明不能为空!"
+          });
+          return;
+        }
+        if (
+          _curtainData[i].creator === "特殊见备注" ||
+          _curtainData[i].creator === "特殊开备注"
+        ) {
+          if (this.isNull(_curtainData[i].remark)) {
+            Dialog.alert({
+              message: `${_curtainData[i].creator}不能为空`
+            });
+            return;
+          }
+        }
+      }
+      let _isWBH;
+      let _WBH;
+      let _curtainLists = [];
+      let _data = [
+        { name: "lt", number: 0 },
+        { name: "ls", number: 0 },
+        { name: "lspb", number: 0 },
+        { name: "sha", number: 0 },
+        { name: "pjb", number: 0 }
+      ];
+      if (this.isWBH === false) {
+        _isWBH = 0;
+        _WBH = null;
+      } else {
+        _isWBH = 1;
+        _WBH = this.WBH;
+      }
+      //判断个数
+      for (let i = 0; i < _curtainData.length; i++) {
+        switch (_curtainData[i].itemMLGY.itemType) {
+          case "lt":
+            _data[0].number++;
+            break;
+          case "ls":
+            _data[1].number++;
+            break;
+          case "lspb":
+            _data[2].number++;
+            break;
+          case "sha":
+            _data[3].number++;
+            break;
+          case "pjb":
+            _data[4].number++;
+          default:
+            break;
+        }
+      }
+      let _index = [0, 0, 0, 0, 0];
+      for (let i = 0; i < _data.length; i++) {
+        for (let k = i; k >= 0; k--) {
+          _index[i] += _data[k].number;
+        }
+      }
+      for (let i = 0; i < _data.length; i++) {
+        if (_data[i].number === 0) continue;
+        let _obj = {
+          partName: this.getTypeName(_data[i].name),
+          curtainCommodities: []
+        };
+        let j = 0;
+        for (let k = i; k > 0; k--) {
+          j += _data[k - 1].number;
+        }
+        for (; j < _index[i]; j++) {
+          if (_curtainData[j].itemNo === null) continue;
+          let _certainHeightWidth = _curtainData[j].fixType;
+          if (_certainHeightWidth === "01") _certainHeightWidth = 1;
+          if (_certainHeightWidth === "02") _certainHeightWidth = 0;
+          let _obj1 = {
+            activityId: this.activity,
+            item: {
+              itemNo: _curtainData[j].itemNo
+            },
+            note: _curtainData[j].remark,
+            unit: _curtainData[j].unit,
+            curtainPartName: this.getTypeName(_data[i].name),
+            curtainItemName:
+              _curtainData[j].note === null
+                ? this.getTypeName(_data[i].name)
+                : _curtainData[j].note,
+            dosage: _curtainData[j].dosage,
+            manufacturingInstructions: _curtainData[j].creator
+              ? _curtainData[j].creator
+              : "",
+            certainHeightWidth: _certainHeightWidth,
+            specification:
+              _curtainData[j].fixGrade === null
+                ? null
+                : (_curtainData[j].fixGrade / 1000).toFixed(2),
+            illustrate: _curtainData[j].tip,
+            deleteFlag: _curtainData[j].itemMLGY.deleteFlag,
+            modifyFlag: _curtainData[j].itemMLGY.modifyFlag,
+            changeFlag: _curtainData[j].itemMLGY.changeFlag,
+            inlineNo: _curtainData[j].itemMLGY.no
+          };
+          _obj.curtainCommodities.push(_obj1);
+        }
+        if (_obj.curtainCommodities.length !== 0) _curtainLists.push(_obj);
+      }
+      if (
+        _curtainLists.length == 0 ||
+        (_curtainLists.length === 1 &&
+          _curtainLists[0].partName === "配件" &&
+          _curtainLists[0].curtainCommodities.length === 0)
+      ) {
+        Dialog.alert({
+          message: "在请至少选择一款配件!"
+        });
+        return;
+      }
+      let url = this.orderBaseUrl + "/cart/addCurtainCartItem.do";
+      let obj = {
+        modelNumber: this.itemNo,
+        CID: this.$store.getters.getCId,
+        customerType: this.$store.getters.getCtype,
+        price: "",
+        activityGroupType: this.groupType,
+        width: this.width,
+        height: this.height,
+        drape: this.multiple,
+        outsourcingBoxWidth: _isWBH,
+        outsourcingBoxWidth: _WBH,
+        curtainLists: _curtainLists,
+        location: this.location,
+        falseShadeHigh: this.highJia
+      };
+      axios.post(url, obj).then(res => {
+        if (res.data.code == 0) {
+          Toast({
+            duration: 2000,
+            message: "加入购物车成功"
+          });
+          this.$router.push({
+            name: "shoppingcart",
+            params: {
+              activeName: "/mycart/curtaincart"
+            }
+          });
+        }
+      });
+    },
+    //获取窗帘大类名称
+    getTypeName(val) {
+      switch (val) {
+        case "lt":
+          return "帘头";
+        case "ls":
+          return "帘身";
+        case "lspb":
+          return "帘身配布";
+        case "sha":
+          return "纱";
+        case "pjb":
+          return "配件";
+        default:
+          return "暂无名称";
+      }
+    },
     bigToSmall: function(data) {
       let index = -1;
       switch (data.itemMLGY.itemType) {
@@ -1030,27 +1248,46 @@ export default {
         }
       }
       return false;
+    },
+    //判空
+    isNull(str) {
+      if (str === "" || str === undefined || str === null) return true;
+      var regu = "^[ ]+$";
+      var re = new RegExp(regu);
+      return re.test(str);
+    },
+    //动态修改大类的全部用量
+    updateDosage(itemType, dosage) {
+      var data = this.getChangeArray(itemType);
+      for (let i = 0; i < data.length; i++) {
+        let pType = data[i].productType;
+        if (
+          data[i].itemMLGY.itemType === itemType &&
+          pType !== "LCB" &&
+          pType !== "XHB"
+        ) {
+          if (data[i].itemNo !== "GY-003") {
+            data[i].dosage = dosage;
+          } else {
+            data[i].dosage = this.allData.GY;
+          }
+        }
+      }
+    },
+    //获取备注文字
+    getRemark(data) {
+      if (data.fixType === "02") {
+        let _fixType = data.fixGrade / 1000;
+        if (_fixType < this.height) {
+          return "超高帘，用量待审核!";
+        }
+      }
+      return "";
     }
   },
   created() {
     this.from = this.$route.params.from;
     this.selectThis();
-  },
-  watch: {
-    partsPackage: function(val, oldVal) {
-      if (val == "上样安装包(罗马杆+方轨)") {
-        this.partsPackageNum = "PJB-005";
-      }
-      if (val == "上样安装包(方轨)") {
-        this.partsPackageNum = "PJB-003";
-      }
-      if (val == "上样安装包(罗马杆)") {
-        this.partsPackageNum = "PJB-004";
-      }
-      if (val == "未选择配件包") {
-        this.partsPackageNum = "未选择配件包";
-      }
-    }
   }
 };
 </script>
@@ -1065,12 +1302,12 @@ export default {
 }
 
 .curtain-item {
-  margin-bottom: 8px;
+  margin-top: 8px;
   position: relative;
 }
 
 .contain {
-  margin-top: 60px;
+  margin-top: 50px;
   margin-bottom: 60px;
 }
 
@@ -1176,10 +1413,10 @@ export default {
   background-size: 100% 100%;
 }
 
-.select-this tr {
-  /*height: 30px;*/
-  /*padding: 5px;*/
-}
+/* .select-this tr {
+  height: 30px;
+  padding: 5px;
+} */
 
 .select-this th {
   text-align: left;

@@ -460,7 +460,7 @@ export default {
       this.$router.push({
         name: "curtaindetails",
         params: {
-          itemNO: this.allCurtain[index].itemNo,
+          itemNo: this.allCurtain[index].itemNo,
           width: this.allCurtain[index].width, //成品宽度
           height: this.allCurtain[index].height, //成品高度
           WBH: this.allCurtain[index].lwbWidth, //帘头外包盒宽度

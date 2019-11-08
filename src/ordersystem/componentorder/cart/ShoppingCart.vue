@@ -16,9 +16,15 @@
     </div>
     <!--购物车内容-->
     <!-- <router-view></router-view> -->
-    <keep-alive><wallcart v-if="activeName == '/mycart/wallcart'"></wallcart></keep-alive>
-    <keep-alive><softcart v-if="activeName == '/mycart/softcart'"></softcart></keep-alive>
-    <keep-alive><curtaincart v-if="activeName == '/mycart/curtaincart'"></curtaincart></keep-alive>
+    <keep-alive>
+      <wallcart v-if="activeName == '/mycart/wallcart'"></wallcart>
+    </keep-alive>
+    <keep-alive>
+      <softcart v-if="activeName == '/mycart/softcart'"></softcart>
+    </keep-alive>
+    <keep-alive>
+      <curtaincart v-if="activeName == '/mycart/curtaincart'"></curtaincart>
+    </keep-alive>
     <navBottom :tab-stage="myRoute"></navBottom>
     <van-loading class="loading" type="spinner" v-if="loading" color="black" />
   </div>
@@ -28,9 +34,9 @@
 import axios from "axios";
 import top from "../../../components/Top";
 import navBottom from "../../../components/navBottom";
-import wallcart from "./WallCart"
-import softcart from "./SoftCart"
-import curtaincart from "./CurtainCart"
+import wallcart from "./WallCart";
+import softcart from "./SoftCart";
+import curtaincart from "./CurtainCart";
 import { Loading } from "vant";
 
 export default {
@@ -55,14 +61,17 @@ export default {
       //墙纸购物车列表
       wallpaper: [],
       loading: false,
-      showWall:false,
-      activeName:'/mycart/wallcart'
+      showWall: false,
+      activeName: "/mycart/wallcart"
     };
   },
-  watch:{
-    $route(val, oldVal){
-      if(val.path == '/mycart/wallcart' || val.path == '/mycart/softcart' ||val.path == '/mycart/curtaincart' )
-      {
+  watch: {
+    $route(val, oldVal) {
+      if (
+        val.path == "/mycart/wallcart" ||
+        val.path == "/mycart/softcart" ||
+        val.path == "/mycart/curtaincart"
+      ) {
         this.activeName = val.path;
       }
     }
@@ -209,8 +218,10 @@ export default {
     }
   },
   activated() {
-    this.$router.push({path:this.activeName})
-  },
+    var activeNameUrl = this.$route.params.activeName;
+    if (activeNameUrl) this.activeName = activeNameUrl;
+    this.$router.push({ path: this.activeName });
+  }
 };
 </script>
 

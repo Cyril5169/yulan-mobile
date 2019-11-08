@@ -64,7 +64,7 @@
               <img class="more-right" src="../../assetsorder/more.png" alt />
             </td>
           </tr>
-        </table> -->
+        </table>-->
         <table class="order-item">
           <tr class="delivery">
             <td class="left">购买人</td>
@@ -643,7 +643,7 @@ export default {
       //   });
       //   return;
       // }
-      if(this.packingNote == "请选择包装信息") this.packingNote = "";
+      if (this.packingNote == "请选择包装信息") this.packingNote = "";
       if (this.deliveryType == "普通物流(运费由甲方支付)") {
         this.deliveryTypeCode = "1";
       } else {
