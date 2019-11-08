@@ -62,7 +62,10 @@
                   <div class="title-item2">
                     <span class="title-left">名称</span>
                     <span class="title-right title-right2">{{liantou.note}}</span>
-                    <!--<span class="item-icon"></span>-->
+                  </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">单价</span>
+                    <span class="title-right title-right2">{{liantou.price}}元</span>
                   </div>
                   <div class="title-item2" v-if="liantou.fixGrade">
                     <span class="title-left">规格（米/对）</span>
@@ -150,6 +153,10 @@
                   <div class="title-item2">
                     <span class="title-left">名称</span>
                     <span class="title-right title-right2">{{liantou.note}}</span>
+                  </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">单价</span>
+                    <span class="title-right title-right2">{{liantou.price}}元</span>
                   </div>
                   <div class="title-item2" v-if="liantou.fixGrade">
                     <span class="title-left">规格（米/对）</span>
@@ -265,6 +272,10 @@
                     <span class="title-right title-right2">{{liantou.note}}</span>
                     <span class="item-icon"></span>
                   </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">单价</span>
+                    <span class="title-right title-right2">{{liantou.price}}元</span>
+                  </div>
                   <div class="title-item2" v-if="liantou.fixGrade">
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.fixGrade/1000}}</span>
@@ -375,6 +386,10 @@
                     <span class="title-left">名称</span>
                     <span class="title-right title-right2">{{liantou.note}}</span>
                     <span class="item-icon"></span>
+                  </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">单价</span>
+                    <span class="title-right title-right2">{{liantou.price}}元</span>
                   </div>
                   <div class="title-item2" v-if="liantou.fixGrade">
                     <span class="title-left">规格（米/对）</span>
@@ -552,7 +567,8 @@ export default {
       itemMLGY: {},
       dosage: "", //用量
       from: "",
-      allData: []
+      allData: [],
+      showPrice:this.$store.getters.getIsManage != "0"
     };
   },
   filters: {
@@ -682,6 +698,8 @@ export default {
             itemLists[i].choose = true;
             itemLists[i].tip = "";
             itemLists[i].remark = "";
+            var price = this.getPrice(this.$store.getters.getCtype,res.data.itemList[i]);
+            itemLists[i].price = price;
 
             this.$set(itemLists[i], "showFG", false);
             //单位乱码转换
@@ -761,6 +779,24 @@ export default {
           this.pjbAll = JSON.parse(JSON.stringify(this.pjb));
         });
       });
+    },
+    getPrice(type,item){
+      var price = 0;
+        if (
+          type == "02" ||
+          type == "08" ||
+          type == "10"
+        ) {
+          //经销
+          price = item.priceSale;
+        } else if (type == "05") {
+          price = item.salePrice;
+        } else if (type == "06") {
+          price = item.priceFx;
+        } else if (type == "09") {
+          price = item.priceHome;
+        }
+        return price;
     },
     //改变型号类型
     changeXh(itemType, index, productType, changeFlag, itemMLGY, dosage) {
