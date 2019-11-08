@@ -13,6 +13,7 @@ import Global from "./Global.vue";
 import mui from "./assets/mui/js/mui";
 import IScroll from "./assets/iscroll/iscroll";
 //import * as baseUrlASP from "./api/httpASP.js";
+import {UpdatePushResponseTime} from "./api/webUserASP";
 
 axios.defaults.baseURL = "http://14.29.221.109:10250/yulan";
 //全局loading
@@ -76,6 +77,8 @@ vm = new Vue({
   template: "<App/>"
 });
 vm.UpdateVersion = Global.UpdateVersion;
+vm.showPushNotification = Global.showPushNotification;
+vm.UpdatePushResponseTime = UpdatePushResponseTime;
 app = vm.$children[0];
 
 function plusReady() {

@@ -19,8 +19,8 @@
       </van-list>
     </div>
     <van-popup v-model="showNotification" @closed="notifyClose" class="nt-detail">
-      <top @backclick="hideNotification()" :msgtitle="TITLE" ref="detailTop"></top>
-      <div class="nt-content" v-html="CONTENT"></div>
+      <top @backclick="hideNotification()" msgtitle="公告详情" ref="detailTop"></top>
+      <div class="nt-content" v-html="detail"></div>
     </van-popup>
   </div>
 </template>
@@ -28,7 +28,7 @@
 <script>
 import top from "../../../components/Top";
 import { Popup, Toast, List, Cell, Icon } from "vant";
-import { getPageDataTable } from "@/api/notificationASP";
+import { getPageDataTable, GetById } from "@/api/notificationASP";
 
 export default {
   components: {
@@ -51,9 +51,14 @@ export default {
       showNotification: false,
       CONTENT: "",
       TITLE: "",
+      ID: null,
     };
   },
-  computed: {},
+  computed: {
+    detail() {
+      return "<p style='font-weight:bold;font-size:17px;text-align:center;'>" + this.TITLE + "</p>" + this.CONTENT;
+    }
+  },
   methods: {
     onLoad() {
       // 异步更新数据
@@ -77,29 +82,49 @@ export default {
               this.finished = true;
             }
           })
-          .catch(err => {});
+          .catch(err => { });
       }, 500);
     },
     onClick(e, a) {
       this.CONTENT = e.CONTENT;
       this.TITLE = e.TITLE;
       this.showNotification = true;
-      if(this.$refs.detailTop)
-        this.$refs.detailTop.setTitle(e.TITLE);
     },
-    hideNotification(){
-      this.showNotification=false;
+    hideNotification() {
+      this.showNotification = false;
       window.vTop = this.$refs.top;
     },
-    notifyClose(){
+    notifyClose() {
       window.vTop = this.$refs.top;
     },
   },
   created() {
+    notificationlist = this;
+    var me = this;
     this.from = this.$route.params.from;
-    this.showNotification = this.$route.params.showNotification;
-    this.CONTENT = this.$route.params.CONTENT;
-    this.TITLE = this.$route.params.TITLE;
+    //如果传入ID，就去查找改公告并展示
+    if (this.$route.params.ID) {
+      this.ID = this.$route.params.ID;
+    } else {
+      this.CONTENT = this.$route.params.CONTENT;
+      this.TITLE = this.$route.params.TITLE;
+      this.showNotification = this.$route.params.showNotification;
+    }
+  },
+  destroyed(){
+    notificationlist = null;
+  },
+  watch:{
+    ID: function(val){
+      var me = this;
+      GetById(val).then((res) => {
+        me.TITLE = res.data.TITLE;
+        me.CONTENT = res.data.CONTENT;
+        me.showNotification = true;
+      }).catch(err => {
+        me.TITLE = error;
+      })
+    }
   }
 };
 </script>
@@ -126,7 +151,6 @@ export default {
   background: #f8f8f8;
   overflow: hidden;
 }
-
 .nt-content {
   position: fixed;
   overflow-y: scroll;

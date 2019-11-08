@@ -28,7 +28,7 @@
 <body>
     <div id="app"></div>
     <script>
-        var vm, app;
+        var vm, app, notificationlist;
         var urlArr = {
             local: {
                 baseUrl: 'http://localhost:49438/',
@@ -69,6 +69,17 @@
                 "receive",
                 function (msg) {
                     console.log("接收到的透传推送 " + JSON.stringify(msg));
+                    var obj = JSON.parse(msg.content);
+                    //公告
+                    if (obj.msg_type == "notification") {
+                        vm.showPushNotification(obj.bill_id);
+                    } else if (obj.msg_type == "order") {
+
+                    }
+                    var loginname = app.$store.getters.getCId;
+                    var cid = plus.push.getClientInfo().clientid;
+                    //更新响应的时间
+                    vm.UpdatePushResponseTime(loginname, cid, obj.bill_id, obj.msg_type, "all");
                     if (plus.os.name == "iOS") {
                         switch (msg.payload) {
                             case "LocalMSG":
