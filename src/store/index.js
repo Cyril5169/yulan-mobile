@@ -23,6 +23,7 @@ export default new Vuex.Store({
     //所有购物车列表
     allCart: {
       wallpaper:[],
+      curtain:[],
       soft:[]
     },
     //loading加载
@@ -77,6 +78,7 @@ export default new Vuex.Store({
       state.address = {};
       state.allCart = {
         wallpaper:[],
+        curtain:[],
         soft:[]
       };
       state.LOADING = false;

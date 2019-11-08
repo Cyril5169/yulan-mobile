@@ -5,7 +5,7 @@
       <template v-for="(coupon,index) in couponLists">
         <div
           class="coupon-item"
-          v-if="coupon.dateId == 1 && (coupon.dateId == 0 && coupon.rebateMoneyOver > 0)"
+          v-if="coupon.dateId == 1 && coupon.rebateMoneyOver > 0 && coupon.status == '1'"
           :key="index"
         >
           <div class="coupon-top">

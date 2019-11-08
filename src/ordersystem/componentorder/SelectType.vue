@@ -45,7 +45,7 @@
             </div>
           </div>
           <div class="middle-div" @click="toSearchCurtain">
-            <p class="middle-div-p3">定制窗帘</p>
+            <p class="middle-div-p">定制窗帘</p>
             <div class="right-arrow"></div>
           </div>
         </div>
@@ -57,7 +57,7 @@
             </div>
           </div>
           <div class="middle-div" @click="toSearchSoft">
-            <p class="middle-div-p2">软装</p>
+            <p class="middle-div-p">软装</p>
             <div class="right-arrow"></div>
           </div>
           <!--<div class="bottom-div"></div>-->
@@ -536,18 +536,7 @@ p {
   color: #535353;
   position: absolute;
   top: 50%;
-  right: 65px;
-  margin-top: -13px;
-}
-
-.middle-div-p3,
-.middle-div-p2 {
-  height: 26px;
-  font-size: 18px;
-  color: #535353;
-  position: absolute;
-  top: 50%;
-  right: 95px;
+  left: 50%;
   margin-top: -13px;
 }
 .right-arrow {
