@@ -69,6 +69,7 @@ import NewAddress from '@/ordersystem/componentorder/orderform/NewAddress'
 import ThMsg from '@/ordersystem/componentorder/orderform/ThMsg'
 //个人中心
 import MyPersonal from '@/ordersystem/componentorder/my/MyPersonal'
+import moneyBag from '@/ordersystem/componentorder/my/moneyBag'
 import MyCoupon from '@/ordersystem/componentorder/my/MyCoupon'
 import NotificationList from '@/ordersystem/componentorder/my/NotificationList'
 import StudyList from '@/ordersystem/componentorder/my/StudyList'
@@ -431,6 +432,11 @@ var router = new Router({
       path: "/mypersonal",
       name: 'mypersonal',
       component: MyPersonal,
+    },
+    {
+      path: "/moneybag",
+      name: 'moneybag',
+      component: moneyBag,
     },
     {
       path: "/mycoupon",

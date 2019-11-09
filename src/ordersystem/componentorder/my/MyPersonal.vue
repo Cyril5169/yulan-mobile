@@ -4,6 +4,11 @@
     <div class="all-item">
       <div class="user-img"></div>
       <p class="customer-name">{{customer}}</p>
+      <div class="item" @click="clickToPath('moneybag')">
+        <img class="item-icon" src="../../assetsorder/money-bag-o.png" alt />
+        <span>我的钱包</span>
+        <img class="item-more" src="../../assetsorder/more.png" alt />
+      </div>
       <div v-if="isContainAttr('mycoupon')" class="item" @click="clickToPath('mycoupon')">
         <img class="item-icon" src="../../assetsorder/mycoupon.png" alt />
         <span>我的优惠券</span>
