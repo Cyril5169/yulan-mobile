@@ -13,7 +13,22 @@
             ></van-tab>
           </van-tabs>
         </div>
-        <div class="nav-status" ref="nav">
+        <div class="orderType">
+          <van-tabs
+            v-model="activeStatusTypeIndex"
+            @change="onStatusTypeChange"
+            :ellipsis="ellipsis"
+            border
+          >
+            <van-tab
+              v-for="(item,index) in statusType"
+              :title="item.text"
+              :name="item.type"
+              :key="index"
+            ></van-tab>
+          </van-tabs>
+        </div>
+        <!-- <div class="nav-status" ref="nav">
           <ul>
             <li v-for="(item,index) in orderStatus" :key="index">
               <a
@@ -22,7 +37,7 @@
               >{{item.text}}</a>
             </li>
           </ul>
-        </div>
+        </div> -->
         <div class="ulhead">
           <ul>
             <li class="licenter" @click="showks = true">
@@ -41,6 +56,10 @@
           </ul>
           <div class="search-input-ct">
             <input type="text" class="search-input" v-model="xhInput" placeholder="输入订单型号" />
+            <span
+              class="status-input"
+              @click="showStatusPicker = true"
+            >{{myOrderStatusText}}</span>
           </div>
         </div>
       </div>
@@ -139,6 +158,16 @@
         title="结束时间"
         @confirm="confirmTimejs"
         @cancel="cancelTimejs"
+      />
+    </van-popup>
+    <!--订单状态选择-->
+    <van-popup v-model="showStatusPicker" position="bottom">
+      <van-picker
+        show-toolbar
+        title="订单状态"
+        :columns="myOrderStatusColumns"
+        @cancel="showStatusPicker=false"
+        @confirm="onConfirmStatu"
       />
     </van-popup>
 
@@ -253,6 +282,7 @@ export default {
   },
   data() {
     return {
+      ellipsis: false,
       url: "http://106.14.159.244:8080/yulan-order",
       loading: false,
       finished: false,
@@ -273,23 +303,35 @@ export default {
       //默认开始时间
       mrksTime: "",
       activeStatus: "全部",
+      statusType: [
+        { type: 0, text: "待处理" },
+        { type: 1, text: "窗帘审核订单" },
+        { type: 2, text: "生效订单" },
+        { type: 3, text: "已作废" },
+        { type: 4, text: "全部" },
+      ],
+      //活动的statusType的索引
+      activeStatusTypeIndex: 0,
       //订单状态
       orderStatus: [
-        { text: "全部", status: "" },
-        { text: "待提交", status: "0" },
-        { text: "余额不足待提交", status: "5" },
-        { text: "余额不足可提交", status: "6" },
-        { text: "待确认", status: "22" },
-        { text: "待修改", status: "21" },
-        { text: "待审核", status: "20" },
-        { text: "兰居待修改", status: "23" },
-        { text: "已提交", status: "1" },
-        { text: "已接收", status: "12" },
-        { text: "已受理", status: "2" },
-        { text: "部分发货", status: "4" },
-        { text: "已完成", status: "7" },
-        { text: "已作废", status: "3" }
+        { type: 99, text: "全部", status: "" },
+        { type: 0, text: "待提交", status: "0" },
+        { type: 0, text: "余额不足待提交", status: "5" },
+        { type: 0, text: "余额不足可提交", status: "6" },
+        { type: 0, text: "待确认", status: "22" },
+        { type: 0, text: "待修改", status: "21" },
+        { type: 1, text: "待审核", status: "20" },
+        { type: 1, text: "兰居待修改", status: "23" },
+        { type: 2, text: "已提交", status: "1" },
+        { type: 2, text: "已接收", status: "12" },
+        { type: 2, text: "已受理", status: "2" },
+        { type: 2, text: "部分发货", status: "4" },
+        { type: 2, text: "已完成", status: "7" },
+        { type: 3, text: "已作废", status: "3" }
       ],
+      showStatusPicker: false,
+      myOrderStatusColumns: ['全部', "待提交", '余额不足待提交', '余额不足可提交', '待确认', '待修改'],
+      myOrderStatusText: '全部',
       orderType: [
         { text: "全部产品", code: "" },
         { text: "墙纸配套类", code: "W" },
@@ -299,7 +341,7 @@ export default {
       activeOrderType: 0,
       showType: false,
       //当前状态
-      myStatu: "",
+      myStatu: ["0", "5", "6", "22", "21"],
       //当前类型
       myType: "全部产品",
       myTypeCode: "",
@@ -395,9 +437,21 @@ export default {
     cancelTimejs() {
       this.showjs = false;
     },
+    onConfirmStatu(index) {
+      this.myOrderStatusText = index;
+      var status = this.statusExchange(index);
+      this.showStatusPicker = false;
+      if(index == "全部"){
+        this.onStatusTypeChange(this.activeStatusTypeIndex);
+      }else{
+        this.myStatu=[status];
+      }
+      this.orderSearch();
+    },
+    
     orderStatusClick(item, index) {
       this.activeStatus = item.text;
-      this.myStatu = item.status;
+      this.myStatu = [item.status];
       this.orderSearch();
     },
     //开始时间设置
@@ -440,6 +494,27 @@ export default {
       this.myTypeCode = name;
       this.orderSearch();
     },
+    onStatusTypeChange(name, title) {
+      this.activeStatusTypeIndex = name;
+      this.myOrderStatusText="全部";
+      if (this.activeStatusTypeIndex == 4) {
+        this.myStatu = [];
+        this.myOrderStatusColumns = [];
+        this.orderStatus.forEach(item => {
+          this.myOrderStatusColumns.push(item.text);
+        });
+      } else {
+        this.myStatu = [];
+        this.myOrderStatusColumns = ['全部'];
+        this.orderStatus.forEach(item => {
+          if (this.activeStatusTypeIndex == item.type) {
+            this.myStatu.push(item.status);
+            this.myOrderStatusColumns.push(item.text);
+          }
+        });
+      }
+      this.orderSearch();
+    },
     back() {
       window.vTop = null;
       this.$router.push({
@@ -449,7 +524,6 @@ export default {
     onLoad(config) {
       var loading = config | false;
       setTimeout(() => {
-        let url = this.orderBaseUrl + "/item/getSoftInfoSingle.do";
         this.currentPage = this.currentPage + 1;
         var data = {
           companyId: this.$store.getters.getCMId,
@@ -543,52 +617,52 @@ export default {
       this.showTrans = true;
     },
     //状态转换
-    statusExchange(myStatu) {
-      switch (myStatu) {
+    statusExchange(s) {
+      switch (s) {
         case "全部":
-          myStatu = "";
+          s = "";
           break;
         case "待提交":
-          myStatu = "0";
+          s = "0";
           break;
         case "余额不足待提交":
-          myStatu = "5";
+          s = "5";
           break;
         case "余额不足可提交":
-          myStatu = "6";
+          s = "6";
           break;
         case "待确认":
-          myStatu = "22";
+          s = "22";
           break;
         case "待修改":
-          myStatu = "21";
+          s = "21";
           break;
         case "待审核":
-          myStatu = "20";
+          s = "20";
           break;
         case "兰居待修改":
-          myStatu = "23";
+          s = "23";
           break;
         case "已提交":
-          myStatu = "1";
+          s = "1";
           break;
         case "已接收":
-          myStatu = "12";
+          s = "12";
           break;
         case "已受理":
-          myStatu = "2";
+          s = "2";
           break;
         case "部分发货":
-          myStatu = "4";
+          s = "4";
           break;
         case "已完成":
-          myStatu = "7";
+          s = "7";
           break;
         case "已作废":
-          myStatu = "3";
+          s = "3";
           break;
       }
-      return myStatu;
+      return s;
     },
     cancelOrder(orderNo) {
       Dialog.confirm({
@@ -630,7 +704,7 @@ export default {
                 if (!res.data) {
                   Dialog.alert({
                     message: `活动‘&${item.ORDERBODY[i].PROMOTION}’不存在`
-                  }).then(() => {});
+                  }).then(() => { });
                   return;
                 }
                 if (
@@ -639,7 +713,7 @@ export default {
                 ) {
                   Dialog.alert({
                     message: `活动‘&${item.ORDERBODY[i].PROMOTION}’已过期，请删除订单后重新下单`
-                  }).then(() => {});
+                  }).then(() => { });
                   return;
                 }
               }
@@ -654,14 +728,14 @@ export default {
                 if (res.data.length == 0) {
                   Dialog.alert({
                     message: "优惠券不存在"
-                  }).then(() => {});
+                  }).then(() => { });
                   return;
                 }
                 for (var j = 0; j < res.data.length; j++) {
                   if (new Date(res.data[j].DATE_END) < new Date()) {
                     Dialog.alert({
                       message: "优惠券已过期，请删除订单后重新下单"
-                    }).then(() => {});
+                    }).then(() => { });
                     return;
                   }
                 }
@@ -672,7 +746,7 @@ export default {
         } else {
           Dialog.alert({
             message: "余额不足,提交失败"
-          }).then(() => {});
+          }).then(() => { });
         }
       });
     },
@@ -725,30 +799,30 @@ export default {
         this.showHeight = document.body.clientHeight;
       })();
     };
-    var option = this.$refs.nav;
-    var myScroll = new this.IScroll(option, {
-      click: true,
-      //mouseWheel: true,//鼠标滚动
-      scrollX: true //横向滚动
-      //scrollbars: true,//横向滚动条
-    });
+    // var option = this.$refs.nav;
+    // var myScroll = new this.IScroll(option, {
+    //   click: true,
+    //   //mouseWheel: true,//鼠标滚动
+    //   scrollX: true //横向滚动
+    //   //scrollbars: true,//横向滚动条
+    // });
   },
   activated() {
     window.vTop = this;
-    var option = this.$refs.nav;
-    var myScroll = new this.IScroll(option, {
-      click: true,
-      //mouseWheel: true,//鼠标滚动
-      scrollX: true //横向滚动
-      //scrollbars: true,//横向滚动条
-    });
+    // var option = this.$refs.nav;
+    // var myScroll = new this.IScroll(option, {
+    //   click: true,
+    //   //mouseWheel: true,//鼠标滚动
+    //   scrollX: true //横向滚动
+    //   //scrollbars: true,//横向滚动条
+    // });
     if (this.$route.params.refresh) this.orderSearch();
   },
   destroyed() {
     if (window.vTop == this) window.vTop = null;
   },
   watch: {
-    showHeight: function() {
+    showHeight: function () {
       if (this.docmHeight > this.showHeight) {
         this.hidshow = false;
       } else {
@@ -839,14 +913,36 @@ input {
   height: 25px;
   line-height: 25px;
 }
-
-.search-input {
+.status-input{
+  width: 130px;
+  height: 25px;
+  line-height: 25px;
+  border-radius: 3.467vw;
+  background-color: hsl(0, 0%, 100%);
+  font-size: 14px;
+  border: none;
+  margin-left: 10px;
+  margin-right: 10px;
   padding-left: 10px;
-  width: 92%;
+  text-align: left;
+
+  background-image: url("../../assetsorder/time-zk.png");
+  background-repeat: no-repeat;
+  background-position-x: 115px;
+  background-position-y: 1vw;
+  background-size: 15px;
+}
+.search-input {
+  margin-left: 10px;
+  padding-left: 10px;
+  flex: 1;
   font-size: 14px;
 }
 .search-input-ct {
   border-bottom: 2px solid #bedd81;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: row;
 }
 .search-button {
   display: inline-block;
@@ -857,20 +953,6 @@ input {
   height: 25px;
   line-height: 25px;
   vertical-align: middle;
-}
-.status-input {
-  width: 115px;
-  position: absolute;
-  top: 60px;
-  right: 100px;
-  font-size: 14px;
-  text-align: center;
-  color: white;
-  background-image: url("../../assetsorder/zk.png");
-  background-repeat: no-repeat;
-  background-position-x: 25vw;
-  background-position-y: 1.5vw;
-  background-size: 15px;
 }
 
 ul {
@@ -911,6 +993,9 @@ ul {
   top: 50px;
   bottom: 0;
   width: 100%;
+  display: flex;
+  display: -webkit-flex;
+  flex-flow: column; /*垂直布局*/
 }
 .content-top {
   width: 100%;
@@ -919,8 +1004,9 @@ ul {
 }
 /*订单显示*/
 .orders {
-  position: relative;
-  height: 75%;
+  /* position: relative; */
+  flex: 1;
+  /* height: 75%; */
   font-size: 14.5px;
   overflow-y: scroll;
 }

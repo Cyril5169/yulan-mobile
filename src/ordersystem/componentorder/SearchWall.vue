@@ -32,28 +32,28 @@
     </div>
     <!--搜索结果-->
     <div class="search-result" v-show="!showSearch">
-      <div class="single-wall" v-show="wallMegs.itemNo" @click="wallDetails">
+      <div class="single-wall" v-show="wallMegs.ITEM_NO" @click="wallDetails">
         <div class="wall-title">墙纸、配套类</div>
         <table>
           <tr>
             <th>型号：</th>
-            <td>{{wallMegs.itemNo}}</td>
+            <td>{{wallMegs.ITEM_NO}}</td>
           </tr>
           <tr>
             <th>样本型号：</th>
-            <td>{{wallMegs.oldItemNo}}</td>
+            <td>{{wallMegs.OLD_ITEM_NO}}</td>
           </tr>
           <tr>
             <th>版本：</th>
-            <td>{{wallMegs.itemVersion}}</td>
+            <td>{{wallMegs.PRODUCTVERSION_NAME}}</td>
           </tr>
           <tr>
             <th>名称：</th>
-            <td>{{wallMegs.note}}</td>
+            <td>{{wallMegs.NOTE}}</td>
           </tr>
           <tr>
             <th>品牌：</th>
-            <td>{{wallMegs.productBrand}}</td>
+            <td>{{wallMegs.BRAND_NAME}}</td>
             <td class="show-kucun">
               <span @click.stop="checkKucun">查看库存</span>
             </td>
@@ -96,12 +96,12 @@ import { Search, ActionSheet, Toast, Loading, Icon, Dialog, Popup } from "vant";
 import "../assetsorder/actionsheet.css";
 import navBottom from "../../components/navBottom";
 import scan from "../componentorder/Scan";
+import { GetWallpaperInfo } from "@/api/itemInfoASP";
 
 export default {
   name: "",
   data() {
     return {
-      url: "http://106.13.32.172:8080/yulan-order",
       //搜索框输入值
       inputValue: "",
       //显示库存
@@ -148,7 +148,7 @@ export default {
       this.loading = true;
       let wallKcURL = this.orderBaseUrl + "/item/getStockShow.do";
       let data = {
-        itemNo: this.wallMegs.itemNo //产品型号，不能是旧的产品型号
+        itemNo: this.wallMegs.ITEM_NO //产品型号，不能是旧的产品型号
       };
       axios.post(wallKcURL, data).then(data => {
         this.loading = false;
@@ -167,12 +167,11 @@ export default {
     },
     //墙纸详情
     wallDetails() {
-      // let xh = this.wallMegs.itemNo
       this.$router.push({
         name: "walldetails",
         params: {
           //墙纸类型,获取墙纸信息
-          papertype: this.wallMegs.oldItemNo,
+          papertype: this.wallMegs.OLD_ITEM_NO,
           from: "searchwall"
         }
       });
@@ -190,37 +189,38 @@ export default {
       }
     },
     onScanSuccess(result) {
-      this.inputValue = result;
       this.showScan = false;
+      GetWallpaperInfo(this.CID, result, "barcode").then(res=>{
+        this.resY = true;
+        this.resN = false;
+        this.wallMegs = res.data[0];
+      }).catch(err=>{
+          this.resY = false;
+          this.resN = true;
+          Toast({
+            duration: 2000,
+            message: err.msg
+          });
+      })
+      this.showSearch = false;
     },
     //墙纸查询
     onSearchWall(inputValue) {
       if (inputValue == '') return;
       this.wallMegs = {};
-      this.loading = true;
       this.inputValue = inputValue;
-      let wallUrl = this.orderBaseUrl + "/item/getWallpaperInfo.do";
-      let data = {
-        paperType: inputValue.toUpperCase(),
-        cid: this.CID
-      };
-      axios.post(wallUrl, data).then(data => {
-        if (data.data.code == 0) {
-          this.resY = true;
-          this.resN = false;
-          this.loading = false;
-          this.wallMegs = data.data.data;
-          this.wallMegs.note = this.wallMegs.itemType.note;
-        } else {
-          this.loading = false;
+      GetWallpaperInfo(this.CID, inputValue.toUpperCase(), "").then(res=>{
+        this.resY = true;
+        this.resN = false;
+        this.wallMegs = res.data[0];
+      }).catch(err=>{
           this.resY = false;
           this.resN = true;
           Toast({
             duration: 2000,
-            message: "暂无查询结果"
+            message: err.msg
           });
-        }
-      });
+      })
       this.showSearch = false;
       this.setHistoryItems(this.inputValue);
     },

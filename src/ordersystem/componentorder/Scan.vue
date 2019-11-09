@@ -33,7 +33,6 @@ import {
   ActionSheet,
   Icon
 } from "vant";
-import { GetCompensationById } from "@/api/paymentASP";
 
 export default {
   name: "",
@@ -51,7 +50,7 @@ export default {
   methods: {
     startRecognize() {
       var th = this;
-      this.scan = new plus.barcode.Barcode('bcid', [plus.barcode.QR], {
+      this.scan = new plus.barcode.Barcode('bcid', [plus.barcode.EAN13], {
         frameColor: '#00FF00',
         scanbarColor: "#00FF00",
       });
