@@ -379,7 +379,7 @@ export default {
         });
         this.activityOptions.push(_obj);
 
-        if (defaultSel.pri != 0) {
+        if (defaultSel.pri != 0 && this.allCurtain[i]) {
           this.allCurtain[i].activity = defaultSel.id;
           this.$set(this.allCurtain, i, this.allCurtain[i]);
         }

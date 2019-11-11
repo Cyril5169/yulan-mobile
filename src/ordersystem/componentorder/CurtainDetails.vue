@@ -61,7 +61,8 @@
                   </div>
                   <div class="title-item2">
                     <span class="title-left">名称</span>
-                    <span class="title-right title-right2">{{liantou.note}}</span>
+                    <span class="title-right title-right2" v-if="liantou.note != null">{{liantou.note}}</span>
+                    <span class="title-right title-right2" v-else>{{ getTypeName(liantou.itemMLGY.itemType) }}</span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
@@ -152,7 +153,8 @@
                   </div>
                   <div class="title-item2">
                     <span class="title-left">名称</span>
-                    <span class="title-right title-right2">{{liantou.note}}</span>
+                    <span class="title-right title-right2" v-if="liantou.note != null">{{liantou.note}}</span>
+                    <span class="title-right title-right2" v-else>{{ getTypeName(liantou.itemMLGY.itemType) }}</span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
@@ -243,11 +245,140 @@
             </van-collapse-item>
           </div>
           <div style="position: relative" v-if="lspb.length">
+            <van-checkbox class="change-this" v-model="chooseBig[3]" @change="changeLink('sha',3)"></van-checkbox>
+            <van-collapse-item title="帘身配布" name="3" class="curtain-item">
             <!--帘身配布-->
+            <div class="gauze">
+                <div class="content" v-for="(liantou,index) in lspb" :key="index">
+                  <div class="title-item2">
+                    <span class="title-left">编码</span>
+                    <span
+                      @click="changeXh('lspb',index,liantou.productType,liantou.itemMLGY.changeFlag,liantou.itemMLGY)"
+                      class="title-right title-right2"
+                      :class="{'title-right3':liantou.itemMLGY.changeFlag=='Y'}"
+                    >{{liantou.itemNo}}</span>
+                    <span style="float:right;margin:4px 5px 0 0;">
+                      <van-checkbox
+                        v-if="liantou.itemMLGY.deleteFlag=='Y'"
+                        v-model="liantou.choose"
+                        @change="changeLinkReverse(liantou)"
+                      ></van-checkbox>
+                    </span>
+                    <span v-if="bigToSmall(liantou) == true" class="item-icon2"></span>
+                  </div>
+                  <div class="title-item2">
+                    <span class="title-left">名称</span>
+                    <span class="title-right title-right2" v-if="liantou.note != null">{{liantou.note}}</span>
+                    <span class="title-right title-right2" v-else>{{ getTypeName(liantou.itemMLGY.itemType) }}</span>
+                  </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">单价</span>
+                    <span class="title-right title-right2">{{liantou.price}}元</span>
+                  </div>
+                  <div class="title-item2" v-if="liantou.fixGrade">
+                    <span class="title-left">规格（米/对）</span>
+                    <span class="title-right">{{liantou.fixGrade/1000}}</span>
+                  </div>
+                  <!-- <div
+                    class="title-item2"
+                    @click="liantou.showFG = true"
+                    v-if="liantou.fixType && liantou.itemMLGY.productType =='ML'"
+                  >
+                    <span class="title-left">面料属性</span>
+                    <span class="title-right">{{liantou.fixType | fixTypeFilter}}</span>
+                    <span class="item-icon"></span>
+                  </div> -->
+                  <!-- <div class="title-item2">
+                    <span class="title-left">用量</span>
+                    <span class="title-right">
+                      <span>{{liantou.dosage}}{{liantou.unit}}</span>
+                      <input
+                        type="number"
+                        v-if="liantou.itemMLGY.modifyFlag =='Y'"
+                        class="use-num"
+                        placeholder="输入用量"
+                      />
+                    </span>
+                  </div> -->
+                  <div class="title-item2" v-if="liantou.creator" @click="liantou.showMlZz = true">
+                    <span class="title-left">制造说明</span>
+                    <span class="title-right title-right2">{{liantou.creator}}</span>
+                    <span class="item-icon"></span>
+                  </div>
+                  <div class="title-item2">
+                    <span class="title-left">说明</span>
+                    <span class="title-right" style="color:red;">{{liantou.tip}}</span>
+                  </div>
+                  <div class="title-item3">
+                    <span class="title-left">备注</span>
+                    <span style="float:left;margin-left:10px;color:red;">{{getRemark(liantou)}}</span>
+                    <span class="title-right">
+                      <input
+                        type="text"
+                        class="curtain-beizhu"
+                        :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
+                        placeholder="填写备注"
+                        v-model="liantou.remark"
+                      />
+                    </span>
+                  </div>
+                  <!--选择风格-->
+                  <div class="show-FG" @click="liantou.showFG = false">
+                    <van-popup v-model="liantou.showFG" position="center">
+                      <van-radio-group v-model="liantou.fixType">
+                        <van-cell-group>
+                          <van-cell
+                            title="定宽"
+                            clickable
+                            @click="changeFG('01','lspb',liantou,index)"
+                          >
+                            <van-radio name="01" checked-color="#89cb81" />
+                          </van-cell>
+                          <van-cell
+                            title="定高"
+                            clickable
+                            @click="changeFG('02','lspb',liantou,index)"
+                          >
+                            <van-radio name="02" checked-color="#89cb81" />
+                          </van-cell>
+                        </van-cell-group>
+                      </van-radio-group>
+                    </van-popup>
+                  </div>
+                  <!--选择帘身配布制造说明-->
+                  <div class="head-make-details" @click="liantou.showMlZz = false">
+                    <van-popup v-model="liantou.showMlZz" position="center">
+                      <van-radio-group v-model="liantou.creator">
+                        <van-cell-group>
+                          <van-cell title="一个褶" clickable @click="liantou.creator = '一个褶'">
+                            <van-radio name="一个褶" checked-color="#89cb81" />
+                          </van-cell>
+                          <van-cell title="一个半褶" clickable @click="liantou.creator = '一个半褶'">
+                            <van-radio name="一个半褶" checked-color="#89cb81" />
+                          </van-cell>
+                          <van-cell title="两个褶" clickable @click="liantou.creator = '两个褶'">
+                            <van-radio name="两个褶" checked-color="#89cb81" />
+                          </van-cell>
+                          <van-cell title="两个半褶" clickable @click="liantou.creator = '两个半褶'">
+                            <van-radio name="两个半褶" checked-color="#89cb81" />
+                          </van-cell>
+                          <van-cell title="三个褶" clickable @click="liantou.creator = '三个褶'">
+                            <van-radio name="三个褶" checked-color="#89cb81" />
+                          </van-cell>
+                          <van-cell title="三个半褶" clickable @click="liantou.creator = '三个半褶'">
+                            <van-radio name="三个半褶" checked-color="#89cb81" />
+                          </van-cell>
+                        </van-cell-group>
+                      </van-radio-group>
+                    </van-popup>
+                  </div>
+                </div>
+              </div>
+            </van-collapse-item>
           </div>
           <div style="position: relative" v-if="sha.length">
             <van-checkbox class="change-this" v-model="chooseBig[3]" @change="changeLink('sha',3)"></van-checkbox>
-            <van-collapse-item title="纱" name="3" class="curtain-item">
+            <van-collapse-item title="纱" name="4" class="curtain-item">
               <!--纱-->
               <div class="gauze">
                 <div class="content" v-for="(liantou,index) in sha" :key="index">
@@ -269,8 +400,8 @@
                   </div>
                   <div class="title-item2">
                     <span class="title-left">名称</span>
-                    <span class="title-right title-right2">{{liantou.note}}</span>
-                    <span class="item-icon"></span>
+                    <span class="title-right title-right2" v-if="liantou.note != null">{{liantou.note}}</span>
+                    <span class="title-right title-right2" v-else>{{ getTypeName(liantou.itemMLGY.itemType) }}</span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
@@ -369,7 +500,7 @@
             </van-collapse-item>
           </div>
           <div style="position: relative" v-if="pjb.length">
-            <van-collapse-item title="配件" name="4" class="curtain-item">
+            <van-collapse-item title="配件" name="5" class="curtain-item">
               <!--配件-->
               <div class="gauze">
                 <div class="content" v-for="(liantou,index) in pjb" :key="index">
@@ -384,8 +515,8 @@
                   </div>
                   <div class="title-item2">
                     <span class="title-left">名称</span>
-                    <span class="title-right title-right2">{{liantou.note}}</span>
-                    <span class="item-icon"></span>
+                    <span class="title-right title-right2" v-if="liantou.note != null">{{liantou.note}}</span>
+                    <span class="title-right title-right2" v-else>{{ getTypeName(liantou.itemMLGY.itemType) }}</span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
@@ -750,6 +881,8 @@ export default {
               }
               this.ls.push(itemLists[i]);
             } else if (itemLists[i].itemMLGY.itemType == "lspb") {
+              this.$set(itemLists[i], "creator", "未选");
+              this.$set(itemLists[i], "showMlZz", false);
               this.lspb.push(itemLists[i]);
             } else if (itemLists[i].itemMLGY.itemType == "sha") {
               this.$set(
@@ -928,15 +1061,18 @@ export default {
       let status2 = item.fixType === null || this.itemType === "lspb";
       var data = this.getChangeArray(this.itemType);
       var oriData = this.getOrignalArray(this.itemType);
+      var price = this.getPrice(this.$store.getters.getCtype,item);
       data[this.index].note = item.note;
       data[this.index].fixGrade = item.fixGrade;
       data[this.index].fixType = status2 ? "" : item.fixType;
       data[this.index].itemNo = item.itemNo;
+      data[this.index].price = price;
       oriData[this.index].fixType = status2 ? "" : item.fixType;
       if (this.productType != "GY") {
         //非工艺用量修改
         if (this.itemType == "lspb") {
           this.judgeTip(data[this.index], this.index);
+          this.showGy = false;
           return;
         }
         let obj = {

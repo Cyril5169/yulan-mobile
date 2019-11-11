@@ -18,8 +18,8 @@
     </ul>
     <div class="task-title" v-if="assignments">
       <span>总月任务：{{assignments.ASSIGNMENTS}}元</span>
-      <span>总促销目标任务：{{assignments.ASSIGNMENTS_TARGET}}元</span>
-      <span>完成差额：{{assignments.assignmentsReduce}}元</span>
+      <span style="color:red;">总促销目标任务：{{assignments.ASSIGNMENTS_TARGET}}元</span>
+      <span style="color:red;">完成差额：{{assignments.assignmentsReduce}}元</span>
     </div>
     <div class="alllists" v-if="taskResult">
       <div class="singleItem" v-for="(taskItem,index) in taskResult" :key="index">
