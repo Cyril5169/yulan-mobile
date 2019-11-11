@@ -5,7 +5,8 @@
       <div class="main">
         <div class="money"></div>
         <span style="font-size:16px;color:#fff">余额</span>
-        <span style="font-size:15px;color:#eee">￥{{money}}</span>
+        <span style="font-size:15px;color:#eee" v-if="showPrice">￥{{money}}</span>
+        <span style="font-size:15px;color:#eee" v-else>￥***</span>
       </div>
     </div>
   </div>
@@ -27,7 +28,8 @@ export default {
   data() {
     return {
       from: "mypersonal",
-      money: 0
+      money: 0,
+      showPrice: this.$store.getters.getIsManage != "0"
     };
   },
   methods: {
