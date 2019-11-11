@@ -26,6 +26,7 @@
 
       <section class="content" @click.stop="Sidebar">
         <Banner v-bind:IsSidebarOut="IsSidebarOut" :title="'玉兰产品'"></Banner>
+
         <div class="option1">
           <div class="top-div">
             <div class="item-box">
@@ -64,7 +65,7 @@
         </div>
       </section>
 
-      <navBottom :change-style="style"></navBottom>
+      <navBottom :change-style="style" :tab-stage="myRoute"></navBottom>
     </div>
   </div>
 </template>
@@ -83,7 +84,8 @@ export default {
       IsWarn: false,
       set: 0,
       kkp: 0,
-      style: "shopstore"
+      style: "shopstore",
+      myRoute: "customer",
     };
   },
   components: {
@@ -458,6 +460,7 @@ p {
 .option1 {
   position: relative;
   height: 120px;
+  margin-top: 20px;
 }
 .bottom-div {
   width: 312px;
@@ -476,7 +479,7 @@ p {
   position: absolute;
   z-index: 2;
   left: 50%;
-  top: -28px;
+  /* top: -28px; */
   margin-left: -166px;
   background-color: #fff;
   border-radius: 7px;
@@ -489,10 +492,10 @@ p {
 }
 .item-box {
   width: 80px;
-  height: 95px;
+  height: 93px;
   /* line-height: 129px; */
   position: relative;
-  margin-top: -29px;
+  /* margin-top: -29px; */
   margin-left: 36px;
   background-color: #a4a4a4;
   border-radius: 7px;

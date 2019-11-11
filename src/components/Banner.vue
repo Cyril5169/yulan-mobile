@@ -38,10 +38,10 @@ export default {
     window.vTop = this;
 
     if (this.$store.state.info.data.realName.length >= 7) {
-      document.getElementsByClassName('customer-name')[0].style.fontSize = "15px"
+      document.getElementsByClassName('customer-name')[0].style.fontSize = "25px"
     }
     if (this.$store.state.info.data.realName.length >= 10) {
-      document.getElementsByClassName('customer-name')[0].style.fontSize = "12px"
+      document.getElementsByClassName('customer-name')[0].style.fontSize = "18px"
     }
   },
   destroyed(){
@@ -95,7 +95,7 @@ p {
 }
 .banner {
   width: 375px;
-  height: 185px; /*185*/
+  height: 120px; /*185*/
   position: relative;
   box-shadow: 3px 0px 6px rgba(0, 0, 0, 0.16);
   background: -webkit-linear-gradient(left, #abd46c, #89cb81);
@@ -138,7 +138,7 @@ p {
   left: 23px;
 }
 .customer-name {
-  font-size: 20px;
+  font-size: 25px;
   color: #fff;
   position: absolute;
   text-align: left;
