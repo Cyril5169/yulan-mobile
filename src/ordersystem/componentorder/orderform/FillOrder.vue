@@ -479,7 +479,8 @@ export default {
       hidshow: true, //显示或者隐藏footer
       loading: false,
       accMoney: 0,
-      activityArray: [] //活动集合
+      activityArray: [], //活动集合
+      isX: false //是否窗帘订单
     };
   },
   computed: {
@@ -657,14 +658,26 @@ export default {
       //订单商品详情，为多个集合（数组）
       this.productList = [];
       for (let i = 0; i < this.allProduct.length; i++) {
-        if (!this.allProduct[i].salPromotion) {
-          this.allProduct[i].salPromotion = {};
-          this.$set(this.allProduct[i].salPromotion, "orderType", null);
-          // this.allProduct[i].salPromotion.orderType = null
-        }
+        // if (!this.allProduct[i].salPromotion) {
+        //   this.allProduct[i].salPromotion = {};
+        //   this.$set(this.allProduct[i].salPromotion, "orderType", null);
+        // }
         let singleProduct = {};
         singleProduct.curtainWidth = this.allProduct[i].width;
         singleProduct.curtainHeight = this.allProduct[i].height;
+        singleProduct.curtainHeight2 = this.allProduct[i].falseShadeHigh
+          ? this.allProduct[i].falseShadeHigh
+          : 0;
+        singleProduct.curtainSizeTimes = this.allProduct[i].drape
+          ? this.allProduct[i].drape
+          : 0;
+        singleProduct.curtainWbhSize = this.allProduct[i].outsourcingBoxWidth
+          ? this.allProduct[i].outsourcingBoxWidth
+          : 0;
+        singleProduct.curtainRoomName = this.allProduct[i].location
+          ? this.allProduct[i].location
+          : "";
+          singleProduct.orderNo = this.allProduct[i].orderNumber;
         singleProduct.lineNo = this.allProduct[i].lineNo;
         singleProduct.itemNo = this.allProduct[i].item.itemNo;
         singleProduct.itemNoSample = this.allProduct[i].item.itemNo;
@@ -674,16 +687,16 @@ export default {
         singleProduct.notes = this.allProduct[i].note;
         singleProduct.unitPrice = this.allProduct[i].price;
         singleProduct.promotionCost = this.allProduct[i].activityPrice;
-        singleProduct.promotion = this.allProduct[i].newactivityId;
+        singleProduct.promotion = this.allProduct[i].newactivityId?this.allProduct[i].newactivityId:'无';
         singleProduct.promotionType = this.allProduct[i].salPromotion.orderType;
-        //singleProduct.flagFlType = this.allProduct[i].salPromotion.falgFl;
+        singleProduct.flagFlType = this.allProduct[i].salPromotion.flagFl;
+        singleProduct.unit = this.allProduct[i].unit;
         if (this.allProduct[i].onlineSalesAmount !== null) {
           singleProduct.onlineSalesAmount = this.allProduct[
             i
           ].onlineSalesAmount;
         }
-        singleProduct.finalPrice = this.allProduct[i].questPrice;
-
+        singleProduct.finalPrice = this.allProduct[i].activityPrice;
         this.productList.push(singleProduct);
       }
       var reg = /.+?(省|市|自治区|自治州|县|区)/g;
@@ -701,8 +714,14 @@ export default {
       }
       //删除购物车数据
       var deleteArray = [];
-      for (let i = 0; i < this.allProduct.length; i++) {
-        deleteArray.push(this.allProduct[i].id);
+      if (this.isX) {
+        for (let i = 0; i < this.allProduct.length; i++) {
+          deleteArray.push(this.allProduct[i].cartItemId);
+        }
+      } else {
+        for (let i = 0; i < this.allProduct.length; i++) {
+          deleteArray.push(this.allProduct[i].id); //不像窗帘，这里一个cart_item_id可能对应多个
+        }
       }
       let orderUrl = this.orderBaseUrl + "/order/orderCount.do";
       let data = {
@@ -738,22 +757,34 @@ export default {
         cartItemIDs: deleteArray,
         device: "app"
       };
-      normalOrderSettlement(data).then(data => {
-        //axios.post(orderUrl, data).then(data => {
-        // this.loading = false;
-        // console.log(data);
-        // if (data.data.code == 0) {
-        Toast({
-          duration: 2000,
-          message: "提交订单成功"
+      if (this.isX) {
+        //窗帘提交
+        orderSettlement(data).then(data => {
+          Toast({
+            duration: 2000,
+            message: "提交订单成功"
+          });
+          this.$router.push({
+            name: "myorder",
+            params: {
+              refresh: true
+            }
+          });
         });
-        this.$router.push({
-          name: "myorder",
-          params: {
-            refresh: true
-          }
+      } else {
+        normalOrderSettlement(data).then(data => {
+          Toast({
+            duration: 2000,
+            message: "提交订单成功"
+          });
+          this.$router.push({
+            name: "myorder",
+            params: {
+              refresh: true
+            }
+          });
         });
-      });
+      }
     },
     //生成订单后删除购物车的信息
     updateCart() {
@@ -1092,6 +1123,7 @@ export default {
     });
   },
   created() {
+    if (this.$route.params.isX) this.isX = this.$route.params.isX;
     if (
       this.allProduct[0].item.groupType == "B" ||
       this.allProduct[0].item.groupType == "B1"

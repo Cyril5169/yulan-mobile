@@ -14,17 +14,10 @@
               class="qiang"
               @change.stop="pickGroup(group,index)"
             />
-            <!--<img class="qiang" src="../../assetsorder/wallCart.png" alt="">-->
-            <span class="type">{{group.productGroupType}} - {{group.activityGroupType}}组</span>
+            <span class="type">{{group.productGroupType?group.productGroupType:'无产品'}} - {{group.activityGroupType?group.activityGroupType:'Z'}}组</span>
             <span class="huodong">{{group.cid}}</span>
-            <!--<span class="huodong">{{group.activityGroupType}}</span>-->
-            <!--<img class="huodong-icon" src="../../assetsorder/hdCart.png" alt="">-->
           </div>
           <div class="details-content" v-for="(product,inndex) in group.commodities" :key="inndex">
-            <!--<van-checkbox class="checkbox" @change="buyThis(product.isbuy,index,inndex)" v-model="product.isbuy"-->
-            <!--checked-color="#8cbb44"></van-checkbox>-->
-            <!--<input @click="buyThis(product.isbuy,index,inndex)" id="color-input-red" class="checkbox chat-button-location-radio-input" type="checkbox"/>-->
-            <!--<label  for="color-input-red"></label >-->
             <input
               type="checkbox"
               :value="product"
@@ -44,17 +37,16 @@
                 <!--</tr>-->
                 <tr>
                   <th>活动：</th>
-                  <td>{{product.newactivityId}}</td>
+                  <td>{{product.activityName}}</td>
                 </tr>
-                <tr>
-                  <th>说明：</th>
+                <!-- <tr>
+                  <th>发货说明：</th>
                   <td>{{product.newsplitShipment}}</td>
-                </tr>
+                </tr> -->
                 <tr>
                   <th>单价：</th>
                   <td v-if="showPrice" class="price">￥{{product.price}}</td>
                   <td v-else class="price">***</td>
-                  <!--<td class="product-num">数量：{{product.quantity}}卷</td>-->
                 </tr>
                 <tr>
                   <th>小计：</th>
@@ -80,9 +72,6 @@
       </van-pull-refresh>
     </div>
     <div class="cart-bottom">
-      <!--<div class="cart-left">-->
-      <!--<van-checkbox v-model="allp" @click="allPick(),checkModel()" checked-color="#8cbb44">全选</van-checkbox>-->
-      <!--</div>-->
       <div class="cart-right" v-if="!showSubmitCheck&&!showManage">
         <span>合计：</span>
         <span v-if="showPrice" class="total-price">￥{{totalPrice}}</span>
@@ -173,7 +162,7 @@ export default {
           itemNo: this.cartlist[index].commodities[inndex].item.itemNo, //模糊查询内容
           commodityID: this.cartlist[index].commodities[inndex].id, //商品条ID
           activityID: this.cartlist[index].commodities[inndex].activityId, //新活动ID
-          newactivityID: this.cartlist[index].commodities[inndex].newactivityId, //新活动ID
+          newactivityID: this.cartlist[index].commodities[inndex].activityName, //新活动ID
           quantity: this.cartlist[index].commodities[inndex].quantity, //数量
           width: this.cartlist[index].commodities[inndex].width, //宽度
           height: this.cartlist[index].commodities[inndex].height, //高度
@@ -294,17 +283,6 @@ export default {
         this.showSubmitCheck = true;
       } else {
         this.showSubmitCheck = false;
-      }
-    },
-    //替换所有活动
-    thhd() {
-      for (var i = 0; i < this.cartlist.length; i++) {
-        //是否全选一组标志
-        this.cartlist[i].checked = false;
-        for (var j = 0; j < this.cartlist[i].commodities.length; j++) {
-          //自定义一个是否选中标志
-          this.cartlist[i].commodities[j].checked = false;
-        }
       }
     },
     searchCartList() {
@@ -505,8 +483,12 @@ export default {
   box-shadow: 0 0 5px 0 darkgray;
 }
 
-td {
-  text-align: left;
+.details-content th {
+  text-align: left !important;
+}
+
+.details-content td {
+  text-align: left !important;
 }
 
 .price {

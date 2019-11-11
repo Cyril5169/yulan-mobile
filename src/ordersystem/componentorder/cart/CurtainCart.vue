@@ -1,65 +1,96 @@
 <template>
   <!--参考淘宝购物车-->
   <div class="wall-cart">
-    <!-- <span class="manage" v-if="!showManage" @click="manageCart">管理</span>
-    <span class="manage-completed" v-if="showManage" @click="manageCompleted">完成</span>-->
+    <span class="manage" v-if="!showManage" @click="manageCart">管理</span>
+    <span class="manage-completed" v-if="showManage" @click="manageCompleted">完成</span>
     <div class="all-products">
-      <span>窗帘请到网页进行下单</span>
-      <!--<div class="single-product" v-for="(group,index) in cartlist" :key="index">
-        <div class="category-title">
-          <input
-            type="checkbox"
-            :value="group"
-            v-model="checkGroupModel"
-            class="qiang"
-            @change.stop="pickGroup(group,index)"
-          />
-          <span class="type">{{group.productGroupType}} - {{group.activityGroupType}}组</span>
+      <van-pull-refresh style="min-height: 450px;" v-model="isLoading" @refresh="searchCartList">
+        <div class="single-product" v-for="(group,index) in cartlist" :key="index">
+          <div class="category-title">
+            <input
+              type="checkbox"
+              :value="group"
+              v-model="checkGroupModel"
+              class="qiang"
+              @change.stop="pickGroup(group,index)"
+            />
+            <span
+              class="type"
+            >{{group.productGroupType?group.productGroupType:'无产品'}} - {{group.activityGroupType?group.activityGroupType:'Z'}}组</span>
+            <span class="huodong">{{group.cid}}</span>
+          </div>
+          <div
+            class="details-content"
+            v-for="(product,inndex) in group.curtainCartItems"
+            :key="inndex"
+          >
+            <input
+              type="checkbox"
+              :value="product"
+              v-model="checkBoxModel"
+              class="checkbox"
+              @change.stop="pickOne(product,index,inndex)"
+            />
+            <div style="width:100%;height:100%" @click="wallDetails(index,inndex)">
+              <table>
+                <tr>
+                  <th>型号：</th>
+                  <td>{{product.modelNumber}}</td>
+                </tr>
+                <tr>
+                  <th>宽度*高度：</th>
+                  <td>{{product.width}}*{{product.height}}(米)</td>
+                </tr>
+                <tr>
+                  <th>帘外包宽度：</th>
+                  <td v-if="product.outsourcingBoxExist === 1">
+                    {{
+                    product.outsourcingBoxWidth !== null &&
+                    product.outsourcingBoxWidth !== 0
+                    ? product.outsourcingBoxWidth
+                    : "--"
+                    }}(米)
+                  </td>
+                  <td v-else>--</td>
+                </tr>
+                <tr>
+                  <th>褶皱倍数：</th>
+                  <td>{{product.drape}}</td>
+                </tr>
+                <tr>
+                  <th>位置：</th>
+                  <td>
+                    {{product.location === null || product.location === ""
+                    ? "--"
+                    : product.location}}
+                  </td>
+                </tr>
+                <tr>
+                  <th>活动：</th>
+                  <td>
+                    <span
+                      style="color: red;"
+                      v-if="
+                    product.curtainLists[product.unNullNum]
+                      .curtainCommodities[0].activityEffective === false
+                  "
+                    >(过期活动)</span>
+                    {{ product.activity }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>小计：</th>
+                  <td class="price" v-if="showPrice">￥{{(product.count * product.price).toFixed(2)}}</td>
+                  <td class="price" v-else-if="!showPrice">***</td>
+                </tr>
+              </table>
+            </div>
+          </div>
         </div>
-        <div
-          class="details-content"
-          v-for="(product,inndex) in group.curtainCartItems"
-          :key="inndex"
-        >
-          <input
-            type="checkbox"
-            :value="product"
-            v-model="checkBoxModel"
-            class="checkbox"
-            @change.stop="pickOne(product,index,inndex)"
-          />
-          <div class="title-item">
-            <span class="title-left">窗帘款式</span>
-            <span class="title-right">{{product.modelNumber}}</span>
-          </div>
-          <div class="title-item">
-            <span class="title-left">成品宽度*高度</span>
-            <span class="title-right">{{product.width}}*{{product.height}}(米)</span>
-          </div>
-          <div class="title-item">
-            <span class="title-left">帘头外包盒单边宽度</span>
-            <span class="title-right">{{product.outsourcingBoxWidth}}(米)</span>
-          </div>
-          <div class="title-item">
-            <span class="title-left">褶皱倍数</span>
-            <span class="title-right">{{product.drape}}</span>
-          </div>
-          <div class="title-item">
-            <span class="title-left">活动</span>
-            <span class="title-right">不参与活动</span>
-          </div>
-          <div class="title-item">
-            <span class="title-left">兰居意见</span>
-            <span class="title-right">无意间</span>
-          </div>
-          <div class="title-item">
-            <span class="title-left">位置</span>
-            <span class="title-right">{{product.location}}</span>
-          </div>
-        </div>
-      </div>-->
+        <div v-if="cartlist.length == 0" style="min-height: 450px;margin-top:5px;">暂无数据</div>
+      </van-pull-refresh>
     </div>
-    <!--<div class="cart-bottom">
+    <div class="cart-bottom">
       <div class="cart-right" v-if="!showSubmitCheck&&!showManage">
         <span>合计：</span>
         <span class="total-price">￥{{totalPrice}}</span>
@@ -72,7 +103,7 @@
         <span class="submit-check">提交审核</span>
       </div>
     </div>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />-->
+    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
   </div>
 </template>
 
@@ -80,7 +111,8 @@
 import axios from "axios";
 import top from "../../../components/Top";
 import { Stepper, Checkbox, CheckboxGroup } from "vant";
-import { Dialog, Toast, Loading } from "vant";
+import { Dialog, Toast, Loading, PullRefresh } from "vant";
+import { GetCartItem } from "@/api/shopASP";
 
 export default {
   name: "wallcart",
@@ -91,7 +123,8 @@ export default {
     [CheckboxGroup.name]: CheckboxGroup,
     [Dialog.name]: Dialog,
     [Toast.name]: Toast,
-    [Loading.name]: Loading
+    [Loading.name]: Loading,
+    [PullRefresh.name]: PullRefresh
   },
   data() {
     return {
@@ -127,77 +160,71 @@ export default {
       productType: "",
       //需要传给结算页面的商品信息
       productMsg: {},
-      loading: false
+      loading: false,
+      isLoading: false,
+      showPrice: this.$store.getters.getIsManage != "0"
     };
   },
   methods: {
     wallDetails(index, inndex) {
       //获取版本号
-      let olditemNo = this.cartlist[index].commodities[inndex].item.oldItemNo;
-      this.$router.push({
-        name: "softdetails",
-        params: {
-          //墙纸类型,获取墙纸信息
-          itemType: this.cartlist[index].commodities[inndex].item.productType,
-          itemNo: this.cartlist[index].commodities[inndex].item.itemNo, //模糊查询内容
-          commodityID: this.cartlist[index].commodities[inndex].id, //商品条ID
-          activityID: this.cartlist[index].commodities[inndex].activityId, //新活动ID
-          newactivityID: this.cartlist[index].commodities[inndex].newactivityId, //新活动ID
-          quantity: this.cartlist[index].commodities[inndex].quantity, //数量
-          width: this.cartlist[index].commodities[inndex].width, //宽度
-          height: this.cartlist[index].commodities[inndex].height, //高度
-          note: this.cartlist[index].commodities[inndex].note,
-          tip: this.cartlist[index].commodities[inndex].newsplitShipment,
-          from: "mycart/curtaincart"
-        }
-      });
+      // let olditemNo = this.cartlist[index].commodities[inndex].item.oldItemNo;
+      // this.$router.push({
+      //   name: "curtaindetails",
+      //   params: {
+      //     //墙纸类型,获取墙纸信息
+      //     itemType: this.cartlist[index].commodities[inndex].item.productType,
+      //     itemNo: this.cartlist[index].commodities[inndex].item.itemNo, //模糊查询内容
+      //     commodityID: this.cartlist[index].commodities[inndex].id, //商品条ID
+      //     activityID: this.cartlist[index].commodities[inndex].activityId, //新活动ID
+      //     newactivityID: this.cartlist[index].commodities[inndex].activity, //新活动ID
+      //     quantity: this.cartlist[index].commodities[inndex].quantity, //数量
+      //     width: this.cartlist[index].commodities[inndex].width, //宽度
+      //     height: this.cartlist[index].commodities[inndex].height, //高度
+      //     note: this.cartlist[index].commodities[inndex].note,
+      //     tip: this.cartlist[index].commodities[inndex].newsplitShipment,
+      //     from: "mycart/curtaincart"
+      //   }
+      // });
     },
     //购物车选中一个
     pickOne(product, index, inndex) {
-      if (this.cartlist[index].curtainCartItems[inndex].checked) {
-        this.cartlist[index].curtainCartItems[inndex].checked = false;
-        // product.checked = false;
-        //触发全选
+      if (this.checkBoxModel.length == 1) {
+        //产品组别
+        // this.productType = this.cartlist[index].productGroupType
+        this.thisGroup = this.cartlist[index].activityGroupType;
+        this.cartlist[index].curtainCartItems[inndex].checked = true;
         if (
-          this.checkBoxModel.length !=
-          this.cartlist[index].curtainCartItems.length
-        ) {
-          this.checkGroupModel = [];
-          this.cartlist[index].checked = false;
-        }
-        if (this.checkBoxModel.length == 0) {
-          this.thisGroup = "";
-        }
-      } else {
-        // product.checked = true;
-        if (this.checkBoxModel.length == 1) {
-          //产品组别
-          // this.productType = this.cartlist[index].productGroupType
-          this.thisGroup = this.cartlist[index].activityGroupType;
-          this.cartlist[index].curtainCartItems[inndex].checked = true;
-          if (
-            this.checkBoxModel.length ==
-            this.cartlist[index].curtainCartItems.length
-          ) {
-            this.checkGroupModel = [];
-            this.checkGroupModel.push(this.cartlist[index]);
-            this.cartlist[index].checked = true;
-          }
-        } else if (this.cartlist[index].activityGroupType != this.thisGroup) {
-          this.checkBoxModel.pop();
-          Dialog.alert({
-            message: "不同组别的商品不能一起选择，请重新选择"
-          }).then(() => {
-            // on close
-            this.cartlist[index].curtainCartItems[inndex].checked = false;
-          });
-        } else if (
           this.checkBoxModel.length ==
           this.cartlist[index].curtainCartItems.length
         ) {
           this.checkGroupModel = [];
           this.checkGroupModel.push(this.cartlist[index]);
           this.cartlist[index].checked = true;
+        } else {
+          this.checkGroupModel = [];
+          this.cartlist[index].checked = false;
+        }
+      } else if (this.cartlist[index].activityGroupType != this.thisGroup) {
+        //this.checkBoxModel.pop();
+        Dialog.alert({
+          message: "不同组别的商品不能一起选择，请重新选择"
+        }).then(() => {
+          // on close
+          return false;
+          this.cartlist[index].curtainCartItems[inndex].checked = false;
+        });
+      } else {
+        if (
+          this.checkBoxModel.length ==
+          this.cartlist[index].curtainCartItems.length
+        ) {
+          this.checkGroupModel = [];
+          this.checkGroupModel.push(this.cartlist[index]);
+          this.cartlist[index].checked = true;
+        } else {
+          this.checkGroupModel = [];
+          this.cartlist[index].checked = false;
         }
       }
     },
@@ -256,9 +283,29 @@ export default {
           message: "请选择商品"
         });
       } else {
+        for (var i = 0; i < this.checkBoxModel.length; i++) {
+          let _index = this.checkBoxModel[i].unNullNum;
+          let _data = this.checkBoxModel[i].curtainLists[_index]
+            .curtainCommodities[0];
+          this.checkBoxModel[i].item = new Object();
+          this.checkBoxModel[i].item.itemNo = this.checkBoxModel[i].modelNumber;
+          this.checkBoxModel[i].item.itemNoSample = !_itemNoSample
+            ? this.checkBoxModel[i].modelNumber
+            : _itemNoSample;
+          this.checkBoxModel[i].item.itemVersion = _data.item.itemVersion;
+          this.checkBoxModel[i].item.groupType = "E";
+          this.checkBoxModel[i].id = _data.id;
+          let _itemNoSample = _data.item.oldItemNo;
+          this.checkBoxModel[i].unit = "米";
+          this.checkBoxModel[i].quantity = 1;
+          this.checkBoxModel[i].newactivityId = this.checkBoxModel[i].activity
+        }
         this.$store.commit("setOrderProduct", this.checkBoxModel);
         this.$router.push({
-          path: "/fillorder"
+          name: "fillorder",
+          params:{
+            isX:true
+          }
         });
       }
     },
@@ -274,138 +321,31 @@ export default {
         this.showSubmitCheck = false;
       }
     },
-    //替换所有活动
-    thhd() {
-      for (var i = 0; i < this.cartlist.length; i++) {
-        //是否全选一组标志
-        this.cartlist[i].checked = false;
-        for (var j = 0; j < this.cartlist[i].commodities.length; j++) {
-          //自定义一个是否选中标志
-          this.cartlist[i].commodities[j].checked = false;
-        }
-      }
-    },
-    cartList() {
-      this.loading = true;
-      let cartUrl =
-        this.url +
-        "/cart/getAllCartByCID.do?" +
-        "CID=" +
-        this.$store.getters.getCId;
-      axios
-        .post(cartUrl)
-        .then(data => {
+    searchCartList() {
+      GetCartItem({
+        cid: this.$store.getters.getCId,
+        commodityType: "curtain"
+      })
+        .then(res => {
+          this.checkBoxModel = [];
           this.loading = false;
-          Toast.success("删除成功");
-          //过滤
-          for (let i = 0; i < data.data.cartItems.wallpaper.length; ) {
-            if (data.data.cartItems.wallpaper[i].commodities.length == 0) {
-              data.data.cartItems.wallpaper.splice(i, 1);
+          var data = res.data;
+          for (let i = 0; i < data.length; ) {
+            if (data[i].curtainCartItems.length == 0) {
+              data.splice(i, 1);
             } else {
               i++;
             }
           }
-          for (let i = 0; i < data.data.cartItems.soft.length; ) {
-            if (data.data.cartItems.soft[i].commodities.length == 0) {
-              data.data.cartItems.soft.splice(i, 1);
-            } else {
-              i++;
-            }
-          }
-          //一个对象
-          this.allCartList = data.data.cartItems;
+          var allData = this.$store.state.allCart;
+          allData.curtain = data;
           //添加到购物车列表全局变量
-          this.$store.commit("setcart", this.allCartList);
-          return this.allCartList;
+          this.$store.commit("setcart", allData);
+          return data;
         })
         .then(cartdata => {
-          //活动组转换为中文
-          return cartdata;
-        })
-        .then(cartdata => {
-          //单个活动转换为中文
-          let hdArray = [];
-          for (let i = 0; i < cartdata.wallpaper.length; i++) {
-            for (let j = 0; j < cartdata.wallpaper[i].commodities.length; j++) {
-              if (cartdata.wallpaper[i].commodities[j].activityId != null) {
-                hdArray.push(cartdata.wallpaper[i].commodities[j].activityId);
-              }
-            }
-          }
-          let hdArrayUrl = this.url + "/salPromotion/getSalPromotionsByIDs.do";
-          axios.post(hdArrayUrl, hdArray).then(hdRes => {
-            let hdlength = 0;
-            for (let i = 0; i < cartdata.wallpaper.length; i++) {
-              for (
-                let j = 0;
-                j < cartdata.wallpaper[i].commodities.length;
-                j++
-              ) {
-                if (cartdata.wallpaper[i].commodities[j].activityId == null) {
-                  cartdata.wallpaper[i].commodities[j].newactivityId =
-                    "";
-                } else {
-                  cartdata.wallpaper[i].commodities[j].newactivityId =
-                    hdRes.data[hdlength++];
-                }
-                if (cartdata.wallpaper[i].commodities[j].splitShipment == 0) {
-                  cartdata.wallpaper[i].commodities[j].newsplitShipment =
-                    "等生产";
-                } else if (
-                  cartdata.wallpaper[i].commodities[j].splitShipment == 1
-                ) {
-                  cartdata.wallpaper[i].commodities[j].newsplitShipment =
-                    "分批出货";
-                } else {
-                  cartdata.wallpaper[i].commodities[j].newsplitShipment = "--";
-                }
-              }
-              //增加一个产品组字段
-              // cartdata.wallpaper[i].commodities[j].newProductType = cartdata.wallpaper[i].productGroupType
-            }
-          });
-          //单个活动转换为中文
-          let rzArray = [];
-          for (let i = 0; i < cartdata.soft.length; i++) {
-            for (let j = 0; j < cartdata.soft[i].commodities.length; j++) {
-              if (cartdata.soft[i].commodities[j].activityId != null) {
-                rzArray.push(cartdata.soft[i].commodities[j].activityId);
-              }
-            }
-          }
-          let rzArrayUrl = this.url + "/salPromotion/getSalPromotionsByIDs.do";
-          axios
-            .post(rzArrayUrl, rzArray)
-            .then(hdRes => {
-              let hdlength = 0;
-              for (let i = 0; i < cartdata.soft.length; i++) {
-                for (let j = 0; j < cartdata.soft[i].commodities.length; j++) {
-                  if (cartdata.soft[i].commodities[j].activityId == null) {
-                    cartdata.soft[i].commodities[j].newactivityId =
-                      "";
-                  } else {
-                    cartdata.soft[i].commodities[j].newactivityId =
-                      hdRes.data[hdlength++];
-                  }
-                  if (cartdata.soft[i].commodities[j].splitShipment == 0) {
-                    cartdata.soft[i].commodities[j].newsplitShipment = "等生产";
-                  } else if (
-                    cartdata.soft[i].commodities[j].splitShipment == 1
-                  ) {
-                    cartdata.soft[i].commodities[j].newsplitShipment =
-                      "分批出货";
-                  } else {
-                    cartdata.soft[i].commodities[j].newsplitShipment = "--";
-                  }
-                }
-                //增加一个产品组字段
-                // cartdata.soft[i].commodities[j].newProductType = cartdata.soft[i].productGroupType
-              }
-              return cartdata;
-            })
-            .then(hd => {
-              this.cartlist = hd.soft;
-            });
+          this.cartlist = cartdata;
+          this.isLoading = false;
         });
     },
     //购物车删除
@@ -441,20 +381,15 @@ export default {
     totalPrice: function() {
       this.total = 0;
       for (var i = 0; i < this.checkBoxModel.length; i++) {
-        if (this.checkBoxModel[i].quantity) {
-          this.total +=
-            this.checkBoxModel[i].price * this.checkBoxModel[i].quantity;
-        } else {
-          this.total +=
-            this.checkBoxModel[i].price *
-            this.checkBoxModel[i].width *
-            this.checkBoxModel[i].height;
-        }
+        this.total += this.checkBoxModel[i].price * this.checkBoxModel[i].count;
       }
       return this.total.toFixed(2);
     }
   },
-  created() {}
+  activated() {
+    this.cartlist = [];
+    this.searchCartList();
+  }
 };
 </script>
 
@@ -470,13 +405,17 @@ export default {
 }
 
 .all-products {
-  margin: 80px 5px 100px 5px;
+  position: fixed;
+  overflow-y: scroll;
+  bottom: 110px;
+  top: 80px;
+  left: 2px;
+  right: 2px;
   padding: 10px 10px;
 }
 
 .single-product {
   position: relative;
-  /*height: 175px;*/
   margin: 20px 0;
   padding-left: 40px;
   padding-bottom: 10px;
@@ -498,7 +437,8 @@ export default {
   height: 40px;
   line-height: 40px;
   font-size: 15px;
-  border-bottom: 0.5px solid rgba(153, 150, 134, 0.5);
+  margin-right: 10px;
+  /* border-bottom: 0.5px solid rgba(153, 150, 134, 0.5); */
 }
 
 .type {
@@ -509,7 +449,8 @@ export default {
 
 .huodong {
   float: right;
-  margin-right: 40px;
+  margin-right: 10px;
+  color: #ff5227;
 }
 
 .checkbox {
@@ -531,15 +472,20 @@ export default {
 
 .details-content {
   position: relative;
+  margin-right: 10px;
   margin-bottom: 5px;
   font-size: 14px;
-  border-bottom: 1px solid #a0cb8d;
-  margin: 5px 10px 5px 0;
+  padding: 10px;
+  /* border-bottom: 1px solid #f2f2f2; */
+  box-shadow: 0 0 5px 0 darkgray;
 }
 
-td,
-th {
-  text-align: left;
+.details-content th {
+  text-align: left !important;
+}
+
+.details-content td {
+  text-align: left !important;
 }
 
 .price {
@@ -550,7 +496,7 @@ th {
   margin-right: 5px;
   position: absolute;
   right: 2px;
-  bottom: 2px;
+  bottom: 10px;
 }
 
 .single-product .van-stepper {
@@ -597,25 +543,10 @@ th {
   bottom: 60px;
 }
 
-.title-item {
-  position: relative;
-  height: 20px;
-  line-height: 20px;
-  font-size: 13px;
-}
-
-.title-left {
-  float: left;
-  font-weight: bold;
-}
-
-.title-right {
-  float: right;
-}
 .settle-down,
 .submit-check {
   display: inline-block;
-  width: 80px;
+  width: 70px;
   height: 30px;
   line-height: 30px;
   font-size: 15px;

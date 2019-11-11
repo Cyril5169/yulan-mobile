@@ -15,7 +15,7 @@
               @change.stop="pickGroup(group,index)"
             />
             <!--<img class="qiang" src="../../assetsorder/wallCart.png" alt="">-->
-            <span class="type">{{group.productGroupType}} - {{group.activityGroupType}}组</span>
+            <span class="type">{{group.productGroupType?group.productGroupType:'无产品'}} - {{group.activityGroupType?group.activityGroupType:'Z'}}组</span>
             <span class="huodong">{{group.cid}}</span>
             <!--<img class="huodong-icon" src="../../assetsorder/hdCart.png" alt="">-->
           </div>
@@ -35,18 +35,16 @@
                 </tr>
                 <tr>
                   <th>活动：</th>
-                  <td>{{product.newactivityId}}</td>
+                  <td>{{product.activityName}}</td>
                 </tr>
                 <tr>
-                  <th>说明：</th>
+                  <th>发货说明：</th>
                   <td>{{product.newsplitShipment}}</td>
                 </tr>
                 <tr>
                   <th>单价：</th>
                   <td v-if="showPrice" class="price">￥{{product.price}}</td>
                   <td v-else class="price">***</td>
-                  <!--<td class="product-num" v-if="product.quantity">数量：{{product.quantity}}{{product.unit}}</td>-->
-                  <!--<td class="product-num" v-if="!product.quantity">数量：{{product.width}}*{{product.height}}平方米</td>-->
                 </tr>
                 <tr>
                   <th>小计：</th>
@@ -161,7 +159,7 @@ export default {
           papertype: olditemNo,
           commodityID: this.cartlist[index].commodities[inndex].id, //商品条ID
           activityID: this.cartlist[index].commodities[inndex].activityId, //新活动ID
-          newactivityID: this.cartlist[index].commodities[inndex].newactivityId, //新活动ID
+          newactivityID: this.cartlist[index].commodities[inndex].activityName, //新活动ID
           quantity: this.cartlist[index].commodities[inndex].quantity, //数量
           width: this.cartlist[index].commodities[inndex].width, //宽度
           height: this.cartlist[index].commodities[inndex].height, //高度
@@ -282,17 +280,6 @@ export default {
         this.showSubmitCheck = true;
       } else {
         this.showSubmitCheck = false;
-      }
-    },
-    //替换所有活动
-    thhd() {
-      for (var i = 0; i < this.cartlist.length; i++) {
-        //是否全选一组标志
-        this.cartlist[i].checked = false;
-        for (var j = 0; j < this.cartlist[i].commodities.length; j++) {
-          //自定义一个是否选中标志
-          this.cartlist[i].commodities[j].checked = false;
-        }
       }
     },
     searchCartList() {
@@ -437,7 +424,6 @@ export default {
     this.cartlist = [];
     this.searchCartList();
   },
-  mounted() {}
 };
 </script>
 
@@ -528,8 +514,12 @@ export default {
   box-shadow: 0 0 5px 0 darkgray;
 }
 
-td {
-  text-align: left;
+.details-content th {
+  text-align: left !important;
+}
+
+.details-content td {
+  text-align: left !important;
 }
 
 .price {

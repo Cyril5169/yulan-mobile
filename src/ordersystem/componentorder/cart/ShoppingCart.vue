@@ -7,10 +7,10 @@
           <router-link to="/mycart/wallcart">墙纸配套类</router-link>
         </li>
         <li>
-          <router-link to="/mycart/softcart">软装</router-link>
+          <router-link to="/mycart/curtaincart">定制窗帘</router-link>
         </li>
         <li>
-          <router-link to="/mycart/curtaincart">定制窗帘</router-link>
+           <router-link to="/mycart/softcart">软装</router-link>
         </li>
       </ul>
     </div>
