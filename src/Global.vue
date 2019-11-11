@@ -123,6 +123,13 @@ function showPushNotification(ID) {
     });
   }
 }
+function showPush_customer_balance_period(ID) {
+  if (app.$route.name != "billmanage") {
+    app.$router.push({
+      name: "billmanage",
+    });
+  }
+}
 export default {
   orderBaseUrl,
   capitalUrl,
