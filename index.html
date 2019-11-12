@@ -70,10 +70,12 @@
                 function (msg) {
                     console.log("接收到的透传推送 " + JSON.stringify(msg));
                     var obj = JSON.parse(msg.content);
-                    //公告
+                    //公告提醒
                     if (obj.msg_type == "notification") {
                         vm.showPushNotification(obj.bill_id);
-                    } else if (obj.msg_type == "order") {
+                    } else if (obj.msg_type == "customer_balance_period") {//对账单提醒
+                        vm.showPush_customer_balance_period();
+                    }else if(obj.msg_type == "order"){
 
                     }
                     var loginname = app.$store.getters.getCId;

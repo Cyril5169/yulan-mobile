@@ -78,6 +78,7 @@ vm = new Vue({
 });
 vm.UpdateVersion = Global.UpdateVersion;
 vm.showPushNotification = Global.showPushNotification;
+vm.showPush_customer_balance_period = Global.showPush_customer_balance_period;
 vm.UpdatePushResponseTime = UpdatePushResponseTime;
 app = vm.$children[0];
 
