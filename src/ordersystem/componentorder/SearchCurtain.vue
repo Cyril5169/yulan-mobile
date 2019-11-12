@@ -538,7 +538,7 @@ export default {
   z-index: 999;
   position: absolute;
   left: 17px;
-  top: 12px;
+  top: 18px;
   background-image: url(../../assets/arrow.png);
   background-repeat: no-repeat;
   background-size: contain;

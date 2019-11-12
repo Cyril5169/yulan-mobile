@@ -197,6 +197,11 @@ export default {
             path: "/searchcurtain"
           });
           break;
+        case 28.1:
+          this.$router.push({
+            path: "/curtaincart"
+          });
+          break;  
         case 29:
           this.$router.push({
             path: "/customer"
@@ -424,6 +429,9 @@ export default {
       a.className = "top-green";
     }
     if (this.top == 28) {
+      this.msg = "窗帘详情";
+    }
+    if (this.top == 28.1) {
       this.msg = "窗帘详情";
     }
     if (this.top == 29) {

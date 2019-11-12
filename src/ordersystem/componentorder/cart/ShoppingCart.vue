@@ -253,7 +253,7 @@ export default {
 .cart-nav li {
   display: inline-block;
   margin: 10px 0px;
-  font-size: 13px;
+  font-size: 14px;
   height: 15px;
   line-height: 18px;
 }

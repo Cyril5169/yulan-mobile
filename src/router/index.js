@@ -59,6 +59,7 @@ import ShoppingCart from '@/ordersystem/componentorder/cart/ShoppingCart'
 import WallCart from '@/ordersystem/componentorder/cart/WallCart'
 import SoftCart from '@/ordersystem/componentorder/cart/SoftCart'
 import CurtainCart from '@/ordersystem/componentorder/cart/CurtainCart'
+import detailCurtainChange from '@/ordersystem/componentorder/cart/detailCurtainChange'
 //我的订单
 import MyOrder from '@/ordersystem/componentorder/orderform/MyOrder'
 import FillOrder from '@/ordersystem/componentorder/orderform/FillOrder'
@@ -383,6 +384,11 @@ var router = new Router({
           }
         }
       ]
+    },
+    {
+      path: "/mycart/detailCurtainChange",
+      name: "detailCurtainChange",
+      component: detailCurtainChange,
     },
     //我的订单
     {

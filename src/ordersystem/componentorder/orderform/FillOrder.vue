@@ -1012,7 +1012,7 @@ export default {
       };
       axios.post(url, data).then(value => {
         this.allAddress = value.data.data;
-        if (path == "/mycart/wallcart" || path == "/mycart/softcart") {
+        if (path == "/mycart/wallcart" || path == "/mycart/softcart" || path == "/mycart/curtaincart") {
           for (let i = 0; i < this.allAddress.length; i++) {
             if (this.allAddress[i].addressId == 0) {
               //默认地址

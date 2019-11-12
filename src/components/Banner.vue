@@ -101,10 +101,10 @@ p {
   background: -webkit-linear-gradient(left, #abd46c, #89cb81);
 }
 .top-p {
-  font-size: 18px;
+  font-size: 17px;
   color: #ffffff;
   position: absolute;
-  left: 134px;
+  left: 150px;
   top: 15px;
 }
 .left-arrow {
@@ -112,10 +112,10 @@ p {
   position: absolute;
   background-position: center;
   background-size: contain;
-  width: 30px;
-  height: 30px;
-  left: 13px;
-  top: 12px;
+  width: 20px;
+  height: 20px;
+  left: 17px;
+  top: 18px;
 }
 .option-img {
   background-image: url("../assets/option.png");

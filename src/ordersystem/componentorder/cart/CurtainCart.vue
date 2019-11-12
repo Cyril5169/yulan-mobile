@@ -2,26 +2,40 @@
   <!--参考淘宝购物车-->
   <div class="wall-cart">
     <span class="manage" v-if="!showManage" @click="manageCart">管理</span>
-    <span class="manage-completed" v-if="showManage" @click="manageCompleted">完成</span>
+    <span class="manage-completed" v-if="showManage" @click="manageCompleted"
+      >完成</span
+    >
     <div class="all-products">
-      <van-pull-refresh style="min-height: 450px;" v-model="isLoading" @refresh="searchCartList">
-        <div class="single-product" v-for="(group,index) in cartlist" :key="index">
+      <van-pull-refresh
+        style="min-height: 450px;"
+        v-model="isLoading"
+        @refresh="searchCartList"
+      >
+        <div
+          class="single-product"
+          v-for="(group, index) in cartlist"
+          :key="index"
+        >
           <div class="category-title">
             <input
               type="checkbox"
               :value="group"
               v-model="checkGroupModel"
               class="qiang"
-              @change.stop="pickGroup(group,index)"
+              @change.stop="pickGroup(group, index)"
             />
-            <span
-              class="type"
-            >{{group.productGroupType?group.productGroupType:'无产品'}} - {{group.activityGroupType?group.activityGroupType:'Z'}}组</span>
-            <span class="huodong">{{group.cid}}</span>
+            <span class="type"
+              >{{ group.productGroupType ? group.productGroupType : "无产品" }}
+              -
+              {{
+                group.activityGroupType ? group.activityGroupType : "Z"
+              }}组</span
+            >
+            <span class="huodong">{{ group.curtainCartItems[0].cid }}</span>
           </div>
           <div
             class="details-content"
-            v-for="(product,inndex) in group.curtainCartItems"
+            v-for="(product, inndex) in group.curtainCartItems"
             :key="inndex"
           >
             <input
@@ -29,40 +43,45 @@
               :value="product"
               v-model="checkBoxModel"
               class="checkbox"
-              @change.stop="pickOne(product,index,inndex)"
+              @change.stop="pickOne(product, index, inndex)"
             />
-            <div style="width:100%;height:100%" @click="wallDetails(index,inndex)">
+            <div
+              style="width:100%;height:100%"
+              @click="wallDetails(index, inndex)"
+            >
               <table>
                 <tr>
                   <th>型号：</th>
-                  <td>{{product.modelNumber}}</td>
+                  <td>{{ product.modelNumber }}</td>
                 </tr>
                 <tr>
                   <th>宽度*高度：</th>
-                  <td>{{product.width}}*{{product.height}}(米)</td>
+                  <td>{{ product.width }}*{{ product.height }}(米)</td>
                 </tr>
                 <tr>
                   <th>帘外包宽度：</th>
                   <td v-if="product.outsourcingBoxExist === 1">
                     {{
-                    product.outsourcingBoxWidth !== null &&
-                    product.outsourcingBoxWidth !== 0
-                    ? product.outsourcingBoxWidth
-                    : "--"
+                      product.outsourcingBoxWidth !== null &&
+                      product.outsourcingBoxWidth !== 0
+                        ? product.outsourcingBoxWidth
+                        : "--"
                     }}(米)
                   </td>
                   <td v-else>--</td>
                 </tr>
                 <tr>
                   <th>褶皱倍数：</th>
-                  <td>{{product.drape}}</td>
+                  <td>{{ product.drape }}</td>
                 </tr>
                 <tr>
                   <th>位置：</th>
                   <td>
-                    {{product.location === null || product.location === ""
-                    ? "--"
-                    : product.location}}
+                    {{
+                      product.location === null || product.location === ""
+                        ? "--"
+                        : product.location
+                    }}
                   </td>
                 </tr>
                 <tr>
@@ -71,35 +90,43 @@
                     <span
                       style="color: red;"
                       v-if="
-                    product.curtainLists[product.unNullNum]
-                      .curtainCommodities[0].activityEffective === false
-                  "
-                    >(过期活动)</span>
+                        product.curtainLists[product.unNullNum]
+                          .curtainCommodities[0].activityEffective === false
+                      "
+                      >(过期活动)</span
+                    >
                     {{ product.activity }}
                   </td>
                 </tr>
                 <tr>
                   <th>小计：</th>
-                  <td class="price" v-if="showPrice">￥{{(product.count * product.price).toFixed(2)}}</td>
+                  <td class="price" v-if="showPrice">
+                    ￥{{ (product.count * product.price).toFixed(2) }}
+                  </td>
                   <td class="price" v-else-if="!showPrice">***</td>
                 </tr>
               </table>
             </div>
           </div>
         </div>
-        <div v-if="cartlist.length == 0" style="min-height: 450px;margin-top:5px;">暂无数据</div>
+        <div
+          v-if="cartlist.length == 0"
+          style="min-height: 450px;margin-top:5px;"
+        >
+          暂无数据
+        </div>
       </van-pull-refresh>
     </div>
     <div class="cart-bottom">
-      <div class="cart-right" v-if="!showSubmitCheck&&!showManage">
+      <div class="cart-right" v-if="!showSubmitCheck && !showManage">
         <span>合计：</span>
-        <span class="total-price">￥{{totalPrice}}</span>
+        <span class="total-price">￥{{ totalPrice }}</span>
         <span class="settle-down" @click="fillOrder">结算</span>
       </div>
       <div class="cart-right" v-if="showManage">
         <span class="delete-cart" @click="deleteCart">删除</span>
       </div>
-      <div class="cart-right" v-if="showSubmitCheck&&!showManage">
+      <div class="cart-right" v-if="showSubmitCheck && !showManage">
         <span class="submit-check">提交审核</span>
       </div>
     </div>
@@ -167,31 +194,19 @@ export default {
   },
   methods: {
     wallDetails(index, inndex) {
-      //获取版本号
-      // let olditemNo = this.cartlist[index].commodities[inndex].item.oldItemNo;
-      // this.$router.push({
-      //   name: "curtaindetails",
-      //   params: {
-      //     //墙纸类型,获取墙纸信息
-      //     itemType: this.cartlist[index].commodities[inndex].item.productType,
-      //     itemNo: this.cartlist[index].commodities[inndex].item.itemNo, //模糊查询内容
-      //     commodityID: this.cartlist[index].commodities[inndex].id, //商品条ID
-      //     activityID: this.cartlist[index].commodities[inndex].activityId, //新活动ID
-      //     newactivityID: this.cartlist[index].commodities[inndex].activity, //新活动ID
-      //     quantity: this.cartlist[index].commodities[inndex].quantity, //数量
-      //     width: this.cartlist[index].commodities[inndex].width, //宽度
-      //     height: this.cartlist[index].commodities[inndex].height, //高度
-      //     note: this.cartlist[index].commodities[inndex].note,
-      //     tip: this.cartlist[index].commodities[inndex].newsplitShipment,
-      //     from: "mycart/curtaincart"
-      //   }
-      // });
+      this.$router.push({
+        name: "detailCurtainChange",
+        params: {
+          //墙纸类型,获取墙纸信息
+          curtain: this.cartlist[index].curtainCartItems[inndex],
+          from: "shoppingcart"
+        }
+      });
     },
     //购物车选中一个
     pickOne(product, index, inndex) {
       if (this.checkBoxModel.length == 1) {
         //产品组别
-        // this.productType = this.cartlist[index].productGroupType
         this.thisGroup = this.cartlist[index].activityGroupType;
         this.cartlist[index].curtainCartItems[inndex].checked = true;
         if (
@@ -206,12 +221,10 @@ export default {
           this.cartlist[index].checked = false;
         }
       } else if (this.cartlist[index].activityGroupType != this.thisGroup) {
-        //this.checkBoxModel.pop();
         Dialog.alert({
           message: "不同组别的商品不能一起选择，请重新选择"
         }).then(() => {
-          // on close
-          return false;
+          this.checkBoxModel = this.checkBoxModel.slice(0, -1);
           this.cartlist[index].curtainCartItems[inndex].checked = false;
         });
       } else {
@@ -245,10 +258,8 @@ export default {
             Dialog.alert({
               message: "不同组别的商品不能一起选择，请重新选择"
             }).then(() => {
-              // on close
-              this.checkGroupModel.pop();
+              this.checkGroupModel = this.checkGroupModel.slice(0, -1);
               for (let i = 0; i < group.curtainCartItems.length; i++) {
-                // this.checkBoxModel.pop();
                 this.cartlist[index].curtainCartItems[i].checked = false;
               }
             });
@@ -263,11 +274,10 @@ export default {
           }
           group.checked = true;
         } else if (this.thisGroup != this.cartlist[index].activityGroupType) {
-          this.checkGroupModel.pop();
           Dialog.alert({
             message: "不同组别的商品不能一起选择，请重新选择"
           }).then(() => {
-            // on close
+            this.checkGroupModel = this.checkGroupModel.slice(0, -1);
             for (let i = 0; i < group.curtainCartItems.length; i++) {
               this.cartlist[index].curtainCartItems[i].checked = false;
             }
@@ -298,13 +308,13 @@ export default {
           let _itemNoSample = _data.item.oldItemNo;
           this.checkBoxModel[i].unit = "米";
           this.checkBoxModel[i].quantity = 1;
-          this.checkBoxModel[i].newactivityId = this.checkBoxModel[i].activity
+          this.checkBoxModel[i].newactivityId = this.checkBoxModel[i].activity;
         }
         this.$store.commit("setOrderProduct", this.checkBoxModel);
         this.$router.push({
           name: "fillorder",
-          params:{
-            isX:true
+          params: {
+            isX: true
           }
         });
       }
@@ -328,6 +338,7 @@ export default {
       })
         .then(res => {
           this.checkBoxModel = [];
+          this.checkGroupModel = [];
           this.loading = false;
           var data = res.data;
           for (let i = 0; i < data.length; ) {
@@ -392,7 +403,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 .manage,
