@@ -6,12 +6,14 @@
         <div class="home-pic1" ref="homePic" v-else></div>
         <div class="my-font" ref="f_homePic" v-if="tabStage != 'customer'">主页</div>
         <div class="my-font2" ref="f_homePic" v-else>主页</div>
+        <div v-if="CUSTOMER_BALANCE_PERIOD_COUNT>0" class="tips">{{CUSTOMER_BALANCE_PERIOD_COUNT}}</div>
       </div>
       <div v-if="isContainAttr('myorder')" class="form" @click="clickToPath('myorder')">
         <div class="form-pic1" ref="formPic" v-if="tabStage != 'order'"></div>
         <div class="form-pic1" ref="homePic" v-else></div>
         <div class="my-font" ref="f_formPic" v-if="tabStage != 'order'">订单查询</div>
         <div class="my-font2" ref="f_formPic" v-else>订单查询</div>
+        <div v-if="ORDER_COUNT>0" class="tips">{{ORDER_COUNT}}</div>
       </div>
       <div v-if="isContainAttr('shoppingcart')" class="shop" @click="clickToPath('shoppingcart')">
         <div class="shop-pic1" ref="shopPic" v-if="tabStage != 'cart'"></div>
@@ -24,16 +26,26 @@
         <div class="my-pic1" ref="myPic" v-else></div>
         <div class="my-font" ref="f_myPic" v-if="tabStage != 'personal'">我的</div>
         <div class="my-font2" ref="f_myPic" v-else>我的</div>
+        <div v-if="MY_COUNT>0" class="reddot"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { GetTips } from "@/api/webUserASP";
+import Vue from "vue";
 export default {
   //order
   name: "navBottom",
   props: ["changeStyle", "tabStage"],
+  data(){
+    return {
+      CUSTOMER_BALANCE_PERIOD_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.CUSTOMER_BALANCE_PERIOD:0,
+      ORDER_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.ORDER:0,
+      MY_COUNT: this.$store.state.tipsInfo?(this.$store.state.tipsInfo.NOTIFICATION+this.$store.state.tipsInfo.STUDY_FORM):0,
+    }
+  },
   methods: {
     isContainAttr(attr) {
       //是否包含权限
@@ -51,7 +63,24 @@ export default {
       }
     }
   },
-  mounted() {}
+  mounted() {
+    GetTips(this.$store.getters.getCId).then(res=>{
+      this.$store.commit("setTipsInfo", res.data);
+      this.CUSTOMER_BALANCE_PERIOD_COUNT = res.data.CUSTOMER_BALANCE_PERIOD;
+      this.ORDER_COUNT = res.data.ORDER;
+      this.MY_COUNT = res.data.STUDY_FORM+res.data.NOTIFICATION;
+      if(res.data.CUSTOMER_BALANCE_PERIOD_COUNT > 0){
+        if(page_customer){
+          Vue.set(page_customer,"CUSTOMER_BALANCE_PERIOD_COUNT",res.data.CUSTOMER_BALANCE_PERIOD)
+        }
+      }
+      if(page_myPersonal){
+        Vue.set(page_myPersonal,"STUDY_FORM_COUNT",res.data.STUDY_FORM)
+        Vue.set(page_myPersonal,"NOTIFICATION_COUNT",res.data.NOTIFICATION)
+      }
+    })
+
+  }
 };
 </script>
 
@@ -85,14 +114,17 @@ export default {
 }
 
 .home {
+  position: relative;
   height: 45px;
 }
 
 .my {
+  position: relative;
   height: 45px;
 }
 
 .form {
+  position: relative;
   height: 45px;
 }
 
@@ -115,6 +147,7 @@ export default {
 }
 
 .shop {
+  position: relative;
   height: 45px;
 }
 
@@ -176,5 +209,28 @@ export default {
 .my-font2 {
   font-size: 10px;
   color: #89cb81;
+}
+
+.reddot{
+  width: 2.133vw;
+  min-width: 0;
+  height: 2.133vw;
+  background-color: #ee0a24;
+  border-radius: 100%;
+  position:absolute;
+  right:0px;
+  top:0px;
+}
+.tips{
+  padding: 0 3px;
+  min-width: 0;
+  height: 15px;
+  line-height: 15px;
+  background-color: #ee0a24;
+  color: #fff;
+  border-radius: 100%;
+  position:absolute;
+  right: -2px;
+  top: -2px;
 }
 </style>

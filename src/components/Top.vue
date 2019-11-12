@@ -436,11 +436,6 @@ export default {
       let a = this.$refs.top;
       a.className = "top-green";
     }
-    if (this.top == 31) {
-      this.msg = "对账单详情";
-      let a = this.$refs.top;
-      a.className = "top-green";
-    }
     if (this.top == 80) {
       this.msg = "银行汇款凭证";
       let a = this.$refs.top;

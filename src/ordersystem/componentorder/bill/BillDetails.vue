@@ -1,126 +1,129 @@
 <template>
-  <div class="all-view">
-    <top :top="set"></top>
-    <div class="bill-title">
-      <div class="bill-title1">
-        <ul>
-          <li>
-            <span>客户名称：</span>
-            <span class="title-sec">{{customerInfo.customerName}}</span>
-          </li>
-          <li>
-            <span>联系人/电话：</span>
-            <span class="title-sec">{{customerInfo.customerAgent}} {{customerInfo.officeTel}}</span>
-          </li>
-          <li>
-            <span>传真：</span>
-            <span class="title-sec">{{customerInfo.fax}}</span>
-          </li>
-        </ul>
+  <div>
+    <top msgtitle="对账单详情" greenBackground="true" @backclick="backclick"></top>
+    <div :class="{'content':true, 'content-full':billitem.customerCheckState =='待确认'}">
+      <div class="bill-title">
+        <div class="bill-title1">
+          <ul>
+            <li>
+              <span>客户名称：</span>
+              <span class="title-sec">{{customerInfo.customerName}}</span>
+            </li>
+            <li>
+              <span>联系人/电话：</span>
+              <span class="title-sec">{{customerInfo.customerAgent}} {{customerInfo.officeTel}}</span>
+            </li>
+            <li>
+              <span>传真：</span>
+              <span class="title-sec">{{customerInfo.fax}}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bill-title2">
+          <ul>
+            <li>
+              <span>版本销售前5名：</span>
+              <span class="title-sec">{{billitem.verTop}}</span>
+            </li>
+            <li>
+              <span>本客户版本销售前5名：</span>
+              <span class="title-sec">{{billitem.ctmVerTop}}</span>
+            </li>
+            <li>
+              <span>备货单据号：</span>
+              <span class="title-sec">{{billitem.ctmBhBill}}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bill-title3">
+          <ul>
+            <li>
+              <span>实际发货总金额(本期/本年)：</span>
+              <span class="title-sec">{{billitem.fhjeMonth}}/{{billitem.consignmentMoney}}</span>
+            </li>
+            <li>
+              <span>实际收款金额(本期/本年)：</span>
+              <span class="title-sec">{{billitem.czskMonth}}/{{billitem.gatherMoneyFax}}</span>
+            </li>
+            <li>
+              <span>返利发货总金额(本期/本年)：</span>
+              <span class="title-sec">{{billitem.moneyFl}}/{{billitem.moneyFlTotal}}</span>
+            </li>
+            <li>
+              <span>本期剩余返利：</span>
+              <span class="title-sec">{{billitem.moneyFl}}</span>
+            </li>
+            <li>
+              <span>备货总金额(本期/本年)：</span>
+              <span class="title-sec">{{billitem.moneyBh}}/{{billitem.moneyBhTotal}}</span>
+            </li>
+            <li>
+              <span>运费总金额(本期/本年)：</span>
+              <span class="title-sec">{{billitem.freightMonth}}/{{billitem.freight}}</span>
+            </li>
+            <li>
+              <span>应收款(期初/期末)：</span>
+              <span class="title-sec">{{billitem.qcczysk}}/{{billitem.czysk}}</span>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="bill-title2">
-        <ul>
-          <li>
-            <span>版本销售前5名：</span>
-            <span class="title-sec">{{billitem.verTop}}</span>
-          </li>
-          <li>
-            <span>本客户版本销售前5名：</span>
-            <span class="title-sec">{{billitem.ctmVerTop}}</span>
-          </li>
-          <li>
-            <span>备货单据号：</span>
-            <span class="title-sec">{{billitem.ctmBhBill}}</span>
-          </li>
-        </ul>
-      </div>
-      <div class="bill-title3">
-        <ul>
-          <li>
-            <span>实际发货总金额(本期/本年)：</span>
-            <span class="title-sec">{{billitem.fhjeMonth}}/{{billitem.consignmentMoney}}</span>
-          </li>
-          <li>
-            <span>实际收款金额(本期/本年)：</span>
-            <span class="title-sec">{{billitem.czskMonth}}/{{billitem.gatherMoneyFax}}</span>
-          </li>
-          <li>
-            <span>返利发货总金额(本期/本年)：</span>
-            <span class="title-sec">{{billitem.moneyFl}}/{{billitem.moneyFlTotal}}</span>
-          </li>
-          <li>
-            <span>本期剩余返利：</span>
-            <span class="title-sec">{{billitem.moneyFl}}</span>
-          </li>
-          <li>
-            <span>备货总金额(本期/本年)：</span>
-            <span class="title-sec">{{billitem.moneyBh}}/{{billitem.moneyBhTotal}}</span>
-          </li>
-          <li>
-            <span>运费总金额(本期/本年)：</span>
-            <span class="title-sec">{{billitem.freightMonth}}/{{billitem.freight}}</span>
-          </li>
-          <li>
-            <span>应收款(期初/期末)：</span>
-            <span class="title-sec">{{billitem.qcczysk}}/{{billitem.czysk}}</span>
-          </li>
-        </ul>
+      <div :class="{'details-list-title':true,'fix':isFixed}" id ref="scollctn">明细列表</div>
+      <div class="alllists">
+        <div
+          class="singleItem"
+          v-for="(bill,index) in billDetailList"
+          :key="index"
+          @click="shipmentDetail(bill)"
+        >
+          <ul>
+            <li>
+              <span class="item-sec">日期：</span>
+              <span class="item-sec2">{{bill.dateOutStock}}</span>
+            </li>
+            <li>
+              <span class="item-sec">单据号：</span>
+              <span class="item-sec2">{{bill.saleNo}}</span>
+            </li>
+            <li>
+              <span class="item-sec">类别：</span>
+              <span class="item-sec2">{{bill.billNo | stateChange}}</span>
+            </li>
+            <li>
+              <span class="item-sec">发货总额：</span>
+              <span class="item-sec2">{{bill.money}} (元)</span>
+            </li>
+            <li>
+              <span class="item-sec">发货数量：</span>
+              <span class="item-sec2">{{bill.qty}}</span>
+            </li>
+            <li>
+              <span class="item-sec">运费：</span>
+              <span class="item-sec2">{{bill.freight}} (元)</span>
+            </li>
+            <li>
+              <span class="item-sec">收款金额：</span>
+              <span class="item-sec2">{{bill.gatherMoneyFax}} (元)</span>
+            </li>
+            <li>
+              <span class="item-sec">加收物流费：</span>
+              <span class="item-sec2">{{bill.transFlag | NYchange}}</span>
+            </li>
+          </ul>
+        </div>
+        <!--底部分页-->
+        <!--<div class="fy-contain">-->
+        <!--<van-pagination-->
+        <!--class="fy-bottom"-->
+        <!--v-model="currentPage"-->
+        <!--:page-count="totalPage"-->
+        <!--mode="simple"-->
+        <!--@change="changePage"-->
+        <!--/>-->
+        <!--</div>-->
       </div>
     </div>
-    <div :class="{'details-list-title':true,'fix':isFixed}" id ref="scollctn">明细列表</div>
-    <div class="alllists">
-      <div
-        class="singleItem"
-        v-for="(bill,index) in billDetailList"
-        :key="index"
-        @click="shipmentDetail(bill)"
-      >
-        <ul>
-          <li>
-            <span class="item-sec">日期：</span>
-            <span class="item-sec2">{{bill.dateOutStock}}</span>
-          </li>
-          <li>
-            <span class="item-sec">单据号：</span>
-            <span class="item-sec2">{{bill.saleNo}}</span>
-          </li>
-          <li>
-            <span class="item-sec">类别：</span>
-            <span class="item-sec2">{{bill.billNo | stateChange}}</span>
-          </li>
-          <li>
-            <span class="item-sec">发货总额：</span>
-            <span class="item-sec2">{{bill.money}} (元)</span>
-          </li>
-          <li>
-            <span class="item-sec">发货数量：</span>
-            <span class="item-sec2">{{bill.qty}}</span>
-          </li>
-          <li>
-            <span class="item-sec">运费：</span>
-            <span class="item-sec2">{{bill.freight}} (元)</span>
-          </li>
-          <li>
-            <span class="item-sec">收款金额：</span>
-            <span class="item-sec2">{{bill.gatherMoneyFax}} (元)</span>
-          </li>
-          <li>
-            <span class="item-sec">加收物流费：</span>
-            <span class="item-sec2">{{bill.transFlag | NYchange}}</span>
-          </li>
-        </ul>
-      </div>
-      <!--底部分页-->
-      <!--<div class="fy-contain">-->
-      <!--<van-pagination-->
-      <!--class="fy-bottom"-->
-      <!--v-model="currentPage"-->
-      <!--:page-count="totalPage"-->
-      <!--mode="simple"-->
-      <!--@change="changePage"-->
-      <!--/>-->
-      <!--</div>-->
-    </div>
+
     <div class="bill-handle" v-if="billitem.customerCheckState =='待确认'">
       <span @click="comfirmBill('客户确认')">确认</span>
       <span @click="toShowBillBack">反馈</span>
@@ -212,7 +215,7 @@ import { Loading, Pagination, Dialog, Popup, Toast } from "vant";
 import top from "../../../components/Top";
 
 export default {
-  name: "",
+  name: "billdetails",
   components: {
     top,
     [Loading.name]: Loading,
@@ -221,12 +224,16 @@ export default {
     [Toast.name]: Toast,
     "van-dialog": Dialog
   },
+  props: [
+    "customerInfo",
+    "billitem",
+  ],
   data() {
     return {
-      set: 31,
+      set: 9999,
       loading: false,
-      customerInfo: this.$route.params.customerInfo, //对账单明细表头
-      billitem: this.$route.params.billitem, //对账单明细表头
+      //customerInfo: this.$route.params.customerInfo, //对账单明细表头
+      //billitem: this.$route.params.billitem, //对账单明细表头
       billDetailList: {}, //明细列表
       currentPage: 1, //当前页数
       totalPage: 0, //总页数,
@@ -257,6 +264,9 @@ export default {
     }
   },
   methods: {
+    backclick() {
+      this.$emit("backclick");
+    },
     getBillLists() {
       this.billDetailList = [];
       this.loading = true;
@@ -365,22 +375,27 @@ export default {
     this.getBillLists();
     //window.addEventListener("scroll", this.handleScroll, true);
   },
-  mounted() {}
+  mounted() { }
 };
 </script>
 
 <style scoped>
-.all-view {
+.content {
   position: fixed;
   width: 100%;
-  height: 100vh;
-  top: 0px;
+  top: 50px;
+  bottom: 45px;
   background-color: #f8f8f8;
   overflow: scroll;
 }
+.content-full {
+  bottom: 0;
+}
 
 .bill-title {
-  margin: 60px 0 0 0;
+  position: relative;
+  width: 100%;
+  background-color: #f8f8f8;
 }
 
 .bill-title li,
@@ -453,21 +468,27 @@ export default {
 }
 
 .bill-handle {
-  background: #89cb81;
-  width: 100%;
-  height: 45px;
-  line-height: 45px;
   position: fixed;
   bottom: 0;
+  height: 45px;
+  background: #89cb81;
+  width: 100%;
+  line-height: 45px;
+  display: flex;
+  display: -webkit-flex;
+  justify-content: space-evenly; /* 均匀排列每个元素,每个元素之间的间隔相等 */
+  align-items: center; /* 垂直居中 */
 }
 
 .bill-handle span {
   background: white;
   color: #89cb81;
-  padding: 5px 30px;
+  width: 70px;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
   border-radius: 15px;
   font-size: 13px;
-  margin: 0 50px;
 }
 
 .fy-bottom .van-pagination__item {

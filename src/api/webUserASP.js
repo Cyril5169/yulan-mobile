@@ -53,3 +53,18 @@ export function UpdatePushResponseTime(
       return Promise.reject(err);
     });
 }
+//获取提醒的信息
+export function GetTips(
+  cid
+) {
+  return post("/WEB_USER/GetTips", {
+    cid: cid,
+  })
+    .then(res => {
+      return Promise.resolve(res);
+    })
+    .catch(err => {
+      return Promise.reject(err);
+    });
+}
+

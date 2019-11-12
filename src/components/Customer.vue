@@ -23,6 +23,7 @@
               @click="clickToPath(item.MENU_LINK)"
             >
               <div class="btn-img" :class="item.ICON_CLASS"></div>
+              <div v-if="CUSTOMER_BALANCE_PERIOD_COUNT>0&&item.MENU_LINK=='billmanage'" class="tips">{{CUSTOMER_BALANCE_PERIOD_COUNT}}</div>
               <p class="btn-p">{{item.MENU_NAME}}</p>
             </div>
           </div>
@@ -63,7 +64,8 @@ export default {
       style: "customer",
       myRoute: "customer",
       showStudyForm: false,
-      studyFormTitle: "填写完此调查表，才能继续操作"
+      studyFormTitle: "填写完此调查表，才能继续操作",
+      CUSTOMER_BALANCE_PERIOD_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.CUSTOMER_BALANCE_PERIOD:0,
     };
   },
   components: {
@@ -87,6 +89,13 @@ export default {
   },
   mounted() {},
   methods: {
+    classObject(MENU_LINK){
+      var obj = {};
+      if(MENU_LINK == "billmanage"){
+        obj["reddot"] = true;
+      }
+      return obj;
+    },
     //获得菜单数组并传入store ,await并不会阻塞主线程，这里并不起作用
     async getMenuTree() {
       //this.$store.commit("emptyMenuTreeList");
@@ -166,12 +175,17 @@ export default {
     }
   },
   created() {
+    page_customer = this;
     bus.$on("sidebarout", () => {
       this.IsSidebarOut = true;
     });
     this.getMenuTree(); //获得菜单权限树
     this.getStudy();
+  },
+  destroyed(){
+    page_customer = null;
   }
+
 };
 </script>
 
@@ -186,6 +200,28 @@ p {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+.reddot{
+  width: 2.133vw;
+  min-width: 0;
+  height: 2.133vw;
+  background-color: #ee0a24;
+  border-radius: 100%;
+  position:absolute;
+  right:5px;
+  top:5px;
+}
+.tips{
+  padding: 0 3px;
+  min-width: 0;
+  height: 15px;
+  line-height: 15px;
+  background-color: #ee0a24;
+  color: #fff;
+  border-radius: 100%;
+  position:absolute;
+  right: 30px;
+  top: 5px;
 }
 .btn {
   height: 60px;

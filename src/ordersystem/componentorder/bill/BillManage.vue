@@ -1,5 +1,5 @@
 <template>
-  <div class="all-view">
+  <div>
     <top :top="set"></top>
     <div class="alllists">
       <div class="singleItem" v-for="(bill,index) in billLists" :key="index">
@@ -43,32 +43,43 @@
       />
     </div>
     <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <van-popup style="width:100%;height:100%;" v-model="showDetail" v-if="showDetail" transition="slide" position="right">
+      <BillDetails :customerInfo="customerInfo" :billitem="billitem" @backclick="backToBill"></BillDetails>
+    </van-popup>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { Loading, Pagination } from "vant";
+import { Loading, Pagination,Popup } from "vant";
 import top from "../../../components/Top";
+import BillDetails from "./BillDetails"
 
 export default {
-  name: "",
+  name: "billmanage",
   components: {
     top,
+    BillDetails,
     [Loading.name]: Loading,
+    [Popup.name]: Popup,
     [Pagination.name]: Pagination
   },
   data() {
     return {
       set: 30,
+      showDetail: false,
       loading: false,
       billLists: {},
       customerInfo: {}, //对账单明细表头
+      billitem: {},
       currentPage: 1, //当前页数
       totalPage: 0 //总页数
     };
   },
   methods: {
+    backToBill(){
+      this.showDetail = false;
+    },
     getBillLists() {
       this.billLists = {};
       this.loading = true;
@@ -93,13 +104,8 @@ export default {
     },
     //  对账单详情
     toBillDetails(bill) {
-      this.$router.push({
-        name: "billdetails",
-        params: {
-          customerInfo: this.customerInfo,
-          billitem: bill
-        }
-      });
+      this.billitem=bill;
+      this.showDetail=true;
     }
   },
   created() {
@@ -109,16 +115,12 @@ export default {
 </script>
 
 <style scoped>
-.all-view {
+.alllists {
   position: fixed;
   width: 100%;
-  height: 100vh;
-  top: 0px;
-  background-color: #f8f8f8;
+  top: 50px;
+  bottom: 50px;
   overflow: scroll;
-}
-.alllists {
-  margin: 60px 0;
 }
 .singleItem {
   position: relative;
@@ -149,8 +151,5 @@ export default {
   height: 50px;
   bottom: 0;
   color: white !important;
-}
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
 }
 </style>
