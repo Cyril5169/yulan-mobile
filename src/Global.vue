@@ -123,7 +123,7 @@ function showPushNotification(ID) {
     });
   }
 }
-function showPush_customer_balance_period(ID) {
+function showPush_customer_balance_period() {
   if (app.$route.name != "billmanage") {
     app.$router.push({
       name: "billmanage",
@@ -134,6 +134,7 @@ export default {
   orderBaseUrl,
   capitalUrl,
   UpdateVersion,
-  showPushNotification
+  showPushNotification,
+  showPush_customer_balance_period,
 };
 </script>

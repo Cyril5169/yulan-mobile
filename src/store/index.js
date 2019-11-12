@@ -63,6 +63,9 @@ export default new Vuex.Store({
     },
     getCartlist: state => {
       return state.allCart
+    },
+    getTipsInfo: state=>{
+      return state.tipsInfo;
     }
   },
   mutations: {
@@ -132,6 +135,9 @@ export default new Vuex.Store({
     },
     hideLoading(state) {
       state.LOADING = false
+    },
+    setTipsInfo(state, obj){
+      state.tipsInfo = obj;
     },
     /*
   *设置菜单树

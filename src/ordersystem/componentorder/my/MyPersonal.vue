@@ -18,11 +18,13 @@
         <img class="item-icon" src="../../assetsorder/studyform.png" alt />
         <span>我的调查表</span>
         <img class="item-more" src="../../assetsorder/more.png" alt />
+        <div v-if="STUDY_FORM_COUNT>0" class="reddot"></div>
       </div>
       <div class="item" @click="clickToPath('notificationlist')">
         <img class="item-icon" src="../../assetsorder/notification.png" alt />
         <span>最新公告</span>
         <img class="item-more" src="../../assetsorder/more.png" alt />
+        <div v-if="NOTIFICATION_COUNT>0" class="reddot"></div>
       </div>
       <div class="item" @click="checkVersion()">
         <img class="item-icon" src="../../assetsorder/version_update.png" alt />
@@ -59,7 +61,9 @@ export default {
     return {
       set: 26,
       myRoute: "personal",
-      checkVersionText:"检查新版本"+(urlSetting.describe?"["+urlSetting.describe+"]":"")
+      checkVersionText:"检查新版本"+(urlSetting.describe?"["+urlSetting.describe+"]":""),
+      NOTIFICATION_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.NOTIFICATION:0,
+      STUDY_FORM_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.STUDY_FORM:0,
     };
   },
   computed: {
@@ -102,6 +106,12 @@ export default {
       });
       this.$store.commit("initState");
     }
+  },
+  created(){
+    page_myPersonal=this;
+  },
+  destroyed(){
+    page_myPersonal=null;
   }
 };
 </script>
@@ -205,5 +215,15 @@ export default {
   top: 50%;
   margin-top: -11px;
   left: 52px;
+}
+.reddot{
+  width: 2.133vw;
+  min-width: 0;
+  height: 2.133vw;
+  background-color: #ee0a24;
+  border-radius: 100%;
+  position:absolute;
+  right: 30px;
+  top: 20px;
 }
 </style>
