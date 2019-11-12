@@ -128,15 +128,13 @@
       <span @click="comfirmBill('客户确认')">确认</span>
       <span @click="toShowBillBack">反馈</span>
     </div>
-    <div class="mydialog">
-      <van-popup class="kc-next-content" v-model="showBillBack">
-        <textarea v-model="fankuiContent" placeholder="填写反馈内容" cols="33" rows="3"></textarea>
+    <van-popup class="kc-next-content" v-model="showBillBack">
+        <textarea v-model="fankuiContent" placeholder="填写反馈内容" cols="33" rows="4" autofocus></textarea>
         <div class="kc-next-btm2">
           <span @click="showBillBack = false">返回</span>
           <span @click="comfirmBill('客户反馈')">确认</span>
         </div>
       </van-popup>
-    </div>
     <!--对账单详情-->
     <van-popup v-model="showShipment" closeable style="width:80%;max-height:50%;">
       <div class="shipment-title">
@@ -375,7 +373,10 @@ export default {
     this.getBillLists();
     //window.addEventListener("scroll", this.handleScroll, true);
   },
-  mounted() { }
+  mounted() { },
+  destroyed(){
+    this.$emit("detaildestroyed");
+  }
 };
 </script>
 
@@ -499,6 +500,7 @@ export default {
   margin: 15px 30px;
   padding: 10px 30px;
   border: 1px solid #ececec;
+  border-radius:5px;
 }
 .kc-next-content {
   width: 330px;
@@ -506,9 +508,13 @@ export default {
   border-radius: 5px;
 }
 .kc-next-content textarea {
+  position: relative;
   margin-top: 15px;
   padding: 5px;
   font-size: 14px;
+  background-color:rgba(241,241,241,.98);
+  border: 0;
+  border-radius:5px;
 }
 .shipment-title {
   width: 100%;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top :top="set"></top>
+    <top :top="set" ref="top"></top>
     <div class="alllists">
       <div class="singleItem" v-for="(bill,index) in billLists" :key="index">
         <table>
@@ -43,15 +43,26 @@
       />
     </div>
     <van-loading class="loading" type="spinner" v-if="loading" color="black" />
-    <van-popup style="width:100%;height:100%;" v-model="showDetail" v-if="showDetail" transition="slide" position="right">
-      <BillDetails :customerInfo="customerInfo" :billitem="billitem" @backclick="backToBill"></BillDetails>
+    <van-popup
+      style="width:100%;height:100%;"
+      v-model="showDetail"
+      v-if="showDetail"
+      transition="slide"
+      position="right"
+    >
+      <BillDetails
+        :customerInfo="customerInfo"
+        :billitem="billitem"
+        @backclick="backToBill"
+        @detaildestroyed="detailDestroyed"
+      ></BillDetails>
     </van-popup>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { Loading, Pagination,Popup } from "vant";
+import { Loading, Pagination, Popup } from "vant";
 import top from "../../../components/Top";
 import BillDetails from "./BillDetails"
 
@@ -77,8 +88,11 @@ export default {
     };
   },
   methods: {
-    backToBill(){
+    backToBill() {
       this.showDetail = false;
+    },
+    detailDestroyed() {
+      window.vTop = this.$refs.top;
     },
     getBillLists() {
       this.billLists = {};
@@ -102,10 +116,10 @@ export default {
     changePage() {
       this.getBillLists();
     },
-    //  对账单详情
+    //对账单详情
     toBillDetails(bill) {
-      this.billitem=bill;
-      this.showDetail=true;
+      this.billitem = bill;
+      this.showDetail = true;
     }
   },
   created() {
@@ -120,12 +134,13 @@ export default {
   width: 100%;
   top: 50px;
   bottom: 50px;
+  background: #f8f8f8;
   overflow: scroll;
 }
 .singleItem {
   position: relative;
   background: white;
-  border-radius: 5px;
+  border-radius: 10px;
   margin: 10px;
   font-size: 14px;
   padding: 5px 12px;

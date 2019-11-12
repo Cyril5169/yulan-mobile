@@ -78,7 +78,7 @@
         </div>
       </div>
       <div class="fkpz">
-        <div class="fkpz-title">付款凭证</div>
+        <div class="fkpz-title">上传付款凭证</div>
         <!--<img :src="imgSrc" alt="" class="bank-img" @click="showPic = true">-->
         <van-uploader
           :after-read="onRead"
@@ -383,9 +383,6 @@ export default {
 .bank-details {
   width: 100%;
   height: 100%;
-  position: fixed;
-  background: #ededed;
-  overflow-y: scroll;
 }
 .bank-state {
   position: fixed;
@@ -396,7 +393,12 @@ export default {
   font-weight: bold;
 }
 .bank-details-msg {
-  margin: 60px 0;
+  position: fixed;
+  top: 50px;
+  bottom: 50px;
+  width: 100%;
+  background: #ededed;
+  overflow-y: scroll;
 }
 .bank-details-msg .msg {
   margin-bottom: 10px;
@@ -458,10 +460,10 @@ export default {
   border-radius: 10px;
 }
 .edit-bank {
+  position: fixed;
   width: 100%;
   height: 50px;
   line-height: 50px;
-  position: fixed;
   bottom: 0;
   background: white;
   border-top: 1px solid #00000052;
