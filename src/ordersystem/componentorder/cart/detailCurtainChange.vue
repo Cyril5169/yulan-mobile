@@ -1253,6 +1253,7 @@ export default {
       data[this.index].fixGrade = item.fixGrade;
       data[this.index].fixType = status2 ? "" : item.fixType;
       data[this.index].itemNo = item.itemNo;
+      data[this.index].item.itemNo = item.itemNo;
       data[this.index].price = price;
       oriData[this.index].fixType = status2 ? "" : item.fixType;
       if (this.productType != "GY") {
