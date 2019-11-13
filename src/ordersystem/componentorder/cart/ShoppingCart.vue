@@ -5,12 +5,15 @@
       <ul>
         <li>
           <router-link to="/mycart/wallcart">墙纸配套类</router-link>
+          <div v-if="CART_ITEM_WALLPAPER_COUNT>0" class="tips">{{CART_ITEM_WALLPAPER_COUNT}}</div>
         </li>
         <li>
           <router-link to="/mycart/curtaincart">定制窗帘</router-link>
+          <div v-if="CART_ITEM_CURTAIN_COUNT>0" class="tips">{{CART_ITEM_CURTAIN_COUNT}}</div>
         </li>
         <li>
            <router-link to="/mycart/softcart">软装</router-link>
+           <div v-if="CART_ITEM_SOFT_COUNT>0" class="tips">{{CART_ITEM_SOFT_COUNT}}</div>
         </li>
       </ul>
     </div>
@@ -62,7 +65,10 @@ export default {
       wallpaper: [],
       loading: false,
       showWall: false,
-      activeName: "/mycart/wallcart"
+      activeName: "/mycart/wallcart",
+      CART_ITEM_WALLPAPER_COUNT:this.$store.state.tipsInfo?this.$store.state.tipsInfo.CART_ITEM_WALLPAPER:0,
+      CART_ITEM_CURTAIN_COUNT:this.$store.state.tipsInfo?this.$store.state.tipsInfo.CART_ITEM_CURTAIN:0,
+      CART_ITEM_SOFT_COUNT:this.$store.state.tipsInfo?this.$store.state.tipsInfo.CART_ITEM_SOFT:0,
     };
   },
   watch: {
@@ -221,6 +227,12 @@ export default {
     var activeNameUrl = this.$route.params.activeName;
     if (activeNameUrl) this.activeName = activeNameUrl;
     this.$router.push({ path: this.activeName });
+  },
+  created(){
+    page_shoppingcart=this;
+  },
+  destroyed(){
+    page_shoppingcart=null;
   }
 };
 </script>
@@ -251,6 +263,7 @@ export default {
   justify-content: space-around;
 }
 .cart-nav li {
+  position: relative;
   display: inline-block;
   margin: 10px 0px;
   font-size: 14px;
@@ -266,5 +279,18 @@ export default {
   color: #8cbb44;
   font-size: 15px;
   font-weight: bold;
+}
+.tips{
+  padding: 0 3px;
+  min-width: 0;
+  height: 12px;
+  line-height: 12px;
+  background-color: #ee0a24;
+  color: #fff;
+  font-size: 10px;
+  border-radius: 100%;
+  position:absolute;
+  right: -10px;
+  top: -7px;
 }
 </style>

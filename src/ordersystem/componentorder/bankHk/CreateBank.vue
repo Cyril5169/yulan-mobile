@@ -169,9 +169,6 @@ export default {
 .bank-details {
   width: 100%;
   height: 100%;
-  position: fixed;
-  background: #ededed;
-  overflow-y: scroll;
 }
 .bank-state {
   position: fixed;
@@ -182,7 +179,12 @@ export default {
   font-weight: bold;
 }
 .bank-details-msg {
-  margin: 60px 0;
+  position: fixed;
+  top:50px;
+  bottom: 0;
+  width:100%;
+  background: #ededed;
+  overflow-y: scroll;
 }
 .bank-details-msg .msg {
   margin-bottom: 10px;

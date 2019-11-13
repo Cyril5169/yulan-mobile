@@ -2,22 +2,20 @@
   <div class="bank">
     <top :top="set"></top>
     <span class="search-button" @click="getList()">查询</span>
-    <div class="search">
-      <ul class="ulhead" id="ulhead">
-        <li class="licenter" @click="showks = true">
-          <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
-        </li>
-        <li>
-          <span>至</span>
-        </li>
-        <li class="liright" @click="showjs = true">
-          <input class="time time-js" type="text" v-model="jsDataSet" disabled />
-        </li>
-        <li class="licenter" @click="showType = true">
-          <input class="time time-ks" type="text" v-model="myType" disabled />
-        </li>
-      </ul>
-    </div>
+    <ul class="ulhead">
+      <li class="licenter" @click="showks = true">
+        <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
+      </li>
+      <li>
+        <span>至</span>
+      </li>
+      <li class="liright" @click="showjs = true">
+        <input class="time time-js" type="text" v-model="jsDataSet" disabled />
+      </li>
+      <li class="licenter" @click="showType = true">
+        <input class="time time-ks" type="text" v-model="myType" disabled />
+      </li>
+    </ul>
     <div class="all-bank">
       <div
         class="single-bank"
@@ -94,17 +92,15 @@
       />
     </van-popup>
     <!--底部分页-->
-    <div class="fy-contain">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        :items-per-page="itemsPerPage"
-        :total-items="totalLists"
-        mode="simple"
-        @change="changePage"
-      />
-    </div>
+    <van-pagination
+      class="fy-bottom"
+      v-model="currentPage"
+      :page-count="totalPage"
+      :items-per-page="itemsPerPage"
+      :total-items="totalLists"
+      mode="simple"
+      @change="changePage"
+    />
     <van-loading class="loading" type="spinner" v-if="loading" color="black" />
   </div>
 </template>
@@ -148,7 +144,7 @@ export default {
       totalPage: 0,
       allLists: [],
       loading: false,
-      chargeData:[]
+      chargeData: []
     };
   },
   components: {
@@ -376,10 +372,8 @@ export default {
 
 <style scoped>
 .bank {
-  background-color: rgb(239, 239, 239);
-  height: 100vh;
   position: relative;
-  overflow: scroll;
+  background-color: rgb(239, 239, 239);
 }
 .search-button {
   position: fixed;
@@ -392,14 +386,12 @@ export default {
   background: white;
   z-index: 99;
 }
-
-#ulhead {
+.ulhead {
   position: fixed;
   top: 50px;
-  line-height: 37px;
+  line-height: 40px;
   width: 100%;
-  height: 37px;
-  /*font-size: 15px;*/
+  height: 40px;
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
   font-size: 15px;
@@ -443,7 +435,12 @@ input {
   background-size: 15px;
 }
 .all-bank {
-  margin: 110px 10px 80px;
+  position: fixed;
+  top: 90px;
+  bottom: 50px;
+  width: 100%;
+  background-color: rgb(239, 239, 239);
+  overflow-y: scroll;
 }
 .all-bank td,
 .all-bank th {
@@ -452,7 +449,7 @@ input {
 .single-bank {
   background: white;
   border-radius: 10px;
-  margin-bottom: 10px;
+  margin: 10px 5px;
   padding: 10px;
   position: relative;
 }
@@ -491,22 +488,14 @@ input {
   padding: 5px 15px;
   border-radius: 15px;
 }
-.fy-contain {
-  width: 100%;
-  height: 50px;
-  background: white;
-  position: fixed;
-  bottom: 0px;
-  border-top: 1px solid #e8e8e8;
-}
-
 .fy-bottom {
+  position: fixed;
   background: #f8f8f8;
-  position: absolute;
   width: 100%;
   height: 50px;
   bottom: 0;
   color: white !important;
+  border-top: 1px solid #e8e8e8;
 }
 
 .fy-bottom .van-pagination__item {

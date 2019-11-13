@@ -2,7 +2,7 @@
   <div class="all-view">
     <top :top="set"></top>
     <!-- <div class="monthSel" @click="selTime">{{thisyear}}/{{thismonth}}</div> -->
-    <ul class="ulhead" id="ulhead">
+    <ul class="ulhead">
       <li class="licenter" @click="showks = true">
         <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
       </li>
@@ -95,7 +95,7 @@ import { DatetimePicker, Popup } from "vant";
 import { GetTaskProgress } from "@/api/orderListASP";
 
 export default {
-  name: "",
+  name: "tasksearch",
   components: {
     top,
     [DatetimePicker.name]: DatetimePicker,
@@ -282,19 +282,15 @@ export default {
 </script>
 
 <style scoped>
-#ulhead {
+.ulhead {
   position: fixed;
   top: 50px;
-  line-height: 37px;
+  line-height:37px;
   width: 100%;
   height: 37px;
-  /*font-size: 15px;*/
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
-
   font-size: 15px;
-  z-index: 999;
 }
-
 ul {
   margin: 0;
   padding: 0;
@@ -328,12 +324,9 @@ li {
   background: white;
 }
 .all-view {
-  position: fixed;
   width: 100%;
-  height: 100vh;
-  top: 0px;
+  height: 100%;
   background-color: #f8f8f8;
-  overflow: scroll;
 }
 
 .monthSel {
@@ -358,16 +351,15 @@ li {
 
 .task-title {
   position: fixed;
-  z-index: 99;
+  top: 87px;
   height: 30px;
+  line-height: 30px;
   width: 100%;
   display: -webkit-box;
   white-space: nowrap;
   overflow-x: scroll;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  line-height: 30px;
-  top: 87px;
   background: #ffffff;
   border-bottom: 1px solid #dedede;
   font-size: 11px;
@@ -378,13 +370,17 @@ li {
   width: 70px;
 }
 .alllists {
-  margin-top: 120px;
-  margin-bottom: 60px;
+  position: fixed;
+  top: 117px;
+  bottom: 30px;
+  width: 100%;
+  background: #f8f8f8;
+  overflow-y: scroll;
 }
 .singleItem {
   position: relative;
   background: white;
-  border-radius: 5px;
+  border-radius: 10px;
   margin: 10px;
   font-size: 14px;
   padding: 5px 12px;
