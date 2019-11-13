@@ -2,20 +2,10 @@
   <!--参考淘宝购物车-->
   <div class="wall-cart">
     <span class="manage" v-if="!showManage" @click="manageCart">管理</span>
-    <span class="manage-completed" v-if="showManage" @click="manageCompleted"
-      >完成</span
-    >
+    <span class="manage-completed" v-if="showManage" @click="manageCompleted">完成</span>
     <div class="all-products">
-      <van-pull-refresh
-        style="min-height: 450px;"
-        v-model="isLoading"
-        @refresh="searchCartList"
-      >
-        <div
-          class="single-product"
-          v-for="(group, index) in cartlist"
-          :key="index"
-        >
+      <van-pull-refresh style="min-height: 450px;" v-model="isLoading" @refresh="searchCartList">
+        <div class="single-product" v-for="(group, index) in cartlist" :key="index">
           <div class="category-title">
             <input
               type="checkbox"
@@ -23,14 +13,15 @@
               v-model="checkGroupModel"
               class="qiang"
               @change.stop="pickGroup(group, index)"
+              :disabled="checkActiviyEffect(group)"
             />
-            <span class="type"
-              >{{ group.productGroupType ? group.productGroupType : "无产品" }}
+            <span class="type">
+              {{ group.productGroupType ? group.productGroupType : "无产品" }}
               -
               {{
-                group.activityGroupType ? group.activityGroupType : "Z"
-              }}组</span
-            >
+              group.activityGroupType ? group.activityGroupType : "Z"
+              }}组
+            </span>
             <span class="huodong">{{ group.curtainCartItems[0].cid }}</span>
           </div>
           <div
@@ -44,11 +35,10 @@
               v-model="checkBoxModel"
               class="checkbox"
               @change.stop="pickOne(product, index, inndex)"
+              :disabled="product.curtainLists[product.unNullNum]
+                      .curtainCommodities[0].activityEffective === false"
             />
-            <div
-              style="width:100%;height:100%"
-              @click="wallDetails(index, inndex)"
-            >
+            <div style="width:100%;height:100%" @click="wallDetails(index, inndex)">
               <table>
                 <tr>
                   <th>型号：</th>
@@ -62,10 +52,10 @@
                   <th>帘外包宽度：</th>
                   <td v-if="product.outsourcingBoxExist === 1">
                     {{
-                      product.outsourcingBoxWidth !== null &&
-                      product.outsourcingBoxWidth !== 0
-                        ? product.outsourcingBoxWidth
-                        : "--"
+                    product.outsourcingBoxWidth !== null &&
+                    product.outsourcingBoxWidth !== 0
+                    ? product.outsourcingBoxWidth
+                    : "--"
                     }}(米)
                   </td>
                   <td v-else>--</td>
@@ -78,9 +68,9 @@
                   <th>位置：</th>
                   <td>
                     {{
-                      product.location === null || product.location === ""
-                        ? "--"
-                        : product.location
+                    product.location === null || product.location === ""
+                    ? "--"
+                    : product.location
                     }}
                   </td>
                 </tr>
@@ -93,34 +83,30 @@
                         product.curtainLists[product.unNullNum]
                           .curtainCommodities[0].activityEffective === false
                       "
-                      >(过期活动)</span
-                    >
+                    >(过期活动)</span>
                     {{ product.activity }}
                   </td>
                 </tr>
                 <tr>
                   <th>小计：</th>
-                  <td class="price" v-if="showPrice">
-                    ￥{{ (product.count * product.price).toFixed(2) }}
-                  </td>
+                  <td
+                    class="price"
+                    v-if="showPrice"
+                  >￥{{ (product.count * product.price).toFixed(2) }}</td>
                   <td class="price" v-else-if="!showPrice">***</td>
                 </tr>
               </table>
             </div>
           </div>
         </div>
-        <div
-          v-if="cartlist.length == 0"
-          style="min-height: 450px;margin-top:5px;"
-        >
-          暂无数据
-        </div>
+        <div v-if="cartlist.length == 0" style="min-height: 450px;margin-top:5px;">暂无数据</div>
       </van-pull-refresh>
     </div>
     <div class="cart-bottom">
       <div class="cart-right" v-if="!showSubmitCheck && !showManage">
         <span>合计：</span>
-        <span class="total-price">￥{{ totalPrice }}</span>
+        <span v-if="showPrice" class="total-price">￥{{ totalPrice }}</span>
+        <span v-else class="total-price">***</span>
         <span class="settle-down" @click="fillOrder">结算</span>
       </div>
       <div class="cart-right" v-if="showManage">
@@ -195,11 +181,11 @@ export default {
   methods: {
     wallDetails(index, inndex) {
       this.$router.push({
-        name: "detailCurtainChange",
+        name: "curtaindetails",
         params: {
-          //墙纸类型,获取墙纸信息
           curtain: this.cartlist[index].curtainCartItems[inndex],
-          from: "shoppingcart"
+          from: "shoppingcart",
+          AddOrNot: false
         }
       });
     },
@@ -285,6 +271,12 @@ export default {
         }
       }
     },
+    checkActiviyEffect(group) {
+      for (let i = 0; i < group.curtainCartItems.length; i++) {
+        if (group.curtainCartItems[i].activityEffective == false) return true;
+      }
+      return false;
+    },
     //订单填写
     fillOrder() {
       if (this.checkBoxModel.length == 0) {
@@ -339,6 +331,7 @@ export default {
         .then(res => {
           this.checkBoxModel = [];
           this.checkGroupModel = [];
+          this.thisGroup = "";
           this.loading = false;
           var data = res.data;
           for (let i = 0; i < data.length; ) {
@@ -367,18 +360,21 @@ export default {
           message: "无选择产品"
         });
       } else {
-        let deleteUrl = this.url + "/yulan-order/cart/deleteCommodities.do";
+        let deleteUrl = this.orderBaseUrl + "/cart/deleteCartItems.do";
         this.deleteList = [];
         for (var i = 0; i < this.checkBoxModel.length; i++) {
-          this.deleteList.push(this.checkBoxModel[i].id);
+          this.deleteList.push(this.checkBoxModel[i].cartItemId);
         }
         let data = this.checkBoxModel;
         axios.post(deleteUrl, this.deleteList).then(data => {
           if (data.data.code == 0) {
             //重新请求一次购物车列表
             this.cartlist = [];
-            this.cartList();
-            Toast.success("删除成功");
+            this.searchCartList();
+            Toast({
+              duration: 1000,
+              message: "删除成功"
+            });
             this.checkGroupModel = [];
             this.checkBoxModel = [];
             this.thisGroup = "";

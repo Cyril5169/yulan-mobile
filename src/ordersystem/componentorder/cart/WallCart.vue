@@ -2,20 +2,10 @@
   <!--参考淘宝购物车-->
   <div class="wall-cart">
     <span class="manage" v-if="!showManage" @click="manageCart">管理</span>
-    <span class="manage-completed" v-if="showManage" @click="manageCompleted"
-      >完成</span
-    >
+    <span class="manage-completed" v-if="showManage" @click="manageCompleted">完成</span>
     <div class="all-products">
-      <van-pull-refresh
-        style="min-height: 450px;"
-        v-model="isLoading"
-        @refresh="searchCartList"
-      >
-        <div
-          class="single-product"
-          v-for="(group, index) in cartlist"
-          :key="index"
-        >
+      <van-pull-refresh style="min-height: 450px;" v-model="isLoading" @refresh="searchCartList">
+        <div class="single-product" v-for="(group, index) in cartlist" :key="index">
           <div class="category-title">
             <input
               type="checkbox"
@@ -23,34 +13,29 @@
               v-model="checkGroupModel"
               class="qiang"
               @change.stop="pickGroup(group, index)"
+              :disabled="checkActiviyEffect(group)"
             />
             <!--<img class="qiang" src="../../assetsorder/wallCart.png" alt="">-->
-            <span class="type"
-              >{{ group.productGroupType ? group.productGroupType : "无产品" }}
+            <span class="type">
+              {{ group.productGroupType ? group.productGroupType : "无产品" }}
               -
               {{
-                group.activityGroupType ? group.activityGroupType : "Z"
-              }}组</span
-            >
+              group.activityGroupType ? group.activityGroupType : "Z"
+              }}组
+            </span>
             <span class="huodong">{{ group.cid }}</span>
             <!--<img class="huodong-icon" src="../../assetsorder/hdCart.png" alt="">-->
           </div>
-          <div
-            class="details-content"
-            v-for="(product, inndex) in group.commodities"
-            :key="inndex"
-          >
+          <div class="details-content" v-for="(product, inndex) in group.commodities" :key="inndex">
             <input
               type="checkbox"
               :value="product"
               v-model="checkBoxModel"
               class="checkbox"
               @change.stop="pickOne(product, index, inndex)"
+              :disabled="product.activityEffective === false"
             />
-            <div
-              style="width:100%;height:100%"
-              @click="wallDetails(index, inndex)"
-            >
+            <div style="width:100%;height:100%" @click="wallDetails(index, inndex)">
               <table>
                 <tr>
                   <th>型号：</th>
@@ -58,7 +43,10 @@
                 </tr>
                 <tr>
                   <th>活动：</th>
-                  <td>{{ product.activityName }}</td>
+                  <td>
+                    <span style="color: red;" v-if="product.activityEffective === false">(过期活动)</span>
+                    {{ product.activityName ? product.activityName : "不参与活动" }}
+                  </td>
                 </tr>
                 <tr>
                   <th>发货说明：</th>
@@ -71,14 +59,15 @@
                 </tr>
                 <tr>
                   <th>小计：</th>
-                  <td class="price" v-if="showPrice && product.quantity">
-                    ￥{{ (product.quantity * product.price).toFixed(2) }}
-                  </td>
+                  <td
+                    class="price"
+                    v-if="showPrice && product.quantity"
+                  >￥{{ (product.quantity * product.price).toFixed(2) }}</td>
                   <td class="price" v-else-if="showPrice && !product.quantity">
                     ￥{{
-                      (product.width * product.height * product.price).toFixed(
-                        2
-                      )
+                    (product.width * product.height * product.price).toFixed(
+                    2
+                    )
                     }}
                   </td>
                   <td class="price" v-else-if="!showPrice">***</td>
@@ -86,21 +75,12 @@
               </table>
             </div>
             <div class="product-num">
-              <span class v-if="product.quantity"
-                >数量：{{ product.quantity }}{{ product.unit }}</span
-              >
-              <span class v-if="!product.quantity"
-                >数量：{{ product.width }}*{{ product.height }}平方米</span
-              >
+              <span class v-if="product.quantity">数量：{{ product.quantity }}{{ product.unit }}</span>
+              <span class v-if="!product.quantity">数量：{{ product.width }}*{{ product.height }}平方米</span>
             </div>
           </div>
         </div>
-        <div
-          v-if="cartlist.length == 0"
-          style="min-height: 450px;margin-top:5px;"
-        >
-          暂无数据
-        </div>
+        <div v-if="cartlist.length == 0" style="min-height: 450px;margin-top:5px;">暂无数据</div>
       </van-pull-refresh>
     </div>
     <div class="cart-bottom">
@@ -286,6 +266,12 @@ export default {
         }
       }
     },
+    checkActiviyEffect(group) {
+      for (let i = 0; i < group.commodities.length; i++) {
+        if (group.commodities[i].activityEffective == false) return true;
+      }
+      return false;
+    },
     //订单填写
     fillOrder() {
       if (this.checkBoxModel.length == 0) {
@@ -328,6 +314,7 @@ export default {
         .then(res => {
           this.checkBoxModel = [];
           this.checkGroupModel = [];
+          this.thisGroup = "";
           this.loading = false;
           var data = res.data;
           for (let i = 0; i < data.length; ) {
@@ -416,6 +403,10 @@ export default {
             //重新请求一次购物车列表
             this.cartlist = [];
             this.searchCartList();
+            Toast({
+              duration: 1000,
+              message: "删除成功"
+            });
             this.checkGroupModel = [];
             this.checkBoxModel = [];
             this.thisGroup = "";

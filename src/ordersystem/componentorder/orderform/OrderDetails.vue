@@ -2,10 +2,10 @@
   <div class="order-details">
     <top :top="set" :from="from"></top>
     <div class="banner">
-      <div class="wait-time" ref="statusIcon"></div>
-      <span class="status-title">{{statusTitle}}</span>
+      <!-- <div class="wait-time" ref="statusIcon"></div>
+      <span class="status-title">{{statusTitle}}</span>-->
       <!-- <span class="wait-pay-time" v-if="timeRemain">剩余 小时 分钟</span> -->
-      <div class="address" v-show="orderStatus">
+      <div class="address">
         <img class="address-icon" src="../../assetsorder/address.png" alt />
         <div class="address-contain">
           <div class="contct">
@@ -15,15 +15,15 @@
           <div class="address-text">{{oneOrder.ALL_ADDRESS}}</div>
         </div>
       </div>
-      <div class="completed-msg" v-show="!orderStatus">
+      <!-- <div class="completed-msg" v-show="!orderStatus">
         <img class="completed-car" src="../../assetsorder/car.png" alt />
         <span>感谢您在玉兰购物，欢迎再次光临</span>
-      </div>
+      </div>-->
     </div>
     <div class="order-msg order-msg-item1">
       <table>
         <tr>
-          <th>订单编号：</th>
+          <th>订单号：</th>
           <td>{{oneOrder.ORDER_NO}}</td>
         </tr>
         <tr>
@@ -44,11 +44,7 @@
         </tr>
         <tr>
           <th>经办人：</th>
-          <td>{{oneOrder.LINKPERSON}}</td>
-        </tr>
-        <tr>
-          <th>经办人联系方式：</th>
-          <td>{{oneOrder.TELEPHONE}}</td>
+          <td>{{oneOrder.LINKPERSON}}({{oneOrder.TELEPHONE}})</td>
         </tr>
       </table>
     </div>
@@ -73,7 +69,7 @@
         <!--<img class="goood-img" src="../../assetsorder/good.png" alt="">-->
         <span class="good-title">全部商品</span>
       </div>
-      <div class="good-contain" v-for="(good,index) in oneOrder.ORDERBODY" :key="index">
+      <div class="good-contain" v-for="(good,index) in oneOrder.ORDERBODY" :key="index" @click="checkCurtain(good)">
         <div class="good-item1">
           <span>{{good.ITEM_NO}} {{good.NOTE}}</span>
           <span class="good-num">数量：{{good.QTY_REQUIRED}}</span>
@@ -118,8 +114,21 @@
       </div>
     </div>
     <div class="bottom-nav" v-show="notpayBottom">
-      <span @click="cancelOrder" class="cancel-topay">取消订单</span>
-      <span @click="tjOrder" class="topay">提交订单</span>
+      <span
+        @click="cancelOrder"
+        class="cancel-topay"
+        v-if="oneOrder.STATUS_ID == 5 ||
+                oneOrder.STATUS_ID == 6 ||
+                oneOrder.STATUS_ID == 0 ||
+                (oneOrder.STATUS_ID == 1 &&
+                  oneOrder.CURTAIN_STATUS_ID !== '' &&
+                  oneOrder.CURTAIN_STATUS_ID == 0)"
+      >取消订单</span>
+      <span
+        @click="tjOrder"
+        class="topay"
+        v-if="oneOrder.STATUS_ID == 5 || oneOrder.STATUS_ID == 6"
+      >提交订单</span>
     </div>
     <div class="bottom-nav" v-show="completeBottom">
       <span>我要投诉</span>
@@ -153,12 +162,13 @@ export default {
       url: "http://106.13.32.172:8080/yulan-order",
       set: 15,
       realName: this.$store.getters.getrealName,
+      orderNo: this.$route.params.find,
       //判断订单是什么状态
-      orderStatus: null,
+      orderStatus: false,
       //未付款状态下的剩余时间
-      timeRemain: null,
-      notpayBottom: null,
-      completeBottom: null,
+      timeRemain: false,
+      notpayBottom: false,
+      completeBottom: false,
       //单个订单详情
       oneOrder: "",
       //订单状态
@@ -179,7 +189,7 @@ export default {
         name: "thmsg",
         params: {
           itemNo: itemNo,
-          orderId: this.$route.params.find
+          orderId: this.orderNo
         }
       });
     },
@@ -187,39 +197,13 @@ export default {
     thisOrder() {
       let orderUrl = this.orderBaseUrl + "/order/getOrderContent.do";
       let data = {
-        order_no: this.$route.params.find, //订单号
+        order_no: this.orderNo, //订单号
         cid: this.$store.getters.getCId //客户号
       };
       axios.post(orderUrl, data).then(data => {
-        GetCtmOrder({ orderNo: this.$route.params.find }).then(res => {
+        GetCtmOrder({ orderNo: this.orderNo }).then(res => {
           this.oneOrder = data.data.data.data[0];
           this.oneOrder.PACKING_NOTE = res.data.PACKING_NOTE; //先这样处理，后台换了后台就不需要了
-          switch (this.oneOrder.STATUS_ID) {
-            case "1":
-              this.statusTitle = "已提交";
-              break;
-            case "12":
-              this.statusTitle = "已接收";
-              break;
-            case "2":
-              this.statusTitle = "已受理";
-              break;
-            case "3":
-              this.statusTitle = "已作废";
-              break;
-            case "4":
-              this.statusTitle = "部分发货";
-              break;
-            case "5":
-              this.statusTitle = "余额不足待提交";
-              break;
-            case "6":
-              this.statusTitle = "余额不足可提交";
-              break;
-            case "7":
-              this.statusTitle = "已完成";
-              break;
-          }
           for (let i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
             if (this.oneOrder.ORDERBODY[i].PART_SEND_ID == "0") {
               this.oneOrder.ORDERBODY[i].productTip = "等生产";
@@ -229,56 +213,31 @@ export default {
               this.oneOrder.ORDERBODY[i].productTip = "--";
             }
           }
-          if (this.statusTitle == "已完成") {
-            this.orderStatus = false;
-            this.$refs.statusIcon.className = "completed";
-            this.notpayBottom = false;
-            this.completeBottom = true;
-          } else if (
-            this.statusTitle == "余额不足可提交" ||
-            this.statusTitle == "余额不足待提交"
+          console.log(this.oneOrder);
+          this.notpayBottom = false;
+          if (
+            this.oneOrder.STATUS_ID == 5 ||
+            this.oneOrder.STATUS_ID == 6 ||
+            this.oneOrder.STATUS_ID == 0 ||
+            (this.oneOrder.STATUS_ID == 1 &&
+              this.oneOrder.CURTAIN_STATUS_ID !== "" &&
+              this.oneOrder.CURTAIN_STATUS_ID !== " " &&
+              this.oneOrder.CURTAIN_STATUS_ID == 0)
           ) {
-            this.orderStatus = true;
-            this.$refs.statusIcon.className = "wait-time";
-            this.timeRemain = true;
             this.notpayBottom = true;
-            this.completeBottom = false;
-          } else {
-            this.orderStatus = true;
-            this.notpayBottom = false;
-            this.completeBottom = false;
           }
         });
       });
     },
-    //能否查看出货详情
-    // checkChuhuo() {
-    //   if (this.statusTitle == "已受理") {
-    //     for (let i = 0; i < this.oneOrder.ORDERBODY.length;i++){
-    //       if (this.oneOrder.ORDERBODY.packDetailId) {
-    //         this.oneOrder.ORDERBODY.packDetailId =
-    //       }
-    //     }
-    //     this.canCheckch = true
-    //   } else {
-    //     this.canCheckch = false
-    //   }
-    // },
     //取消订单
     cancelOrder() {
       Dialog.confirm({
         message: "是否确认取消订单"
       })
         .then(() => {
-          // on confirm
-          // let orderUrl = this.orderBaseUrl + "/order/cancelOrder.do";
-          // let orderData = {
-          //   orderNo: this.$route.params.find //订单号
-          // };
-          //axios.post(orderUrl, orderData).then(res => {
           cancelOrderNew({
             cid: this.$store.getters.getCId,
-            orderNo: this.$route.params.find
+            orderNo: this.orderNo
           }).then(res => {
             Toast({
               duration: 1000,
@@ -289,9 +248,7 @@ export default {
             });
           });
         })
-        .catch(() => {
-          // on cancel
-        });
+        .catch(() => {});
     },
     //再次提交订单时的余额判断
     tjOrder() {
@@ -303,12 +260,9 @@ export default {
       };
       axios.post(monUrl, mondata).then(async val => {
         if (val.data.data > this.oneOrder.ALL_SPEND) {
-          if (
-            this.statusTitle == "余额不足待提交" ||
-            this.statusTitle == "余额不足可提交"
-          ) {
+          if (this.oneOrder.STATUS_ID == 5 || this.oneOrder.STATUS_ID == 6) {
             for (var i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
-              if (this.oneOrder.ORDERBODY[i].PROMOTION_TYPE && this.oneOrder.ORDERBODY[i].PROMOTION_TYPE!= " ") {
+              if (this.oneOrder.ORDERBODY[i].PROMOTION_TYPE) {
                 var res = await GetPromotionByType({
                   proType: this.oneOrder.ORDERBODY[i].PROMOTION_TYPE,
                   cid: this.$store.getters.getCId
@@ -372,7 +326,7 @@ export default {
       let orderURL = this.orderBaseUrl + "/order/putAgainOrder.do";
       let orderData = {
         cid: this.$store.getters.getCId, //登录客户号
-        orderNo: this.$route.params.find //订单号
+        orderNo: this.orderNo //订单号
       };
       axios.post(orderURL, orderData).then(res => {
         if (res.data.code == 0) {
@@ -381,7 +335,7 @@ export default {
             message: "订单提交成功"
           });
           var recordData = {
-            ORDER_NO: this.$route.params.find,
+            ORDER_NO: this.orderNo,
             OPERATION_PERSON: this.$store.getters.getCId,
             OPERATION_NAME: "重新提交"
           };
@@ -391,6 +345,9 @@ export default {
           });
         }
       });
+    },
+    checkCurtain(item){
+      console.log(item);
     }
   },
   created() {
@@ -412,10 +369,10 @@ export default {
 }
 
 .banner {
-  margin-top: 49px;
+  margin-top: 45px;
   /*background: -webkit-linear-gradient(left,#ABD46C, #89CB81);*/
   background: linear-gradient(to right, #bedd81, #87ca81);
-  height: 80px;
+  height: 45px;
   position: relative;
   color: white;
 }
@@ -537,7 +494,7 @@ export default {
 
 .good-head {
   background: #a0cb8db0;
-  color: white;
+  color: #666;
   height: 30px;
   line-height: 30px;
   border-bottom: 0.4px solid rgba(153, 150, 134, 0.5);
@@ -629,7 +586,7 @@ export default {
   border-radius: 5px;
 }
 .order-msg-item2 {
-  margin-bottom: 60px;
+  margin-bottom: 55px;
 }
 .order-msg th {
   text-align: left;

@@ -59,7 +59,7 @@ export function GetTips(
 ) {
   return post("/WEB_USER/GetTips", {
     cid: cid,
-  })
+  },{loading:false})
     .then(res => {
       return Promise.resolve(res);
     })

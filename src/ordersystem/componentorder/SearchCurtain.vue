@@ -28,12 +28,22 @@
                 type="number"
                 class="curtain-width"
                 placeholder="0.00"
+                oninput="value=value.replace(/[^\d.]/g,'')
+                                .replace(/^\./g, '').replace(/\.{2,}/g, '.')
+                                .replace('.', '$#$').replace(/\./g, '')
+                                .replace('$#$', '.')
+                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
               />╳
               <input
                 v-model="singleCurtain.height"
                 type="number"
                 class="curtain-width"
                 placeholder="0.00"
+                oninput="value=value.replace(/[^\d.]/g,'')
+                                .replace(/^\./g, '').replace(/\.{2,}/g, '.')
+                                .replace('.', '$#$').replace(/\./g, '')
+                                .replace('$#$', '.')
+                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
               />
             </td>
           </tr>
@@ -45,6 +55,11 @@
                 type="number"
                 class="curtain-width"
                 placeholder="0.00"
+                oninput="value=value.replace(/[^\d.]/g,'')
+                                .replace(/^\./g, '').replace(/\.{2,}/g, '.')
+                                .replace('.', '$#$').replace(/\./g, '')
+                                .replace('$#$', '.')
+                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
               />
             </td>
             <td class="need-head">
@@ -469,7 +484,8 @@ export default {
           location: this.allCurtain[index].myposition,
           activity: this.allCurtain[index].activity,
           groupType: groupType,
-          from: "searchcurtain"
+          from: "searchcurtain",
+          AddOrNot: true
         }
       });
     },
@@ -575,7 +591,7 @@ export default {
 }
 .curtain-width {
   width: 50px;
-  /*background-color: #d5d5d5;*/
+  border: 1px solid #666;
 }
 .select-multiple {
   display: inline-block;
@@ -599,8 +615,8 @@ export default {
   width: 80px;
   height: 15px;
   line-height: 15px;
-  text-decoration: none;
   padding: 3px 10px;
+  border: 1px solid #666;
 }
 .curtain-height {
   text-align: right;
@@ -684,3 +700,8 @@ export default {
   color: #89cb81;
 }
 </style>
+<style>
+.need-head .van-checkbox__icon .van-icon {
+  border: 1px solid #666;
+}
+</style>>
