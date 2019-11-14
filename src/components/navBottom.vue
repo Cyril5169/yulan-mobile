@@ -40,13 +40,24 @@ export default {
   //order
   name: "navBottom",
   props: ["changeStyle", "tabStage"],
-  data(){
+  data() {
     return {
-      CUSTOMER_BALANCE_PERIOD_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.CUSTOMER_BALANCE_PERIOD:0,
-      ORDER_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.ORDER:0,
-      MY_COUNT: this.$store.state.tipsInfo?(this.$store.state.tipsInfo.NOTIFICATION+this.$store.state.tipsInfo.STUDY_FORM):0,
-      SHOPPING_COUNT: this.$store.state.tipsInfo?(this.$store.state.tipsInfo.CART_ITEM_WALLPAPER+this.$store.state.tipsInfo.CART_ITEM_CURTAIN+this.$store.state.tipsInfo.CART_ITEM_SOFT):0,
-    }
+      CUSTOMER_BALANCE_PERIOD_COUNT: this.$store.state.tipsInfo
+        ? this.$store.state.tipsInfo.CUSTOMER_BALANCE_PERIOD
+        : 0,
+      ORDER_COUNT: this.$store.state.tipsInfo
+        ? this.$store.state.tipsInfo.ORDER
+        : 0,
+      MY_COUNT: this.$store.state.tipsInfo
+        ? this.$store.state.tipsInfo.NOTIFICATION +
+          this.$store.state.tipsInfo.STUDY_FORM
+        : 0,
+      SHOPPING_COUNT: this.$store.state.tipsInfo
+        ? this.$store.state.tipsInfo.CART_ITEM_WALLPAPER +
+          this.$store.state.tipsInfo.CART_ITEM_CURTAIN +
+          this.$store.state.tipsInfo.CART_ITEM_SOFT
+        : 0
+    };
   },
   methods: {
     isContainAttr(attr) {
@@ -63,31 +74,55 @@ export default {
           path: "/" + path
         });
       }
+    },
+    getTip() {
+      GetTips(this.$store.getters.getCId).then(res => {
+        this.$store.commit("setTipsInfo", res.data);
+        this.CUSTOMER_BALANCE_PERIOD_COUNT = res.data.CUSTOMER_BALANCE_PERIOD;
+        this.ORDER_COUNT = res.data.ORDER;
+        this.MY_COUNT = res.data.STUDY_FORM + res.data.NOTIFICATION;
+        this.SHOPPING_COUNT =
+          res.data.CART_ITEM_WALLPAPER +
+          res.data.CART_ITEM_CURTAIN +
+          res.data.CART_ITEM_SOFT;
+        if (res.data.CUSTOMER_BALANCE_PERIOD_COUNT > 0) {
+          if (page_customer) {
+            Vue.set(
+              page_customer,
+              "CUSTOMER_BALANCE_PERIOD_COUNT",
+              res.data.CUSTOMER_BALANCE_PERIOD
+            );
+          }
+        }
+        if (page_myPersonal) {
+          Vue.set(page_myPersonal, "STUDY_FORM_COUNT", res.data.STUDY_FORM);
+          Vue.set(page_myPersonal, "NOTIFICATION_COUNT", res.data.NOTIFICATION);
+        }
+        if (page_shoppingcart) {
+          Vue.set(
+            page_shoppingcart,
+            "CART_ITEM_WALLPAPER_COUNT",
+            res.data.CART_ITEM_WALLPAPER
+          );
+          Vue.set(
+            page_shoppingcart,
+            "CART_ITEM_CURTAIN_COUNT",
+            res.data.CART_ITEM_CURTAIN
+          );
+          Vue.set(
+            page_shoppingcart,
+            "CART_ITEM_SOFT_COUNT",
+            res.data.CART_ITEM_SOFT
+          );
+        }
+      });
     }
   },
   mounted() {
-    GetTips(this.$store.getters.getCId).then(res=>{
-      this.$store.commit("setTipsInfo", res.data);
-      this.CUSTOMER_BALANCE_PERIOD_COUNT = res.data.CUSTOMER_BALANCE_PERIOD;
-      this.ORDER_COUNT = res.data.ORDER;
-      this.MY_COUNT = res.data.STUDY_FORM + res.data.NOTIFICATION;
-      this.SHOPPING_COUNT = res.data.CART_ITEM_WALLPAPER + res.data.CART_ITEM_CURTAIN + res.data.CART_ITEM_SOFT;
-      if(res.data.CUSTOMER_BALANCE_PERIOD_COUNT > 0){
-        if(page_customer){
-          Vue.set(page_customer,"CUSTOMER_BALANCE_PERIOD_COUNT",res.data.CUSTOMER_BALANCE_PERIOD)
-        }
-      }
-      if(page_myPersonal){
-        Vue.set(page_myPersonal,"STUDY_FORM_COUNT",res.data.STUDY_FORM)
-        Vue.set(page_myPersonal,"NOTIFICATION_COUNT",res.data.NOTIFICATION)
-      }
-      if(page_shoppingcart){
-        Vue.set(page_shoppingcart, "CART_ITEM_WALLPAPER_COUNT",res.data.CART_ITEM_WALLPAPER)
-        Vue.set(page_shoppingcart, "CART_ITEM_CURTAIN_COUNT",res.data.CART_ITEM_CURTAIN)
-        Vue.set(page_shoppingcart, "CART_ITEM_SOFT_COUNT",res.data.CART_ITEM_SOFT)
-      }
-    })
-
+    this.getTip();
+  },
+  activated() {
+    this.getTip();
   }
 };
 </script>
@@ -219,17 +254,17 @@ export default {
   color: #89cb81;
 }
 
-.reddot{
+.reddot {
   width: 2.133vw;
   min-width: 0;
   height: 2.133vw;
   background-color: #ee0a24;
   border-radius: 100%;
-  position:absolute;
-  right:0px;
-  top:0px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
 }
-.tips{
+.tips {
   padding: 0 3px;
   min-width: 0;
   height: 15px;
@@ -237,7 +272,7 @@ export default {
   background-color: #ee0a24;
   color: #fff;
   border-radius: 100%;
-  position:absolute;
+  position: absolute;
   right: -3px;
   top: -2px;
 }

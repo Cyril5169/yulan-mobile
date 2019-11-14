@@ -166,6 +166,7 @@ export default {
     wallDetails(index, inndex) {
       //获取版本号
       let olditemNo = this.cartlist[index].commodities[inndex].item.oldItemNo;
+      console.log(this.cartlist[index].commodities[inndex])
       this.$router.push({
         name: "walldetails",
         params: {
@@ -337,12 +338,12 @@ export default {
               // if (cartdata[i].commodities[j].activityId != null) {
               //   hdArray.push(cartdata[i].commodities[j].activityId);
               // }
-              if (!cartdata[i].commodities[j].activityId) {
-                cartdata[i].commodities[j].newactivityId = "";
-              } else {
-                cartdata[i].commodities[j].newactivityId =
-                  cartdata[i].commodities[j].activityName;
-              }
+              // if (!cartdata[i].commodities[j].activityId) {
+              //   cartdata[i].commodities[j].newactivityId = "";
+              // } else {
+              //   cartdata[i].commodities[j].newactivityId =
+              //     cartdata[i].commodities[j].activityName;
+              // }
               if (cartdata[i].commodities[j].splitShipment == 0) {
                 cartdata[i].commodities[j].newsplitShipment = "等生产";
               } else if (cartdata[i].commodities[j].splitShipment == 1) {

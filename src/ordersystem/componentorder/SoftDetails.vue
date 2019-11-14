@@ -556,6 +556,9 @@ export default {
       if (this.hdcode == null) {
         this.hdcode = "";
       }
+      if(this.myActivity == ""){
+        this.myActivity = '不参与活动';
+      }
       return this.myActivity + "-" + this.hdcode;
     }
   },

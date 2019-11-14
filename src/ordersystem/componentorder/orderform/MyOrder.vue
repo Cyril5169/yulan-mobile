@@ -544,7 +544,9 @@ export default {
             for (let i = 0; i < data.data.length; i++) {
               this.orderLists.push(data.data[i]);
             }
-
+            this.orderLists.sort(function(a,b){
+              return a.DATE_CRE > b.DATE_CRE? -1:1
+            })
             this.loadingText =
               "加载中，共" +
               this.totalLists +

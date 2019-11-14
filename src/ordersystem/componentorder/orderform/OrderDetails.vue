@@ -62,14 +62,22 @@
           <th>备注：</th>
           <td>{{oneOrder.NOTES}}</td>
         </tr>
+        <tr v-if="isX">
+          <th>玉兰处理说明：</th>
+          <td>{{oneOrder.YULAN_NOTES}}</td>
+        </tr>
       </table>
     </div>
     <div class="product">
       <div class="good-head">
-        <!--<img class="goood-img" src="../../assetsorder/good.png" alt="">-->
         <span class="good-title">全部商品</span>
       </div>
-      <div class="good-contain" v-for="(good,index) in oneOrder.ORDERBODY" :key="index" @click="checkCurtain(good)">
+      <div
+        class="good-contain"
+        v-for="(good,index) in oneOrder.ORDERBODY"
+        :key="index"
+        @click="checkCurtain(good)"
+      >
         <div class="good-item1">
           <span>{{good.ITEM_NO}} {{good.NOTE}}</span>
           <span class="good-num">数量：{{good.QTY_REQUIRED}}</span>
@@ -80,18 +88,23 @@
           <span>活动类型</span>
           <span class="hd-after">{{good.PROMOTION}}</span>
         </div>
-        <div class="good-item3">
-          <span>说明</span>
+        <div class="good-item2">
+          <span>折后金额</span>
+          <span class="hd-after" v-if="showPrice">￥{{good.FINAL_COST}}</span>
+          <span class="hd-after" v-else>￥***</span>
+        </div>
+        <div class="good-item2" v-if="!isX">
+          <span>发货说明</span>
           <span class="hd-after">{{good.productTip}}</span>
         </div>
-        <div class="good-item4">
+        <div class="good-item2">
           <span>备注</span>
           <span class="good-num">{{good.NOTES}}</span>
         </div>
-        <!-- <div class="good-item5" v-if="good.packDetailId"> -->
-        <!--<div class="good-item5">-->
-        <!-- <span @click="toThdh(good.ITEM_NO)">出货详情</span>
-        </div>-->
+        <div class="good-item2" v-if="isX">
+          <span>兰居备注</span>
+          <span class="good-num">{{good.LJ_SUGGESTION}}</span>
+        </div>
       </div>
     </div>
     <div class="order-msg order-msg-item2">
@@ -133,6 +146,15 @@
     <div class="bottom-nav" v-show="completeBottom">
       <span>我要投诉</span>
     </div>
+    <van-popup
+      style="width:100%;height:100%;"
+      v-model="showCurtainDetail"
+      v-if="showCurtainDetail"
+      transition="slide"
+      position="right"
+    >
+      <detailCurtain :curtainData="curtainData" :tableStatus="0" @backclick="backclick"></detailCurtain>
+    </van-popup>
   </div>
 </template>
 
@@ -148,11 +170,13 @@ import {
   GetOrderUseRebate
 } from "@/api/orderListASP";
 import { async } from "q";
+import detailCurtain from "./detailCurtain";
 
 export default {
   name: "orderdetails",
   components: {
     top,
+    detailCurtain,
     [Toast.name]: Toast,
     [Popup.name]: Popup,
     [Dialog.name]: Dialog
@@ -163,6 +187,7 @@ export default {
       set: 15,
       realName: this.$store.getters.getrealName,
       orderNo: this.$route.params.find,
+      isX: this.$route.params.find.slice(0, 1) == "X",
       //判断订单是什么状态
       orderStatus: false,
       //未付款状态下的剩余时间
@@ -175,7 +200,9 @@ export default {
       statusTitle: "",
       //是否能查看出货详情
       canCheckch: "",
-      from: ""
+      from: "",
+      showCurtainDetail: false,
+      curtainData: []
     };
   },
   computed: {
@@ -184,6 +211,9 @@ export default {
     }
   },
   methods: {
+    backclick() {
+      this.showCurtainDetail = false;
+    },
     toThdh(itemNo) {
       this.$router.push({
         name: "thmsg",
@@ -213,7 +243,6 @@ export default {
               this.oneOrder.ORDERBODY[i].productTip = "--";
             }
           }
-          console.log(this.oneOrder);
           this.notpayBottom = false;
           if (
             this.oneOrder.STATUS_ID == 5 ||
@@ -346,8 +375,11 @@ export default {
         }
       });
     },
-    checkCurtain(item){
-      console.log(item);
+    checkCurtain(item) {
+      if (this.isX) {
+        this.showCurtainDetail = true;
+        this.curtainData = item;
+      }
     }
   },
   created() {
@@ -369,10 +401,10 @@ export default {
 }
 
 .banner {
-  margin-top: 45px;
+  margin-top: 40px;
   /*background: -webkit-linear-gradient(left,#ABD46C, #89CB81);*/
   background: linear-gradient(to right, #bedd81, #87ca81);
-  height: 45px;
+  height: 25px;
   position: relative;
   color: white;
 }
@@ -464,7 +496,7 @@ export default {
 }
 
 .address-contain {
-  padding: 20px 30px;
+  padding: 10px 30px;
 }
 
 .contct {
@@ -480,7 +512,7 @@ export default {
 
 .address-text {
   text-align: left;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 /*产品明细*/
@@ -522,38 +554,18 @@ export default {
 }
 
 .good-item1,
-.good-item2,
-.good-item3,
-.good-item4,
-.good-item5 {
+.good-item2 {
   height: 20px;
   line-height: 20px;
   margin: 5px 10px 0 10px;
   /*font-size: 15px;*/
 }
 
-.good-item2,
-.good-item3,
-.good-item4,
-.good-item5 {
+.good-item2 {
   margin-left: 60px;
 }
 
-.good-item5 {
-  height: 30px;
-  line-height: 30px;
-}
-
-.good-item5 span {
-  float: right;
-  width: 100px;
-  text-align: center;
-  border-radius: 15px;
-  border: 1px solid #e1e1e1;
-}
-
 .price {
-  /*color: #ff4c33;*/
   float: right;
   margin: 0 10px;
 }
@@ -561,10 +573,6 @@ export default {
 .good-num,
 .hd-after {
   float: right;
-}
-
-.hd-after {
-  color: #ff4c33;
 }
 
 .good-num {
@@ -576,13 +584,13 @@ export default {
 .order-msg {
   background: white;
   margin: 8px 0;
-  padding: 10px 10px 15px 10px;
+  padding: 10px;
   font-size: 15px;
   border-radius: 5px;
 }
 
 .order-msg-item1 {
-  margin-top: 70px;
+  margin-top: 65px;
   border-radius: 5px;
 }
 .order-msg-item2 {

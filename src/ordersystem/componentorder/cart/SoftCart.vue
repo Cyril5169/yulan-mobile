@@ -329,12 +329,12 @@ export default {
         .then(cartdata => {
           for (let i = 0; i < cartdata.length; i++) {
             for (let j = 0; j < cartdata[i].commodities.length; j++) {
-              if (!cartdata[i].commodities[j].activityId) {
-                cartdata[i].commodities[j].newactivityId = "";
-              } else {
-                cartdata[i].commodities[j].newactivityId =
-                  cartdata[i].commodities[j].activityName;
-              }
+              // if (!cartdata[i].commodities[j].activityId) {
+              //   cartdata[i].commodities[j].newactivityId = "";
+              // } else {
+              //   cartdata[i].commodities[j].newactivityId =
+              //     cartdata[i].commodities[j].activityName;
+              // }
               if (cartdata[i].commodities[j].splitShipment == 0) {
                 cartdata[i].commodities[j].newsplitShipment = "等生产";
               } else if (cartdata[i].commodities[j].splitShipment == 1) {
