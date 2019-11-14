@@ -267,13 +267,14 @@ export default {
 .tips {
   padding: 0 3px;
   min-width: 0;
-  height: 15px;
-  line-height: 15px;
+  height: 17px;
+  line-height: 17px;
   background-color: #ee0a24;
   color: #fff;
   border-radius: 100%;
   position: absolute;
-  right: -3px;
+  font-size: 11px;
+  left: 25px;
   top: -2px;
 }
 </style>

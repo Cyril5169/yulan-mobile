@@ -669,7 +669,7 @@ table.gridtable td {
   height: 50px;
   line-height: 50px;
   background: #a0cb8d;
-  position: fixed;
+  position: relative;
   bottom: 0;
 }
 

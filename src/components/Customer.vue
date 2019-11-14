@@ -22,8 +22,10 @@
               class="btn"
               @click="clickToPath(item.MENU_LINK)"
             >
-              <div class="btn-img" :class="item.ICON_CLASS"></div>
-              <div v-if="CUSTOMER_BALANCE_PERIOD_COUNT>0&&item.MENU_LINK=='billmanage'" class="tips">{{CUSTOMER_BALANCE_PERIOD_COUNT}}</div>
+              <div class="btn-img" :class="item.ICON_CLASS">
+                <div v-if="CUSTOMER_BALANCE_PERIOD_COUNT>0&&item.MENU_LINK=='billmanage'" class="tips">{{CUSTOMER_BALANCE_PERIOD_COUNT}}</div>
+
+              </div>
               <p class="btn-p">{{item.MENU_NAME}}</p>
             </div>
           </div>
@@ -214,14 +216,15 @@ p {
 .tips{
   padding: 0 3px;
   min-width: 0;
-  height: 15px;
-  line-height: 15px;
+  height: 17px;
+  line-height: 17px;
   background-color: #ee0a24;
   color: #fff;
   border-radius: 100%;
-  position:absolute;
-  right: 30px;
-  top: 5px;
+  position: absolute;
+  font-size: 11px;
+  left: 22px;
+  top: -3px;
 }
 .btn {
   height: 60px;
