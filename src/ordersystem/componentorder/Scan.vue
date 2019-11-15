@@ -1,25 +1,13 @@
 <template>
   <div class="main">
     <div class="scan-top" ref="top">
-        <div class="top-left">
-          <van-icon
-            @click="closeScan()"
-            class="top-icon"
-            name="arrow-left"
-            color=""
-            size="25px"
-          />
-        </div>
-        <div class="top-photo">
-          <van-icon
-            @click="scanPicture()"
-            class="top-icon"
-            name="photo-o"
-            color=""
-            size="25px"
-          />
-        </div>
+      <div class="top-left">
+        <van-icon @click="closeScan()" class="top-icon" name="arrow-left" color size="25px" />
       </div>
+      <div class="top-photo">
+        <van-icon @click="showAction()" class="top-icon" name="ellipsis" color size="25px" />
+      </div>
+    </div>
     <div id="bcid"></div>
   </div>
 </template>
@@ -71,6 +59,28 @@ export default {
     closeScan() {
       this.$emit('scanclose');//自定义事件，提供外部使用
     },
+    showAction() {
+      var me = this;
+      plus.nativeUI.actionSheet(
+        {
+          cancel: "取消",
+          buttons: [
+            {
+              title: "从相册中选择"
+            }, {
+              title: "打开闪光灯"
+            }
+          ]
+        },
+        function (e) {
+          if (e.index == 1) {
+            me.scanPicture();
+          } else if (e.index == 2) {
+            me.scan.setFlash(true);
+          }
+        }
+      );
+    },
     scanPicture() {  //可以直接识别二维码图片
       var me = this;
       plus.gallery.pick(function (path) {
@@ -89,6 +99,7 @@ export default {
   destroyed() {
     console.log("destroyed");
     if (this.scan) {
+      this.scan.setFlash(false);
       this.scan.close();
     }
   }
@@ -102,18 +113,17 @@ export default {
   width: 100%;
   height: 100%;
   background: #000;
-
 }
 .scan-top {
   width: 100%;
   height: 50px;
   top: 0;
-  left:0;
-  background-color:white;
+  left: 0;
+  background-color: white;
 }
 #bcid {
   width: 100%;
-  position:absolute;
+  position: absolute;
   top: 50px;
   bottom: 0;
 }
