@@ -129,23 +129,29 @@
     <div class="bottom-nav" v-show="notpayBottom">
       <span
         @click="cancelOrder"
-        class="cancel-topay"
         v-if="oneOrder.STATUS_ID == 5 ||
                 oneOrder.STATUS_ID == 6 ||
                 oneOrder.STATUS_ID == 0 ||
                 (oneOrder.STATUS_ID == 1 &&
                   oneOrder.CURTAIN_STATUS_ID !== '' &&
                   oneOrder.CURTAIN_STATUS_ID == 0)"
-      >取消订单</span>
+      >作废订单</span>
       <span
         @click="tjOrder"
-        class="topay"
+        class="success-btn"
         v-if="oneOrder.STATUS_ID == 5 || oneOrder.STATUS_ID == 6"
       >提交订单</span>
+      <span
+        @click="summitCurtain"
+        class="success-btn"
+        v-if="(oneOrder.CURTAIN_STATUS_ID == 0 || oneOrder.CURTAIN_STATUS_ID == 4) && oneOrder.STATUS_ID == 0"
+      >提交订单</span>
+      <span @click="_defeat" class="fail-btn" v-if="oneOrder.CURTAIN_STATUS_ID == 2">退回兰居修改</span>
+      <span @click="_pass" class="success-btn" v-if="oneOrder.CURTAIN_STATUS_ID == 2">确认兰居修改</span>
     </div>
-    <div class="bottom-nav" v-show="completeBottom">
+    <!-- <div class="bottom-nav" v-show="completeBottom">
       <span>我要投诉</span>
-    </div>
+    </div>-->
     <van-popup
       style="width:100%;height:100%;"
       v-model="showCurtainDetail"
@@ -165,6 +171,7 @@ import { Toast, Popup, Dialog } from "vant";
 import {
   InsertOperationRecord,
   cancelOrderNew,
+  copyCartItem,
   GetCtmOrder,
   GetPromotionByType,
   GetOrderUseRebate
@@ -261,20 +268,40 @@ export default {
     //取消订单
     cancelOrder() {
       Dialog.confirm({
-        message: "是否确认取消订单"
+        message: "是否确认作废订单"
       })
         .then(() => {
           cancelOrderNew({
             cid: this.$store.getters.getCId,
             orderNo: this.orderNo
           }).then(res => {
-            Toast({
-              duration: 1000,
-              message: "取消订单成功"
-            });
-            this.$router.push({
-              path: "/myorder"
-            });
+            Dialog.confirm({
+              message: "作废成功，是否退回数据到购物车"
+            })
+              .then(() => {
+                copyCartItem({
+                  orderNo: this.orderNo
+                }).then(res => {
+                  Toast({
+                    duration: 1000,
+                    message: "复制成功，请到购物车中查看"
+                  });
+                });
+                this.$router.push({
+                  name: "myorder",
+                  params: {
+                    refresh: true
+                  }
+                });
+              })
+              .catch(() => {
+                this.$router.push({
+                  name: "myorder",
+                  params: {
+                    refresh: true
+                  }
+                });
+              });
           });
         })
         .catch(() => {});
@@ -344,7 +371,10 @@ export default {
           }).then(() => {
             // on close
             this.$router.push({
-              path: "/myorder"
+              name: "myorder",
+              params: {
+                refresh: true
+              }
             });
           });
         }
@@ -370,10 +400,137 @@ export default {
           };
           InsertOperationRecord(recordData); //插入操作记录
           this.$router.push({
-            path: "/myorder"
+            name: "myorder",
+            params: {
+              refresh: true
+            }
           });
         }
       });
+    },
+    summitCurtain() {
+      var orderHead = this.oneOrder;
+      let orderBody = orderHead.ORDERBODY;
+      let transCookies = [];
+      for (let i = 0; i < orderBody.length; i++) {
+        transCookies[i] = new Object();
+        transCookies[i].orderNumber = orderBody[i].ORDER_NO;
+        transCookies[i].lineNo = orderBody[i].LINE_NO;
+        transCookies[i].activityId = orderBody[i].curtains[0].activityId;
+        transCookies[i].quantity = orderBody[i].QTY_REQUIRED;
+        transCookies[i].price = orderBody[i].UNIT_PRICE;
+        transCookies[i].splitShipment = orderBody[i].PART_SEND_ID;
+        transCookies[i].newactivityId = orderBody[i].PROMOTION;
+        transCookies[i].unit = "米";
+        transCookies[i].item = new Object();
+        transCookies[i].item.itemNo = orderBody[i].ITEM_NO;
+        transCookies[i].item.note = orderBody[i].NOTES;
+        transCookies[i].item.itemVersion = orderBody[i].PRODUCTION_VERSION;
+        transCookies[i].item.groupType = "E";
+        transCookies[i].salPromotion = new Object();
+        transCookies[i].salPromotion.orderType = orderBody[i].PROMOTION_TYPE;
+        transCookies[i].salPromotion.arrearsFlag = orderHead.ARREARSFLAG;
+        transCookies[i].salPromotion.flagFl = orderBody[i].FLAG_FL_TYPE;
+      }
+      this.$store.commit("setOrderProduct", transCookies);
+      this.$store.commit("setOrderHead", orderHead);
+      this.$router.push({
+        name: "fillorder",
+        params: {
+          isX: true,
+          from: "orderdetails/" + this.orderNo
+        }
+      });
+    },
+    //确认兰居修改，通过订单审核变为可提交状态
+    _pass() {
+      var url = this.orderBaseUrl + "/order/updateCurOrderStatus.do";
+      var data = {
+        orderNo: this.orderNo,
+        curtainStatusId: "4"
+      };
+      Dialog.confirm({
+        message: "确认同意兰居修改？"
+      })
+        .then(() => {
+          axios
+            .post(url, data)
+            .then(res => {
+              if (res.data.code == 0) {
+                var recordData = {
+                  ORDER_NO: this.orderNo,
+                  OPERATION_PERSON: this.$store.getters.getCId,
+                  OPERATION_NAME: "确认兰居修改"
+                };
+                InsertOperationRecord(recordData); //插入操作记录
+                Toast({
+                  duration: 1000,
+                  message: "操作成功,该订单已经确认,可再次提交"
+                });
+                this.$root.$emit("refreshOrder");
+                this.oneOrder.CURTAIN_STATUS_ID = 4;
+              } else {
+                Toast({
+                  duration: 1000,
+                  message: "操作失败，请稍后重试"
+                });
+              }
+            })
+            .catch(res => {
+              Toast({
+                duration: 1000,
+                message: "操作失败，请稍后重试"
+              });
+            });
+        })
+        .catch(() => {});
+    },
+    //退回兰居修改
+    _defeat() {
+      var url = this.orderBaseUrl + "/order/updateCurOrderStatus.do";
+      var data = {
+        orderNo: this.orderNo,
+        curtainStatusId: "3"
+      };
+      Dialog.confirm({
+        message: "确定将订单退回兰居重新修改？"
+      })
+        .then(() => {
+          axios
+            .post(url, data)
+            .then(res => {
+              if (res.data.code == 0) {
+                var recordData = {
+                  ORDER_NO: this.orderNo,
+                  OPERATION_PERSON: this.$store.getters.getCId,
+                  OPERATION_NAME: "退回兰居修改"
+                };
+                InsertOperationRecord(recordData); //插入操作记录
+                Toast({
+                  duration: 1000,
+                  message: "操作成功,该订单已退回兰居修改"
+                });
+                this.$router.push({
+                  name: "myorder",
+                  params: {
+                    refresh: true
+                  }
+                });
+              } else {
+                Toast({
+                  duration: 1000,
+                  message: "操作失败，请稍后重试"
+                });
+              }
+            })
+            .catch(res => {
+              Toast({
+                duration: 1000,
+                message: "操作失败，请稍后重试"
+              });
+            });
+        })
+        .catch(() => {});
     },
     checkCurtain(item) {
       if (this.isX) {
@@ -624,26 +781,24 @@ export default {
   text-align: right;
   border-top: 1px solid #ededed;
 }
-
 .bottom-nav span {
   display: inline-block;
-  width: 80px;
+  min-width: 80px;
   height: 30px;
+  padding: 0 3px;
   line-height: 30px;
   font-size: 13px;
   text-align: center;
-  /*border: 1px solid #999686;*/
   border-radius: 20px;
   margin-right: 10px;
+  border: 1px solid #999686;
 }
-
-.topay {
-  /*border: none;*/
-  background: linear-gradient(to right, #f05454, #ff4500);
+.success-btn {
+  background: #a0cb8d;
   color: white;
 }
-.cancel-topay {
-  background: #a0cb8d;
+.fail-btn {
+  background: #f05454;
   color: white;
 }
 </style>

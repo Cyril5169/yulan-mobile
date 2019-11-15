@@ -3,7 +3,7 @@ import { $http } from "../main";
 export default class ASHelper {
   flag = 1;
   how2load = [
-    () => $http.post('/areaRegion/getProvince.do').then(
+    () => $http.post('/areaRegion/getProvince.do', '', { loading: false }).then(
       ({ data }) => {
         this.provinces = data.province;
         this.selecteds[0] = data.province[0];
@@ -11,7 +11,7 @@ export default class ASHelper {
     ),
 
     () => $http.post(
-      '/areaRegion/getCity.do', this.selecteds[0]
+      '/areaRegion/getCity.do', this.selecteds[0], { loading: false }
     ).then(({ data }) => {
       this.cities = data.city;
       // if(data.city == []){
@@ -24,7 +24,7 @@ export default class ASHelper {
     }),
 
     () => $http.post(
-      '/areaRegion/getCountry.do', this.selecteds[1]
+      '/areaRegion/getCountry.do', this.selecteds[1], { loading: false }
     ).then(({ data }) => {
       this.towns = data.country;
       // 某些地方，只有两级选择，因此此处可能是 UNDEFINED
@@ -39,7 +39,7 @@ export default class ASHelper {
     this.selecteds = [];
   }
   init() {
-    const [ loadProvinces, loadCities, loadTowns ] = this.how2load;
+    const [loadProvinces, loadCities, loadTowns] = this.how2load;
 
     return loadProvinces().then(provincesLoaded => {
       return loadCities();
@@ -49,7 +49,6 @@ export default class ASHelper {
   }
 
   oneByOne(tasks) {
-    console.log(tasks)
     if (tasks.length === 0) return Promise.resolve('ok');
 
     const [now2load, ...rest] = tasks;
@@ -65,19 +64,12 @@ export default class ASHelper {
    */
   onChange(newSelecteds) {
     let i;
-    console.log(newSelecteds)
-    // console.log(flag)
-   
     for (i = 0; i < newSelecteds.length; i++) {
       if (newSelecteds[i].regionId !== this.selecteds[i].regionId) {
         break;
       }
     }
-
     newSelecteds.forEach(($, i) => this.selecteds[i] = $);
-
-    console.log('onchange i:', i);
-
     return this.oneByOne(this.how2load.slice(i + 1));
   }
 

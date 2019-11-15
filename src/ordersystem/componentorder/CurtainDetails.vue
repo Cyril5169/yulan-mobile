@@ -1068,6 +1068,11 @@ export default {
                 this.itemNolists[0].total / this.limit
               );
               this.pageMark = this.totalPage;
+              if (itemType == "pjb") {
+                this.itemNolists.sort(function(a, b) {
+                  return a.itemNo > b.itemNo ? 1 : -1; //升序
+                });
+              }
             })
             .catch(err => {
               this.itemNolists = [];
@@ -1175,6 +1180,9 @@ export default {
       data[this.index].fixType = status2 ? "" : item.fixType;
       data[this.index].itemNo = item.itemNo;
       data[this.index].price = price;
+      if (this.itemType == "pjb") {
+        data[this.index].unit = item.unit == "°ü" ? "包" : item.unit;
+      }
       oriData[this.index].fixType = status2 ? "" : item.fixType;
       if (this.productType != "GY") {
         //非工艺用量修改
@@ -2149,7 +2157,7 @@ export default {
 }
 </style>
 <style>
-.curtain-item .van-collapse-item__content{
-    padding: 10px 15px !important;
+.curtain-item .van-collapse-item__content {
+  padding: 10px 15px !important;
 }
 </style>

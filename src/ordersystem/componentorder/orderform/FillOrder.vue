@@ -1,8 +1,8 @@
 <template>
   <div>
-    <top :top="set"></top>
+    <top :top="set" :from="from"></top>
     <div class="contain">
-      <div class="address" @click="toAddList">
+      <div class="address" @click="showAddress = true">
         <img class="add-icon" src="../../assetsorder/address.png" alt />
         <div class="add-contain">
           <div class="contct">
@@ -353,6 +353,46 @@
       </div>
     </van-popup>
     <!-- <van-loading class="loading" type="spinner" v-if="loading" color="black" /> -->
+    <!--选择收货地址-->
+    <van-popup
+      style="width:100%;height:100%;"
+      v-model="showAddress"
+      v-if="showAddress"
+      position="right"
+    >
+      <div class="coupon-title">
+        <img class="backCoupon" @click="showAddress=false" src="../../assetsorder/back.png" alt />
+        <span>我的收获地址</span>
+      </div>
+      <div class="all-address">
+        <van-address-list
+          id="dress-list"
+          v-model="address.id"
+          :list="allAddress"
+          @add="onAddAddress"
+          @edit="onEditAddress"
+          @select="onSelectAddress"
+        />
+      </div>
+    </van-popup>
+     <!--新增收货地址-->
+    <van-popup
+      style="width:100%;height:100%;"
+      v-model="showAddressAdd"
+      v-if="showAddressAdd"
+      position="right"
+    >
+      <newAddress @backclick="backclick" @refreshAddress="refreshAddress"></newAddress>
+    </van-popup>
+     <!--修改收货地址-->
+    <van-popup
+      style="width:100%;height:100%;"
+      v-model="showAddressEdit"
+      v-if="showAddressEdit"
+      position="right"
+    >
+      <addressEdit @backclick="backclick" @refreshAddress="refreshAddress" :initAddress='initAddress'></addressEdit>
+    </van-popup>
   </div>
 </template>
 
@@ -370,6 +410,7 @@ import {
   Radio,
   Cell,
   CellGroup,
+  AddressList,
   Loading
 } from "vant";
 import {
@@ -380,6 +421,8 @@ import {
   getTotalRecordSum,
   GetPromotionsById
 } from "@/api/orderListASP";
+import newAddress from "./NewAddress";
+import addressEdit from "./AddressEdit";
 import top from "../../../components/Top";
 
 const coupon = [
@@ -399,6 +442,8 @@ export default {
   name: "fillOrder",
   components: {
     top,
+    newAddress,
+    addressEdit,
     [SubmitBar.name]: SubmitBar,
     [Popup.name]: Popup,
     [CouponCell.name]: CouponCell,
@@ -409,15 +454,21 @@ export default {
     [CellGroup.name]: CellGroup,
     [Toast.name]: Toast,
     [Dialog.name]: Dialog,
+    [AddressList.name]: AddressList,
     [Loading.name]: Loading
   },
   data() {
     return {
       url: "http://106.14.159.244:8080/yulan-order",
       set: 14,
+      from: this.$route.params.from,
       showDelivery: false,
       showPacking: false,
       packingShow: false,
+      showAddress: false,
+      showAddressAdd: false,
+      showAddressEdit:false,
+      initAddress:'',
       //物流类型
       deliveryType: "普通物流(运费由甲方支付)",
       isdeliveryType: "",
@@ -458,7 +509,7 @@ export default {
       packingNote: "请选择包装信息",
       //选中地址(对象)
       allAddress: [],
-      address: this.$store.getters.getAddress,
+      address: [],
       //是否为默认地址标志
       isDefaultAdd: "0",
       // 订单商品详情，为多个集合（数组）
@@ -480,7 +531,8 @@ export default {
       loading: false,
       accMoney: 0,
       activityArray: [], //活动集合
-      isX: false //是否窗帘订单
+      isX: false, //是否窗帘订单
+      orderNo: ""
     };
   },
   computed: {
@@ -677,7 +729,7 @@ export default {
         singleProduct.curtainRoomName = this.allProduct[i].location
           ? this.allProduct[i].location
           : "";
-          singleProduct.orderNo = this.allProduct[i].orderNumber;
+        singleProduct.orderNo = this.allProduct[i].orderNumber;
         singleProduct.lineNo = this.allProduct[i].lineNo;
         singleProduct.itemNo = this.allProduct[i].item.itemNo;
         singleProduct.itemNoSample = this.allProduct[i].item.itemNo;
@@ -687,9 +739,15 @@ export default {
         singleProduct.notes = this.allProduct[i].note;
         singleProduct.unitPrice = this.allProduct[i].price;
         singleProduct.promotionCost = this.allProduct[i].activityPrice;
-        singleProduct.promotion = this.allProduct[i].newactivityId?this.allProduct[i].newactivityId:'无';
-        singleProduct.promotionType = this.allProduct[i].salPromotion.orderType;
-        singleProduct.flagFlType = this.allProduct[i].salPromotion.flagFl;
+        singleProduct.promotion = this.allProduct[i].newactivityId
+          ? this.allProduct[i].newactivityId
+          : "无";
+        if (this.allProduct[i].salPromotion) {
+          singleProduct.promotionType = this.allProduct[
+            i
+          ].salPromotion.orderType;
+          singleProduct.flagFlType = this.allProduct[i].salPromotion.flagFl;
+        }
         singleProduct.unit = this.allProduct[i].unit;
         if (this.allProduct[i].onlineSalesAmount !== null) {
           singleProduct.onlineSalesAmount = this.allProduct[
@@ -734,6 +792,7 @@ export default {
         rebateM: this.Mcoupon,
         arrearsFlag: this.allProduct[0].salPromotion, //活动字段(用来判断是否需要判断余额)，Y或N,无时传null
         ctm_order: {
+          orderNo: this.orderNo,
           deliveryNotes: this.deliveryBei, //（可不传）
           postAddressModified: this.isDefaultAdd, //默认送货地址标志，0为默认，1非默认
           postAddress: this.address.postAddress,
@@ -1012,20 +1071,94 @@ export default {
       };
       axios.post(url, data).then(value => {
         this.allAddress = value.data.data;
-        if (path == "/mycart/wallcart" || path == "/mycart/softcart" || path == "/mycart/curtaincart") {
+        for (let i = 0; i < this.allAddress.length; i++) {
+          this.allAddress[i].id = this.allAddress[i].addressId;
+          this.allAddress[i].name = this.allAddress[i].wlContacts;
+          this.allAddress[i].tel = this.allAddress[i].wlTel;
+          this.allAddress[i].reciverArea1 = this.allAddress[i].province;
+          this.allAddress[i].reciverArea2 = this.allAddress[i].city;
+          this.allAddress[i].reciverArea3 = this.allAddress[i].country;
+          this.allAddress[i].province =
+            (this.allAddress[i].province ? this.allAddress[i].province : "") +
+            (this.allAddress[i].city ? this.allAddress[i].city : "") +
+            (this.allAddress[i].country ? this.allAddress[i].country : "");
+          this.allAddress[i].address =
+            (this.allAddress[i].province ? this.allAddress[i].province : "") +
+            (this.allAddress[i].postAddress
+              ? this.allAddress[i].postAddress
+              : "");
+        }
+        if (this.address.name && this.address.tel) {
+          //如果是窗帘重新提交进来有默认值
+          for (let i = 0; i < this.allAddress.length; i++) {
+            let wlContacts = this.allAddress[i].wlContacts
+              ? this.allAddress[i].wlContacts
+              : "";
+            let wlTel = this.allAddress[i].wlTel
+              ? this.allAddress[i].wlTel
+              : "";
+            let reciverArea1 = this.allAddress[i].reciverArea1
+              ? this.allAddress[i].reciverArea1
+              : "";
+            let reciverArea2 = this.allAddress[i].reciverArea2
+              ? this.allAddress[i].reciverArea2
+              : "";
+            let reciverArea3 = this.allAddress[i].reciverArea3
+              ? this.allAddress[i].reciverArea3
+              : "";
+
+            let wlContacts2 = this.address.name ? this.address.name : "";
+            let wlTel2 = this.address.tel ? this.address.tel : "";
+            let reciverArea12 = this.address.reciverArea1
+              ? this.address.reciverArea1
+              : "";
+            let reciverArea22 = this.address.reciverArea2
+              ? this.address.reciverArea2
+              : "";
+            let reciverArea32 = this.address.reciverArea3
+              ? this.address.reciverArea3
+              : "";
+
+            if (
+              wlContacts2 == wlContacts &&
+              wlTel2 == wlTel &&
+              reciverArea12 == reciverArea1 &&
+              reciverArea22 == reciverArea2 &&
+              reciverArea32 == reciverArea3
+            ) {
+              this.address = this.allAddress[i];
+            }
+          }
+        } else {
           for (let i = 0; i < this.allAddress.length; i++) {
             if (this.allAddress[i].addressId == 0) {
               //默认地址
               this.address = this.allAddress[i];
-              this.address.id = this.allAddress[i].addressId;
-              this.address.address = this.allAddress[i].postAddress;
-              this.address.name = this.allAddress[i].wlContacts;
-              this.address.tel = this.allAddress[i].wlTel;
-              this.$store.commit("setAddress", this.address);
+              break;
             }
           }
         }
+        this.$store.commit("setAddress", this.address);
       });
+    },
+    onSelectAddress(item, index) {
+      this.address = item;
+      this.showAddress = false;
+    },
+    onAddAddress() {
+      this.showAddressAdd = true;
+    },
+    onEditAddress(item, index) {
+      this.initAddress = this.allAddress[index];
+      this.showAddressEdit = true;
+    },
+    backclick(status) {
+      if (status) this.showAddressAdd = false;
+      else this.showAddressEdit = false;
+    },
+    refreshAddress(status) {
+      this.backclick(status);
+      this.getAddress();
     },
     //优惠券使用记录
     UseRecord(couponId) {
@@ -1113,15 +1246,33 @@ export default {
         singleProduct.yCoupon = "0.00";
       });
     },
-
-    //  salPromotion
-    salpromotion() {}
+    getOrderHead() {
+      var orderHead = this.$store.getters.getOrderHead;
+      if (this.allProduct[0].orderNumber) {
+        //窗帘重新提交本身有表头数据，加载默认数据
+        this.orderNo = orderHead.ORDER_NO;
+        this.deliveryBei = orderHead.DELIVERY_NOTES;
+        this.isDefaultAdd = orderHead.POST_ADDRESS_MODIFIED;
+        this.address.postAddress = orderHead.POST_ADDRESS;
+        this.orderBei = orderHead.NOTES;
+        this.address.name = orderHead.WL_CONTACTS;
+        this.address.tel = orderHead.WL_TEL;
+        this.deliveryTypeCode = orderHead.DELIVERY_TYPE;
+        this.gongchenhao = orderHead.PROJECT_NO;
+        this.address.reciverArea1 = orderHead.RECIVER_AREA1;
+        this.address.reciverArea2 = orderHead.RECIVER_AREA2;
+        this.address.reciverArea3 = orderHead.RECIVER_AREA3;
+        this.address.address = orderHead.ALL_ADDRESS;
+        this.buyUser = orderHead.BUYUSER;
+        this.buyUserPhone = orderHead.BUYUSERPHONE;
+      }
+    }
   },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.getAddress(from.path);
-    });
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   next(vm => {
+  //     vm.getAddress(from.path);
+  //   });
+  // },
   created() {
     if (this.$route.params.isX) this.isX = this.$route.params.isX;
     if (
@@ -1130,6 +1281,8 @@ export default {
     )
       this.packingShow = true;
     else this.packingShow = false;
+    this.getOrderHead();
+    this.getAddress();
     this.activityPrice();
     this.initFl();
     //获取优惠券信息
@@ -1599,8 +1752,71 @@ export default {
   border-bottom: 1px solid #dedede;
   font-size: 11px;
 }
+.all-address {
+  position: fixed;
+  top: 50px;
+  bottom: 50px;
+  overflow-y: scroll;
+  background: #f1f1f1;
+}
+.new-address {
+  padding: 60px 10px 10px 10px;
+}
+
+.item {
+  height: 40px;
+  padding: 5px;
+  position: relative;
+  border-bottom: 1px solid #ebedf0;
+  font-size: 15px;
+}
+
+.item-title {
+  position: absolute;
+  height: 20px;
+  top: 50%;
+  margin-top: -10px;
+  left: 10px;
+  width: 75px;
+}
+
+.item-input {
+  border: none;
+  width: 200px;
+  height: 20px;
+  top: 50%;
+  margin-top: -10px;
+  position: absolute;
+  right: 50px;
+}
+
+.address-save {
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.save {
+  display: inline-block;
+  width: 300px;
+  height: 40px;
+  line-height: 40px;
+  margin-bottom: 15px;
+  background: #ff2d41;
+  color: white;
+  font-size: 14px;
+}
+.delete {
+  display: inline-block;
+  width: 300px;
+  height: 40px;
+  line-height: 40px;
+  margin-bottom: 15px;
+  background: #fff;
+  color: #323233;
+  border: 1px solid #ebedf0;
+  font-size: 14px;
+}
 </style>
-<!--覆盖优惠券样式-->
 <style>
 .reset .van-cell__title {
   text-align: left;

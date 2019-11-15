@@ -266,7 +266,7 @@ export default {
 }
 .tips {
   padding: 0 3px;
-  min-width: 0;
+  min-width: 10px;
   height: 17px;
   line-height: 17px;
   background-color: #ee0a24;

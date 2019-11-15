@@ -18,6 +18,7 @@ export default new Vuex.Store({
     //order
     //存储订单信息
     orderProduct: [],
+    orderHead:[],
     //当前选中地址信息
     address: {},
     //所有购物车列表
@@ -55,6 +56,9 @@ export default new Vuex.Store({
     getOrderProduct: state => {
       return state.orderProduct;
     },
+    getOrderHead: state => {
+      return state.orderHead;
+    },
     getrealName: state => {
       return state.info.data.realName
     },
@@ -78,6 +82,7 @@ export default new Vuex.Store({
       state.area_M = [];
       state.route = "";
       state.orderProduct = [];
+      state.orderHead=[];
       state.address = {};
       state.allCart = {
         wallpaper:[],
@@ -123,6 +128,9 @@ export default new Vuex.Store({
     //order
     setOrderProduct(state, allProduct) {
       state.orderProduct = allProduct
+    },
+    setOrderHead(state, head) {
+      state.orderHead = head
     },
     setAddress(state, curAddress) {
       state.address = curAddress

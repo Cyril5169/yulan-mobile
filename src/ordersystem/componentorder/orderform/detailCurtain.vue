@@ -64,10 +64,10 @@
                       v-else
                     >{{ getTypeName(liantou.itemType) }}</span>
                   </div>
-                  <div class="title-item2" v-if="showPrice">
+                  <!-- <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>
+                  </div>-->
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.specification}}</span>
@@ -196,10 +196,10 @@
                       v-else
                     >{{ getTypeName(liantou.itemType) }}</span>
                   </div>
-                  <div class="title-item2" v-if="showPrice">
+                  <!-- <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>
+                  </div>-->
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.specification}}</span>
@@ -347,10 +347,10 @@
                       v-else
                     >{{ getTypeName(liantou.itemType) }}</span>
                   </div>
-                  <div class="title-item2" v-if="showPrice">
+                  <!-- <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>
+                  </div>-->
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.specification}}</span>
@@ -491,10 +491,10 @@
                       v-else
                     >{{ getTypeName(liantou.itemType) }}</span>
                   </div>
-                  <div class="title-item2" v-if="showPrice">
+                  <!-- <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>
+                  </div>-->
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.specification}}</span>
@@ -629,10 +629,10 @@
                       v-else
                     >{{ getTypeName(liantou.itemType) }}</span>
                   </div>
-                  <div class="title-item2" v-if="showPrice">
+                  <!-- <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>
+                  </div>-->
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.specification}}</span>
@@ -936,6 +936,11 @@ export default {
                 this.itemNolists[0].total / this.limit
               );
               this.pageMark = this.totalPage;
+              if (itemType == "pjb") {
+                this.itemNolists.sort(function(a, b) {
+                  return a.itemNo > b.itemNo ? 1 : -1; //升序
+                });
+              }
             })
             .catch(err => {
               this.itemNolists = [];
@@ -1049,6 +1054,9 @@ export default {
       data[this.index].certainHeightWidth = theFixType;
       data[this.index].item.itemNo = item.itemNo;
       data[this.index].price = price;
+      if (this.itemType == "pjb") {
+        data[this.index].unit = item.unit == "°ü" ? "包" : item.unit;
+      }
       oriData[this.index].certainHeightWidth = theFixType;
       if (this.productType != "GY") {
         //非工艺用量修改
@@ -1288,7 +1296,6 @@ export default {
         data.push(JSON.parse(JSON.stringify(_data)));
         oriData.push(JSON.parse(JSON.stringify(_data)));
       }
-      console.log(this.ls);
     },
     async getOldData() {
       //原始数据
@@ -1336,7 +1343,6 @@ export default {
     }
   },
   created() {
-    console.log(this.curtainData);
     this.getNowData();
     //this.getOldData();
   }
@@ -1723,7 +1729,7 @@ export default {
 }
 </style>
 <style>
-.curtain-item .van-collapse-item__content{
-    padding: 10px !important;
+.curtain-item .van-collapse-item__content {
+  padding: 10px !important;
 }
 </style>

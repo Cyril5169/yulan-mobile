@@ -404,7 +404,7 @@ var router = new Router({
 
     },
     {
-      path: "/orderdetails/:state_id/:find",
+      path: "/orderdetails/:find",
       name: 'orderdetails',
       component: OrderDetails,
     },

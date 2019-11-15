@@ -37,7 +37,7 @@
               >{{item.text}}</a>
             </li>
           </ul>
-        </div> -->
+        </div>-->
         <div class="ulhead">
           <ul>
             <li class="licenter" @click="showks = true">
@@ -56,10 +56,7 @@
           </ul>
           <div class="search-input-ct">
             <input type="text" class="search-input" v-model="xhInput" placeholder="输入订单型号" />
-            <span
-              class="status-input"
-              @click="showStatusPicker = true"
-            >{{myOrderStatusText}}</span>
+            <span class="status-input" @click="showStatusPicker = true">{{myOrderStatusText}}</span>
           </div>
         </div>
       </div>
@@ -127,11 +124,20 @@
                   orderList.CURTAIN_STATUS_ID !== '' &&
                   orderList.CURTAIN_STATUS_ID == 0)"
                 @click="cancelOrder(orderList.ORDER_NO)"
-              >取消订单</span>
+              >作废订单</span>
+              <span
+                v-if="orderList.STATUS_ID == 3 && orderList.ORDER_NO.slice(0, 1) == 'X'"
+                @click="copyCart(orderList.ORDER_NO)"
+              >退回购物车</span>
               <span
                 class="to-pay"
                 v-if="orderList.STATUS_ID == 5 || orderList.STATUS_ID == 6"
                 @click="tjOrder(orderList)"
+              >提交订单</span>
+              <span
+                class="to-pay"
+                v-if="(orderList.CURTAIN_STATUS_ID == 0 || orderList.CURTAIN_STATUS_ID == 4) && orderList.STATUS_ID == 0"
+                @click="summitCurtain(orderList)"
               >提交订单</span>
             </div>
           </div>
@@ -308,7 +314,7 @@ export default {
         { type: 1, text: "窗帘审核订单" },
         { type: 2, text: "生效订单" },
         { type: 3, text: "已作废" },
-        { type: 4, text: "全部" },
+        { type: 4, text: "全部" }
       ],
       //活动的statusType的索引
       activeStatusTypeIndex: 0,
@@ -330,8 +336,15 @@ export default {
         { type: 3, text: "已作废", status: "3" }
       ],
       showStatusPicker: false,
-      myOrderStatusColumns: ['全部', "待提交", '余额不足待提交', '余额不足可提交', '待确认', '待修改'],
-      myOrderStatusText: '全部',
+      myOrderStatusColumns: [
+        "全部",
+        "待提交",
+        "余额不足待提交",
+        "余额不足可提交",
+        "待确认",
+        "待修改"
+      ],
+      myOrderStatusText: "全部",
       orderType: [
         { text: "全部产品", code: "" },
         { text: "墙纸配套类", code: "W" },
@@ -441,14 +454,14 @@ export default {
       this.myOrderStatusText = index;
       var status = this.statusExchange(index);
       this.showStatusPicker = false;
-      if(index == "全部"){
+      if (index == "全部") {
         this.onStatusTypeChange(this.activeStatusTypeIndex);
-      }else{
-        this.myStatu=[status];
+      } else {
+        this.myStatu = [status];
       }
       this.orderSearch();
     },
-    
+
     orderStatusClick(item, index) {
       this.activeStatus = item.text;
       this.myStatu = [item.status];
@@ -496,7 +509,7 @@ export default {
     },
     onStatusTypeChange(name, title) {
       this.activeStatusTypeIndex = name;
-      this.myOrderStatusText="全部";
+      this.myOrderStatusText = "全部";
       if (this.activeStatusTypeIndex == 4) {
         this.myStatu = [];
         this.myOrderStatusColumns = [];
@@ -505,7 +518,7 @@ export default {
         });
       } else {
         this.myStatu = [];
-        this.myOrderStatusColumns = ['全部'];
+        this.myOrderStatusColumns = ["全部"];
         this.orderStatus.forEach(item => {
           if (this.activeStatusTypeIndex == item.type) {
             this.myStatu.push(item.status);
@@ -544,9 +557,9 @@ export default {
             for (let i = 0; i < data.data.length; i++) {
               this.orderLists.push(data.data[i]);
             }
-            this.orderLists.sort(function(a,b){
-              return a.DATE_CRE > b.DATE_CRE? -1:1
-            })
+            this.orderLists.sort(function(a, b) {
+              return a.DATE_CRE > b.DATE_CRE ? -1 : 1;
+            });
             this.loadingText =
               "加载中，共" +
               this.totalLists +
@@ -564,12 +577,17 @@ export default {
             for (let i = 0; i < this.orderLists.length; i++) {
               this.orderLists[i].showStatus = false;
               if (
+                (this.orderLists[i].STATUS_ID == 3 &&
+                  this.orderLists[i].ORDER_NO.slice(0, 1) == "X") ||
                 this.orderLists[i].STATUS_ID == 5 ||
                 this.orderLists[i].STATUS_ID == 6 ||
                 this.orderLists[i].STATUS_ID == 0 ||
                 (this.orderLists[i].STATUS_ID == 1 &&
                   this.orderLists[i].CURTAIN_STATUS_ID !== "" &&
-                  this.orderLists[i].CURTAIN_STATUS_ID == 0)
+                  this.orderLists[i].CURTAIN_STATUS_ID == 0) ||
+                ((this.orderList.CURTAIN_STATUS_ID == 0 ||
+                  this.orderList.CURTAIN_STATUS_ID == 4) &&
+                  this.orderList.STATUS_ID == 0)
               ) {
                 this.orderLists[i].showStatus = true;
               }
@@ -668,23 +686,49 @@ export default {
     },
     cancelOrder(orderNo) {
       Dialog.confirm({
-        message: "是否确认取消订单"
+        message: "是否确认作废订单"
       })
         .then(() => {
           cancelOrderNew({
             cid: this.$store.getters.getCId,
             orderNo: orderNo
           }).then(res => {
-            Toast({
-              duration: 1000,
-              message: "取消订单成功"
-            });
+            Dialog.confirm({
+              message: "作废成功，是否退回数据到购物车"
+            })
+              .then(() => {
+                copyCartItem({
+                  orderNo: orderNo
+                }).then(res => {
+                  Toast({
+                    duration: 1000,
+                    message: "复制成功，请到购物车中查看"
+                  });
+                });
+              })
+              .catch(() => {});
             this.orderSearch();
           });
         })
         .catch(() => {
           // on cancel
         });
+    },
+    copyCart(orderNo) {
+      Dialog.confirm({
+        message: "是否退回数据到购物车"
+      })
+        .then(() => {
+          copyCartItem({
+            orderNo: orderNo
+          }).then(res => {
+            Toast({
+              duration: 1000,
+              message: "复制成功，请到购物车中查看"
+            });
+          });
+        })
+        .catch(() => {});
     },
     //再次提交订单时的余额判断
     tjOrder(item) {
@@ -706,7 +750,7 @@ export default {
                 if (!res.data) {
                   Dialog.alert({
                     message: `活动‘&${item.ORDERBODY[i].PROMOTION}’不存在`
-                  }).then(() => { });
+                  }).then(() => {});
                   return;
                 }
                 if (
@@ -715,7 +759,7 @@ export default {
                 ) {
                   Dialog.alert({
                     message: `活动‘&${item.ORDERBODY[i].PROMOTION}’已过期，请删除订单后重新下单`
-                  }).then(() => { });
+                  }).then(() => {});
                   return;
                 }
               }
@@ -730,14 +774,14 @@ export default {
                 if (res.data.length == 0) {
                   Dialog.alert({
                     message: "优惠券不存在"
-                  }).then(() => { });
+                  }).then(() => {});
                   return;
                 }
                 for (var j = 0; j < res.data.length; j++) {
                   if (new Date(res.data[j].DATE_END) < new Date()) {
                     Dialog.alert({
                       message: "优惠券已过期，请删除订单后重新下单"
-                    }).then(() => { });
+                    }).then(() => {});
                     return;
                   }
                 }
@@ -748,7 +792,7 @@ export default {
         } else {
           Dialog.alert({
             message: "余额不足,提交失败"
-          }).then(() => { });
+          }).then(() => {});
         }
       });
     },
@@ -776,6 +820,39 @@ export default {
           });
         }
       });
+    },
+    summitCurtain(orderHead) {
+      let orderBody = orderHead.ORDERBODY;
+      let transCookies = [];
+      for (let i = 0; i < orderBody.length; i++) {
+        transCookies[i] = new Object();
+        transCookies[i].orderNumber = orderBody[i].ORDER_NO;
+        transCookies[i].lineNo = orderBody[i].LINE_NO;
+        transCookies[i].activityId = orderBody[i].curtains[0].activityId;
+        transCookies[i].quantity = orderBody[i].QTY_REQUIRED;
+        transCookies[i].price = orderBody[i].UNIT_PRICE;
+        transCookies[i].splitShipment = orderBody[i].PART_SEND_ID;
+        transCookies[i].newactivityId = orderBody[i].PROMOTION;
+        transCookies[i].unit = "米";
+        transCookies[i].item = new Object();
+        transCookies[i].item.itemNo = orderBody[i].ITEM_NO;
+        transCookies[i].item.note = orderBody[i].NOTES;
+        transCookies[i].item.itemVersion = orderBody[i].PRODUCTION_VERSION;
+        transCookies[i].item.groupType = "E";
+        transCookies[i].salPromotion = new Object();
+        transCookies[i].salPromotion.orderType = orderBody[i].PROMOTION_TYPE;
+        transCookies[i].salPromotion.arrearsFlag = orderHead.ARREARSFLAG;
+        transCookies[i].salPromotion.flagFl = orderBody[i].FLAG_FL_TYPE;
+      }
+      this.$store.commit("setOrderProduct", transCookies);
+      this.$store.commit("setOrderHead", orderHead);
+      this.$router.push({
+        name: "fillorder",
+        params: {
+          isX: true,
+          from: "myorder"
+        }
+      });
     }
   },
   computed: {
@@ -793,6 +870,9 @@ export default {
     let time = new Date();
     this.jsSet(time);
     this.ksSet(time);
+    this.$root.$on("refreshOrder", () => {
+      this.onLoad(false);
+    });
   },
   mounted() {
     // window.onresize监听页面高度的变化
@@ -824,7 +904,7 @@ export default {
     if (window.vTop == this) window.vTop = null;
   },
   watch: {
-    showHeight: function () {
+    showHeight: function() {
       if (this.docmHeight > this.showHeight) {
         this.hidshow = false;
       } else {
@@ -915,7 +995,7 @@ input {
   height: 25px;
   line-height: 25px;
 }
-.status-input{
+.status-input {
   width: 130px;
   height: 25px;
   line-height: 25px;
@@ -1069,8 +1149,8 @@ ul {
 }
 
 .next-do .to-pay {
-  border: 1px solid #ff6352;
-  color: #ff6352;
+  border: 1px solid #a0cb8d;
+  color: #a0cb8d;
 }
 .detail-button {
   position: absolute;
