@@ -1333,7 +1333,7 @@ export default {
               _curtainData[i].manufacturingInstructions === "未选"
             ) {
               Dialog.alert({
-                message: "制造说明不能为空!"
+                message: this.getTypeName(_itemType) + "制造说明不能为空!"
               });
               return;
             }
@@ -1346,7 +1346,7 @@ export default {
             _curtainData[i].manufacturingInstructions === "未选")
         ) {
           Dialog.alert({
-            message: "制造说明不能为空!"
+            message: this.getTypeName(_itemType) + "制造说明不能为空!"
           });
           return;
         }

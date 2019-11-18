@@ -235,7 +235,7 @@
                   <div
                     class="title-item2"
                     v-if="liantou.manufacturingInstructions"
-                    @click="liantou.showZZSM = tableStatus !='0'"
+                    @click="liantou.showZZSM = tableStatus !=0"
                   >
                     <span class="title-left">制造说明</span>
                     <span class="title-right title-right2">{{liantou.manufacturingInstructions}}</span>
@@ -358,11 +358,11 @@
                   <div
                     class="title-item2"
                     v-if="liantou.manufacturingInstructions"
-                    @click="liantou.showZZSM = tableStatus !='0'"
+                    @click="liantou.showZZSM = tableStatus !=0"
                   >
                     <span class="title-left">制造说明</span>
                     <span class="title-right title-right2">{{liantou.manufacturingInstructions}}</span>
-                    <span class="item-icon" v-if="tableStatus !='0'"></span>
+                    <span class="item-icon" v-if="tableStatus !=0"></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">说明</span>
@@ -513,7 +513,7 @@
                     <span class="title-right">
                       <input
                         type="number"
-                        v-if="liantou.modifyFlag=='Y' && tableStatus!='0'"
+                        v-if="liantou.modifyFlag=='Y' && tableStatus!=0"
                         class="use-num"
                         placeholder="0.00"
                         v-model="liantou.dosage"
@@ -530,11 +530,11 @@
                   <div
                     class="title-item2"
                     v-if="liantou.manufacturingInstructions"
-                    @click="liantou.showZZSM = tableStatus !='0'"
+                    @click="liantou.showZZSM = tableStatus !=0"
                   >
                     <span class="title-left">制造说明</span>
                     <span class="title-right title-right2">{{liantou.manufacturingInstructions}}</span>
-                    <span class="item-icon" v-if="tableStatus !='0'"></span>
+                    <span class="item-icon" v-if="tableStatus !=0"></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">说明</span>
@@ -642,7 +642,7 @@
                     <span class="title-right">
                       <input
                         type="number"
-                        v-if="liantou.modifyFlag=='Y' && tableStatus!='0'"
+                        v-if="liantou.modifyFlag=='Y' && tableStatus!=0"
                         class="use-num"
                         placeholder="0.00"
                         v-model="liantou.dosage"
@@ -725,7 +725,7 @@
         />
       </div>
     </van-popup>
-    <!-- <div class="shop-btn" @click="toCart">{{AddOrNot?'加入购物车':'保存至购物车'}}</!-->
+    <div class="shop-btn" @click="resolveModify" v-if="tableStatus!=0">确认修改</div>
   </div>
 </template>
 
@@ -800,7 +800,7 @@ export default {
       pjbAll: [],
       inputValue: "",
       itemNolists: [], //所有可供选择的型号
-      chooseBig: [true, true, true, true, true], //是否选择了大类
+      chooseBig: [], //是否选择了大类
       //当前页数
       currentPage: 1,
       //总页数
@@ -1050,7 +1050,7 @@ export default {
       var oriData = this.getOrignalArray(this.itemType);
       var price = this.getPrice(this.$store.getters.getCtype, item);
       data[this.index].note = item.note;
-      data[this.index].specification = item.fixGrade;
+      data[this.index].specification = item.fixGrade / 1000;
       data[this.index].certainHeightWidth = theFixType;
       data[this.index].item.itemNo = item.itemNo;
       data[this.index].price = price;
@@ -1262,8 +1262,7 @@ export default {
     //获取备注文字
     getRemark(data) {
       if (data.certainHeightWidth === 0 && data.specification != 0) {
-        let _fixType = data.specification / 1000;
-        if (_fixType < this.height) {
+        if (data.specification < this.height) {
           return "超高帘，用量待审核!";
         }
       }
@@ -1289,12 +1288,22 @@ export default {
         _data.itemType = _data.curtainPartName;
         _data.unit = _data.unit === "°ü" ? "包" : _data.unit;
         _data.showZZSM = false;
-        _data.choose = true;
+        if (_data.choose == undefined || _data.choose == null) {
+          _data.choose = true;
+        }
 
         var data = this.getChangeArray(_data.itemType);
         var oriData = this.getOrignalArray(_data.itemType);
         data.push(JSON.parse(JSON.stringify(_data)));
         oriData.push(JSON.parse(JSON.stringify(_data)));
+      }
+      if (
+        this.curtainData.chooseBig == undefined ||
+        this.curtainData.chooseBig == null
+      ) {
+        this.chooseBig = [true, true, true, true, true];
+      } else {
+        this.chooseBig = this.curtainData.chooseBig;
       }
     },
     async getOldData() {
@@ -1340,6 +1349,27 @@ export default {
           }
         }
       });
+    },
+    resolveModify() {
+      var _curtainData = [];
+      for (var i = 0; i < this.lt.length; i++) {
+        _curtainData.push(JSON.parse(JSON.stringify(this.lt[i])));
+      }
+      for (var i = 0; i < this.ls.length; i++) {
+        _curtainData.push(JSON.parse(JSON.stringify(this.ls[i])));
+      }
+      for (var i = 0; i < this.lspb.length; i++) {
+        _curtainData.push(JSON.parse(JSON.stringify(this.lspb[i])));
+      }
+      for (var i = 0; i < this.sha.length; i++) {
+        _curtainData.push(JSON.parse(JSON.stringify(this.sha[i])));
+      }
+      for (var i = 0; i < this.pjb.length; i++) {
+        _curtainData.push(JSON.parse(JSON.stringify(this.pjb[i])));
+      }
+
+      var _chooseBig = JSON.parse(JSON.stringify( this.chooseBig));
+      this.$emit('getChangeData',_curtainData,_chooseBig);
     }
   },
   created() {

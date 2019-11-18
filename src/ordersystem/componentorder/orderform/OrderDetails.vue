@@ -76,10 +76,16 @@
         class="good-contain"
         v-for="(good,index) in oneOrder.ORDERBODY"
         :key="index"
-        @click="checkCurtain(good)"
+        @click="checkCurtain(good,index)"
       >
         <div class="good-item1">
-          <span>{{good.ITEM_NO}} {{good.NOTE}}</span>
+          <span>
+            {{good.ITEM_NO}} {{good.NOTE}}
+            <span
+              v-if="good.checkStatus"
+              style="color:red;"
+            >({{good.checkStatus}})</span>
+          </span>
           <span class="good-num">数量：{{good.QTY_REQUIRED}}</span>
           <span v-if="showPrice" style="float:right;margin-right:70px;">单价：￥{{good.UNIT_PRICE}}</span>
           <span v-else style="float:right;margin-right:70px;">***</span>
@@ -104,6 +110,9 @@
         <div class="good-item2" v-if="isX">
           <span>兰居备注</span>
           <span class="good-num">{{good.LJ_SUGGESTION}}</span>
+        </div>
+        <div style="margin-left: 10px;" v-if="good.checkStatus">
+          <span style="color:red;">修改后的价格以实际提交时为准</span>
         </div>
       </div>
     </div>
@@ -148,6 +157,7 @@
       >提交订单</span>
       <span @click="_defeat" class="fail-btn" v-if="oneOrder.CURTAIN_STATUS_ID == 2">退回兰居修改</span>
       <span @click="_pass" class="success-btn" v-if="oneOrder.CURTAIN_STATUS_ID == 2">确认兰居修改</span>
+      <span @click="LjExamine" class="success-btn" v-if="oneOrder.CURTAIN_STATUS_ID == 1">确认修改</span>
     </div>
     <!-- <div class="bottom-nav" v-show="completeBottom">
       <span>我要投诉</span>
@@ -159,7 +169,12 @@
       transition="slide"
       position="right"
     >
-      <detailCurtain :curtainData="curtainData" :tableStatus="0" @backclick="backclick"></detailCurtain>
+      <detailCurtain
+        :curtainData="curtainData"
+        :tableStatus="tableStatus"
+        @backclick="backclick"
+        @getChangeData="getChangeData"
+      ></detailCurtain>
     </van-popup>
   </div>
 </template>
@@ -169,6 +184,7 @@ import axios from "axios";
 import top from "../../../components/Top";
 import { Toast, Popup, Dialog } from "vant";
 import {
+  updateCurtainOrder,
   InsertOperationRecord,
   cancelOrderNew,
   copyCartItem,
@@ -209,7 +225,10 @@ export default {
       canCheckch: "",
       from: "",
       showCurtainDetail: false,
-      curtainData: []
+      curtainData: [],
+      tableStatus: 0,
+      selectIndex: 0,
+      changeFlag: false
     };
   },
   computed: {
@@ -249,6 +268,7 @@ export default {
             } else {
               this.oneOrder.ORDERBODY[i].productTip = "--";
             }
+            this.oneOrder.ORDERBODY[i].checkStatus = "";
           }
           this.notpayBottom = false;
           if (
@@ -532,10 +552,72 @@ export default {
         })
         .catch(() => {});
     },
-    checkCurtain(item) {
+    LjExamine() {
+      if (this.changeFlag) {
+        var allCurtains = [];
+        var deleteIds = [];
+        for (var i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
+          var oneCurtain = [];
+          var curtains = this.oneOrder.ORDERBODY[i].curtains;
+          for (var j = 0; j < curtains.length; j++) {
+            if (curtains[j].choose ==undefined || curtains[j].choose) oneCurtain.push(curtains[j]);
+            else deleteIds.push(curtains[j].id);
+          }
+          allCurtains.push(oneCurtain);
+        }
+        var data = {
+          cid: this.$store.getters.getCId,
+          orderNo: this.orderNo,
+          curtainStatusId: "0",
+          allCurtains: allCurtains,
+          deleteIds: deleteIds
+        };
+          Dialog.confirm({
+            message: "确定修改？"
+          })
+            .then(() => {
+              updateCurtainOrder(data)
+                .then(res => {
+                  Toast({
+                    duration: 1000,
+                    message: "操作成功,请提交结算再次审核"
+                  });
+                  this.$root.$emit("refreshOrder");
+                this.oneOrder.CURTAIN_STATUS_ID = 0;
+                })
+                .catch(res => {
+                  Toast({
+                    duration: 1000,
+                    message: "操作失败，请稍后重试"
+                  });
+                });
+            })
+            .catch(() => {});
+      } else {
+        Toast({
+          duration: 1000,
+          message: "未修改任何窗帘"
+        });
+      }
+    },
+    getChangeData(curtain, chooseBig) {
+      //换掉的item赋值
+      for (let i = 0; i < curtain.length; i++) {
+        curtain[i].itemId = curtain[i].item.itemNo;
+      }
+      this.oneOrder.ORDERBODY[this.selectIndex].curtains = curtain;
+      this.oneOrder.ORDERBODY[this.selectIndex].chooseBig = chooseBig;
+      this.oneOrder.ORDERBODY[this.selectIndex].checkStatus = "已修改";
+      this.changeFlag = true;
+      this.showCurtainDetail = false;
+    },
+    checkCurtain(item, index) {
       if (this.isX) {
         this.showCurtainDetail = true;
+        this.selectIndex = index;
         this.curtainData = item;
+        if (this.oneOrder.CURTAIN_STATUS_ID == 1) this.tableStatus = 1;
+        else this.tableStatus = 0;
       }
     }
   },

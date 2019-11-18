@@ -1141,7 +1141,7 @@ ul {
 }
 
 .next-do span {
-  padding: 8px 20px;
+  padding: 8px 15px;
   margin-left: 10px;
   border: 1px solid #999686;
   border-radius: 20px;
