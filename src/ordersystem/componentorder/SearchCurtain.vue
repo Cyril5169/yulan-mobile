@@ -87,7 +87,12 @@
           <tr>
             <th>位置：</th>
             <td>
-              <input class="myposition" placeholder="选填" v-model="singleCurtain.myposition" />
+              <input
+                class="myposition"
+                placeholder="选填"
+                v-model="singleCurtain.myposition"
+                @input="oninput($event,index)"
+              />
             </td>
           </tr>
         </table>
@@ -260,8 +265,30 @@ export default {
     [Dialog.name]: Dialog,
     navBottom
   },
+  filters: {
+    calLength(str) {
+      var len = 0;
+      for (var i = 0; i < str.length; i++) {
+        var c = str.charCodeAt(i);
+        //单字节加1
+        if ((c >= 0x0001 && c <= 0x007e) || (0xff60 <= c && c <= 0xff9f)) {
+          len++;
+        } else {
+          len += 2;
+        }
+      }
+      return len;
+    }
+  },
   methods: {
-    dothis(val) {},
+    oninput(e, index) {
+      var that = this;
+      var length = this.$options.filters.calLength(e.target.value);
+      if (length > 20) {
+        e.target.value = e.target.value.slice(0, 20);
+      }
+      that.allCurtain[index].myposition = e.target.value;
+    },
     back() {
       this.$router.push({
         path: "/shopstore"
