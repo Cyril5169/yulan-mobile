@@ -11,7 +11,13 @@
         @focus="showSearch = true"
       >
         <div slot="action" @click="onSearchWall(inputValue)" style="color: white">搜索</div>
-        <van-icon slot="right-icon" name="scan" @click="onScanClick()" size="30px" style="color: white"></van-icon>
+        <van-icon
+          slot="right-icon"
+          name="scan"
+          @click="onScanClick()"
+          size="30px"
+          style="color: white"
+        ></van-icon>
       </van-search>
       <div class="img" @click="back"></div>
     </div>
@@ -55,7 +61,18 @@
             <th>品牌：</th>
             <td>{{wallMegs.BRAND_NAME}}</td>
             <td class="show-kucun">
-              <span @click.stop="checkKucun">查看库存</span>
+              <span v-if="wallMegs.NOTE_TYPE != 'I_S_H'" @click.stop="checkKucun">查看库存</span>
+              <span v-else style="color:red;" @click.stop>库存异常</span>
+            </td>
+          </tr>
+          <tr v-if="wallMegs.NOTE_TYPE_NAME">
+            <td colspan="3">
+              <span style="color:darkred;">{{wallMegs.NOTE_TYPE_NAME}}</span>
+            </td>
+          </tr>
+          <tr v-if="baobei">
+            <td colspan="3">
+              <span style="color:darkred;">此型号已报备，如果直接下单，有可能不被处理，请先与工厂订单部联系</span>
             </td>
           </tr>
         </table>
@@ -96,7 +113,7 @@ import { Search, ActionSheet, Toast, Loading, Icon, Dialog, Popup } from "vant";
 import "../assetsorder/actionsheet.css";
 import navBottom from "../../components/navBottom";
 import scan from "../componentorder/Scan";
-import { GetWallpaperInfo } from "@/api/itemInfoASP";
+import { GetWallpaperInfo, GetSalPutonRecord } from "@/api/itemInfoASP";
 
 export default {
   name: "",
@@ -120,6 +137,7 @@ export default {
       hidshow: true, //显示或者隐藏footer
       loading: false,
       showScan: false,
+      baobei: false
     };
   },
   components: {
@@ -140,7 +158,7 @@ export default {
         path: "/shopstore"
       });
     },
-    closeScan:function(){
+    closeScan: function() {
       this.showScan = false;
     },
     //查看墙纸库存
@@ -182,7 +200,7 @@ export default {
     //扫一扫
     onScanClick() {
       this.showScan = true;
-      console.log(this.$refs.scan)
+      console.log(this.$refs.scan);
       if (this.$refs.scan) {
         //this.$refs.scan.startRecognize();
         startRecognize();
@@ -190,37 +208,49 @@ export default {
     },
     onScanSuccess(result) {
       this.showScan = false;
-      GetWallpaperInfo(this.CID, result, "barcode").then(res=>{
-        this.resY = true;
-        this.resN = false;
-        this.wallMegs = res.data[0];
-      }).catch(err=>{
+      this.baobei = false;
+      GetWallpaperInfo(this.CID, result, "barcode")
+        .then(res => {
+          GetSalPutonRecord({ itemNo: res.data[0].ITEM_NO }).then(res2 => {
+            this.baobei = res2.count > 0 ? true : false;
+          });
+          this.resY = true;
+          this.resN = false;
+          this.wallMegs = res.data[0];
+        })
+        .catch(err => {
           this.resY = false;
           this.resN = true;
           Toast({
             duration: 2000,
             message: err.msg
           });
-      })
+        });
       this.showSearch = false;
     },
     //墙纸查询
     onSearchWall(inputValue) {
-      if (inputValue == '') return;
+      if (inputValue == "") return;
       this.wallMegs = {};
       this.inputValue = inputValue;
-      GetWallpaperInfo(this.CID, inputValue.toUpperCase(), "").then(res=>{
-        this.resY = true;
-        this.resN = false;
-        this.wallMegs = res.data[0];
-      }).catch(err=>{
+      this.baobei = false;
+      GetWallpaperInfo(this.CID, inputValue.toUpperCase(), "")
+        .then(res => {
+          GetSalPutonRecord({ itemNo: res.data[0].ITEM_NO }).then(res2 => {
+            this.baobei = res2.count > 0 ? true : false;
+          });
+          this.resY = true;
+          this.resN = false;
+          this.wallMegs = res.data[0];
+        })
+        .catch(err => {
           this.resY = false;
           this.resN = true;
           Toast({
             duration: 2000,
             message: err.msg
           });
-      })
+        });
       this.showSearch = false;
       this.setHistoryItems(this.inputValue);
     },
@@ -262,7 +292,7 @@ export default {
     } else {
       this.historySearch = localStorage.historyItems.split("|");
     }
-    window.addEventListener("scansuccess", function (event) {
+    window.addEventListener("scansuccess", function(event) {
       me.inputValue = event.result;
     });
   },
@@ -276,11 +306,10 @@ export default {
     };
   },
   destroyed() {
-    if (window.vTop == this)
-      window.vTop = null;
+    if (window.vTop == this) window.vTop = null;
   },
   watch: {
-    showHeight: function () {
+    showHeight: function() {
       if (this.docmHeight > this.showHeight) {
         this.hidshow = false;
       } else {
