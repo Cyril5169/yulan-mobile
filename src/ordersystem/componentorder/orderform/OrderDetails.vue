@@ -62,7 +62,7 @@
           <th>备注：</th>
           <td>{{oneOrder.NOTES}}</td>
         </tr>
-        <tr v-if="isX">
+        <tr>
           <th>玉兰处理说明：</th>
           <td>{{oneOrder.YULAN_NOTES}}</td>
         </tr>
