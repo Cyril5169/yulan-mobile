@@ -282,12 +282,23 @@ export default {
   },
   methods: {
     oninput(e, index) {
-      var that = this;
-      var length = this.$options.filters.calLength(e.target.value);
-      if (length > 20) {
-        e.target.value = e.target.value.slice(0, 20);
+      e.target.value = this.splitStr(e.target.value,20);
+      this.allCurtain[index].myposition = e.target.value;
+    },
+    splitStr(str,length){
+       var len = 0;
+       var returnStr = '';
+       for (var i = 0; i < str.length; i++) {
+        var c = str.charCodeAt(i);
+        //单字节加1
+        if ((c >= 0x0001 && c <= 0x007e) || (0xff60 <= c && c <= 0xff9f)) {
+          len++;
+        } else {
+          len += 2;
+        }
+        if(len <= length) returnStr += String.fromCharCode(c);
       }
-      that.allCurtain[index].myposition = e.target.value;
+      return returnStr;
     },
     back() {
       this.$router.push({
