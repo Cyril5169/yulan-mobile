@@ -68,6 +68,23 @@
         </tr>
       </table>
     </div>
+    <div style="margin-bottom:5px;">
+      <van-collapse v-model="activeName">
+        <van-collapse-item name="1" style="position:relative;text-align:left;">
+          <div slot="title">
+            <van-icon name="todo-list-o" />
+            <span style="margin-left:3px;font-size:14.5px;font-weight: bold;">处理记录</span>
+          </div>
+          <div class="orderRecord">
+            <table>
+              <tr v-for="(record,index) in operationRecords" :key="index">
+                <span v-html="record.OPERATION_NOTE"></span>
+              </tr>
+            </table>
+          </div>
+        </van-collapse-item>
+      </van-collapse>
+    </div>
     <div class="product">
       <div class="good-head">
         <span class="good-title">全部商品</span>
@@ -182,10 +199,11 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import { Toast, Popup, Dialog } from "vant";
+import { Toast, Popup, Dialog, Collapse, CollapseItem, Icon } from "vant";
 import {
   updateCurtainOrder,
   InsertOperationRecord,
+  getOperationRecord,
   cancelOrderNew,
   copyCartItem,
   GetCtmOrder,
@@ -202,7 +220,10 @@ export default {
     detailCurtain,
     [Toast.name]: Toast,
     [Popup.name]: Popup,
-    [Dialog.name]: Dialog
+    [Dialog.name]: Dialog,
+    [Collapse.name]: Collapse,
+    [CollapseItem.name]: CollapseItem,
+    [Icon.name]: Icon
   },
   data() {
     return {
@@ -228,7 +249,9 @@ export default {
       curtainData: [],
       tableStatus: 0,
       selectIndex: 0,
-      changeFlag: false
+      changeFlag: false,
+      activeName: [],
+      operationRecords: []
     };
   },
   computed: {
@@ -282,6 +305,9 @@ export default {
           ) {
             this.notpayBottom = true;
           }
+          getOperationRecord({ orderNo: this.orderNo }).then(res2 => {
+            this.operationRecords = res2.data;
+          });
         });
       });
     },
@@ -560,7 +586,8 @@ export default {
           var oneCurtain = [];
           var curtains = this.oneOrder.ORDERBODY[i].curtains;
           for (var j = 0; j < curtains.length; j++) {
-            if (curtains[j].choose ==undefined || curtains[j].choose) oneCurtain.push(curtains[j]);
+            if (curtains[j].choose == undefined || curtains[j].choose)
+              oneCurtain.push(curtains[j]);
             else deleteIds.push(curtains[j].id);
           }
           allCurtains.push(oneCurtain);
@@ -572,27 +599,27 @@ export default {
           allCurtains: allCurtains,
           deleteIds: deleteIds
         };
-          Dialog.confirm({
-            message: "确定修改？"
-          })
-            .then(() => {
-              updateCurtainOrder(data)
-                .then(res => {
-                  Toast({
-                    duration: 1000,
-                    message: "操作成功,请提交结算再次审核"
-                  });
-                  this.$root.$emit("refreshOrder");
-                this.oneOrder.CURTAIN_STATUS_ID = 0;
-                })
-                .catch(res => {
-                  Toast({
-                    duration: 1000,
-                    message: "操作失败，请稍后重试"
-                  });
+        Dialog.confirm({
+          message: "确定修改？"
+        })
+          .then(() => {
+            updateCurtainOrder(data)
+              .then(res => {
+                Toast({
+                  duration: 1000,
+                  message: "操作成功,请提交结算再次审核"
                 });
-            })
-            .catch(() => {});
+                this.$root.$emit("refreshOrder");
+                this.oneOrder.CURTAIN_STATUS_ID = 0;
+              })
+              .catch(res => {
+                Toast({
+                  duration: 1000,
+                  message: "操作失败，请稍后重试"
+                });
+              });
+          })
+          .catch(() => {});
       } else {
         Toast({
           duration: 1000,
@@ -643,7 +670,7 @@ export default {
   margin-top: 40px;
   /*background: -webkit-linear-gradient(left,#ABD46C, #89CB81);*/
   background: linear-gradient(to right, #bedd81, #87ca81);
-  height: 25px;
+  height: 20px;
   position: relative;
   color: white;
 }
@@ -742,7 +769,7 @@ export default {
   text-align: left;
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .contct span {
