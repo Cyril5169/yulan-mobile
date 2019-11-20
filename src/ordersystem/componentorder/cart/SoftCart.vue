@@ -303,6 +303,7 @@ export default {
       }
     },
     searchCartList() {
+      this.loading = true;
       GetCartItem({
         cid: this.$store.getters.getCId,
         commodityType: "soft"
@@ -311,7 +312,6 @@ export default {
           this.checkBoxModel = [];
           this.checkGroupModel = [];
           this.thisGroup = "";
-          this.loading = false;
           var data = res.data;
           for (let i = 0; i < data.length; ) {
             if (data[i].commodities.length == 0) {
@@ -349,6 +349,7 @@ export default {
           }
           this.cartlist = cartdata;
           this.isLoading = false;
+          this.loading = false;
         });
     },
     //购物车删除
