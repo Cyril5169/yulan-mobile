@@ -298,6 +298,11 @@ export default {
             path: "/complaint"
           });
           break;
+        case 102:
+          this.$router.push({
+            path: "/customer"
+          });
+          break;
       }
 
       //   if(this.top == 0|| this.top ==1 || this.top ==5  ){
@@ -518,6 +523,11 @@ export default {
     }
    if (this.top == 101) {
       this.msg = "物流投诉";
+      let a = this.$refs.top;
+      a.className = "top-green";
+    }
+    if (this.top == 102) {
+      this.msg = "销售提货单查询";
       let a = this.$refs.top;
       a.className = "top-green";
     }

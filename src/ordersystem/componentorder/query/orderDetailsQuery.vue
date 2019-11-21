@@ -4,9 +4,10 @@
     <span class="search-button" @click="query()">查询</span>
     <div class="search">
       <ul class="ulhead" id="ulhead">
-        <li class="licenter" @click="showType_1 = true">
+        <div >客户名称：{{baseData.CUSTOMER_NAME}} </div>
+        <div >汇总金额：{{baseData.MONEYSUM}}元<li class="licenter" style="margin-left:20px" @click="showType_1 = true">
           <input class="time" type="text" v-model="myStatus" disabled />
-        </li>
+        </li></div>
       </ul>
     </div>
 
@@ -22,7 +23,7 @@
             <td style="width:25%">创建时间:</td>
             <td>{{singleBank.DATE_CRE|datatrans}}</td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td>客户:</td>
             <td>{{singleBank.CUSTOMER_NAME}}</td>
           </tr>
@@ -33,6 +34,10 @@
           <tr>
             <td>联系电话:</td>
             <td>{{singleBank.TELEPHONE}}</td>
+          </tr> -->
+          <tr>
+            <td>订单金额:</td>
+            <td>{{singleBank.ALL_SPEND}}元</td>
           </tr>
         </table>
         <span class="order-state" @click="toOrderDetails(singleBank)">查看订单详情</span>
@@ -276,7 +281,7 @@ export default {
     query() {
       this.tableData = [];
       var data = {
-        costomerCodes: this.baseData.customer, //已选用户
+        customerCode: this.baseData.customer, //已选用户
         beginTime: this.baseData.beginTime, //起始时间
         finishTime: this.baseData.finishTime, //结束时间
         limit: this.baseData.limit, //限制数
@@ -356,7 +361,7 @@ export default {
   top: 50px;
   line-height: 37px;
   width: 100%;
-  height: 37px;
+  height: 69px;
   /*font-size: 15px;*/
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
@@ -367,7 +372,7 @@ export default {
 ul {
   margin: 0;
   padding: 0;
-  display: flex;
+  
   justify-content: space-around;
 }
 
@@ -401,7 +406,7 @@ input {
   background-size: 15px;
 }
 .all-bank {
-  margin: 110px 10px 80px;
+  margin: 140px 10px 80px;
 }
 .all-bank td,
 .all-bank th {

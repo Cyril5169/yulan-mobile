@@ -4,9 +4,11 @@
     <span class="search-button" @click="query()">查询</span>
     <div class="search">
       <ul class="ulhead" id="ulhead">
-        <li class="licenter" @click="showType_1 = true">
+        <div >客户名称：{{baseData.CUSTOMER_NAME}} </div>
+        <div >汇总金额：{{baseData.MONEYSUM}}元<li class="licenter" style="margin-left:20px" @click="showType_1 = true">
           <input class="time" type="text" v-model="myStatus" disabled />
-        </li>
+        </li></div>
+        
       </ul>
     </div>
 
@@ -18,62 +20,62 @@
         </div>
         <table>
           <tr>
-            <td style="width:30%">订单号:</td>
+            <td style="width:45%">订单号:</td>
             <td>{{singleBank.CONTRACT_NO}}</td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td>合同号:</td>
             <td>{{singleBank.HTBM}}</td>
-          </tr>
-          <tr>
+          </tr> -->
+          <!-- <tr>
             <td>开单日期:</td>
             <td>{{singleBank.BILL_DATE|datatrans}}</td>
-          </tr>
+          </tr> -->
           <tr>
             <td>提货日期:</td>
             <td>{{singleBank.DATE_OUT_STOCK|datatrans}}</td>
           </tr>
           <tr>
             <td>类型:</td>
-            <td>{{singleBank.ORDERTYPE_NAME}}</td>
+            <td>{{singleBank.BILL_ID|transType}}</td>
           </tr>
           <tr>
             <td>金额:</td>
-            <td>{{singleBank.MONEY_SUM}}</td>
+            <td>{{singleBank.MONEY_SUM}}元</td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td>物流管理员:</td>
             <td>{{singleBank.NAME}}</td>
-          </tr>
-          <tr>
+          </tr> -->
+          <!-- <tr>
             <td>客户名称:</td>
             <td>{{singleBank.CUSTOMER_NAME}}/联系人:{{singleBank.LINKMAN}}</td>
-          </tr>
+          </tr> -->
         </table>
         <span class="order-state" @click="toBillDetails(singleBank)">查看详情</span>
       </div>
     </div>
     <!--提货单详情-->
     <van-popup v-model="showDetail" position="bottom" closeable :style="{ height: '75%' }">
-      <van-panel title="提货单详情">
+      <van-panel title="提货单详情" style="font-size:14px">
         <div style="width:90%;margin:0 auto">
           <table style="width:100%;height:180px" class="table_2" border="1">
             <tr>
-              <td style="width:20%">提货单:</td>
+              <td style="width:25%">提货单:</td>
               <td>{{tableDetail_1.SALE_NO}}</td>
             </tr>
             <tr>
-              <td>日期:</td>
+              <td>开单日期:</td>
               <td>{{tableDetail_1.BILL_DATE|datatrans}}</td>
             </tr>
             <tr>
               <td>状态:</td>
               <td>{{tableDetail_1.STATUS_ID|transStatus}}</td>
             </tr>
-            <tr>
+            <!-- <tr>
               <td>业务员:</td>
               <td>{{tableDetail_1.SALE_NAME}}</td>
-            </tr>
+            </tr> -->
             <tr>
               <td>合同号:</td>
               <td>{{tableDetail_1.HTBM}}</td>
@@ -86,18 +88,18 @@
               <td>提货日期:</td>
               <td>{{tableDetail_1.DATE_OUT_STOCK|datatrans}}</td>
             </tr>
-            <tr>
+            <!-- <tr>
               <td>部门:</td>
               <td></td>
-            </tr>
+            </tr> -->
             <tr>
               <td>客户:</td>
               <td>{{tableDetail_1.CUSTOMER_NAME}}/联系人:{{tableDetail_1.LINKMAN}}</td>
             </tr>
-            <tr>
+            <!-- <tr>
               <td>物流:</td>
               <td></td>
-            </tr>
+            </tr> -->
             <tr>
               <td>备注:</td>
               <td>{{tableDetail_1.NOTES}}</td>
@@ -125,16 +127,16 @@
                 <td style="width:25%;text-align:left">仓库：</td>
                 <td>{{detail.NOTE}}</td>
               </tr>
-              <tr>
+              <!-- <tr>
                 <td style="width:25%;text-align:left">区位：</td>
                 <td>{{detail.AREA}}</td>
-              </tr>
+              </tr> -->
               <tr>
                 <td style="width:25%;text-align:left">发货数：</td>
                 <td>{{detail.QTY_DELIVER}}</td>
               </tr>
               <tr>
-                <td style="width:25%;text-align:left">物流单价：</td>
+                <td style="width:35%;text-align:left">物流单价：</td>
                 <td>{{detail.TRANS_PRICE}}</td>
               </tr>
               <tr>
@@ -236,6 +238,17 @@ export default {
           return "作废";
         case "4":
           return "已月结";
+          break;
+      }
+    },
+    transType(value){
+      switch (value) {
+        case "0":
+          return "冲减单";
+        case "3":
+          return "退货单";
+        default:
+          return "提货单";
           break;
       }
     },
@@ -395,7 +408,7 @@ export default {
   top: 50px;
   line-height: 37px;
   width: 100%;
-  height: 37px;
+  height: 69px;
   /*font-size: 15px;*/
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
@@ -406,7 +419,7 @@ export default {
 ul {
   margin: 0;
   padding: 0;
-  display: flex;
+  
   justify-content: space-around;
 }
 
@@ -440,7 +453,7 @@ input {
   background-size: 15px;
 }
 .all-bank {
-  margin: 110px 10px 80px;
+  margin: 140px 10px 80px;
 }
 .all-bank td,
 .all-bank th {

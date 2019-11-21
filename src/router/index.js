@@ -89,6 +89,7 @@ import StockQuery from '@/ordersystem/componentorder/query/stockQuery'
 import AreaQuery from '@/ordersystem/componentorder/query/areaQuery'
 import BillDetailsQuery from '@/ordersystem/componentorder/query/billDetailsQuery'
 import OrderQuery from '@/ordersystem/componentorder/query/orderQuery'
+import SalesQuery from '@/ordersystem/componentorder/query/salesQuery'
 import OrderDetailsQuery from '@/ordersystem/componentorder/query/orderDetailsQuery'
 //兰居设计
 import lanjuDesign from '@/ordersystem/componentorder/lanju/lanjuDesign'
@@ -509,6 +510,11 @@ var router = new Router({
       component: TuiHDetails,
     },
     // 查询
+    {
+      path: '/salesQuery',
+      name: 'salesQuery',
+      component: SalesQuery,
+    },
     {
       path: '/stockQuery',
       name: 'stockQuery',
