@@ -1,76 +1,77 @@
 <template>
-  <div class="areaQuery">
+  <div class="salesQuery">
     <top :top="set"></top>
     <span class="search-button" @click="_queryQuYu_1()">查询</span>
     <div class="search">
       <ul class="ulhead" id="ulhead">
-        <div>
+        <div style="margin-top:-3px">
           <span class="licenter" @click="showType_1 = true">
-            <input class="time" type="text" v-model="myArea" disabled />
+            <input class="time" type="text" v-model="getVersion" disabled />
           </span>
-          <span class="licenter" @click="showType_2 = true">
-            <input class="time" type="text" v-model="myDistrict" disabled />
+          <span class="licenter">
+            <input class="item_1" v-model="XH" placeholder="请输入型号" />
           </span>
-          <span class="licenter" @click="showType_3 = true">
-            <input class="time" type="text" v-model="myCustomerType" disabled />
-          </span>
+          
         </div>
-
-        <div style="margin-top:-24px">
-          <van-search
-            placeholder="搜索客户"
-            v-model="customer_filter"
-            @input="customerFilter"
-            style="width:45%;height:37px;margin-left:5px"
-            class="search_1"
-          />
-          <van-button class="choose" @click="checkAll" style="margin-left:178px" round>全选</van-button>
-          <van-button class="choose" @click="toggleAll" round>反选</van-button>
-          <van-button class="button" @click="clear" round>重置</van-button>
-        </div>
-        <div>
-          <span>
-            <van-checkbox  v-model="checked" style="margin-left:75%;margin-top:5px;font-size: 14px;">有效客户</van-checkbox >
-            </span></div>
-        <hr />
-        <div>
+        <div style="margin-top:-7px">
           <span class="licenter" @click="showType_4 = true">
-            <input type="text" v-model="ksDataSet" class="time_1" disabled />
+            <input type="text" v-model="ksDataSet" class="time_2" disabled />
           </span>
           <span class="licenter" @click="showType_5 = true">
             <input type="text" v-model="jsDataSet" class="time_1" disabled />
           </span>
-          <span class="licenter" @click="showType_6 = true" style="">
-            <input type="text" v-model="myStatus" class="time_1" disabled />
-          </span>
-          
+          <van-button class="button" @click="clear" round>重置</van-button>
         </div>
         
       </ul>
     </div>
-    <div class="queryData" style="margin: 20px 10px 80px;">
-      <div>
-        <van-checkbox-group v-model="customer" ref="checkboxGroup" style="margin-top:20px">
+        <div v-if="query_1" style="margin: 10px 10px 80px;">
+            <van-panel style="min-height:100px">
+          <div style="width:100%" v-for="salesData in tableData">
+            <table style="width:100%;font-size:15px;align:center">
+              <tr>
+                <td style="width:25%;text-align:left">型号:</td>
+                <td>{{salesData.ITEM_NO}}</td>
+              </tr>
+              <tr>
+                <td style="width:25%;text-align:left">总数量:</td>
+                <td>{{salesData.SUMQTY}}</td>
+              </tr>
+              <tr>
+                <td style="width:25%;text-align:left">总金额:</td>
+                <td>{{salesData.SUNMONEY}}元</td>
+              </tr>
+            </table>
+            <hr />
+          </div>
+        </van-panel>
+        </div>
+    <!--版本-->
+    <van-popup v-model="showType_1" position="bottom" :style="{ height: '75%' }" closeable close-icon-position="top-left"
+  >
+        <span style="float:right;margin-top:5px;margin-right:5px">
+          <van-button class="button" @click="closeVersion">确定</van-button></span>
+        <div style="margin-top:10px">
+          <van-search
+            placeholder="搜索版本"
+            v-model="customer_filter"
+            @input="customerFilter"
+            style="width:60%;height:37px;margin-left:5px"
+            class="search_1"
+          />
+          
+        </div>
+        <div style="margin-top:50px;margin-left:10px">
+        <van-checkbox-group v-model="customer" ref="checkboxGroup" style="margin-top:20px" :max="1">
           <van-checkbox
             style="text-align:left;margin-top:7px;font-size: 15px;"
-            :name="customerData.CUSTOMER_CODE"
+            :name="customerData.PRODUCTVERSION_ID"
             v-for="customerData in customerData"
-            :key="customerData.CUSTOMER_CODE"
-          >{{customerData.CUSTOMER_NAME}}</van-checkbox>
+            :key="customerData.PRODUCTVERSION_ID"
+          >{{customerData.PRODUCTVERSION_NAME}}</van-checkbox>
         </van-checkbox-group>
       </div>
-    </div>
-    <!--市场-->
-    <van-popup v-model="showType_1" position="bottom">
-      <van-picker show-toolbar title="请选择市场" :columns="areaCode_name" @confirm="onAreaCode" @cancel="cancelArea"/>
-    </van-popup>
-    <!--片区-->
-    <van-popup v-model="showType_2" position="bottom">
-      <van-picker show-toolbar title="请选择片区" :columns="district_name" @confirm="onDISTRICT_ID" @cancel="cancelDistrict"/>
-    </van-popup>
-    <!--客户类型-->
-    <van-popup v-model="showType_3" position="bottom">
-      <van-picker show-toolbar title="请选择客户类型" :columns="CUSTOMER_TYPE" @confirm="onCUSTOMER_TYPE" @cancel="cancelCustomer"/>
+      <!-- <van-picker show-toolbar title="请选择版本" :columns="PRODUCTVERSION_NAME" @confirm="onAreaCode" @cancel="cancelArea"/> -->
     </van-popup>
     <!--日期选择-->
     <van-popup v-model="showType_4" position="bottom">
@@ -93,40 +94,18 @@
         @cancel="cancelTimejs"
       />
     </van-popup>
-    <!--状态搜索-->
-    <van-popup v-model="showType_6" position="bottom">
-      <van-picker show-toolbar title="请选择状态" :columns="STATUS" @confirm="onStatus" @cancel="cancelStatus"/>
-    </van-popup>
-    <!-- 查看客户总金额 -->
-    <van-popup v-model="showMoney" position="bottom" :style="{ height: '75%' }" closeable
-  close-icon="close">
-      <div style="width:90%;margin:0 auto">
-        <div style="font-size:15px;color:blue;margin-top:30px">提货单金额汇总：{{moneySum.MONEYSUM}}元</div>
-        <div class="single-bank" style="width:100%" v-for="singleBank in CUSTOMERED">
-          <van-panel style="margin-top:10px">
-          <table style="font-size:14px;width:90%">
-            <tr>
-              <td style="text-align:left">客户代码：</td>
-              <td>
-                <a
-                      href="javascript:void(0);"
-                      @click="showDetail(singleBank)"
-                    >{{singleBank.CUSTOMER_CODE}}</a></td>
-            </tr>
-            <tr>
-              <td style="text-align:left">客户名称：</td>
-              <td>{{singleBank.CUSTOMER_NAME}}</td>
-            </tr>
-            <tr>
-              <td style="text-align:left">时间段内订单提货总额：</td>
-              <td>{{singleBank.MONEYSUM}}</td>
-            </tr>
-          </table>
-          <hr>
-          </van-panel>
-        </div>
-      </div>
-    </van-popup>
+    <!--底部分页-->
+    <div class="fy-contain">
+      <van-pagination
+        class="fy-bottom"
+        v-model="currentPage"
+        :page-count="totalPage"
+        :items-per-page="itemsPerPage"
+        :total-items="totalLists"
+        mode="simple"
+        @change="changePage"
+      />
+    </div>
     <van-loading class="loading" type="spinner" v-if="loading" color="black" />
   </div>
 </template>
@@ -158,12 +137,18 @@ import {
   getPackDetailsBySaleNo,
   getPackDetailsType,
   getTotalMoneySum,
-  getCustomerName
+  getCustomerName,
+  getAllVersion,
+  getProductSales
 } from "@/api/areaInfoASP";
 export default {
-  name: "areaQuery",
+  name: "salesQuery",
   data() {
     return {
+        query_1:false,
+        PRODUCTVERSION_NAME:[],
+    VERSION:[],
+    XH:"",
       get_customer_code:"",
       getMoney:"",
       get_CUSTOMER_NAME:"",
@@ -187,8 +172,8 @@ export default {
       myDistrict: "片区", //片区状态
       myDistrictId: "",
       district_name: [],
-      myArea: "市场", //市场状态
-      myAreaCode: "",
+      getVersion: "版本", //市场状态
+      PRODUCTVERSION_ID: "",
       areaCode_name: [],
       activeIndex: 0,
       showType_1: false,
@@ -198,7 +183,7 @@ export default {
       showType_5: false,
       showType_6: false,
       showMoney:false,
-      set: 91,
+      set: 102,
       loading: false,
       detailVisible: false,
       startDate: "",
@@ -215,7 +200,14 @@ export default {
       customerDataAll: [],
       limit: 8,
       count: 0,
+      //当前页数
       currentPage: 1,
+      //总记录数
+      totalLists: 0,
+      //每页记录数
+      itemsPerPage: 8,
+      //总页数
+      totalPage: 0,
       value_4: [], //已选用户初始值
       value1: "",
       value2: "",
@@ -298,12 +290,21 @@ export default {
   },
   //生命周期
   created() {
-    this._getAreaCode();
+    this._getAllVersion();
     let time = new Date();
     this.jsSet(time);
     this.ksSet(time);
   },
   methods: {
+      closeVersion(){
+          this.showType_1 = false
+          if(this.customer == ""){
+              this.getVersion = "版本"
+          }else{ 
+              this.getVersion = this.customer
+            }
+         
+      },
     cancelArea(){
       this.showType_1 = false
     },
@@ -356,63 +357,43 @@ export default {
       this.ksDataSet = current_year + "-" + current_month + "-" + "01";
       this.ksData = new Date(this.ksDataSet) ;
     },
+    //查所有版本
+      _getAllVersion(){
+          getAllVersion().then(res =>{
+            this.VERSION = res.data;
+            this.customerData = res.data;
+            this.customerDataAll = res.data;
+            
+            if(this.VERSION.length == 0){
+                Toast({
+                    duration: 2000,
+                    message: "未查到版本号"
+                });
+            }
+          });
+      },
     //客户筛选
     customerFilter(val) {
       var reg = new RegExp(val, "i");
       this.customerData = this.customerDataAll.filter(item =>
-        reg.test(item.CUSTOMER_NAME)
+        reg.test(item.PRODUCTVERSION_NAME)
       );
     },
     checkAll() {
       for (var i = 0; i < this.customerData.length; i++) {
-        this.customer.push(this.customerData[i].CUSTOMER_CODE);
+        this.customer.push(this.customerData[i].PRODUCTVERSION_ID);
+        this.PRODUCTVERSION_NAME.push(this.customerData[i].PRODUCTVERSION_NAME);
       }
     },
     toggleAll() {
       this.customer = [];
     },
-    //状态
-    onStatus(value, index) {
-      this.myStatus = value;
-      if (this.myStatus == "全部") {
-        this.myStatusCode = "";
-      } else if (this.myStatus == "待提") {
-        this.myStatusCode = "1";
-      } else if (this.myStatus == "已提货") {
-        this.myStatusCode = "2";
-      } else if (this.myStatus == "作废") {
-        this.myStatusCode = "3";
-      } else if (this.myStatus == "已月结") {
-        this.myStatusCode = "4";
-      }
-      this.showType_6 = false;
-    },
-    //客户类型
-    onCUSTOMER_TYPE(value, index) {
-      this.myCustomerType = value;
-      if (this.myCustomerType == "全部") {
-        this.myCustomerTypeCode = "";
-      } else if (this.myCustomerType == "非专业市场客户") {
-        this.myCustomerTypeCode = "notspeciality";
-      } else if (this.myCustomerType == "专业市场客户") {
-        this.myCustomerTypeCode = "speciality";
-      }
-      this.showType_3 = false;
-      this.customer_type();
-    },
     //区域市场
     onAreaCode(value, index) {
-      this.myArea = value;
-      this.myAreaCode = index;
+      this.getVersion = value;
+      this.PRODUCTVERSION_ID = index;
       this.showType_1 = false;
       this.areaCode(index);
-    },
-    //区域片区
-    onDISTRICT_ID(value, index) {
-      this.myDistrict = value;
-      this.myDistrictId = index;
-      this.showType_2 = false;
-      this.district_code(index);
     },
     //根据用户查区域市场
     _getAreaCode() {
@@ -431,6 +412,7 @@ export default {
           for (var i = 0; i < this.AREACODE.length; i++) {
             this.areaCode_name.push(this.AREACODE[i].AREA_NAME);
           }
+          //console.log(this.stockIds)
         })
         .catch(res => {
           console.log(res);
@@ -577,15 +559,12 @@ export default {
         this.customerDataAll = res.data;
       });
     },
-    //提货单查询
+    //销售提货单查询
     _queryQuYu_1() {
       this.currentPage = 1;
       this.queryQuYu_1();
     },
     async queryQuYu_1() {
-      this.moneySum=[],
-      this.CUSTOMERED = [];
-      this.CUSTOMERED_1 = [];
       this.tableData = [];
       let ksTime;
       let jsTime;
@@ -599,43 +578,21 @@ export default {
       } else {
         jsTime = this.jsDataSet;
       }
-      if (this.customer.length == 0) {
-        Toast({
-          duration: 2000,
-          message: "未选择用户"
-        });
-      } else{
-        for (var i = 0; i < this.customer.length; i++) {
-          var res = await  getCustomerName({customer:this.customer[i]},{ loading: false })
-          this.get_CUSTOMER_NAME = res.data[0]
-            
-          var data_2 = await {
-            beginTime: ksTime, //起始时间
-            finishTime: jsTime + " 23:59:59", //结束时间
-            status: this.myStatusCode , //状态
-            customers:[this.customer[i]]
-          }
-          var res1= await getTotalMoneySum(data_2 ,{ loading: false })
-          this.moneySum = res1.data[0];
-          if(this.moneySum.MONEYSUM == 0){
-            continue
-          }
-          this.CUSTOMERED_1[i] =  {
-            CUSTOMER_CODE: this.customer[i],
-            CUSTOMER_NAME: this.get_CUSTOMER_NAME.CUSTOMER_NAME,
-            MONEYSUM:this.moneySum.MONEYSUM
-          }
-        }
-        this.CUSTOMERED = this.CUSTOMERED_1 
-        this.showMoney = true;
+      if (this.XH == "" && this.customer.length == 0) {
+          Toast({
+                    duration: 2000,
+                    message: "未输入型号或者版本号"
+                });
+        return (this.tableData = []);
+      }
+      if(this.XH != "" || this.customer.length != 0){
         var data = {
-          type:this.typeFilter,//类型筛选
-          costomerCodes: this.customer, //已选用户
+          item_no:this.XH,//类型筛选
+          version: this.customer[0], //已选用户
           beginTime: ksTime, //起始时间
-          finishTime:  jsTime, //结束时间
+          finishTime: jsTime, //结束时间
           limit: this.limit, //限制数
           page: this.currentPage, //页数
-          status: this.myStatusCode //状态
         };
         if (!data.beginTime) {
           data.beginTime = "0001/1/1";
@@ -645,79 +602,40 @@ export default {
         } else {
           data.finishTime = data.finishTime + " 23:59:59";
         }
-        this._getTotalMoneySum(data)
-      }
-    },
-    showDetail(val){
-      this.$router.push({
-          name: "billDetailsQuery",
-          params: {
-            data: {
-              MONEYSUM:val.MONEYSUM,//提货总额
-              CUSTOMER_NAME:val.CUSTOMER_NAME,//用户名称
-              customer: val.CUSTOMER_CODE, //已选用户
-              beginTime: this.ksDataSet, //起始时间
-              finishTime: this.jsDataSet, //结束时间
-              limit: this.limit, //限制数
-              page: this.currentPage, //页数
-              status: this.myStatusCode //状态
+        getProductSales(data).then(res => {
+          this.totalLists = res.count;
+          this.tableData = res.data;
+          if (this.XH != "" && this.customer.length != 0 && res.data.length == 0) {
+              Toast({
+                    duration: 2000,
+                    message: "所输版本和型号不对应，请重新输入！"
+                });
+                this.query_1 = false
+            return (this.tableData = []);
             }
-          }
+            if (this.XH != "" || this.customer.length != 0 && res.data.length == 0) {
+              Toast({
+                    duration: 2000,
+                    message: "暂无数据，请重新输入！"
+                });
+                this.query_1 = false
+            return (this.tableData = []);
+            }
+          this.query_1 = true;
         });
+      } 
     },
-    //客户总金额
-    _getTotalMoneySum(val){
-      this.query_1 = true;
-      this.moneySum = []
-      var data = {
-        beginTime: val.beginTime, //起始时间
-        finishTime: val.finishTime, //结束时间
-        status: val.status, //状态
-        customers:val.costomerCodes
-      }
-      getTotalMoneySum(data).then(res => {
-        this.moneySum = res.data[0];
-        
-      });
-    },
-    //计算表格末行
-    getSummaries(param) {
-      const { columns, data } = param;
-      const sums = [];
-      columns.forEach((column, index) => {
-        if (index === 0) {
-          sums[index] = "总价";
-          return;
-        } else if (index == 9) {
-          var values = data.map(item => Number(item[column.property]));
-          if (!values.every(value => isNaN(value))) {
-            sums[index] = values.reduce((prev, curr) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                return prev + curr;
-              } else {
-                return prev;
-              }
-            }, 0);
-            sums[index] = sums[index].toFixed(2);
-            if (this.isManager == "0") sums[index] = "***";
-          } else {
-            sums[index] = "";
-          }
-        } else {
-          sums[index] = "";
-        }
-      });
-      return sums;
-    },
-
+    
+    
     //翻页获取订单
-    handleCurrentChange(val) {
+    changePage(val) {
       this.currentPage = val;
       this.queryQuYu_1();
     },
     //重置
     clear() {
+        this.query_1 = false
+        this.XH = ""
       this.CUSTOMERED=[]
       this.moneySum=[]
       this.customer = []
@@ -735,9 +653,9 @@ export default {
         (this.myDistrict = "片区"), //市场状态
         (this.myDistrictId = ""),
         (this.district_name = []),
-        (this.myArea = "市场"), //市场状态
-        (this.myAreaCode = ""),
-        (this.areaCode_name = []),
+        (this.getVersion = "版本"), //市场状态
+        (this.PRODUCTVERSION_ID = ""),
+        (this.PRODUCTVERSION_NAME = []),
         (this.activeIndex = 0),
         (this.showType_1 = false),
         (this.showType_2 = false),
@@ -773,7 +691,7 @@ export default {
   font-size: 14px;
   margin-top: 50px;
   width: 25%;
-  height: 25px;
+  height: 30px;
   margin-left: 5px;
   text-align: left;
   padding-left: 17px;
@@ -785,7 +703,21 @@ export default {
 }
 .time_1 {
   width: 25%;
-  height: 25px;
+  height: 30px;
+  margin-left: 10px;
+  text-align: left;
+  padding-left: 17px;
+  font-size: 14px;
+  background-image: url("../../assetsorder/time-zk.png");
+  background-repeat: no-repeat;
+  background-position-x: 95px;
+  background-position-y: 3vw;
+  background-size: 13px;
+  margin-top:15px
+}
+.time_2 {
+  width: 25%;
+  height: 30px;
   margin-left: 5px;
   text-align: left;
   padding-left: 17px;
@@ -793,8 +725,9 @@ export default {
   background-image: url("../../assetsorder/time-zk.png");
   background-repeat: no-repeat;
   background-position-x: 95px;
-  background-position-y: 2vw;
+  background-position-y: 3vw;
   background-size: 13px;
+  margin-top:15px
 }
 .choose {
   background: #8bc34a;
@@ -802,6 +735,7 @@ export default {
   line-height: 5px;
   color: rgb(255, 255, 255);
   font-size: 14px;
+  
 }
 .button {
   background: #8bc34a;
@@ -810,18 +744,21 @@ export default {
   line-height: 5px;
   color: rgb(255, 255, 255);
   font-size: 14px;
+  margin-left: 5px;
+    width:70px
 }
 .item_1 {
   top: 1px;
-  width: 120px;
-  height: 33px;
+  width: 50%;
+  height: 30px;
   background-color: hsl(0, 0%, 100%);
   border: none;
   font-size: 10px;
   line-height: 5px;
   text-align: center;
+  margin-left: 10px
 }
-.stockQuery {
+.salesQuery {
   background-color: rgb(239, 239, 239);
   height: 100vh;
   position: relative;
@@ -841,7 +778,7 @@ export default {
 
 .ulhead {
   margin-top: 10px;
-  height: 200px;
+  height: 130px;
   width: 100%;
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
 }
@@ -854,7 +791,27 @@ input {
   height: 25px;
   line-height: 25px;
 }
+.fy-contain {
+  width: 100%;
+  height: 50px;
+  background: white;
+  position: fixed;
+  bottom: 0px;
+  border-top: 1px solid #e8e8e8;
+}
 
+.fy-bottom {
+  background: #f8f8f8;
+  position: absolute;
+  width: 100%;
+  height: 50px;
+  bottom: 0;
+  color: white !important;
+}
+
+.fy-bottom .van-pagination__item {
+  color: #89cb81;
+}
 .table_1 {
   border-collapse: collapse;
   border: 1px solid black;

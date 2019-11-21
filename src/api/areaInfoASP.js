@@ -42,3 +42,48 @@ export function getPackDetails(data, config = {}) {
         return Promise.reject(err);
     })
 }
+
+//获取所有提货单类型
+export function getPackDetailsType(config = {}) {
+    return post('/PACK_DETAIL/getPackDetailsType',config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+
+//获取用户名称
+export function getCustomerName(data,config = {}) {
+    return post('/PACK_DETAIL/getCustomerName',data,config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+
+//获取所选用户总金额
+export function getTotalMoneySum(data,config = {}) {
+    return post('/PACK_DETAIL/getTotalMoneySum',data,config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+
+//获取所有版本
+export function getAllVersion(config = {}) {
+    return post('/PACK_DETAIL/getAllVersion',config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+
+//获取销售提货单信息
+export function getProductSales(data,config = {}) {
+    return post('/PACK_DETAIL/getProductSales',data,config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}

@@ -7,3 +7,11 @@ export function getOrderByAreaCustomer(data, config = {}) {
         return Promise.reject(err);
     })
 }
+//根据用户查找订单
+export function getOrderInfoByCustomer(data, config = {}) {
+    return post('/CTM_ORDER/getOrderInfoByCustomer', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
