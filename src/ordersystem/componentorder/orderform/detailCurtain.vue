@@ -108,11 +108,13 @@
                     <span class="title-left">备注</span>
                     <span class="title-right">
                       <input
+                        v-if="tableStatus!=0"
                         type="text"
                         v-model="liantou.note"
                         class="curtain-beizhu"
                         placeholder="填写备注"
                       />
+                      <span v-else>{{liantou.note}}</span>
                     </span>
                   </div>
                   <!--选择帘头制造说明-->
@@ -251,11 +253,13 @@
                     <span class="title-right">
                       <input
                         type="text"
+                        v-if="tableStatus!=0"
                         class="curtain-beizhu"
                         :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
                         placeholder="填写备注"
                         v-model="liantou.note"
                       />
+                      <span v-else>{{liantou.note}}</span>
                     </span>
                   </div>
                   <!--选择风格-->
@@ -374,11 +378,13 @@
                     <span class="title-right">
                       <input
                         type="text"
+                        v-if="tableStatus!=0"
                         class="curtain-beizhu"
                         :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
                         placeholder="填写备注"
                         v-model="liantou.note"
                       />
+                      <span v-else>{{liantou.note}}</span>
                     </span>
                   </div>
                   <!--选择风格-->
@@ -546,11 +552,13 @@
                     <span class="title-right">
                       <input
                         type="text"
+                        v-if="tableStatus !=0"
                         class="curtain-beizhu"
                         :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
                         placeholder="填写备注"
                         v-model="liantou.note"
                       />
+                      <span v-else>{{liantou.note}}</span>
                     </span>
                   </div>
                   <!--选择风格-->
@@ -665,10 +673,12 @@
                     <span class="title-right">
                       <input
                         type="text"
+                        v-if="tableStatus!=0"
                         class="curtain-beizhu"
                         placeholder="填写备注"
                         v-model="liantou.note"
                       />
+                      <span v-else>{{liantou.note}}</span>
                     </span>
                   </div>
                 </div>
