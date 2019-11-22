@@ -64,7 +64,7 @@
 import axios from "axios";
 import { Loading, Pagination, Popup } from "vant";
 import top from "../../../components/Top";
-import BillDetails from "./BillDetails"
+import BillDetails from "./BillDetails";
 
 export default {
   name: "billmanage",

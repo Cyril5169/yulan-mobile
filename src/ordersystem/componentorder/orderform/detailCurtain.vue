@@ -1,6 +1,6 @@
 <template>
   <div class="single-curtain">
-    <top msgtitle="窗帘详情" greenBackground="true" @backclick="backclick"></top>
+    <top msgtitle="窗帘详情" :greenBackground="true" :isPopup="true" @backclick="backclick"></top>
     <div class="contain">
       <div class="select-this">
         <div class="title-item">

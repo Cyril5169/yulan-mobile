@@ -10,24 +10,24 @@
 </template>
 <script>
 export default {
-  props: ["top", "from", "msgtitle","greenBackground"],
+  props: ["top", "from", "msgtitle", "greenBackground", "isPopup"],
   data() {
     return {
       msg: ""
     };
   },
   methods: {
-    setTitle(title){
+    setTitle(title) {
       this.msg = title;
     },
     back() {
       window.vTop = null;
-      this.$emit('backclick');//自定义事件，提供外部使用
-      if(this.from){
+      this.$emit("backclick"); //自定义事件，提供外部使用
+      if (this.from) {
         this.$router.push({
-              path: "/" + this.from
-            });
-            return;
+          path: "/" + this.from
+        });
+        return;
       }
       switch (this.top) {
         case 0:
@@ -131,10 +131,10 @@ export default {
             break;
           }
         //order
-        case 11://墙纸详情
+        case 11: //墙纸详情
           this.$router.push({
-              path: "/mycart/wallcart"
-            });
+            path: "/mycart/wallcart"
+          });
           break;
         case 12:
           this.$router.push({
@@ -153,8 +153,8 @@ export default {
           break;
         case 15: //订单详情
           this.$router.push({
-              path: "/myorder"
-            });
+            path: "/myorder"
+          });
           break;
         case 16:
           this.$router.push({
@@ -177,17 +177,17 @@ export default {
         // case 26:
         //   this.$router.go(-1);
         //   break;
-        case 27://优惠券
+        case 27: //优惠券
           this.$router.push({
-              path: "/mypersonal"
-            });
+            path: "/mypersonal"
+          });
           break;
-        case 27.1://最新公告
+        case 27.1: //最新公告
           this.$router.push({
-              path: "/mypersonal"
-            });
+            path: "/mypersonal"
+          });
           break;
-        case 27.2://我的调查表
+        case 27.2: //我的调查表
           this.$router.push({
             path: "/mypersonal"
           });
@@ -324,13 +324,13 @@ export default {
       //   }
     }
   },
-  activated(){
-    window.vTop = this;
+  activated() {
+    if (!this.isPopup) window.vTop = this;
   },
   mounted() {
-    window.vTop = this;
-    if(this.msgtitle){
-      this.msg=this.msgtitle;
+    if (!this.isPopup) window.vTop = this;
+    if (this.msgtitle) {
+      this.msg = this.msgtitle;
       return;
     }
     if (this.top == 0) {
@@ -501,7 +501,7 @@ export default {
       let a = this.$refs.top;
       a.className = "top-green";
     }
-     if (this.top == 97) {
+    if (this.top == 97) {
       this.msg = "兰居设计";
       let a = this.$refs.top;
       a.className = "top-green";
@@ -521,7 +521,7 @@ export default {
       let a = this.$refs.top;
       a.className = "top-green";
     }
-   if (this.top == 101) {
+    if (this.top == 101) {
       this.msg = "物流投诉";
       let a = this.$refs.top;
       a.className = "top-green";
@@ -532,9 +532,8 @@ export default {
       a.className = "top-green";
     }
   },
-  destroyed(){
-    if(window.vTop==this)
-      window.vTop =  null;
+  destroyed() {
+    if (window.vTop == this) window.vTop = null;
   },
   beforeRouteLeave(to, from, next) {
     // ...

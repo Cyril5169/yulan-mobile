@@ -323,6 +323,7 @@ export default {
     );
   },
   activated(){
+    window.vTop = this;
     //恢复滚动条位置
     if(this.scrollTop>0){
       this.scrollTarget.scrollTop = this.scrollTop;

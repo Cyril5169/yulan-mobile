@@ -560,12 +560,16 @@ export default {
     }
   },
   mounted() {
+    window.vTop = this;
     // window.onresize监听页面高度的变化
     window.onresize = () => {
       return (() => {
         this.showHeight = document.body.clientHeight;
       })();
     };
+  },
+  destroyed() {
+    if (window.vTop == this) window.vTop = null;
   },
   watch: {
     showHeight: function() {
