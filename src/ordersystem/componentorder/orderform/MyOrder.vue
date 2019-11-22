@@ -585,9 +585,9 @@ export default {
                 (this.orderLists[i].STATUS_ID == 1 &&
                   this.orderLists[i].CURTAIN_STATUS_ID !== "" &&
                   this.orderLists[i].CURTAIN_STATUS_ID == 0) ||
-                ((this.orderList.CURTAIN_STATUS_ID == 0 ||
-                  this.orderList.CURTAIN_STATUS_ID == 4) &&
-                  this.orderList.STATUS_ID == 0)
+                ((this.orderLists[i].CURTAIN_STATUS_ID == 0 ||
+                  this.orderLists[i].CURTAIN_STATUS_ID == 4) &&
+                  this.orderLists[i].STATUS_ID == 0)
               ) {
                 this.orderLists[i].showStatus = true;
               }
