@@ -491,6 +491,7 @@ p {
 .option1 {
   position: relative;
   height: 120px;
+  margin-top: 20px;
 }
 .bottom-div {
   width: 312px;
@@ -498,7 +499,6 @@ p {
   position: absolute;
   z-index: 1;
   left: 24px;
-  top: -15px;
   background-color: #e5e5e5;
   border-radius: 7px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
@@ -509,7 +509,6 @@ p {
   position: absolute;
   z-index: 2;
   left: 50%;
-  top: -28px;
   margin-left: -166px;
   background-color: #fff;
   border-radius: 7px;
@@ -522,10 +521,9 @@ p {
 }
 .item-box {
   width: 80px;
-  height: 120px;
+  height: 93px;
   /* line-height: 129px; */
   position: relative;
-  margin-top: -39px;
   margin-left: 36px;
   background-color: #a4a4a4;
   border-radius: 7px;

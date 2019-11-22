@@ -1219,7 +1219,7 @@ export default {
         if (data[this.index].itemNo == "GY-003") {
           data[this.index].dosage = this.allData.GY;
         } else {
-          var mlData = data.find(item => item.productType == "ML");
+          var mlData = data.filter(item => item.productType == "ML")[0];
           if (mlData) data[this.index].dosage = mlData.dosage;
         }
       }
