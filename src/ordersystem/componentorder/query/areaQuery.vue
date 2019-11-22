@@ -173,7 +173,7 @@ export default {
       typeNameFilter:[],
       typeIdFilter:[],
       typeFilter:[],
-      checked:false,
+      checked:true,
       myStatus: "全部状态",
       myStatusCode: "",
       ksData: "",
@@ -626,7 +626,16 @@ export default {
             MONEYSUM:this.moneySum.MONEYSUM
           }
         }
-        this.CUSTOMERED = this.CUSTOMERED_1 
+        this.CUSTOMERED = this.CUSTOMERED_1.filter(item =>
+          item != "" && item != undefined 
+        )  
+        if(this.CUSTOMERED.length == 0){
+          Toast({
+          duration: 2000,
+          message: "所选客户无提货单信息"
+        });
+          return this.showMoney = false
+        }
         this.showMoney = true;
         var data = {
           type:this.typeFilter,//类型筛选
@@ -718,6 +727,7 @@ export default {
     },
     //重置
     clear() {
+      this.checked = true
       this.CUSTOMERED=[]
       this.moneySum=[]
       this.customer = []
