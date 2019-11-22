@@ -8,11 +8,7 @@
       <span class="time">{{logintime}}</span>
     </div>
     <div class="announce" v-show="newAnounces.length > 0">
-      <!-- <div class="suona-img" @click="toAnnouncement"></div> -->
-      <van-icon class="suona1" slot="icon" name="volume-o" size="18px" dot color="#89cb81" />
-      <span class="notice">
-        <a href="javascript:void(0);" @click="toAnnouncement">{{noticeTitle}}</a>
-      </span>
+      <van-notice-bar left-icon="volume-o" color="#1989fa" background="transparent" @click="toAnnouncement">{{noticeTitle}}</van-notice-bar>
     </div>
 
     <div class="left-img"></div>
@@ -24,7 +20,7 @@
 import Protocol from "./Protocol";
 // import sidebar from '../utils/move492.js'
 import { bus } from "../utils/eventBus.js";
-import { Icon } from 'vant';
+import { Icon, NoticeBar } from 'vant';
 import { getNewNotification } from "@/api/notificationASP";
 
 
@@ -32,6 +28,7 @@ export default {
   name: "Banner",
   components: {
     [Icon.name]: Icon,
+    [NoticeBar.name]: NoticeBar,
   },
   data() {
     return {
@@ -211,24 +208,9 @@ p {
 .announce {
   position: absolute;
   z-index: 1000;
-  top: 190px;
-  left: 27px;
-  width: 100%;
+  top: 180px;
+  left: 13px;
+  right: 25px;
   text-align: left;
-  line-height: 20px;
-  height: 20px;
-  vertical-align: middle;
-}
-.suona1 {
-  width: 20px;
-  float: left;
-}
-.notice {
-  margin-left: 23px;
-  font-size: 13px;
-  text-decoration: underline;
-  line-height: 20px;
-  height: 20px;
-  display: block;
 }
 </style>
