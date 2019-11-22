@@ -912,26 +912,26 @@ export default {
           var gy003 = dosageFilter.filter(item => item.ITEM_NO == "GY-003");
           if (gy003.length > 0) res.data.GY = gy003[0].dosage;
           if (res.data.lt) {
-            res.data.lt = dosageFilter.find(item => item.type == "lt").dosage;
+            res.data.lt = dosageFilter.filter(item => item.type == "lt")[0].dosage;
           }
           if (res.data.ls) {
-            res.data.ls = dosageFilter.find(item => item.type == "ls").dosage;
+            res.data.ls = dosageFilter.filter(item => item.type == "ls")[0].dosage;
           }
           if (res.data.XHBlt) {
-            res.data.XHBlt = dosageFilter.find(
+            res.data.XHBlt = dosageFilter.filter(
               item => item.type == "XHBlt"
-            ).dosage;
+            )[0].dosage;
           }
           if (res.data.XHBls) {
-            res.data.XHBls = dosageFilter.find(
+            res.data.XHBls = dosageFilter.filter(
               item => item.type == "XHBls"
-            ).dosage;
+            )[0].dosage;
           }
           if (res.data.LCB) {
-            res.data.LCB = dosageFilter.find(item => item.type == "LCB").dosage;
+            res.data.LCB = dosageFilter.filter(item => item.type == "LCB")[0].dosage;
           }
           if (res.data.sha) {
-            res.data.sha = dosageFilter.find(item => item.type == "sha").dosage;
+            res.data.sha = dosageFilter.filter(item => item.type == "sha")[0].dosage;
           }
           //将数据进行分类
           for (let i = 0; i < itemLists.length; i++) {
