@@ -547,7 +547,7 @@ export default {
     changeActivi() {
       return function(id, index) {
         if (id) {
-          return this.activityOptions[index].find(item => item.value == id)
+          return this.activityOptions[index].filter(item => item.value == id)[0]
             .label;
         } else {
           if (this.isActivity[index]) {
