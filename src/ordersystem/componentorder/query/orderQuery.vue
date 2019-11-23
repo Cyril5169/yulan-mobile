@@ -96,8 +96,7 @@
       <van-picker show-toolbar title="请选择状态" :columns="STATUS" @confirm="onStatus" @cancel="cancelStatus"/>
     </van-popup>
     <!-- 查看客户总金额 -->
-    <van-popup v-model="showMoney" position="bottom" :style="{ height: '75%' }" closeable
-  close-icon="close">
+    <van-popup v-model="showMoney" position="bottom" :style="{ height: '75%' }" closeable>
       <div style="width:90%;margin:0 auto">
         <div style="font-size:15px;color:blue;margin-top:30px">提货单金额汇总：{{(moneySum).toFixed(2)}}元</div>
         <div class="single-bank" style="width:100%" v-for="singleBank in CUSTOMERED">
@@ -191,7 +190,7 @@ export default {
       getMoney:"",
       get_CUSTOMER_NAME:"",
       showMoney:false,
-      checked:false,
+      checked:true,
       myStatus: "全部状态",
       myStatusCode: "",
       ksData: "",
@@ -662,7 +661,7 @@ export default {
           });
       } else {
         for (var i = 0; i < this.customer.length; i++) {
-          this.date1=""
+      this.date1=""
       this.date2=""
       this.assignments= ""
       this.assignmentsTarget= ""
@@ -728,17 +727,11 @@ export default {
         }
         var res1 = await  getCustomerName({customer:this.customer[i]},{ loading: false })
           this.get_CUSTOMER_NAME = res1.data[0]
-        var res2 = await getOrderInfoByCustomer({
-          customer: this.customer[i]}, //已选用户
-          { loading: false 
-        })
+        var res2 = await getOrderInfoByCustomer({customer: this.customer[i]},{ loading: false })
+        
         if(res2.data.length == 0){
-          Toast({
-            duration: 2000,
-            message: "选择的客户无订单"
-          });
-          this.moneySum = 0
-          return
+          this.index = i
+          continue
         }
         this.getSomeData = res2.data[0]
         var sum = this.moneySum + reduce
@@ -755,9 +748,20 @@ export default {
             POST_ADDRESS:this.getSomeData.POST_ADDRESS,
             //MONEYSUM:this.moneySum.MONEYSUM
           }
+
         }
-        this.CUSTOMERED = this.CUSTOMERED_1 
-        this.showMoney = true;
+        
+        this.CUSTOMERED = this.CUSTOMERED_1.filter(item =>
+          item != "" && item != undefined 
+        ) 
+        if(this.CUSTOMERED.length == 0){
+          Toast({
+            duration: 2000,
+            message: "选择的客户无订单"
+          });
+          return this.showMoney = false
+        }else{
+        this.showMoney = true;}
       }
     },
     showDetail(val){
@@ -843,7 +847,9 @@ export default {
     },
     //重置
     clear() {
+      this.checked = true
       this.CUSTOMERED=[]
+      this.CUSTOMERED_1 = []
       this.moneySum=[]
       this.customer = []
       this.myStatus = "全部状态";
