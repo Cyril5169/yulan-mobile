@@ -100,6 +100,9 @@ import complaintDetail from '@/ordersystem/componentorder/complaint/complaintDet
 import addOrEditComplaint from '@/ordersystem/componentorder/complaint/addOrEditComplaint'
 //形象店设计
 import ImageShop from '@/ordersystem/componentorder/design/imageShop'
+//新的退货赔偿
+import newRefund from '@/ordersystem/componentorder/newRefund/newRefund'
+
 
 Vue.use(Router)
 var router = new Router({
@@ -582,6 +585,11 @@ var router = new Router({
       path: '/imageShop',
       name: 'imageShop',
       component: ImageShop,
+    },
+    {
+      path: '/newRefund',
+      name: 'newRefund',
+      component: newRefund,
     },
 
   ]

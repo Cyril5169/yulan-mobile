@@ -1,7 +1,6 @@
 <template>
   <div class="lanju-details">
     <top :top="set"></top>
-    <span class="lanju-details-state">{{checkTable.STATUS|statusTrans}}</span>
     <div class="lanju-details-msg">
       <div class="msg">
         <div><span class="left">单据号</span><span class="right">{{checkTable.SALE_NO}}</span></div>

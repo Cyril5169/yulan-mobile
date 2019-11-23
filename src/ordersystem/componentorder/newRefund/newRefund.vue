@@ -116,7 +116,7 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import { GetAllComplaint } from "@/api/complaintASP";
+import { GetUserCompensation } from "@/api/newRefundASP";
 import Vue from "vue";
 import {
   DatetimePicker,
@@ -131,10 +131,10 @@ import {
 Vue.use(Field);
 
 export default {
-  name: "complaint",
+  name: "newRefund",
   data() {
     return {
-      set: 98,
+      set: 103,
       ksData: "",
       ksDataSet: "", //  开始时间
       searchKey: "", //搜索栏关键字
@@ -235,7 +235,7 @@ export default {
     onCancelType() {
       this.showType = false;
     },
-    //获取列表
+    //获取用户的退货赔偿信息
     getList() {
       this.allLists = [];
       this.loading = true;
@@ -252,16 +252,17 @@ export default {
         jsTime = this.jsDataSet + " 23:59:59";
       }
       let data = {
-        companyId:this.$store.getters.getCMId,//公司id
-        cid: this.$store.getters.getCId, //用户id
-        STATUS: this.myTypeCode,
-        SEARCHKEY: this.searchKey,
-        beginTime: ksTime, //起始时间
-        finishTime: jsTime, //结束时间
-        limit: 10, //限制数
-        page: this.currentPage //页数
+        CID: this.$store.getters.getCId,
+        page: this.currentPage, //第几页
+        number: 10,//一页有多少数据
+        startDate: ksTime, //开始日期
+        endDate: jsTime, //结束日期
+        state: this.myTypeCode, //状态
+        //！！可能需新建两个个输入框
+        createName: this.selectCreator, //创建者名称
+        itemNo: this.selectItemNo //产品号
       };
-      GetAllComplaint(data).then(res => {
+      GetUserCompensation(data).then(res => {
         this.loading = false;
         if (res.count == 0) {
           return;
@@ -329,7 +330,7 @@ export default {
     let time = new Date();
     this.jsSet(time);
     this.ksSet(time);
-    this.getList();
+    // this.getList();
   }
 };
 </script>
