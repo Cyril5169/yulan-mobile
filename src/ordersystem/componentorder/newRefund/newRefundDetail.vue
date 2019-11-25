@@ -1,0 +1,267 @@
+<template>
+  <div class="lanju-details">
+    <top :top="set"></top>
+    <div class="lanju-details-msg">
+      <div class="msg">
+        <div><span class="left"><b>退货单基本信息</b></span></div>
+      </div>
+      <div class="msg">
+        <div><span class="left">单据号</span><span class="right">{{checkTable.ID}}</span></div>
+        <div><span class="left">提交时间</span><span class="right">{{checkTable.CREATE_TS|dateTrans}}</span></div>
+        <div><span class="left">单据状态</span><span class="right">{{checkTable.STATE|statusTrans}}</span></div>
+      </div>
+      <div class="msg">
+        <div><span class="left">提货单号</span><span class="right">{{checkTable.SALE_NO}}</span></div>
+        <div><span class="left">B2B订单号</span><span class="right">{{checkTable.ORDER_NO}}</span></div>
+        <div><span class="left">ERP订单号</span><span class="right">{{checkTable.CONTRACT_NO}}</span></div>
+        <div><span class="left">物流单号</span><span class="right">{{checkTable.TRANS_ID}}</span></div>
+      </div>
+      <div class="msg">
+        <div><span class="left">客户代码</span><span class="right">{{checkTable.CID}}</span></div>
+        <div><span class="left">客户名称</span><span class="right">{{checkTable.CNAME}}</span></div>
+        <div><span class="left">联系人</span><span class="right">{{checkTable.CONTACT_MAN}}</span></div>
+        <div><span class="left">联系电话</span><span class="right">{{checkTable.CONTACT_PHONE}}</span></div>
+      </div>
+      <div class="msg">
+        <div><span class="left">产品型号</span><span class="right">{{checkTable.ITEM_NO}}</span></div>
+        <div><span class="left">产品名称</span><span class="right">{{checkTable.PRODUCTION_VERSION}}</span></div>
+        <div><span class="left">单位</span><span class="right">{{checkTable.UNIT}}</span></div>
+        <div><span class="left">数量</span><span class="right">{{checkTable.QTY}}</span></div>
+        <div><span class="left">问题描述</span><span class="right">{{checkTable.NOTES}}</span></div>
+      </div>
+      <div class="msg" v-if="checkTable.STATE!='SUBMITTED'">
+        <div><span class="left"><b>玉兰处理意见</b></span></div>
+      </div>
+      <div class="msg" v-if="checkTable.STATE!='SUBMITTED'">
+        <div><span class="left">退货方式</span><span class="right">{{checkTable.RETURN_TYPE}}</span></div>
+        <div><span class="left">初审意见</span><span class="right">{{checkTable.FIRST_AUDITION}}</span></div>
+        <div v-if="checkTable.RETURN_TYPE=='玉兰取货'"><span class="left">备注信息</span></div>
+        <div v-if="checkTable.RETURN_TYPE=='玉兰取货'"><span class="left">我公司已安排物流公司上门取货，请保持电话畅通</span></div>
+        <div v-if="checkTable.RETURN_TYPE=='客户邮寄'"><span class="left">备注信息</span><span class="right" >请您在快递单上备注提货单号</span></div>
+        <div v-if="checkTable.RETURN_TYPE=='客户邮寄'"><span style="text-align:left;float:left;">退货或寄样信息</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="text-align:right">{{checkTable.RETURN_ADDRESS}}</span></div>
+        <div v-if="checkTable.RETURN_TYPE=='客户邮寄'"><span style="text-align:right;float:right;" ></span></div>
+        <div v-if="checkTable.RETURN_TYPE=='客户邮寄'"><span class="left" >邮寄备注信息</span><span class="right">您的提货单号：{{checkTable.SALE_NO}}</span></div>
+
+      </div>
+      <div class="msg" v-if="checkTable.STATE=='CUSTOMERAFFIRM'||checkTable.STATE=='APPROVED'">
+        <div><span class="left"> <b>玉兰处理结果</b></span></div>
+      </div>
+      <div v-if="checkTable.STATE=='CUSTOMERAFFIRM'||checkTable.STATE=='APPROVED'"> 
+      <div class="msg" v-for="(item,index) of checkDetailTable" :key="index">
+        <div><span class="left">第{{index+1}}条处理结果：</span><span class="right"></span></div>
+        <div><span class="left">产品型号</span><span class="right">{{checkTable.PRODUCTION_VERSION}}</span></div>
+        <div><span class="left">产品名称</span><span class="right">{{checkTable.ITEM_NO}}</span></div>
+        <div><span class="left">单位</span><span class="right">{{checkTable.UNIT}}</span></div>
+        <div><span class="left">数量</span><span class="right">{{item.P_QTY}}</span></div>
+        <div><span class="left">金额</span><span class="right">{{item.P_MONEY}}</span></div>
+        <div><span class="left">质量问题</span><span class="right">{{item.P_NOTES}}</span></div>
+        <div><span class="left">处理意见</span><span class="right">{{item.P_RESULT}}</span></div>
+      </div>
+      </div>
+      <div class="msg" v-if="checkTable.STATE=='CUSTOMERAFFIRM'||checkTable.STATE=='APPROVED'" >
+        <div><span class="left">金额小写</span><span class="right">{{checkTable.TOTALMONEY}}</span></div>
+        <div><span class="left">金额大写</span><span class="right">{{totalMoneyUpper}}</span></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import top from '../../../components/Top'
+  import axios from 'axios'
+  import {
+  CheckDetailByID,
+  } from "../../../api/complaintASP";
+  import { digitUppercase,GetCompensationById } from "@/api/newRefundASP";
+  import { Popup,Dialog ,Toast, Collapse, CollapseItem ,DatetimePicker,Uploader ,Button } from 'vant';
+  export default {
+    name: "newRefundDetail",
+    components:{
+      top,
+      [Popup.name]: Popup,
+      [Dialog.name]: Dialog,
+    },
+    data(){
+      return{
+        set: 104,
+        ID:this.$route.params.ID,
+        STATE:this.$route.params.STATE,
+        checkTable:[],
+        checkDetailTable:[],
+        CNAME:"",
+        showPic: false
+      }
+    },
+    filters: {
+    dateTrans(value) {
+      //时间戳转化大法
+      if (value == null||value=="9999/12/31 00:00:00") {
+        return "";
+      }
+      let date = new Date(value);
+      let y = date.getFullYear();
+      let MM = date.getMonth() + 1;
+      MM = MM < 10 ? "0" + MM : MM;
+      let d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      let h = date.getHours();
+      h = h < 10 ? "0" + h : h;
+      let m = date.getMinutes();
+      m = m < 10 ? "0" + m : m;
+      let s = date.getSeconds();
+      s = s < 10 ? "0" + s : s;
+      return y + "-" + MM + "-" + d + " " + h + ':' + m ;
+    },
+    statusTrans(value){
+       switch (value) {
+        case null:
+          return "";
+          break;
+        case "SUBMITTED":
+          return "已提交";
+          break;
+        case "RECEIVE":
+          return "已接收";
+          break;
+        case "CUSTOMERAFFIRM":
+          return "客户确认中";
+          break;
+        case "APPROVED":
+          return "客户同意";
+          break;
+      }
+    },
+    rateTrans(value){
+           switch (value)
+                {
+                    case "1":
+                        return "极差";
+                    case "2":
+                        return "失望";
+                    case "3":
+                        return "一般";
+                    case "4":
+                        return "满意";
+                    case "5":
+                        return "惊喜";
+                };
+    }
+    },
+    methods: {
+      checkDetails() {
+          this.checkTable = [];
+          this.checkDetailTable = [];
+          let data = {
+              ID: this.$route.params.ID,
+              STATE: this.$route.params.STATE
+          };
+          GetCompensationById(data).then(res => {
+            if (res.count > 0) {
+                this.checkTable = res.data[0];
+                if(this.checkTable.STATE=='CUSTOMERAFFIRM'||this.checkTable.STATE=='APPROVED'){
+                     this.checkDetailTable = res.data;
+                }
+            }
+         });
+       },
+    },
+    computed: {
+    //返回大写形式的总金额
+    totalMoneyUpper: function() {
+      return digitUppercase(this.checkTable.TOTALMONEY);
+    }
+  },
+    created () {
+      this.checkDetails()
+      console.log(this.$route.params)
+    }
+  }
+</script>
+
+<style scoped>
+  .lanju-details {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background: #ededed;
+    overflow-y: scroll;
+  }
+  .lanju-details-state {
+    position: fixed;
+    top: 13px;
+    right: 20px;
+    color: #e94d28;
+    z-index: 999;
+    font-weight: bold;
+  }
+  .lanju-details-msg {
+    margin: 60px 0;
+  }
+  .lanju-details-msg .msg {
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    background: white;
+  }
+  .lanju-details-msg .msg div {
+    height: 30px;
+    line-height: 30px;
+  }
+  .left {
+    float: left;
+  }
+  .right {
+    float: right;
+  }
+  .fkpz {
+    /*margin-bottom: 10px;*/
+    border-radius: 5px;
+    /*padding: 0 10px 10px;*/
+    background: white;
+  }
+  .fkpz div {
+    text-align: center;
+    padding: 8px;
+    color: white;
+    margin-bottom: 5px;
+    background: #a0cb8dd4;
+  }
+  .bank-img {
+    width: 100px;
+    height: 100px;
+    padding: 20px;
+    border: 1px solid #969799;
+  }
+  .bank-img-big {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+  }
+  .edit-bank {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    position: fixed;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #00000052;
+    display:flex;
+    justify-content:flex-end;
+    align-items: center;
+  }
+  .edit-bank span {
+    padding: 8px 13px;
+    border-radius: 18px;
+    margin: 0 10px;
+    height: 20px;
+    line-height: 20px;
+  }
+  .edit-bank-xg {
+    background: #89cb81;
+    color: white;
+  }
+  .edit-bank-dl {
+    background: #fd5538;
+    color: white;
+  }
+</style>

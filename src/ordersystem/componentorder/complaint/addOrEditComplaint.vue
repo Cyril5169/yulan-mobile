@@ -2,7 +2,6 @@
   <div class="lanju-details">
     <top :top="set"></top>
     <span v-if="this.STATUS==1" class="lanju-details-state">新增投诉单</span>
-    <span v-if="this.STATUS==2" class="lanju-details-state">编辑投诉单</span>
     <div class="lanju-details-msg">
       <div v-if="this.STATUS==2" class="msg">
         <div><span class="left">单据号</span><span class="right">{{submit.SALE_NO}}</span></div>
@@ -243,6 +242,13 @@
       if(this.submit.LOSED_QUANTITY==""||this.submit.LOSED_QUANTITY == null)
       {
         this.submit.LOSED_QUANTITY = 0;
+      }
+      if ((this.submit.TYPE == "丢失" ||this.submit.TYPE == "破损")&&this.submit.DAMAGED_QUANTITY <= 0 && this.submit.LOSED_QUANTITY <= 0) {
+          Toast({
+            message: "填写数量必须为正数",
+            duration: 1000
+          });
+        return;
       }
       addSubmit(data).then(res => {
         if (res.code == 0) {
