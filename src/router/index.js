@@ -102,6 +102,8 @@ import addOrEditComplaint from '@/ordersystem/componentorder/complaint/addOrEdit
 import ImageShop from '@/ordersystem/componentorder/design/imageShop'
 //新的退货赔偿
 import newRefund from '@/ordersystem/componentorder/newRefund/newRefund'
+import newRefundDetail from '@/ordersystem/componentorder/newRefund/newRefundDetail'
+
 
 
 Vue.use(Router)
@@ -590,6 +592,11 @@ var router = new Router({
       path: '/newRefund',
       name: 'newRefund',
       component: newRefund,
+    },
+    {
+      path: '/newRefundDetail',
+      name: 'newRefundDetail',
+      component: newRefundDetail,
     },
 
   ]

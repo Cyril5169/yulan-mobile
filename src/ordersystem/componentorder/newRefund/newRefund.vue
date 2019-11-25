@@ -13,19 +13,28 @@
           <input class="statusBar" type="text" v-model="myType" disabled />
         </li>
       </ul>
-      <ul class="ulheadNew" id="ulheadNew">
+      <ul class="ulhead2" id="ulhead2">
         <li >
           <div style="height:31px;margin-top:7px" >
             <van-cell-group style="height:31px;">
-               <input  class="searchInput" type="text" v-model="searchKey" placeholder="请输入提货单号" />
+               <input  class="searchInput" type="text" v-model="selectCreator" placeholder="请输入创建者姓名" />
             </van-cell-group>
           </div>
         </li>
+        <li >
+          <div style="height:31px;margin-top:7px" >
+            <van-cell-group style="height:31px;">
+               <input  class="searchInput" type="text" v-model="selectItemNo" placeholder="请输入产品型号" />
+            </van-cell-group>
+          </div>
+        </li>
+      </ul>
+      <ul class="ulhead3" id="ulhead3">
         <li>
-          <span class="search-button" @click="clear()">重置</span>
+          <span class="search-button"  @click="clear() ">重置</span>
         </li>
         <li>
-          <span class="search-button" @click="getList()">查询</span>
+          <span class="search-button"  @click="getList()">查询</span>
         </li>
       </ul>
     </div>
@@ -38,33 +47,25 @@
         :key="index"
       >
         <div class="single-title">
-          <span class="single-title-left">单据号：{{item.SALE_NO}}</span>
+          <span class="single-title-left">单据号：{{item.ID}}</span>
           <span class="single-title-right">{{item.STATUS|statusTrans}}</span>
         </div>
         <table>
           <tr>
-            <td>客户代码</td>
-            <td>{{item.CUSTOMER_CODE}}</td>
+            <td>创建者</td>
+            <td>{{item.ERP_CREATORNAME}}</td>
           </tr>
           <tr>
-            <td>客户名称</td>
-            <td>{{item.CUSTOMER_NAME}}</td>
+            <td>产品型号</td>
+            <td>{{item.ITEM_NO}}</td>
           </tr>
           <tr>
-            <td>物流单号</td>
-            <td>{{item.C_TRANSBILL}}</td>
+            <td>产品名称</td>
+            <td>{{item.PRODUCTION_VERSION}}</td>
           </tr>
           <tr>
-            <td>投诉类型</td>
-            <td>{{item.TYPE}}</td>
-          </tr>
-          <tr>
-            <td>投诉内容</td>
-            <td>{{item.MEMO}}</td>
-          </tr>
-          <tr>
-            <td>投诉时间</td>
-            <td>{{item.SUBMITTS}}</td>
+            <td>货品数</td>
+            <td>{{item.ITEM_COUNT}}</td>
           </tr>
         </table>
       </div>
@@ -143,9 +144,9 @@ export default {
       jsData: "",
       jsDataSet: "", //结束时间
       myType: "全部状态", //当前状态
-      myTypeCode: 0,
+      myTypeCode: null,
       showType: false, //状态选择显示
-      statusArray: ["全部状态", "未处理", "已处理未评价", "已处理已评价"],
+      statusArray: ["全部状态", "已提交", "已接收", "客户确认中","客户同意"],
       //当前页数
       currentPage: 1,
       //总记录数
@@ -155,7 +156,9 @@ export default {
       //总页数
       totalPage: 0,
       allLists: [],
-      loading: false
+      loading: false,
+      selectCreator:"",
+      selectItemNo:"",
     };
   },
   components: {
@@ -171,12 +174,21 @@ export default {
   filters: {
     statusTrans(value){
       switch (value) {
-        case  1:
-          return "未处理";
-        case  2:
-          return "已处理未评价";
-        case  3:
-          return "已处理已评价";
+        case null:
+          return "";
+          break;
+        case "SUBMITTED":
+          return "已提交";
+          break;
+        case "RECEIVE":
+          return "已接收";
+          break;
+        case "CUSTOMERAFFIRM":
+          return "客户确认中";
+          break;
+        case "APPROVED":
+          return "客户同意";
+          break;
       }
     },
   },
@@ -222,13 +234,15 @@ export default {
     onConfirmType(index) {
       this.myType = index;
       if (this.myType == "全部状态") {
-        this.myTypeCode = 0;
-      } else if (this.myType == "未处理") {
-        this.myTypeCode = 1;
-      } else if (this.myType == "已处理未评价") {
-        this.myTypeCode = 2;
-      } else if (this.myType == "已处理已评价") {
-        this.myTypeCode = 3;
+        this.myTypeCode = null;
+      } else if (this.myType == "已提交") {
+        this.myTypeCode = "SUBMITTED";
+      } else if (this.myType == "已接收") {
+        this.myTypeCode = "RECEIVE";
+      } else if (this.myType == "客户确认中") {
+        this.myTypeCode = "CUSTOMERAFFIRM";
+      }else if (this.myType == "客户同意") {
+        this.myTypeCode = "APPROVED";
       }
       this.showType = false;
     },
@@ -258,7 +272,6 @@ export default {
         startDate: ksTime, //开始日期
         endDate: jsTime, //结束日期
         state: this.myTypeCode, //状态
-        //！！可能需新建两个个输入框
         createName: this.selectCreator, //创建者名称
         itemNo: this.selectItemNo //产品号
       };
@@ -285,25 +298,13 @@ export default {
     },
     //查看详情
     checkDetails(index) {
-      if(this.allLists[index].STATUS!="2")
-      {
         this.$router.push({
-           name: "complaintDetail",
+           name: "newRefundDetail",
            params: {
-              SID: this.allLists[index].SID, //单据号
+              ID: this.allLists[index].ID, //单据号
+              STATE: this.allLists[index].STATE, //状态
            }
         });
-      }
-      else
-      {
-           this.$router.push({
-           name: "addOrEditComplaint",
-           params: {
-              SID: this.allLists[index].SID, //单据号
-              STATUS: 2, //单据状态
-           }
-        });
-      }
     },
     //新增投诉记录
     toCreateRecord() {
@@ -317,20 +318,21 @@ export default {
     //重置
     clear() {
       this.myType = "全部状态";
-      this.myTypeCode = 0;
+      this.myTypeCode = null;
       this.ksData = "";
       this.ksDataSet = "起始时间"; //  开始时间
       let time = new Date();
       this.jsData = "";
       this.jsSet(time); //结束时间
-      this.searchKey = "";
+      this.selectCreator = "";
+      this.selectItemNo = "";
     }
   },
   created() {
     let time = new Date();
     this.jsSet(time);
     this.ksSet(time);
-    // this.getList();
+    this.getList();
   }
 };
 </script>
@@ -389,12 +391,25 @@ export default {
   z-index: 999;
 }
 
-#ulheadNew {
+#ulhead2 {
   position: fixed;
   top: 88px;
   line-height: 37px;
   width: 100%;
   height: 45px;
+  /*font-size: 15px;*/
+  background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+  font-size: 15px;
+  z-index: 999;
+}
+
+#ulhead3 {
+  position: fixed;
+  top: 128px;
+  line-height: 34px;
+  width: 100%;
+  height: 40px;
   /*font-size: 15px;*/
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
@@ -474,7 +489,7 @@ input {
   color: rgb(255, 255, 255);
 }
 .tableData {
-  margin: 140px 10px 100px;
+  margin: 176px 10px 100px;
 }
 .tableData td,
 .tableData th {
