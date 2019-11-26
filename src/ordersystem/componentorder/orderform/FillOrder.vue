@@ -86,6 +86,33 @@
             </td>
           </tr>
         </table>
+        <table class="order-item">
+          <tr class="delivery">
+            <td class="left">购买人地址</td>
+            <td class="right">
+              <input
+                class="delivery-mark"
+                v-model="buyUserAddress"
+                placeholder="请填写购买人地址"
+                type="text"
+              />
+            </td>
+          </tr>
+        </table>
+        <table class="order-item">
+          <tr class="delivery">
+            <td class="left">上传购买凭证</td>
+            <td class="right">
+              <van-uploader
+                v-model="fileList"
+                :after-read="onRead"
+                accept="image/*"
+                preview-size="60"
+                multiple
+              />
+            </td>
+          </tr>
+        </table>
         <div class="product">
           <div class="good-contain" v-for="(product,index) in allProduct" :key="index">
             <div class="good-item1">
@@ -375,7 +402,7 @@
         />
       </div>
     </van-popup>
-     <!--新增收货地址-->
+    <!--新增收货地址-->
     <van-popup
       style="width:100%;height:100%;"
       v-model="showAddressAdd"
@@ -384,14 +411,18 @@
     >
       <newAddress @backclick="backclick" @refreshAddress="refreshAddress"></newAddress>
     </van-popup>
-     <!--修改收货地址-->
+    <!--修改收货地址-->
     <van-popup
       style="width:100%;height:100%;"
       v-model="showAddressEdit"
       v-if="showAddressEdit"
       position="right"
     >
-      <addressEdit @backclick="backclick" @refreshAddress="refreshAddress" :initAddress='initAddress'></addressEdit>
+      <addressEdit
+        @backclick="backclick"
+        @refreshAddress="refreshAddress"
+        :initAddress="initAddress"
+      ></addressEdit>
     </van-popup>
   </div>
 </template>
@@ -411,7 +442,8 @@ import {
   Cell,
   CellGroup,
   AddressList,
-  Loading
+  Loading,
+  Uploader
 } from "vant";
 import {
   orderSettlement,
@@ -419,7 +451,8 @@ import {
   getUseRecord,
   getCustomerInfo,
   getTotalRecordSum,
-  GetPromotionsById
+  GetPromotionsById,
+  UploadBuyUserFiles
 } from "@/api/orderListASP";
 import newAddress from "./NewAddress";
 import addressEdit from "./AddressEdit";
@@ -455,7 +488,8 @@ export default {
     [Toast.name]: Toast,
     [Dialog.name]: Dialog,
     [AddressList.name]: AddressList,
-    [Loading.name]: Loading
+    [Loading.name]: Loading,
+    [Uploader.name]: Uploader
   },
   data() {
     return {
@@ -467,8 +501,8 @@ export default {
       packingShow: false,
       showAddress: false,
       showAddressAdd: false,
-      showAddressEdit:false,
-      initAddress:'',
+      showAddressEdit: false,
+      initAddress: "",
       //物流类型
       deliveryType: "普通物流(运费由甲方支付)",
       isdeliveryType: "",
@@ -503,6 +537,10 @@ export default {
       buyUser: "",
       //购买人电话
       buyUserPhone: "",
+      //购买人地址
+      buyUserAddress: "",
+      //购买人凭证
+      buyUserPicture: "",
       //订单备注
       orderBei: "",
       //分包提示
@@ -532,7 +570,8 @@ export default {
       accMoney: 0,
       activityArray: [], //活动集合
       isX: false, //是否窗帘订单
-      orderNo: ""
+      orderNo: "",
+      fileList: []
     };
   },
   computed: {
@@ -707,6 +746,16 @@ export default {
       } else {
         this.isDefaultAdd = "1";
       }
+      //附件拼接
+      this.buyUserPicture = "";
+      for (var i = 0; i < this.fileList.length; i++) {
+        this.buyUserPicture +=
+          "/Files/BuyUser/" +
+          this.$store.getters.getCId +
+          "/" +
+          this.fileList[i].file.name +
+          ";";
+      }
       //订单商品详情，为多个集合（数组）
       this.productList = [];
       for (let i = 0; i < this.allProduct.length; i++) {
@@ -810,6 +859,8 @@ export default {
           allAddress: this.address.address,
           buyUser: this.buyUser,
           buyUserPhone: this.buyUserPhone,
+          buyUserAddress: this.buyUserAddress,
+          buyUserPicture: this.buyUserPicture,
           packingNote: this.packingNote
         },
         ctm_orders: this.productList,
@@ -1004,7 +1055,9 @@ export default {
           reciverArea3: this.address.reciverArea3,
           allAddress: this.address.address,
           buyUser: this.buyUser,
-          buyUserPhone: this.buyUserPhone
+          buyUserPhone: this.buyUserPhone,
+          buyUserAddress: this.buyUserAddress,
+          buyUserPicture: this.buyUserPicture
         },
         ctm_orders: this.productList
       };
@@ -1254,7 +1307,7 @@ export default {
         this.deliveryBei = orderHead.DELIVERY_NOTES;
         this.isDefaultAdd = orderHead.POST_ADDRESS_MODIFIED;
         this.address.postAddress = orderHead.POST_ADDRESS;
-        this.orderBei = orderHead.NOTES;
+        this.orderBei = orderHead.NOTES.trim();
         this.address.name = orderHead.WL_CONTACTS;
         this.address.tel = orderHead.WL_TEL;
         this.deliveryTypeCode = orderHead.DELIVERY_TYPE;
@@ -1263,9 +1316,30 @@ export default {
         this.address.reciverArea2 = orderHead.RECIVER_AREA2;
         this.address.reciverArea3 = orderHead.RECIVER_AREA3;
         this.address.address = orderHead.ALL_ADDRESS;
-        this.buyUser = orderHead.BUYUSER;
-        this.buyUserPhone = orderHead.BUYUSERPHONE;
+        this.buyUser = orderHead.BUYUSER.trim();
+        this.buyUserPhone = orderHead.BUYUSERPHONE.trim();
+        this.buyUserAddress = orderHead.BUYUSER_ADDRESS.trim();
+        this.buyUserPicture = orderHead.BUYUSER_PICTURE.trim();
+        if (this.buyUserPicture) {
+          var list = this.buyUserPicture.split(";");
+          for (var i = 0; i < list.length - 1; i++) {
+            var index = list[i].lastIndexOf("/");
+            if (index == -1) index = list[i].lastIndexOf("\\");
+            var fileName = list[i].substr(index + 1);
+            this.fileList.push({
+              file: { name: fileName },
+              url: this.baseUrlASP + list[i]
+            });
+          }
+        }
       }
+    },
+    onRead(file) {
+      let content = file.file;
+      let data = new FormData();
+      data.append("file", content);
+      data.append("cid", this.$store.getters.getCId);
+      UploadBuyUserFiles(data);
     }
   },
   // beforeRouteEnter(to, from, next) {

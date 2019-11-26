@@ -297,6 +297,8 @@ export default {
         GetCtmOrder({ orderNo: this.orderNo }).then(res => {
           this.oneOrder = data.data.data.data[0];
           this.oneOrder.PACKING_NOTE = res.data.PACKING_NOTE; //先这样处理，后台换了后台就不需要了
+          this.oneOrder.BUYUSER_ADDRESS = res.data.BUYUSER_ADDRESS;
+          this.oneOrder.BUYUSER_PICTURE = res.data.BUYUSER_PICTURE;
           for (let i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
             if (this.oneOrder.ORDERBODY[i].PART_SEND_ID == "0") {
               this.oneOrder.ORDERBODY[i].productTip = "等生产";
