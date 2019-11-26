@@ -295,7 +295,7 @@ export default {
           break;
         case 101:
           this.$router.push({
-            path: "/complaint"
+            path: "/orderdetails/:find"
           });
           break;
         case 102:

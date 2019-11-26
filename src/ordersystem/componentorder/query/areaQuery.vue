@@ -119,7 +119,7 @@
             </tr>
             <tr>
               <td style="text-align:left">时间段内订单提货总额：</td>
-              <td>{{singleBank.MONEYSUM}}</td>
+              <td>{{singleBank.MONEYSUM}}元</td>
             </tr>
           </table>
           <hr>
@@ -583,6 +583,7 @@ export default {
       this.queryQuYu_1();
     },
     async queryQuYu_1() {
+      
       this.moneySum=[],
       this.CUSTOMERED = [];
       this.CUSTOMERED_1 = [];
@@ -605,6 +606,7 @@ export default {
           message: "未选择用户"
         });
       } else{
+        this.loading = true
         for (var i = 0; i < this.customer.length; i++) {
           var res = await  getCustomerName({customer:this.customer[i]},{ loading: false })
           this.get_CUSTOMER_NAME = res.data[0]
@@ -630,13 +632,14 @@ export default {
           item != "" && item != undefined 
         )  
         if(this.CUSTOMERED.length == 0){
+          this.loading = false
           Toast({
           duration: 2000,
           message: "所选客户无提货单信息"
         });
           return this.showMoney = false
         }
-        this.showMoney = true;
+        //this.showMoney = true;
         var data = {
           type:this.typeFilter,//类型筛选
           costomerCodes: this.customer, //已选用户
@@ -676,7 +679,6 @@ export default {
     },
     //客户总金额
     _getTotalMoneySum(val){
-      this.query_1 = true;
       this.moneySum = []
       var data = {
         beginTime: val.beginTime, //起始时间
@@ -686,7 +688,8 @@ export default {
       }
       getTotalMoneySum(data).then(res => {
         this.moneySum = res.data[0];
-        
+        this.loading = false
+        this.showMoney = true;
       });
     },
     //计算表格末行
