@@ -131,7 +131,8 @@
         <div style="margin-left: 10px;" v-if="good.checkStatus">
           <span style="color:red;">修改后的价格以实际提交时为准</span>
         </div>
-        <div class="good-item2">
+        <!-- 判断是否有出货详情 -->
+        <div class="good-item2" v-if="good.packDetailId!=0"> 
           <span class="edit-bank-xg" style="float:right;" @click="addRefundRecord(good)">售 后</span>
         </div>
       </div>

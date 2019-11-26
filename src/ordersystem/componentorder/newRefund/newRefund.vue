@@ -70,8 +70,6 @@
         </table>
       </div>
     </div>
-
-    <div class="createRecord" @click="toCreateRecord">+</div>
     <!--开始日期选择-->
     <van-popup v-model="showks" position="bottom">
       <van-datetime-picker
@@ -305,15 +303,6 @@ export default {
               STATE: this.allLists[index].STATE, //状态
            }
         });
-    },
-    //新增投诉记录
-    toCreateRecord() {
-      this.$router.push({
-        name: "addOrEditComplaint",
-        params: {
-          STATUS: 1,
-        }
-      });
     },
     //重置
     clear() {

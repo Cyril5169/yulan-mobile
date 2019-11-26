@@ -77,7 +77,7 @@
 <script>
   import top from '../../../components/Top'
   import axios from 'axios'
-  import { digitUppercase,GetCompensationById,getReturnInfoApp} from "@/api/newRefundASP";
+  import { digitUppercase,GetCompensationById,getReturnInfoApp,InsertCompensation,UpdateState} from "@/api/newRefundASP";
   import {
   getPackDetailInfo,
   } from "@/api/orderListASP";
@@ -99,6 +99,8 @@
         SALE_NO:"",//提货单号
         submit: [],//明细表数据RTCB_ITEM
         submitHead:[],//表头数据RETURNCOMPENSATIONBILL
+        CID: this.$store.getters.getCMId, //客户编号
+        CNAME: this.$store.getters.getrealName,  //客户姓名
         companyId:this.$store.getters.getCMId,//公司账号
         companyName:"",//公司名
         complaintType:["丢失","破损","晚点","服务","其他"],
@@ -154,43 +156,13 @@
     },
     methods: {
     //新建一条售后记录
-    addRefundRecord(data) {
-        //获得提货单号
-        var res1 = await  getPackDetailInfo({
-                orderNo: this.partInfo.ORDER_NO,
-                lineNo: this.partInfo.LINE_NO,
-                itemNo: this.partInfo.ITEM_NO
-        });
-        if (res1.code == 0) {
-                this.SALE_NO = res1.data[0].SALE_NO;
-        } ;
-        this.submit.orderNo = this.partInfo.ORDER_NO;
-        this.submit.ITEM_NO = this.partInfo.ITEM_NO;
-        this.submit.UNIT = this.partInfo.UNIT;
-        this.submit.SALE_NO = this.SALE_NO;
-        var res2 = await  getReturnInfoApp({
-                companyId:this.companyId,
-                SALE_NO:this.submit.SALE_NO,
-                ITEM_NO:this.submit.ITEM_NO
-        });
-        if (res2.code == 0) {
-                this.companyName=res2.data[0].CUSTOMER_NAME;
-                this.CONTRACT_NO=res2.data[0].CONTRACT_NO;
-                this.submit.PRODUCTION_VERSION = res2.data[0].PRODUCTVERSION_NAME;
-        };
-    //  getPackDetailInfo({
-    //     orderNo: this.partInfo.ORDER_NO,
-    //     lineNo: this.partInfo.LINE_NO,
-    //     itemNo: this.partInfo.ITEM_NO
-    //   }).then(res => {
-    //     this.SALE_NO = res.data[0].SALE_NO;
-    //   });
+    async addRefundRecord(data) { 
       this.submitHead = {
           ID:"",
-          ERP_CREATOR:this.$store.getters.getCId, //创建人编号
+          ERP_CREATOR:"", //创建人编号
           ERP_CREATORNAME: "", //创建人姓名
-          CID: this.$store.getters.getCMId, //客户编号
-          CNAME: "", //客户姓名
+          CID: "", //客户编号
+          CNAME: "",  //客户姓名
           SENDBACK_REASON: "", //退回理由
           ITEM_COUNT: "", //总货品数量
           ITEM_MAX_INDEX:"",//最大索引
@@ -223,17 +195,31 @@
           ATTACHMENT_FILE:"",//附件
           ATTACHMENT_FILE_FOLDER:"",//附件文件夹
       };
-    //  this.submit.orderNo = this.partInfo.ORDER_NO;
-    //   this.submit.ITEM_NO = this.partInfo.ITEM_NO;
-    //   this.submit.UNIT = this.partInfo.UNIT;
-    //   this.submit.SALE_NO = this.SALE_NO;
-    //   getReturnInfoApp({companyId:this.companyId,SALE_NO:this.submit.SALE_NO,ITEM_NO:this.submit.ITEM_NO}).then(res => {
-    //     if (res.code == 0) {
-    //       this.companyName=res.data[0].CUSTOMER_NAME;
-    //       this.CONTRACT_NO=res.data[0].CONTRACT_NO;
-    //       this.submit.PRODUCTION_VERSION = res.data[0].PRODUCTVERSION_NAME;
-    //     } 
-    //   });
+              //获得提货单号
+        var res1 = await  getPackDetailInfo({
+                orderNo: this.partInfo.ORDER_NO,
+                lineNo: this.partInfo.LINE_NO,
+                itemNo: this.partInfo.ITEM_NO
+        });
+        if (res1.code == 0) {
+                this.SALE_NO = res1.data[0].packDetails[0].SALE_NO;
+        } ;
+        this.submit.orderNo = this.partInfo.ORDER_NO;
+        this.submit.ITEM_NO = this.partInfo.ITEM_NO;
+        this.submit.UNIT = this.partInfo.UNIT;
+        this.submit.SALE_NO = this.SALE_NO;
+        var res2 = await  getReturnInfoApp({
+                companyId:this.companyId,
+                SALE_NO:this.submit.SALE_NO,
+                ITEM_NO:this.submit.ITEM_NO
+        });
+        console.log(res2)
+        if (res2.code == 0) {
+                this.companyName=res2.data[0].CUSTOMER_NAME;
+                this.CONTRACT_NO=res2.data[0].CONTRACT_NO;
+                this.submit.TRANS_ID=res2.data[0].TRANS_ID;
+                this.submit.PRODUCTION_VERSION = res2.data[0].PRODUCTVERSION_NAME;
+        };
     },
     //新增售后记录提交
     _addRefundSubmit() {
@@ -244,47 +230,63 @@
         !this.submit.NOTES ||
         !this.submit.QTY 
       ) {
-        this.$alert("请完善信息", "提示", {
-          confirmButtonText: "确定",
-          type: "warning"
-        });
+        Toast({
+            message: "请完善信息",
+            duration: 1000
+          });
         return;
       }
       //退货数量应小于下单数量
       if (
         this.submit.QTY > this.zongshuliang 
-      ) {
-        this.$alert("填写数量必须小于下单数量", "提示", {
-          confirmButtonText: "确定",
-          type: "warning"
-        });
+      ){
+        Toast({
+            message: "填写数量必须小于下单数量",
+            duration: 1000
+          });
         return;
       }
-      if (this.submit.QTY <=0 ) {
-        this.$alert("填写数量必须为正数", "提示", {
-          confirmButtonText: "确定",
-          type: "warning"
-        });
-        return;
-      }
-      //判断是否上传附件
-      if (this.submit.fileList.length == 0) {
-        this.$alert("请上传相关附件", "提示", {
-          confirmButtonText: "确定",
-          type: "warning"
-        });
-        return;
-      }
-      //判断上传附件的形式为图片或视频
-      if(this.FormRight==false)
+      if (this.submit.QTY <=0 )
       {
-            this.$alert("提交失败，附件仅能上传图片或视频", "提示", {
-            confirmButtonText: "确定",
-            type: "warning"
+        Toast({
+            message: "填写数量必须为正数",
+            duration: 1000
+          });
+        return;
+      } 
+      this.submit.ITEM_INDEX = 1;
+      this.submitHead.ERP_CREATOR=this.CID;
+      this.submitHead.ERP_CREATORNAME = this.CNAME;
+      this.submitHead.CID=this.companyId;
+      this.submitHead.CNAME = this.companyName;
+      this.submitHead.SENDBACK_REASON = null;
+      this.submitHead.ITEM_COUNT = 1;
+      this.submitHead.ITEM_MAX_INDEX = 1;
+      this.submitHead.SALE_NO=this.submit.SALE_NO;
+      this.submitHead.ORDER_NO=this.submit.orderNo;
+      InsertCompensation({ head: this.submitHead, details: this.submit })
+            .then(res => {
+                UpdateState({
+                  id: res.data.ID,
+                  state: "SUBMITTED"
+                })
+                  .then(res => {
+                      if (res.code == 0) {
+                          Toast({
+                             message: "提交成功",
+                             duration: 1000
+                         });
+                      } else {
+                          Toast({
+                             message: "提交失败",
+                             duration: 1000
+                         });
+                      }
+                  })
             });
-            return ;
-      }
-      this.$refs.upload.submit();
+     this.$router.push({
+        name: "newRefund"
+     });
     },
     //投诉类型选择
     onConfirmType(index) {

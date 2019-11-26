@@ -24,6 +24,23 @@ export function getReturnInfoApp(data, config = {}) {
         return Promise.reject(err);
     })
 }
+//插入退货赔偿记录
+export function InsertCompensation(data, config = {}) {
+    return post('/RETURNCOMPENSATIONBILL/InsertCompensation', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+//修改退货赔偿记录状态
+export function UpdateState(data, config = {}) {
+    return post('/RETURNCOMPENSATIONBILL/UpdateState', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+
 
 // 向右移位
 function shiftRight(number, digit){
