@@ -67,12 +67,12 @@
           </tr>
           <tr v-if="wallMegs.NOTE_TYPE_NAME">
             <td colspan="3">
-              <span style="color:darkred;">{{wallMegs.NOTE_TYPE_NAME}}</span>
+              <span style="color:red;font-weight:bold;">{{wallMegs.NOTE_TYPE_NAME}}</span>
             </td>
           </tr>
           <tr v-if="baobei">
             <td colspan="3">
-              <span style="color:darkred;">此型号已报备，如果直接下单，有可能不被处理，请先与工厂订单部联系</span>
+              <span style="color:red;font-weight:bold;">此型号已报备，如果直接下单，有可能不被处理，请先与工厂订单部联系</span>
             </td>
           </tr>
         </table>
