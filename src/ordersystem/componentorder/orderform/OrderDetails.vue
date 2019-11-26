@@ -131,6 +131,11 @@
         <div style="margin-left: 10px;" v-if="good.checkStatus">
           <span style="color:red;">修改后的价格以实际提交时为准</span>
         </div>
+        <div >
+          <div>
+            <van-button v-if="good.packDetailId != 0"  @click="complaints_1(good)">投诉</van-button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="order-msg order-msg-item2">
@@ -199,7 +204,11 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import { Toast, Popup, Dialog, Collapse, CollapseItem, Icon } from "vant";
+import { Toast, Popup, Dialog, Collapse, CollapseItem, Icon ,Button} from "vant";
+import {
+  QueryNoById
+  } from "@/api/complaintASP";
+import { getPackDetailInfo,getReturnInfo,getCompanyInfo} from "@/api/orderListASP";
 import {
   updateCurtainOrder,
   InsertOperationRecord,
@@ -223,7 +232,8 @@ export default {
     [Dialog.name]: Dialog,
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
-    [Icon.name]: Icon
+    [Icon.name]: Icon,
+    [Button.name]:Button,
   },
   data() {
     return {
@@ -251,7 +261,9 @@ export default {
       selectIndex: 0,
       changeFlag: false,
       activeName: [],
-      operationRecords: []
+      operationRecords: [],
+      ORDER_NO:"",
+      getNo:[],
     };
   },
   computed: {
@@ -260,6 +272,32 @@ export default {
     }
   },
   methods: {
+    //投诉
+    complaints_1(val){
+      this.ORDER_NO=val.ORDER_NO
+      getPackDetailInfo({
+        orderNo: val.ORDER_NO,
+        lineNo: val.LINE_NO,
+        itemNo: val.ITEM_NO
+      }).then(res => {
+        this.getNo = res.data[0].packDetails[0];
+        this.complaints(this.getNo)
+        //this.showComplaints = true;
+      });
+    },
+    complaints(val){
+      this.$router.push({
+        name: "addOrEditComplaint",
+        params: {
+          ORDER_NO:this.ORDER_NO,
+          ITEM_NO:val.ITEM_NO,
+          SALE_NO:val.SALE_NO,
+          TRANS_ID:val.TRANS_ID,
+          STATUS:1,
+          from: "orderdetails/" + this.ORDER_NO
+        }
+      });
+    },
     backclick() {
       this.showCurtainDetail = false;
     },

@@ -288,6 +288,7 @@ export default {
   },
   data() {
     return {
+      isShowButton_index : 0,
       ellipsis: false,
       url: "http://106.14.159.244:8080/yulan-order",
       loading: false,

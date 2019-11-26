@@ -1,6 +1,6 @@
 <template>
   <div class="lanju-details">
-    <top :top="set"></top>
+    <top :top="set" :from="from"></top>
     <span v-if="this.STATUS==1" class="lanju-details-state">新增投诉单</span>
     <div class="lanju-details-msg">
       <div v-if="this.STATUS==2" class="msg">
@@ -123,7 +123,8 @@
   import {
   addSubmit,
   CheckDetailByID,
-  editSubmit
+  editSubmit,
+  QueryNoById
   } from "../../../api/complaintASP";
   import { Popup,Dialog ,Toast, Collapse, CollapseItem ,DatetimePicker,Uploader ,Button,Rate } from 'vant';
   export default {
@@ -136,14 +137,41 @@
     },
     data(){
       return{
+        submit:{
+            cid: this.$store.getters.getCId, //账户id
+            CUSTOMER_CODE: this.$store.getters.getCMId, //公司id
+            CUSTOMER_NAME:"",
+            SALE_NO:this.$route.params.SALE_NO,//销售单号
+            SUBMITTS: "", //提交时间
+            TYPE: "", //投诉类型
+            MEMO: "", //备注——投诉内容
+            OPERATOR: "", //处理人
+            PROCESSTS: "", //处理时间
+            PROCESSDESC:"",//处理结果——回复
+            WLTS_THINK:"",//服务评价
+            FEEDBACKTS:"",//评价时间
+            STATUS: 1,
+            TELEPHONE:"",
+            IMGURL:"",
+            LOSED_QUANTITY:0, //货物丢失数量
+            DAMAGED_QUANTITY:0,//货物损坏数量
+            C_TRANSBILL:this.$route.params.TRANS_ID,//物流单号
+            DINGDANHAO:this.$route.params.ORDER_NO,//订单号
+            SALENO:this.$route.params.ITEM_NO,//产品型号
+          },
+        from: "",
         set: 101,
-        STATUS: this.$route.params.STATUS,
-        SID:this.$route.params.SID,
-        submit: [],
+        // STATUS: this.$route.params.STATUS,
+        // SID:this.$route.params.SID,
         complaintType:["丢失","破损","晚点","服务","其他"],
         showType: false, //投诉类型选择显示
         myType:"请输入投诉类型",//类型选择栏绑定数据
         rateValue:3,
+        STATUS:this.$route.params.STATUS,
+        ORDER_NO:this.$route.params.ORDER_NO,
+        ITEM_NO:this.$route.params.ITEM_NO,
+        TRANS_ID:this.$route.params.TRANS_ID,
+        SALE_NO:this.$route.params.SALE_NO,
       }
     },
     filters: {
@@ -192,6 +220,10 @@
                 };
     }
     },
+    created() {
+    this.from = this.$route.params.from;
+    
+  },
     methods: {
     //新增记录
     _addRecord(){
@@ -333,16 +365,6 @@
       });
     },
     },
-    created() {
-      if(this.STATUS==1)
-      {
-          this._addRecord();
-      }
-      if(this.STATUS==2)
-      {
-          this.checkDetails();
-      }
-    }
   }
 </script>
 

@@ -35,3 +35,12 @@ export function editSubmit(data, config = {}) {
         return Promise.reject(err);
     })
 }
+
+//根据用户id查找各种单号
+export function QueryNoById(data, config = {}) {
+    return post('/Complaint/QueryNoById', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}

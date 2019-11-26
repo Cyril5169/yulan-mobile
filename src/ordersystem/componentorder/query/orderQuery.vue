@@ -660,6 +660,7 @@ export default {
             message: "未选择用户"
           });
       } else {
+        this.loading = true
         for (var i = 0; i < this.customer.length; i++) {
       this.date1=""
       this.date2=""
@@ -755,13 +756,15 @@ export default {
           item != "" && item != undefined 
         ) 
         if(this.CUSTOMERED.length == 0){
+          this.loading = false
           Toast({
             duration: 2000,
             message: "选择的客户无订单"
           });
           return this.showMoney = false
         }else{
-        this.showMoney = true;}
+        this.showMoney = true;
+        this.loading = false}
       }
     },
     showDetail(val){
@@ -847,6 +850,7 @@ export default {
     },
     //重置
     clear() {
+      this.loading = false
       this.checked = true
       this.CUSTOMERED=[]
       this.CUSTOMERED_1 = []
