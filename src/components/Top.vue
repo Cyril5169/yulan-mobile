@@ -313,6 +313,11 @@ export default {
             path: "/newRefund"
           });
           break;
+        case 105:
+          this.$router.push({
+            path: "/newRefund"
+          });
+          break;
       }
 
       //   if(this.top == 0|| this.top ==1 || this.top ==5  ){

@@ -8,8 +8,17 @@ export function GetUserCompensation(data, config = {}) {
         return Promise.reject(err);
     })
 }
+//根据单据id获得单据明细
 export function GetCompensationById(data, config = {}) {
     return post('/RETURNCOMPENSATIONBILL/GetCompensationById', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+//APP端-我的订单-查看货物详情-售后，获取部分信息
+export function getReturnInfoApp(data, config = {}) {
+    return post('/PACK_DETAIL/getReturnInfo3', data, config).then((res) => {
         return Promise.resolve(res);
     }).catch((err) => {
         return Promise.reject(err);

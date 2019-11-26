@@ -69,9 +69,9 @@
 <script>
   import top from '../../../components/Top'
   import axios from 'axios'
-  import {
-  CheckDetailByID,
-  } from "../../../api/complaintASP";
+  // import {
+  // CheckDetailByID,
+  // } from "../../../api/complaintASP";
   import { digitUppercase,GetCompensationById } from "@/api/newRefundASP";
   import { Popup,Dialog ,Toast, Collapse, CollapseItem ,DatetimePicker,Uploader ,Button } from 'vant';
   export default {
