@@ -556,6 +556,11 @@ export default {
       let a = this.$refs.top;
       a.className = "top-green";
     }
+     if (this.top == 105) {
+      this.msg = "退货赔偿";
+      let a = this.$refs.top;
+      a.className = "top-green";
+    }
   },
   destroyed() {
     if (window.vTop == this) window.vTop = null;

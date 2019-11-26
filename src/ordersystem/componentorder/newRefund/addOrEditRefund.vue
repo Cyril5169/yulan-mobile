@@ -1,6 +1,6 @@
 <template>
   <div class="lanju-details">
-    <top :top="set"></top>
+    <top :top="set" :from="from"></top>
     <span v-if="STATE=='SUBMITTED'" class="lanju-details-state">新增售后单</span>
     <div class="lanju-details-msg">
       <!-- <div class="msg">
@@ -41,7 +41,7 @@
 
       <div  class="msg">
           <!-- partInfo里的PRODUCTION_VERSION是代码不是名称 -->
-        <div><span class="left">产品名称</span><span class="right">{{submit.PRODUCTION_VERSION}}</span></div>
+        <div><span class="left">产品名称</span><span class="right">{{productVersionTrans(submit.PRODUCTION_VERSION)}}</span></div>
         <div><span class="left">产品型号</span><span class="right">{{submit.ITEM_NO}}</span></div>
         <div><span class="left">单位</span><span class="right">{{submit.UNIT}}</span></div>
         <div>
@@ -64,12 +64,24 @@
   
     </div>
     <div class="edit-bank">
+      <span v-if="STATE=='SUBMITTED'"  class="edit-bank-fw" @click="showNote=true;">服务须知</span>
       <span v-if="STATE=='SUBMITTED'"  class="edit-bank-xg" @click="_addRefundSubmit()">确认提交</span>
-      <!-- <span  class="edit-bank-xg" @click="_editSubmit()">确认提交</span> -->
     </div>
 
-    <van-popup v-model="showType" position="bottom">
-        <van-picker show-toolbar title="投诉类型" :columns="complaintType" @confirm="onConfirmType"  @cancel="onCancelType"/>  
+    <van-popup v-model="showNote" position="bottom">
+          <div style="margin:4px 0px 4px 4px;text-align:left;font-size:20px;color:red">
+               注意事项：
+          </div>
+          <div style="margin:4px 0px 4px 4px;text-align:left;">
+               1.若您未在我公司对您的《退货/赔偿申请书》提交处理意见之日起15日内确认、提出异议的，则视为放弃赔偿权利；<br />
+               2.玉兰公司支付的退货金额，仅限于本《退货/赔偿申请书》的金额，不承担其他费用；<br />
+               3.请您仔细阅读本《退货/赔偿申请书》相关信息，一旦确认，视为同意我公司的处理方案。<br />
+               <br />
+               公司名称：广东玉兰集团股份有限公司<br />
+               地址：东莞市莞城莞龙路段狮龙路莞城科技园内<br />
+               电话:0769-23321708&emsp;&emsp;邮政编码:523119<br />
+               邮箱：yulan315@yulangroup.cn<br />
+          </div>
     </van-popup>   
   </div>
 </template>
@@ -92,6 +104,7 @@
     },
     data(){
       return{
+        from:"",
         set: 105,
         partInfo: this.$route.params.partInfo, //获取订单详情中的部分数据
         STATE:this.$route.params.STATE, 
@@ -103,9 +116,9 @@
         CNAME: this.$store.getters.getrealName,  //客户姓名
         companyId:this.$store.getters.getCMId,//公司账号
         companyName:"",//公司名
-        complaintType:["丢失","破损","晚点","服务","其他"],
-        showType: false, //投诉类型选择显示
+        showNote: false, //显示服务须知
         myType:"请输入投诉类型",//类型选择栏绑定数据
+        ORDER_NO:this.$route.params.partInfo.ORDER_NO
       }
     },
     filters: {
@@ -195,7 +208,7 @@
           ATTACHMENT_FILE:"",//附件
           ATTACHMENT_FILE_FOLDER:"",//附件文件夹
       };
-              //获得提货单号
+        //获得提货单号
         var res1 = await  getPackDetailInfo({
                 orderNo: this.partInfo.ORDER_NO,
                 lineNo: this.partInfo.LINE_NO,
@@ -285,84 +298,27 @@
                   })
             });
      this.$router.push({
-        name: "newRefund"
+        name: "orderdetails",
+        params:{
+          find:this.ORDER_NO
+        }
      });
     },
-    //投诉类型选择
-    onConfirmType(index) {
-      this.myType = index;
-      this.submit.TYPE = index;
-      this.showType = false;
-    },
-    //取消选择
-    onCancelType() {
-      this.showType = false;
-    },
-    //查询详情
-    checkDetails() {
-          this.submit = [];
-          let data = {
-              SID: this.$route.params.SID
-          };
-          CheckDetailByID(data).then(res => {
-          if (res.count > 0) {
-            this.submit = res.data[0];
-          }          
-          });
-    },
-    //编辑列表详情修改
-    _editSubmit() {
-      this.submit.WLTS_THINK=this.rateValue;
-      //判断是否填完所有信息
-      if (
-        this.submit.SALE_NO == "" ||
-        this.submit.TRANS_ID == "" ||
-        this.submit.TYPE == "" ||
-        this.submit.PROCESSDESC == "" ||
-        this.submit.WLTS_THINK == ""
-      )
-      {
-          Toast({
-            message: "请完善信息",
-            duration: 1000
-          });
-        return;
-      }
-      if(this.submit.DAMAGED_QUANTITY==""||this.submit.DAMAGED_QUANTITY == null)
-      {
-        this.submit.DAMAGED_QUANTITY = 0;
-      }
-      if(this.submit.LOSED_QUANTITY==""||this.submit.LOSED_QUANTITY == null)
-      {
-        this.submit.LOSED_QUANTITY = 0;
-      }
-      editSubmit(this.submit).then(res => {
-        if (res.code == 0) {
-          Toast({
-            message: "修改成功",
-            duration: 1000
-          });
-        } else {
-          Toast({
-            message: "修改失败",
-            duration: 1000
-          });
-        }
-      });
-      this.$router.push({
-        name: "complaint"
-      });
+    //如果产品名称为空,则返回一个值
+    productVersionTrans(val)
+    {
+       if(val==null ||val=="")
+       {
+         return "无数据";
+       }
+       else{
+         return val;
+       }
     },
     },
     created() {
-      if(this.STATE=='SUBMITTED')
-      {
+      this.from = this.$route.params.from
           this.addRefundRecord();
-      }
-      if(this.STATE!='SUBMITTED')
-      {
-          this.checkDetails();
-      }
     }
   }
 </script>
@@ -451,6 +407,10 @@
   }
   .edit-bank-xg {
     background: #89cb81;
+    color: white;
+  }
+  .edit-bank-fw {
+    background: #f5c836;
     color: white;
   }
   .edit-bank-dl {

@@ -31,7 +31,7 @@
       </ul>
       <ul class="ulhead3" id="ulhead3">
         <li>
-          <span class="search-button"  @click="clear() ">重置</span>
+          <span class="search-buttonNew"  @click="clear() ">重置</span>
         </li>
         <li>
           <span class="search-button"  @click="getList()">查询</span>
@@ -48,7 +48,7 @@
       >
         <div class="single-title">
           <span class="single-title-left">单据号：{{item.ID}}</span>
-          <span class="single-title-right">{{item.STATUS|statusTrans}}</span>
+          <span class="single-title-right">{{item.STATE|statusTrans}}</span>
         </div>
         <table>
           <tr>
@@ -361,6 +361,18 @@ export default {
   z-index: 99;
   position: relative;
   top: 3px;
+  right:-50px;
+}
+.search-buttonNew {
+  color: #a0cb8d;
+  font-size: 13px;
+  padding: 5px 20px;
+  border-radius: 15px;
+  background: white; 
+  z-index: 99;
+  position: relative;
+  top: 3px;
+  right:-160px;
 }
 .search_1 {
   position: relative;
@@ -428,7 +440,7 @@ input {
 }
 
 .time {
-  width: 95px;
+  width: 92px;
   height: 20px;
   line-height: 20px;
   background-color: hsl(0, 0%, 100%);
@@ -443,7 +455,7 @@ input {
   background-size: 15px;
 }
 .statusBar {
-  width: 110px;
+  width: 90px;
   height: 20px;
   line-height: 20px;
   background-color: hsl(0, 0%, 100%);
@@ -453,7 +465,7 @@ input {
   text-align: left;
   background-image: url("../../assetsorder/time-zk.png");
   background-repeat: no-repeat;
-  background-position-x: 105px;
+  background-position-x: 83px;
   background-position-y: 1vw;
   background-size: 15px;
 }
