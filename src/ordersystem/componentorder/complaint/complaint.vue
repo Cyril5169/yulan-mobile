@@ -310,6 +310,7 @@ export default {
         name: "addOrEditComplaint",
         params: {
           STATUS: 1,
+          from:'complaint'
         }
       });
     },
