@@ -1,22 +1,28 @@
 <template>
   <div class="lanju-details">
     <top :top="set" :from="from"></top>
-    <span v-if="this.STATUS==1" class="lanju-details-state">新增投诉单</span>
+    <!-- <span v-if="this.STATUS==1" class="lanju-details-state">新增投诉单</span> -->
     <div class="lanju-details-msg">
       <div v-if="this.STATUS==2" class="msg">
         <div><span class="left">单据号</span><span class="right">{{submit.SALE_NO}}</span></div>
         <div><span class="left">提交时间</span><span class="right">{{submit.SUBMITTS|dateTrans}}</span></div>
         <div><span class="left">单据状态</span><span class="right">{{STATUS|statusTrans}}</span></div>
       </div>
-      <div v-if="this.STATUS==1" class="msg">
+      <!-- <div v-if="this.STATUS==1" class="msg">
         <div><span class="left">客户代码</span><span class="right">系统带出</span></div>
         <div><span class="left">客户名称</span><span class="right">系统带出</span></div>
-      </div>
+      </div> -->
       <div v-if="this.STATUS==2" class="msg">
         <div><span class="left">客户代码</span><span class="right">{{submit.CUSTOMER_CODE}}</span></div>
         <div><span class="left">客户名称</span><span class="right">{{submit.CUSTOMER_NAME}}</span></div>
       </div>
-      <div  v-if="this.STATUS==1" class="msg">
+      <div v-if="this.STATUS==1" class="msg">
+        <div><span class="left">提货单号</span><span class="right">{{submit.SALE_NO}}</span></div>
+        <div><span class="left">物流单号</span><span class="right">{{submit.C_TRANSBILL}}</span></div>
+        <div><span class="left">订单号</span><span class="right">{{submit.DINGDANHAO}}</span></div>
+        <div><span class="left">产品型号</span><span class="right">{{submit.SALENO}}</span></div>
+      </div>
+      <!-- <div  v-if="this.STATUS==1" class="msg">
         <div>
           <span class="left">提货单号<span style="color:red;">*</span></span>
           <input
@@ -27,13 +33,9 @@
           </div>
         <div>
           <span class="left">物流单号<span style="color:red;">*</span></span>
-          <input
-            placeholder="请输入物流单号"
-            class="right bank-input"
-            v-model="submit.C_TRANSBILL"
-          />
+          <span class="right">{{submit.C_TRANSBILL}}</span> 
         </div>
-        <div>
+        <div> 
           <span class="left">订单号<span style="color:red;">*</span></span>
           <input
             placeholder="请输入订单号"
@@ -49,7 +51,7 @@
             v-model="submit.SALENO"
           />
         </div>
-      </div>
+      </div> -->
       <div v-if="this.STATUS==2" class="msg">
         <div><span class="left">提货单号</span><span class="right">{{submit.SALE_NO}}</span></div>
         <div><span class="left">物流单号</span><span class="right">{{submit.C_TRANSBILL}}</span></div>
@@ -66,6 +68,7 @@
         <div v-show="submit.TYPE=='丢失'" >
           <span  class="left">数量<span style="color:red;">*</span></span>
           <input
+          type="number"
             placeholder="请输入丢失数量"
             class="right bank-input"
             v-model="submit.LOSED_QUANTITY"
@@ -74,6 +77,7 @@
         <div v-show="submit.TYPE=='破损'" >
           <span  class="left">数量<span style="color:red;">*</span></span>
           <input
+            type="number"
             placeholder="请输入破损数量"
             class="right bank-input"
             v-model="submit.DAMAGED_QUANTITY"
