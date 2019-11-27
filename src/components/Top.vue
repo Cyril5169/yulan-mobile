@@ -313,6 +313,11 @@ export default {
             path: "/newRefund"
           });
           break;
+        case 105:
+          this.$router.push({
+            path: "/newRefund"
+          });
+          break;
       }
 
       //   if(this.top == 0|| this.top ==1 || this.top ==5  ){
@@ -547,6 +552,11 @@ export default {
       a.className = "top-green";
     }
     if (this.top == 104) {
+      this.msg = "退货赔偿";
+      let a = this.$refs.top;
+      a.className = "top-green";
+    }
+     if (this.top == 105) {
       this.msg = "退货赔偿";
       let a = this.$refs.top;
       a.className = "top-green";

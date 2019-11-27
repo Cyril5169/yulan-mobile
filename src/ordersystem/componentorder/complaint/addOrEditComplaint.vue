@@ -296,7 +296,10 @@
         }
       });
       this.$router.push({
-        name: "complaint"
+        name: "orderdetails",
+        params:{
+          find:this.ORDER_NO
+        }
       });
     },
     //投诉类型选择

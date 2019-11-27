@@ -24,7 +24,7 @@
       </div>
       <div class="msg">
         <div><span class="left">产品型号</span><span class="right">{{checkTable.ITEM_NO}}</span></div>
-        <div><span class="left">产品名称</span><span class="right">{{checkTable.PRODUCTION_VERSION}}</span></div>
+        <div><span class="left">产品名称</span><span class="right">{{productVersionTrans(checkTable.PRODUCTION_VERSION)}}</span></div>
         <div><span class="left">单位</span><span class="right">{{checkTable.UNIT}}</span></div>
         <div><span class="left">数量</span><span class="right">{{checkTable.QTY}}</span></div>
         <div><span class="left">问题描述</span><span class="right">{{checkTable.NOTES}}</span></div>
@@ -49,8 +49,8 @@
       <div v-if="checkTable.STATE=='CUSTOMERAFFIRM'||checkTable.STATE=='APPROVED'"> 
       <div class="msg" v-for="(item,index) of checkDetailTable" :key="index">
         <div><span class="left">第{{index+1}}条处理结果：</span><span class="right"></span></div>
-        <div><span class="left">产品型号</span><span class="right">{{checkTable.PRODUCTION_VERSION}}</span></div>
-        <div><span class="left">产品名称</span><span class="right">{{checkTable.ITEM_NO}}</span></div>
+        <div><span class="left">产品型号</span><span class="right">{{checkTable.ITEM_NO}}</span></div>
+        <div><span class="left">产品名称</span><span class="right">{{productVersionTrans(checkTable.PRODUCTION_VERSION)}}</span></div>
         <div><span class="left">单位</span><span class="right">{{checkTable.UNIT}}</span></div>
         <div><span class="left">数量</span><span class="right">{{item.P_QTY}}</span></div>
         <div><span class="left">金额</span><span class="right">{{item.P_MONEY}}</span></div>
@@ -63,16 +63,35 @@
         <div><span class="left">金额大写</span><span class="right">{{totalMoneyUpper}}</span></div>
       </div>
     </div>
+    <div class="edit-bank"  >
+      <span class="edit-bank-fw" @click="showNote=true;">服务须知</span>
+      <span v-if="checkTable.STATE=='CUSTOMERAFFIRM'"  class="edit-bank-xg" @click="CustomerApproved()">同意</span>
+    </div>
+    <van-popup v-model="showNote" position="bottom">
+          <div style="margin:4px 0px 4px 4px;text-align:left;font-size:20px;color:red">
+               注意事项：
+          </div>
+          <div style="margin:4px 0px 4px 4px;text-align:left;">
+               1.若您未在我公司对您的《退货/赔偿申请书》提交处理意见之日起15日内确认、提出异议的，则视为放弃赔偿权利；<br />
+               2.玉兰公司支付的退货金额，仅限于本《退货/赔偿申请书》的金额，不承担其他费用；<br />
+               3.请您仔细阅读本《退货/赔偿申请书》相关信息，一旦确认，视为同意我公司的处理方案。<br />
+               <br />
+               公司名称：广东玉兰集团股份有限公司<br />
+               地址：东莞市莞城莞龙路段狮龙路莞城科技园内<br />
+               电话:0769-23321708&emsp;&emsp;邮政编码:523119<br />
+               邮箱：yulan315@yulangroup.cn<br />
+          </div>
+    </van-popup>   
   </div>
 </template>
 
 <script>
   import top from '../../../components/Top'
   import axios from 'axios'
-  import {
-  CheckDetailByID,
-  } from "../../../api/complaintASP";
-  import { digitUppercase,GetCompensationById } from "@/api/newRefundASP";
+  // import {
+  // CheckDetailByID,
+  // } from "../../../api/complaintASP";
+  import { digitUppercase,GetCompensationById,UpdateState } from "@/api/newRefundASP";
   import { Popup,Dialog ,Toast, Collapse, CollapseItem ,DatetimePicker,Uploader ,Button } from 'vant';
   export default {
     name: "newRefundDetail",
@@ -89,7 +108,7 @@
         checkTable:[],
         checkDetailTable:[],
         CNAME:"",
-        showPic: false
+        showNote: false //是否显示服务须知
       }
     },
     filters: {
@@ -148,6 +167,7 @@
     }
     },
     methods: {
+      //查看详情
       checkDetails() {
           this.checkTable = [];
           this.checkDetailTable = [];
@@ -163,7 +183,55 @@
                 }
             }
          });
-       },
+      },
+      //客户同意
+      CustomerApproved(){
+            UpdateState({
+                  id: this.checkTable.ID,
+                  state: "APPROVED"
+                })
+                  .then(res => {
+                      if (res.code == 0) {
+                          Toast({
+                             message: "提交成功",
+                             duration: 1000
+                         });
+                      } else {
+                          Toast({
+                             message: "提交失败",
+                             duration: 1000
+                         });
+                      }
+            });
+            this.$router.push({
+                  name: "newRefund"
+            });
+          // this.checkTable.STATE='APPROVED';
+          // ApprovedUpdate({ head: this.checkTable }).then(res => {
+          //             if (res.code == 0) {
+          //                 Toast({
+          //                    message: "提交成功",
+          //                    duration: 1000
+          //                });
+          //             } else {
+          //                 Toast({
+          //                    message: "提交失败",
+          //                    duration: 1000
+          //                });
+          //             }
+          // });
+      },
+      //如果产品名称为空,则返回一个值
+      productVersionTrans(val)
+      {
+         if(val==null ||val=="")
+         {
+          return "无数据";
+         }
+         else{
+           return val;
+         }
+      },
     },
     computed: {
     //返回大写形式的总金额
@@ -172,8 +240,7 @@
     }
   },
     created () {
-      this.checkDetails()
-      console.log(this.$route.params)
+      this.checkDetails();
     }
   }
 </script>
@@ -255,6 +322,10 @@
     margin: 0 10px;
     height: 20px;
     line-height: 20px;
+  }
+  .edit-bank-fw {
+    background: #f5c836;
+    color: white;
   }
   .edit-bank-xg {
     background: #89cb81;

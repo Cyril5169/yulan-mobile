@@ -103,6 +103,8 @@ import ImageShop from '@/ordersystem/componentorder/design/imageShop'
 //新的退货赔偿
 import newRefund from '@/ordersystem/componentorder/newRefund/newRefund'
 import newRefundDetail from '@/ordersystem/componentorder/newRefund/newRefundDetail'
+import addOrEditRefund from '@/ordersystem/componentorder/newRefund/addOrEditRefund'
+
 
 
 
@@ -598,7 +600,11 @@ var router = new Router({
       name: 'newRefundDetail',
       component: newRefundDetail,
     },
-
+    {
+      path: '/addOrEditRefund',
+      name: 'addOrEditRefund',
+      component: addOrEditRefund,
+    },
   ]
 });
 //路由守卫

@@ -131,11 +131,16 @@
         <div style="margin-left: 10px;" v-if="good.checkStatus">
           <span style="color:red;">修改后的价格以实际提交时为准</span>
         </div>
-        <div >
-          <div>
-            <van-button v-if="good.packDetailId != 0"  @click="complaints_1(good)">投诉</van-button>
-          </div>
+        <!-- 判断是否有出货详情 -->
+        <div class="good-item2" v-if="good.packDetailId!=0"> 
+          <span class="edit-bank-xg" style="float:right;" @click="addRefundRecord(good)">售 后</span>
+          <span class="edit-bank-ts" style="float:right;" @click="complaints_1(good)">投 诉 </span>
         </div>
+        <!-- <div >
+          <div>
+            <van-button v-if="good.packDetailId!= 0"  @click="complaints_1(good)">投 诉</van-button>
+          </div>
+        </div> -->
       </div>
     </div>
     <div class="order-msg order-msg-item2">
@@ -272,6 +277,18 @@ export default {
     }
   },
   methods: {
+    //新增售后赔偿单
+    addRefundRecord(good) {
+        console.log(good);
+        this.$router.push({
+           name: "addOrEditRefund",
+           params: {
+              partInfo:good,//获取订单详情中的部分数据
+              STATE:"SUBMITTED",//新增后的状态：已提交
+              from:"orderdetails/" + this.orderNo
+           }
+        });
+    },
     //投诉
     complaints_1(val){
       this.ORDER_NO=val.ORDER_NO
@@ -949,5 +966,29 @@ export default {
 .fail-btn {
   background: #f05454;
   color: white;
+}
+.edit-bank-xg {
+  width:45px;
+  border-radius: 3px;
+  height: 22px;
+  line-height: 22px;
+  text-align: center;
+  background:  #f05454;
+  color: white;
+  position:relative;
+  top:0px;
+  right:0px;
+}
+.edit-bank-ts {
+  width:45px;
+  border-radius: 3px;
+  height: 22px;
+  line-height: 22px;
+  text-align: center;
+  background:  #278be9;
+  color: white;
+  position:relative;
+  top:0px;
+  right:12px;
 }
 </style>
