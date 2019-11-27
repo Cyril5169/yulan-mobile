@@ -180,9 +180,9 @@ export default {
 }
 .bank-details-msg {
   position: fixed;
-  top:50px;
+  top: 50px;
   bottom: 0;
-  width:100%;
+  width: 100%;
   background: #ededed;
   overflow-y: scroll;
 }
@@ -216,15 +216,12 @@ export default {
   background: #a0cb8dd4;
 }
 .bank-img {
-  width: 100px;
-  height: 100px;
-  padding: 20px;
-  border: 1px solid #969799;
+  width: 110px;
+  height: 110px;
 }
 .bank-img-big {
-  width: 200px;
-  height: 200px;
-  border-radius: 10px;
+  width: 250px;
+  height: 250px;
 }
 .edit-bank {
   width: 100%;

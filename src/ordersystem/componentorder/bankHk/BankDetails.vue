@@ -35,26 +35,36 @@
           <img class="right more-slet" src="../../assetsorder/more.png" alt />
           <input
             readonly="readonly"
-            placeholder="填写汇入玉兰账号所属银行"
+            placeholder="选择汇入玉兰账号所属银行"
             class="right bank-input"
             v-model="bankDetails.yulanBank"
           />
         </div>
-        <div @click="showHkHistory = true">
+        <div>
           <span class="left">付款公司(人)</span>
-          <img class="right more-slet" src="../../assetsorder/more.png" alt />
-          <input placeholder="填写付款公司(人)" class="right bank-input" v-model="bankDetails.payerName" />
+          <img
+            @click="showHkHistory = true"
+            class="right more-slet"
+            src="../../assetsorder/more.png"
+            alt
+          />
+          <input placeholder="请填写付款公司(人)" class="right bank-input" v-model="bankDetails.payerName" />
         </div>
         <div>
           <span class="left">付款银行账号</span>
           <!-- <img class="right more-slet" src="../../assetsorder/more.png" alt /> -->
-          <input placeholder="填写付款银行账号" class="right bank-input" v-model="bankDetails.payerAccount" @input="oninput2" />
+          <input
+            placeholder="请填写付款银行账号"
+            class="right bank-input"
+            v-model="bankDetails.payerAccount"
+            @input="oninput2"
+          />
         </div>
         <div>
           <span class="left">付款金额</span>
           <!-- <img class="right more-slet" src="../../assetsorder/more.png" alt /> -->
           <input
-            placeholder="填写付款金额"
+            placeholder="请填写付款金额"
             class="right bank-input"
             v-model.number="bankDetails.payAmount"
             type="number"
@@ -84,7 +94,7 @@
           :after-read="onRead"
           :before-read="beforeRead"
           accept="image/*"
-          :preview-size="100"
+          preview-size="110"
           :max-count="1"
           :max-size="2*1024*1024"
         >
@@ -93,7 +103,7 @@
             class="bank-img head-img"
             :src="imgSrc"
             ref="goodsImg"
-            style="width: 150px;height: 150px;"
+            style="width: 110px;height: 110px;"
           />
           <div v-else class="upload-pic">+</div>
         </van-uploader>
@@ -194,11 +204,7 @@ export default {
       // imgSrcRecord: this.$route.params.data.imgUrl,
       showPic: false,
       showBank: false,
-      bank: [
-        "中国工商银行8881",
-        "中国工商银行9761",
-        "中信银行",
-      ],
+      bank: ["中国工商银行8881", "中国工商银行9761", "中信银行"],
       hKHistory: [],
       hKHistoryRecord: [],
       componyBank: "",
@@ -367,10 +373,10 @@ export default {
       e.target.value = e.target.value.match(/^\d*(\.?\d{0,2})/g)[0] || null;
       that.bankDetails.payAmount = e.target.value;
     },
-    oninput2(e){
+    oninput2(e) {
       e.target.value = e.target.value.match(/^\d*/g)[0] || null;
       this.bankDetails.payerAccount = e.target.value;
-    },
+    }
   },
   created() {
     // this.initDetails()
@@ -425,13 +431,13 @@ export default {
 .more-slet {
   width: 25px;
   height: 25px;
-  margin: 6px 0 0 10px;
+  margin: 5px 0 0 10px;
   /*vertical-align: middle;*/
 }
 .fkpz {
   /*margin-bottom: 10px;*/
   border-radius: 5px;
-  /*padding: 0 10px 10px;*/
+  padding-bottom: 10px;
   background: white;
 }
 .fkpz-title {
@@ -448,9 +454,9 @@ export default {
   border: 1px solid #969799;
 }
 .upload-pic {
-  width: 150px;
-  height: 150px;
-  line-height: 150px;
+  width: 110px;
+  height: 110px;
+  line-height: 110px;
   border: 1px dashed #404040c2;
   font-size: 50px;
 }
