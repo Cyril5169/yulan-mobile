@@ -56,6 +56,7 @@ export default {
   },
   computed: {
     detail() {
+      if(this.CONTENT) this.CONTENT = this.CONTENT.replace(/\[ReplaceMark\]/g, this.fileCenterUrl)
       return "<p style='font-weight:bold;font-size:17px;text-align:center;'>" + this.TITLE + "</p>" + this.CONTENT;
     }
   },

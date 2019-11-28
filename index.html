@@ -38,26 +38,30 @@
             local: {
                 baseUrl: 'http://localhost:49438/',
                 orderBaseUrl: "http://120.79.140.75:567/yulan-order",
+                fileCenterUrl: "http://47.107.56.156:1001/",//下载中心
                 describe: "本地调试"//在我的->检查新版本处显示
             },
             test: {
                 baseUrl: 'http://47.107.56.156:666/',
                 orderBaseUrl: "http://120.79.140.75:567/yulan-order",
+                fileCenterUrl: "http://47.107.56.156:1001/",//下载中心
                 describe: "测试服务器"//在我的->检查新版本处显示
             },
             formal: {
                 baseUrl: 'http://14.29.223.114:568/',
                 orderBaseUrl: "http://14.29.223.114:10250/yulan-order",
+                fileCenterUrl: "http://61.145.202.7:1001/",
                 describe: ""
             }
         }
 
-        var urlSetting = urlArr.local;//本地
+        //var urlSetting = urlArr.local;//本地
         //var urlSetting = urlArr.test;//测试
-        //var urlSetting = urlArr.formal;//正式
+        var urlSetting = urlArr.formal;//正式
 
         var baseUrl = urlSetting.baseUrl;
         var orderBaseUrl = urlSetting.orderBaseUrl;
+        var fileCenterUrl = urlSetting.fileCenterUrl;
         var updateUrl = baseUrl + "app/version.json";
         document.addEventListener("plusready", function (a) {
             window.plus = plus;

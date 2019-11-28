@@ -62,6 +62,7 @@ Vue.use(VueAwesomeSwiper);
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
 Vue.prototype.orderBaseUrl = orderBaseUrl;
+Vue.prototype.fileCenterUrl = fileCenterUrl;
 Vue.prototype.capitalUrl = Global.capitalUrl;
 Vue.prototype.mui = mui;
 Vue.prototype.IScroll = IScroll;

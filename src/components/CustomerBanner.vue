@@ -116,6 +116,7 @@ export default {
       }
     },
     toAnnouncement() {
+      this.currentNotice.CONTENT = this.currentNotice.CONTENT.replace(/\[ReplaceMark\]/g, this.fileCenterUrl);//替换网址
       this.$router.push({
         name: "notificationlist",
         params: {
