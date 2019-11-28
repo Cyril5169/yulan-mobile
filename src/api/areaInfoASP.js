@@ -87,3 +87,12 @@ export function getProductSales(data,config = {}) {
         return Promise.reject(err);
     })
 }
+
+//获取销售提货单信息金额汇总
+export function getSumMoneyBySales(data,config = {}) {
+    return post('/PACK_DETAIL/getSumMoneyBySales',data,config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
