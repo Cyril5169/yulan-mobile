@@ -5,7 +5,7 @@
     <div class="search">
       <ul class="ulhead" id="ulhead">
         <div style="margin-top:-3px">
-          <span class="licenter" @click="showType_1 = true">
+          <span class="licenter" @click="showType_1 = true,loading = true">
             <input class="time" type="text" v-model="getVersion" disabled />
           </span>
           <span class="licenter">
@@ -26,6 +26,7 @@
       </ul>
     </div>
         <div v-if="query_1" style="margin: 10px 10px 80px;">
+          <div style="font-size:15px;color:blue;margin:10px">金额汇总：{{getSumMoneyBySales[0].SUNMONEY}}元</div>
             <van-panel style="min-height:100px">
           <div style="width:100%" v-for="salesData in tableData">
             <table style="width:100%;font-size:15px;align:center">
@@ -47,7 +48,7 @@
         </van-panel>
         </div>
     <!--版本-->
-    <van-popup v-model="showType_1" position="bottom" :style="{ height: '75%' }" closeable close-icon-position="top-left"
+    <van-popup v-model="showType_1" position="bottom" :style="{ height: '75%' }" @click-overlay="showloading"
   >
         <span style="float:right;margin-top:5px;margin-right:5px">
           <van-button class="button" @click="closeVersion">确定</van-button></span>
@@ -62,7 +63,7 @@
           
         </div>
         <div style="margin-top:50px;margin-left:10px">
-        <van-checkbox-group v-model="customer" ref="checkboxGroup" style="margin-top:20px" :max="1">
+        <van-checkbox-group v-model="customer" :loading = false ref="checkboxGroup" style="margin-top:20px" :max="1">
           <van-checkbox
             style="text-align:left;margin-top:7px;font-size: 15px;"
             :name="customerData.PRODUCTVERSION_ID"
@@ -139,12 +140,14 @@ import {
   getTotalMoneySum,
   getCustomerName,
   getAllVersion,
-  getProductSales
+  getProductSales,
+  getSumMoneyBySales
 } from "@/api/areaInfoASP";
 export default {
   name: "salesQuery",
   data() {
     return {
+      getSumMoneyBySales:[],
         query_1:false,
         PRODUCTVERSION_NAME:[],
     VERSION:[],
@@ -290,6 +293,7 @@ export default {
   },
   //生命周期
   created() {
+    this.loading = true
     this._getAllVersion();
     let time = new Date();
     this.jsSet(time);
@@ -297,6 +301,7 @@ export default {
   },
   methods: {
       closeVersion(){
+        this.loading = false
           this.showType_1 = false
           if(this.customer == ""){
               this.getVersion = "版本"
@@ -305,8 +310,9 @@ export default {
             }
          
       },
-    cancelArea(){
-      this.showType_1 = false
+    showloading(){
+      this.loading = false
+      
     },
     cancelDistrict(){
       this.showType_2 = false
@@ -362,14 +368,14 @@ export default {
           getAllVersion().then(res =>{
             this.VERSION = res.data;
             this.customerData = res.data;
-            this.customerDataAll = res.data;
-            
+            this.customerDataAll = res.data; 
             if(this.VERSION.length == 0){
                 Toast({
                     duration: 2000,
                     message: "未查到版本号"
                 });
-            }
+                this.loading = false
+            }else{this.loading = false}
           });
       },
     //客户筛选
@@ -392,6 +398,7 @@ export default {
     onAreaCode(value, index) {
       this.getVersion = value;
       this.PRODUCTVERSION_ID = index;
+      this.loading = false
       this.showType_1 = false;
       this.areaCode(index);
     },
@@ -565,6 +572,7 @@ export default {
       this.queryQuYu_1();
     },
     async queryQuYu_1() {
+      this.getSumMoneyBySales = []
       this.tableData = [];
       let ksTime;
       let jsTime;
@@ -612,16 +620,20 @@ export default {
                 });
                 this.query_1 = false
             return (this.tableData = []);
-            }
-            if (this.XH != "" || this.customer.length != 0 && res.data.length == 0) {
+            }else
+          if ((this.XH != "" || this.customer.length != 0) && res.data.length == 0) {
               Toast({
                     duration: 2000,
                     message: "暂无数据，请重新输入！"
                 });
                 this.query_1 = false
             return (this.tableData = []);
-            }
-          this.query_1 = true;
+          }else{
+            getSumMoneyBySales(data).then(res1 =>{
+              this.getSumMoneyBySales = res1.data;
+              this.query_1 = true;
+            })
+          }
         });
       } 
     },
@@ -634,6 +646,7 @@ export default {
     },
     //重置
     clear() {
+      this.getSumMoneyBySales = []
         this.query_1 = false
         this.XH = ""
       this.CUSTOMERED=[]
@@ -675,7 +688,7 @@ export default {
         (this.tableDetail = []);
       this.count = 0;
       this.currentPage = 1;
-      this._getAreaCode();
+      this._getAllVersion();
     },
 
   }

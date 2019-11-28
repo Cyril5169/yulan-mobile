@@ -432,9 +432,6 @@ export default {
             this.areaCode_name.push(this.AREACODE[i].AREA_NAME);
           }
         })
-        .catch(res => {
-          console.log(res);
-        });
     },
     //根据市场区域查片区
     areaCode(val) {
@@ -487,6 +484,7 @@ export default {
     },
     //通过区域查询可选用户
     _getCustomerByAreaCode_1(val) {
+      this.loading = true
       this.tableData = [];
       this.customerData = [];
       this.customerDataAll = [];
@@ -515,6 +513,7 @@ export default {
       getCustomerByAreaCode(data).then(res => {
         this.customerData = res.data;
         this.customerDataAll = res.data;
+        this.loading = false
       });
     },
     _getCustomerByAreaCode_2(val) {
@@ -545,6 +544,7 @@ export default {
       getCustomerByAreaCode(data).then(res => {
         this.customerData = res.data;
         this.customerDataAll = res.data;
+        this.loading = false
       });
     },
     _getCustomerByAreaCode_3(val) {
@@ -575,6 +575,7 @@ export default {
       getCustomerByAreaCode(data).then(res => {
         this.customerData = res.data;
         this.customerDataAll = res.data;
+        this.loading = false
       });
     },
     //提货单查询

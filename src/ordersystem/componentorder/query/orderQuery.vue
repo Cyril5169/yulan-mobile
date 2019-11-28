@@ -537,6 +537,7 @@ export default {
     },
     //通过区域查询可选用户
     _getCustomerByAreaCode_1(val) {
+      this.loading = true
       this.tableData = [];
       this.customerData = [];
       this.customerDataAll = [];
@@ -565,6 +566,7 @@ export default {
       getCustomerByAreaCode(data).then(res => {
         this.customerData = res.data;
         this.customerDataAll = res.data;
+        this.loading = false
       });
     },
     _getCustomerByAreaCode_2(val) {
