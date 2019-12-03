@@ -164,6 +164,9 @@ export default {
   name: "areaQuery",
   data() {
     return {
+      first:"",
+      second:"",
+      third:"",
       get_customer_code:"",
       getMoney:"",
       get_CUSTOMER_NAME:"",
@@ -326,11 +329,13 @@ export default {
     confirmTimeks(value) {
       this.ksSet2(this.ksData);
       this.showType_4 = false;
+      this.getCustomerChangTime()
     },
     //结束时间选择
     confirmTimejs(value) {
       this.jsSet(this.jsData);
       this.showType_5 = false;
+      this.getCustomerChangTime()
     },
     //开始时间设置
     ksSet2(time) {
@@ -502,6 +507,7 @@ export default {
       } else {
         jsTime = this.jsDataSet;
       }
+      this.first = this.AREACODE[val].AREA_CODE
       var data = {
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
@@ -533,6 +539,7 @@ export default {
         jsTime = this.jsDataSet;
       }
       this.value_4 = [];
+      this.second = val.AREA_DISTRICT
       var data = {
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
@@ -564,6 +571,7 @@ export default {
       } else {
         jsTime = this.jsDataSet;
       }
+      this.third = val.customerType
       var data = {
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
@@ -577,6 +585,45 @@ export default {
         this.customerDataAll = res.data;
         this.loading = false
       });
+    },
+    //改变时间查可选用户
+    getCustomerChangTime(){
+      this.customerData = [];
+      this.tableData = [];
+      this.value_4 = [];
+      this.customerDataAll = [];
+      let ksTime;
+      let jsTime;
+      if (this.ksDataSet === "起始时间") {
+        ksTime = "";
+      } else {
+        ksTime = this.ksDataSet;
+      }
+      if (this.jsDataSet === "结束时间") {
+        jsTime = "";
+      } else {
+        jsTime = this.jsDataSet;
+      }
+      if(this.first == ""){
+        Toast({
+          duration: 2000,
+          message: "未选择市场区域"
+        });
+      }else{
+      var data = {
+        beginTime: ksTime, //起始时间
+        finishTime: jsTime, //结束时间
+        isall:this.checked,
+        areaCode: this.first, //市场
+        district: this.second, //片区
+        customerType: this.third //客户类型
+      };
+      getCustomerByAreaCode(data).then(res => {
+        this.customerData = res.data;
+        this.customerDataAll = res.data;
+        this.loading = false
+      });
+      }
     },
     //提货单查询
     _queryQuYu_1() {

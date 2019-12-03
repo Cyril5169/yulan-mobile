@@ -172,6 +172,9 @@ export default {
   name: "areaQuery",
   data() {
     return {
+      first:"",
+      second:"",
+      third:"",
       flag:0,
       get_CUSTOMER_NAME:"",
       date1:"",
@@ -365,11 +368,13 @@ export default {
     confirmTimeks(value) {
       this.ksSet2(this.ksData);
       this.showType_4 = false;
+      this.getCustomerChangTime()
     },
     //结束时间选择
     confirmTimejs(value) {
       this.jsSet(this.jsData);
       this.showType_5 = false;
+      this.getCustomerChangTime()
     },
     //开始时间设置
     ksSet2(time) {
@@ -628,6 +633,45 @@ export default {
         this.customerData = res.data;
         this.customerDataAll = res.data;
       });
+    },
+    //改变时间查可选用户
+    getCustomerChangTime(){
+      this.customerData = [];
+      this.tableData = [];
+      this.value_4 = [];
+      this.customerDataAll = [];
+      let ksTime;
+      let jsTime;
+      if (this.ksDataSet === "起始时间") {
+        ksTime = "";
+      } else {
+        ksTime = this.ksDataSet;
+      }
+      if (this.jsDataSet === "结束时间") {
+        jsTime = "";
+      } else {
+        jsTime = this.jsDataSet;
+      }
+      if(this.first == ""){
+        Toast({
+          duration: 2000,
+          message: "未选择市场区域"
+        });
+      }else{
+      var data = {
+        beginTime: ksTime, //起始时间
+        finishTime: jsTime, //结束时间
+        isall:this.checked,
+        areaCode: this.first, //市场
+        district: this.second, //片区
+        customerType: this.third //客户类型
+      };
+      getCustomerByAreaCode(data).then(res => {
+        this.customerData = res.data;
+        this.customerDataAll = res.data;
+        this.loading = false
+      });
+      }
     },
     //订单查询
     _queryQuYu_1() {
