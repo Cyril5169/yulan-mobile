@@ -51,6 +51,7 @@ function UpdateVersion(ischeck) {
 
         // 如果有新版本，则提示需要更新
         if (checkversion(inf.version, data.version)) {
+          if(app.showProgress === true) return;
           mui.confirm(`当前版本为${inf.version}，最新版本为${data.version}，检查到新版本，是否马上下载并更新？`, '检查更新', ['是', '否，将退出程序'], function (e) {
             if (e.index == 0) {
               showLoading = plus.nativeUI.showWaiting("准备更新...");
