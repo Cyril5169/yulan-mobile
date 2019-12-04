@@ -48,7 +48,7 @@
         </van-panel>
         </div>
     <!--版本-->
-    <van-popup v-model="showType_1" position="bottom" :style="{ height: '75%' }" @click-overlay="showloading"
+    <van-popup v-model="showType_1" position="bottom" :style="{ height: '75%' }" @click-overlay="showloading" @open="isShowLoading"
   >
         <span style="float:right;margin-top:5px;margin-right:5px">
           <van-button class="button" @click="closeVersion">确定</van-button></span>
@@ -313,6 +313,9 @@ export default {
     showloading(){
       this.loading = false
       
+    },
+    isShowLoading(){
+      this.loading = true
     },
     cancelDistrict(){
       this.showType_2 = false
