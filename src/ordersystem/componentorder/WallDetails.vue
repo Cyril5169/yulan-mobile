@@ -4,11 +4,11 @@
     <div class="single-msg">
       <ul class="lists">
         <li>型号： {{wallMegs.itemNo}}</li>
-        <!--<li>名称： {{wallMegs.itemNote}}</li>-->
-        <!--<li><span>名称： {{wallMegs.itemType.note}}</span></li>-->
+        <li>版本： {{wallMegs.itemVersion}}</li>
+        <li>
+          <span>名称： {{wallMegs.version}}</span>
+        </li>
         <li>品牌： {{wallMegs.productBrand}}</li>
-        <!--<li>版本： {{wallMegs.note}}</li>-->
-        <li>版本号： {{wallMegs.itemVersion}}</li>
         <li v-if="!AddOrNot&&customerType =='10'" class="order-num">
           单价：
           <div class="input-num-right">
@@ -17,6 +17,7 @@
         </li>
         <li v-if="!AddOrNot && customerType !='10'&& showPrice">单价： ￥{{price}}</li>
         <li v-else-if="!AddOrNot && customerType !='10'&& !showPrice">单价： ***</li>
+        <li v-if="wallMegs.minimumPurchase>0">起购数量： {{wallMegs.minimumPurchase}}</li>
         <li class="order-num">
           订购数量：
           <div class="input-num-right" v-if="dwType">
@@ -322,52 +323,49 @@ export default {
       //   "&productBrand=" +
       //   value.productBrand;
       // axios.get(hdUrl).then(data => {
-      getItemById({ itemNo: value.itemNo }).then(res => {
-        GetPromotionByItem({
-          cid: this.$store.getters.getCId,
-          customerType: this.$store.getters.getCtype,
-          itemNo: value.itemNo,
-          itemVersion: res.data.ITEM_VERSION,
-          productType: res.data.PRODUCT_TYPE,
-          productBrand: res.data.PRODUCT_BRAND
-        }).then(data => {
-          this.allHd = data.data;
-          if (this.allHd.length == 0) {
-            this.myActivity = "此产品不参与活动";
-            this.showMoreHd = false;
-          } else {
-            this.myActivity = "请选择活动";
-            this.showMoreHd = true;
-          }
-          var defaultSel = {
-            pri: 0,
-            index: 0
-          };
-          //修改购物车前的初始化数据
-          if (this.$route.params.commodityID) {
-            this.AddOrNot = false;
-            this.editcart();
-          } else {
-            for (var i = 0; i < this.allHd.length; i++) {
-              if (this.allHd[i].PRIORITY != 0 && defaultSel.pri == 0) {
-                defaultSel.pri = this.allHd[i].PRIORITY;
-                defaultSel.index = i;
-              } else if (
-                this.allHd[i].PRIORITY != 0 &&
-                defaultSel.pri > this.allHd[i].PRIORITY
-              ) {
-                defaultSel.pri = this.allHd[i].PRIORITY;
-                defaultSel.index = i;
-              }
-            }
-            if (defaultSel.pri != 0) {
-              this.myActivity = this.allHd[defaultSel.index].ORDER_NAME;
-              this.hdcode = this.allHd[defaultSel.index].ORDER_TYPE;
-              this.hdid = this.allHd[defaultSel.index].P_ID;
+      GetPromotionByItem({
+        cid: this.$store.getters.getCId,
+        customerType: this.$store.getters.getCtype,
+        itemNo: value.itemNo,
+        itemVersion: value.ITEM_VERSION,
+        productType: value.PRODUCT_TYPE,
+        productBrand: value.PRODUCT_BRAND
+      }).then(data => {
+        this.allHd = data.data;
+        if (this.allHd.length == 0) {
+          this.myActivity = "此产品不参与活动";
+          this.showMoreHd = false;
+        } else {
+          this.myActivity = "请选择活动";
+          this.showMoreHd = true;
+        }
+        var defaultSel = {
+          pri: 0,
+          index: 0
+        };
+        //修改购物车前的初始化数据
+        if (this.$route.params.commodityID) {
+          this.AddOrNot = false;
+          this.editcart();
+        } else {
+          for (var i = 0; i < this.allHd.length; i++) {
+            if (this.allHd[i].PRIORITY != 0 && defaultSel.pri == 0) {
+              defaultSel.pri = this.allHd[i].PRIORITY;
+              defaultSel.index = i;
+            } else if (
+              this.allHd[i].PRIORITY != 0 &&
+              defaultSel.pri > this.allHd[i].PRIORITY
+            ) {
+              defaultSel.pri = this.allHd[i].PRIORITY;
+              defaultSel.index = i;
             }
           }
-          //这里面axios的this不指向vue,所以在使用axios是最好使用es6箭头函数
-        });
+          if (defaultSel.pri != 0) {
+            this.myActivity = this.allHd[defaultSel.index].ORDER_NAME;
+            this.hdcode = this.allHd[defaultSel.index].ORDER_TYPE;
+            this.hdid = this.allHd[defaultSel.index].P_ID;
+          }
+        }
       });
     },
     selectthisHd(index) {
@@ -421,6 +419,16 @@ export default {
         }
         this.needNum = this.sum;
       }
+      if (this.needNum < this.wallMegs.minimumPurchase) {
+        Toast({
+          duration: 2000,
+          message:
+            "本产品最小起购数量为" +
+            this.wallMegs.minimumPurchase +
+            this.wallMegs.unit
+        });
+        return;
+      }
       if (this.myActivity == "请选择活动") {
         Toast({
           duration: 2000,
@@ -451,18 +459,12 @@ export default {
       this.separate = true;
       this.fpfh = "1";
       this.toCart();
-      // this.$router.push({
-      //   path: "/searchwall"
-      // });
     },
     //等生产
     dsc() {
       this.fpfh = "0";
       this.separate = false;
       this.toCart();
-      // this.$router.push({
-      //   path: "/searchwall"
-      // });
     },
     //返回
     fh() {
@@ -515,31 +517,27 @@ export default {
     let wallUrl = this.orderBaseUrl + "/item/getWallpaperInfo.do";
     let data = {
       paperType: this.$route.params.papertype,
-      // "cid": "C01613"
       cid: this.$store.getters.getCId
     };
-    axios
-      .post(wallUrl, data)
-      .then(data => {
-        this.wallMegs = data.data.data;
-        getItemById({ itemNo: this.wallMegs.itemNo }).then(res => {
-          res.data.DECIMAL_PLACES == "1"
-            ? (this.decimalNum = 1)
-            : (this.decimalNum = 2);
-        });
+    axios.post(wallUrl, data).then(data => {
+      this.wallMegs = data.data.data;
+      getItemById({ itemNo: this.wallMegs.itemNo }).then(res => {
+        res.data.DECIMAL_PLACES == "1"
+          ? (this.decimalNum = 1)
+          : (this.decimalNum = 2);
+        this.wallMegs.ITEM_VERSION = res.data.ITEM_VERSION;
+        this.wallMegs.PRODUCT_TYPE = res.data.PRODUCT_TYPE;
+        this.wallMegs.PRODUCT_BRAND = res.data.PRODUCT_BRAND;
+        this.wallMegs.minimumPurchase = res.data.MINIMUM_PURCHASE;
+        this.wallMegs.version = this.wallMegs.itemType.note;
         if (this.wallMegs.unit == "平方米") {
           this.dwType = false;
         } else {
           this.dwType = true;
         }
-        return this.wallMegs;
-        //这里面axios的this不指向vue,所以在使用axios是最好使用es6箭头函数
-      })
-      .then(value => {
-        this.getHd(value);
+        this.getHd(this.wallMegs);
       });
-    //修改购物车前的初始化
-    // this.editcart();
+    });
   },
   mounted() {
     // window.onresize监听页面高度的变化
@@ -550,18 +548,6 @@ export default {
     };
   },
   computed: {
-    // _sum:{
-    //   set: function(value) {
-    //     this.sum = value;
-    //   },
-    //   get: function() {
-    //     console.log(this.sum)
-    //     if (this.sum == null) {
-    //       this.sum = ""
-    //     }
-    //     return this.sum.toString().replace(/^(([1-9]{1}\\d*)|([0]{1}))(\\.(\\d){0,2})?$/g,'')
-    //   }
-    // },
     customerType() {
       if (this.$store.state.info) return this.$store.state.info.customerType;
     },
@@ -569,8 +555,8 @@ export default {
       if (this.hdcode == null) {
         this.hdcode = "";
       }
-      if(this.myActivity == ""){
-        this.myActivity = '不参与活动';
+      if (this.myActivity == "") {
+        this.myActivity = "不参与活动";
       }
       return this.myActivity + "-" + this.hdcode;
     }

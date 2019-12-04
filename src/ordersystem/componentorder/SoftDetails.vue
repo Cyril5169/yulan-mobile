@@ -3,9 +3,9 @@
     <top :top="set" :from="from"></top>
     <div class="single-msg">
       <ul class="lists">
-        <li>
+        <!-- <li>
           <span>类别： {{wallMegs.productType}}</span>
-        </li>
+        </li>-->
         <li>型号： {{wallMegs.itemNo}}</li>
         <template v-if="wallMegs.note">
           <li>名称： {{wallMegs.note}}</li>
@@ -19,6 +19,7 @@
         <template v-if="wallMegs.productBrand">
           <li>品牌： {{wallMegs.productBrand}}</li>
         </template>
+        <li v-if="wallMegs.minimumPurchase>0">起购数量： {{wallMegs.minimumPurchase}}</li>
         <li class="order-num">
           订购数量：
           <div class="input-num-right" v-if="dwType">
@@ -194,11 +195,31 @@ export default {
           });
           return;
         }
+        if (this.heightVal * this.widthVal < this.wallMegs.minimumPurchase) {
+          Toast({
+            duration: 2000,
+            message:
+              "本产品最小起购数量为" +
+              this.wallMegs.minimumPurchase +
+              this.wallMegs.unit
+          });
+          return;
+        }
       } else {
         if (this.sum == "" || this.sum <= 0) {
           Toast({
             duration: 2000,
             message: "请填写购买数量"
+          });
+          return;
+        }
+        if (this.sum < this.wallMegs.minimumPurchase) {
+          Toast({
+            duration: 2000,
+            message:
+              "本产品最小起购数量为" +
+              this.wallMegs.minimumPurchase +
+              this.wallMegs.unit
           });
           return;
         }
@@ -266,15 +287,6 @@ export default {
         });
       } else {
         let wallUrl = this.orderBaseUrl + "/cart/addCartItem.do";
-        console.log(
-          this.$store.getters.getCtype,
-          // this.$store.getters.getCId,
-          this.wallMegs.itemNo,
-          this.hdid,
-          this.sum,
-          this.beizhu,
-          this.fpfh
-        );
         let data = {
           customer_type: this.$store.getters.getCtype, //客户类型
           CID: this.$store.getters.getCId, //客户ID
@@ -354,10 +366,8 @@ export default {
               this.$router.push({
                 path: "/searchsoft/mliao"
               });
-              // on confirm
             })
             .catch(() => {
-              // on cancel
               this.fpfh = "";
               this.$router.push({
                 path: "/searchsoft/mliao"
@@ -421,6 +431,7 @@ export default {
       //   value.productBrand;
       // axios.get(hdUrl).then(data => {
       getItemById({ itemNo: value.itemNo }).then(res => {
+        this.wallMegs.minimumPurchase = res.data.MINIMUM_PURCHASE;
         GetPromotionByItem({
           cid: this.$store.getters.getCId,
           customerType: this.$store.getters.getCtype,
@@ -515,7 +526,6 @@ export default {
       this.myActivity = "不参与活动";
       this.hdcode = "";
       this.hdid = "";
-      // this.showSelect= false
     },
     //输入限制
     oninput(e) {
@@ -528,8 +538,6 @@ export default {
   created() {
     this.from = this.$route.params.from;
     this.getProduct();
-    //获取库存
-    // this.getHd();
   },
   mounted() {
     // window.onresize监听页面高度的变化
@@ -540,24 +548,12 @@ export default {
     };
   },
   computed: {
-    // _sum:{
-    //   set: function(value) {
-    //     this.sum = value;
-    //   },
-    //   get: function() {
-    //     console.log(this.sum)
-    //     if (this.sum == null) {
-    //       this.sum = ""
-    //     }
-    //     return this.sum.toString().replace(/[^0-9]+/g,'')
-    //   }
-    // },
     myhd() {
       if (this.hdcode == null) {
         this.hdcode = "";
       }
-      if(this.myActivity == ""){
-        this.myActivity = '不参与活动';
+      if (this.myActivity == "") {
+        this.myActivity = "不参与活动";
       }
       return this.myActivity + "-" + this.hdcode;
     }

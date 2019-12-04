@@ -65,6 +65,7 @@ import axios from "axios";
 import { Loading, Pagination, Popup } from "vant";
 import top from "../../../components/Top";
 import BillDetails from "./BillDetails";
+import { GetBalancePeriod } from "@/api/orderListASP";
 
 export default {
   name: "billmanage",
@@ -102,14 +103,16 @@ export default {
       let data = {
         cid: this.$store.getters.getCId,
         limit: 8,
-        page: this.currentPage
+        page: this.currentPage,
+        status: ""
       };
-      axios.post(url, data).then(res => {
+      //axios.post(url, data).then(res => {
+      GetBalancePeriod(data).then(res => {
         this.loading = false;
         this.billLists = res.data.customerBalancePeriodList;
         this.customerInfo = res.data.customerInfo;
         if (this.billLists) {
-          this.totalPage = Math.ceil(this.billLists[0].total / 8);
+          this.totalPage = Math.ceil(res.data.count / 8);
         }
       });
     },

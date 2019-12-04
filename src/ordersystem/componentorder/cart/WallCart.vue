@@ -33,7 +33,7 @@
               v-model="checkBoxModel"
               class="checkbox"
               @change.stop="pickOne(product, index, inndex)"
-              :disabled="product.activityEffective === false"
+              :disabled="checkActiviyEffect2(product)"
             />
             <div style="width:100%;height:100%" @click="wallDetails(index, inndex)">
               <table>
@@ -75,8 +75,20 @@
               </table>
             </div>
             <div class="product-num">
-              <span class v-if="product.quantity">数量：{{ product.quantity }}{{ product.unit }}</span>
-              <span class v-if="!product.quantity">数量：{{ product.width }}*{{ product.height }}平方米</span>
+              <span class v-if="product.quantity">
+                数量：{{ product.quantity }}{{ product.unit }}
+                <div
+                  style="color: red;"
+                  v-if="product.quantity < product.item.minimumPurchase"
+                >(最小起购数量{{product.item.minimumPurchase}})</div>
+              </span>
+              <span class v-if="!product.quantity">
+                数量：{{ product.width }}*{{ product.height }}平方米
+                <div
+                  style="color: red;"
+                  v-if="product.width*product.height < product.item.minimumPurchase"
+                >(最小起购数量{{product.item.minimumPurchase}})</div>
+              </span>
             </div>
           </div>
         </div>
@@ -166,7 +178,7 @@ export default {
     wallDetails(index, inndex) {
       //获取版本号
       let olditemNo = this.cartlist[index].commodities[inndex].item.oldItemNo;
-      console.log(this.cartlist[index].commodities[inndex])
+      console.log(this.cartlist[index].commodities[inndex]);
       this.$router.push({
         name: "walldetails",
         params: {
@@ -269,9 +281,38 @@ export default {
     },
     checkActiviyEffect(group) {
       for (let i = 0; i < group.commodities.length; i++) {
-        if (group.commodities[i].activityEffective == false) return true;
+        if (group.commodities[i].activityEffective == false) {
+          return true;
+        } else {
+          let val;
+          if (group.commodities[i].unit === "平方米") {
+            val = group.commodities[i].width * group.commodities[i].height;
+          } else {
+            val = group.commodities[i].quantity;
+          }
+          if (val < group.commodities[i].item.minimumPurchase) {
+            return true;
+          }
+        }
       }
       return false;
+    },
+    checkActiviyEffect2(product) {
+      if (product.activityEffective == false) {
+        return true;
+      } else {
+        let val;
+        if (product.unit === "平方米") {
+          val = product.width * product.height;
+        } else {
+          val = product.quantity;
+        }
+        if (val < product.item.minimumPurchase) {
+          return true;
+        } else {
+          return false;
+        }
+      }
     },
     //订单填写
     fillOrder() {
