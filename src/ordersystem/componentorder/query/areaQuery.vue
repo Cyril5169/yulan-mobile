@@ -1,7 +1,7 @@
 <template>
   <div class="areaQuery">
     <top :top="set"></top>
-    <span class="search-button" @click="_queryQuYu_1()">查询</span>
+    <span class="search-button" @click="queryQuYu_1()">查询</span>
     <div class="search">
       <ul class="ulhead" id="ulhead">
         <div>
@@ -306,6 +306,9 @@ export default {
     this.jsSet(time);
     this.ksSet(time);
   },
+  activated(){
+    this._queryQuYu_1()
+  },
   methods: {
     cancelArea(){
       this.showType_1 = false
@@ -485,7 +488,7 @@ export default {
     status_id(val) {
       this.status_info = val;
       this.tableData = [];
-      this._queryQuYu_1();
+      this.queryQuYu_1();
     },
     //通过区域查询可选用户
     _getCustomerByAreaCode_1(val) {
@@ -627,11 +630,14 @@ export default {
     },
     //提货单查询
     _queryQuYu_1() {
-      this.currentPage = 1;
+       if (this.customer.length == 0) {
+        return
+      }else{
       this.queryQuYu_1();
+      }
     },
     async queryQuYu_1() {
-      
+      this.currentPage = 1;
       this.moneySum=[],
       this.CUSTOMERED = [];
       this.CUSTOMERED_1 = [];
