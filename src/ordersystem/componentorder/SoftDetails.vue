@@ -14,7 +14,7 @@
           <li>风格： {{wallMegs.fixType}}</li>
         </template>
         <template v-if="wallMegs.fixGrade">
-          <li>尺寸： {{wallMegs.fixGrade}}mm</li>
+          <li>尺寸： {{wallMegs.fixGrade/1000 + (wallMegs.unit?wallMegs.unit:'米')}}</li>
         </template>
         <template v-if="wallMegs.productBrand">
           <li>品牌： {{wallMegs.productBrand}}</li>

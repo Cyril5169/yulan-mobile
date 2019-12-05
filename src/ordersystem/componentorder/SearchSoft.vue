@@ -50,7 +50,7 @@
             </tr>
             <tr>
               <th>尺寸：</th>
-              <td>{{mliao.fixGrade}}mm</td>
+              <td>{{mliao.fixGrade/1000 + (mliao.unit?mliao.unit:'米')}}</td>
             </tr>
             <!--后台在显示列表的时候这个字段值为null，但是在商品详情页面这个字段有值-->
             <!--<tr>-->
