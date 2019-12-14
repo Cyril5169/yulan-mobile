@@ -75,12 +75,12 @@
         </table>
         <table class="order-item">
           <tr class="delivery">
-            <td class="left">购买人电话</td>
+            <td class="left">联系电话</td>
             <td class="right">
               <input
                 class="delivery-mark"
                 v-model="buyUserPhone"
-                placeholder="请填写购买人电话"
+                placeholder="请填写联系电话"
                 type="text"
               />
             </td>
