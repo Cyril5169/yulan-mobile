@@ -37,22 +37,6 @@
             </td>
           </tr>
         </table>
-        <table class="order-item1">
-          <tr class="delivery">
-            <td class="left">工程单号</td>
-            <td class="right">
-              <input class="delivery-mark" v-model="gongchenhao" placeholder="请填写工程单号" type="text" />
-            </td>
-          </tr>
-        </table>
-        <table class="order-item1">
-          <tr class="delivery">
-            <td class="left">订单备注</td>
-            <td class="right">
-              <input class="delivery-mark" v-model="orderBei" placeholder="订单信息填写在此无效" type="text" />
-            </td>
-          </tr>
-        </table>
         <!-- <table class="order-item1" v-if="packingShow">
           <tr class="delivery" @click="showPacking = true">
             <td class="left">
@@ -65,35 +49,30 @@
             </td>
           </tr>
         </table>-->
-        <table class="order-item">
+        <table class="order-item" style="margin-top:5px;">
           <tr class="delivery">
-            <td class="left">购买人</td>
+            <td class="left">用户姓名</td>
             <td class="right">
-              <input class="delivery-mark" v-model="buyUser" placeholder="请填写购买人姓名" type="text" />
+              <input class="delivery-mark" v-model="buyUser" placeholder="请填写用户姓名" type="text" />
             </td>
           </tr>
         </table>
         <table class="order-item">
           <tr class="delivery">
-            <td class="left">联系电话</td>
+            <td class="left">用户电话</td>
             <td class="right">
-              <input
-                class="delivery-mark"
-                v-model="buyUserPhone"
-                placeholder="请填写联系电话"
-                type="text"
-              />
+              <input class="delivery-mark" v-model="buyUserPhone" placeholder="请填写用户电话" type="text" />
             </td>
           </tr>
         </table>
         <table class="order-item">
           <tr class="delivery">
-            <td class="left">购买人地址</td>
+            <td class="left">用户地址</td>
             <td class="right">
               <input
                 class="delivery-mark"
                 v-model="buyUserAddress"
-                placeholder="请填写购买人地址"
+                placeholder="请填写用户地址"
                 type="text"
               />
             </td>
@@ -110,6 +89,22 @@
                 preview-size="60"
                 multiple
               />
+            </td>
+          </tr>
+        </table>
+        <table class="order-item1">
+          <tr class="delivery">
+            <td class="left">备注信息</td>
+            <td class="right">
+              <input class="delivery-mark" v-model="orderBei" placeholder="订单信息填写在此无效" type="text" />
+            </td>
+          </tr>
+        </table>
+        <table class="order-item1">
+          <tr class="delivery">
+            <td class="left">工程报备单号</td>
+            <td class="right">
+              <input class="delivery-mark" v-model="gongchenhao" placeholder="请填写工程报备单号" type="text" />
             </td>
           </tr>
         </table>

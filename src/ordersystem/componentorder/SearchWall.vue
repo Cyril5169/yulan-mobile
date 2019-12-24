@@ -92,9 +92,9 @@
             <th width="20%">库存</th>
           </tr>
           <tr v-for="(kcMsg,index) in kcMsgs" :key="index">
-            <td class="kucun-item">{{kcMsg.stockNo}}</td>
-            <td class="kucun-item">{{kcMsg.batchNo}}</td>
-            <td class="kucun-item">{{kcMsg.qty}}</td>
+            <td class="kucun-item">{{kcMsg.STOCK_NO}}</td>
+            <td class="kucun-item">{{kcMsg.BATCH_NO}}</td>
+            <td class="kucun-item">{{kcMsg.QTY}}</td>
           </tr>
         </table>
       </div>
@@ -113,7 +113,11 @@ import { Search, ActionSheet, Toast, Loading, Icon, Dialog, Popup } from "vant";
 import "../assetsorder/actionsheet.css";
 import navBottom from "../../components/navBottom";
 import scan from "../componentorder/Scan";
-import { GetWallpaperInfo, GetSalPutonRecord } from "@/api/itemInfoASP";
+import {
+  GetWallpaperInfo,
+  GetSalPutonRecord,
+  GetItemStock
+} from "@/api/itemInfoASP";
 
 export default {
   name: "",
@@ -168,9 +172,12 @@ export default {
       let data = {
         itemNo: this.wallMegs.ITEM_NO //产品型号，不能是旧的产品型号
       };
-      axios.post(wallKcURL, data).then(data => {
+      //axios.post(wallKcURL, data)
+      GetItemStock({
+        itemNo: this.wallMegs.ITEM_NO
+      }).then(res => {
         this.loading = false;
-        if (data.data.data == "没有查询到数据") {
+        if (res.data.count == 0) {
           this.showKucun = false;
           Toast({
             duration: 2000,
@@ -179,8 +186,7 @@ export default {
         } else {
           this.showKucun = true;
         }
-        this.kcMsgs = data.data.data;
-        //这里面axios的this不指向vue,所以在使用axios是最好使用es6箭头函数
+        this.kcMsgs = res.data;
       });
     },
     //墙纸详情

@@ -64,3 +64,11 @@ export function GetSalPutonRecord(data, config = {}) {
         return Promise.reject(err);
     })
 }
+//获得墙纸库存
+export function GetItemStock(data, config = {}) {
+    return post('/ITEM/GetItemStock', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
