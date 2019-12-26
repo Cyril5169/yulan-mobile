@@ -7,18 +7,16 @@
           <span>类别： {{wallMegs.productType}}</span>
         </li>-->
         <li>型号： {{wallMegs.itemNo}}</li>
-        <template v-if="wallMegs.note">
-          <li>名称： {{wallMegs.note}}</li>
-        </template>
+        <li>名称： {{wallMegs.note}}</li>
         <template v-if="wallMegs.fixType">
-          <li>风格： {{wallMegs.fixType}}</li>
+          <li>风格： {{wallMegs.fixType | fixTypeFilter}}</li>
         </template>
-        <template v-if="wallMegs.fixGrade">
-          <li>尺寸： {{wallMegs.fixGrade/1000 + (wallMegs.unit?wallMegs.unit:'米')}}</li>
-        </template>
-        <template v-if="wallMegs.productBrand">
-          <li>品牌： {{wallMegs.productBrand}}</li>
-        </template>
+        <li
+          v-if="wallMegs.fixType =='01' || wallMegs.fixType =='02'"
+        >尺寸： {{wallMegs.fixGrade/1000 + (wallMegs.unit?wallMegs.unit:'米')}}</li>
+        <li v-else-if="wallMegs.rzGrade">尺寸： {{wallMegs.rzGrade}}</li>
+        <li v-else>尺寸：--</li>
+        <li>品牌： {{wallMegs.productBrand}}</li>
         <li v-if="wallMegs.minimumPurchase>0">起购数量： {{wallMegs.minimumPurchase}}</li>
         <li class="order-num">
           订购数量：
@@ -179,6 +177,16 @@ export default {
       hidshow: true, //显示或者隐藏footer
       from: ""
     };
+  },
+  filters: {
+    fixTypeFilter(value) {
+      switch (value) {
+        case "01":
+          return "定宽";
+        case "02":
+          return "定高";
+      }
+    }
   },
   methods: {
     toCart() {
@@ -506,11 +514,6 @@ export default {
             this.dwType = false;
           } else {
             this.dwType = true;
-          }
-          if (this.wallMegs.fixType == "02") {
-            this.wallMegs.fixType = "定高";
-          } else if (this.wallMegs.fixType == "01") {
-            this.wallMegs.fixType = "定宽";
           }
           //这里面axios的this不指向vue,所以在使用axios是最好使用es6箭头函数
           return this.wallMegs;

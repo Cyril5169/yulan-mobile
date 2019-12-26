@@ -65,9 +65,7 @@
                   >￥{{ (product.quantity * product.price).toFixed(2) }}</td>
                   <td class="price" v-else-if="showPrice && !product.quantity">
                     ￥{{
-                    (product.width * product.height * product.price).toFixed(
-                    2
-                    )
+                    ((product.width.mul(product.height)).toFixed(2) * product.price).toFixed(2)
                     }}
                   </td>
                   <td class="price" v-else-if="!showPrice">***</td>
@@ -286,7 +284,7 @@ export default {
         } else {
           let val;
           if (group.commodities[i].unit === "平方米") {
-            val = group.commodities[i].width * group.commodities[i].height;
+            val = group.commodities[i].width.mul(group.commodities[i].height);
           } else {
             val = group.commodities[i].quantity;
           }
@@ -303,7 +301,7 @@ export default {
       } else {
         let val;
         if (product.unit === "平方米") {
-          val = product.width * product.height;
+          val = product.width.mul(product.height);
         } else {
           val = product.quantity;
         }
@@ -476,8 +474,9 @@ export default {
         } else {
           this.total +=
             this.checkBoxModel[i].price *
-            this.checkBoxModel[i].width *
-            this.checkBoxModel[i].height;
+            this.checkBoxModel[i].width
+              .mul(this.checkBoxModel[i].height)
+              .toFixed(2);
         }
       }
       return this.total.toFixed(2);

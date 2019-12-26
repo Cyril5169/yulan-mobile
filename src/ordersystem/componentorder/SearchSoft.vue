@@ -44,13 +44,19 @@
               <th>名称：</th>
               <td>{{mliao.note}}</td>
             </tr>
-            <tr>
+            <tr v-if="mliao.fixType">
               <th>风格：</th>
-              <td>{{mliao.fixType}}</td>
+              <td>{{mliao.fixType | fixTypeFilter}}</td>
             </tr>
             <tr>
               <th>尺寸：</th>
-              <td>{{mliao.fixGrade/1000 + (mliao.unit?mliao.unit:'米')}}</td>
+              <td v-if="mliao.fixType =='01' || mliao.fixType =='02'">{{mliao.fixGrade/1000 + (mliao.unit?mliao.unit:'米')}}</td>
+              <td v-else-if="mliao.rzGrade">{{mliao.rzGrade}}</td>
+              <td v-else>--</td>
+            </tr>
+            <tr>
+              <th>单位：</th>
+              <td>{{mliao.unit}}</td>
             </tr>
             <!--后台在显示列表的时候这个字段值为null，但是在商品详情页面这个字段有值-->
             <!--<tr>-->
@@ -152,6 +158,16 @@ export default {
     [List.name]: List,
     [Popup.name]: Popup
   },
+  filters:{
+    fixTypeFilter(value){
+      switch(value){
+        case "01":
+          return "定宽";
+        case "02":
+          return "定高";
+      }
+    }
+  },
   methods: {
     typeClick(type,e){
       this.activeType=type;
@@ -231,14 +247,6 @@ export default {
             }
             // 加载状态结束
             this.loading = false;
-
-            for (let i = 0; i < this.mliaos.length; i++) {
-              if ((this.mliaos[i].fixType = "01")) {
-                this.mliaos[i].fixType = "定宽";
-              } else if ((this.mliaos[i].fixType = "02")) {
-                this.mliaos[i].fixType = "定高";
-              }
-            }
           }
         });
       }, 500);
