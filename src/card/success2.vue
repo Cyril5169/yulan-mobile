@@ -32,13 +32,13 @@ export default {
       }
     }, 1500);
   },
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     // ...
     to.meta.keepAlive = true;
-//     if (to.path == "/swiper") {
-//  to.meta.keepAlive = true;
-//  }
-    next()
+    //     if (to.path == "/swiper") {
+    //  to.meta.keepAlive = true;
+    //  }
+    next();
   }
 };
 </script>
@@ -55,7 +55,7 @@ export default {
 }
 .check {
   position: absolute;
-  background: url("http://14.29.221.109:10250/upload/assets/circlecheck.png");
+  background: url("../assets/circlecheck.png");
   height: 108px;
   width: 108px;
   background-size: 100% 100%;

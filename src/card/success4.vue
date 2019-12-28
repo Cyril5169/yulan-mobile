@@ -9,36 +9,38 @@
 </template>
 
 <script>
-import top from '../components/Top'
+import top from "../components/Top";
 export default {
-  components:{
+  components: {
     top
   },
-  data(){
-    return{
-      set:4,
-    }
+  data() {
+    return {
+      set: 4
+    };
   },
-  created(){
+  created() {
     setTimeout(() => {
-      if(this.$store.state.info.data.type != "ECWEB"){
-          this.$router.push({
-                path:'/cardquery'})
-      }else if(this.$store.state.info.data.type === "ECWEB"){
-          this.$router.push({
-                path:'/swiper'})
-      };
+      if (this.$store.state.info.data.type != "ECWEB") {
+        this.$router.push({
+          path: "/cardquery"
+        });
+      } else if (this.$store.state.info.data.type === "ECWEB") {
+        this.$router.push({
+          path: "/swiper"
+        });
+      }
     }, 1500);
   },
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     // ...
     to.meta.keepAlive = true;
-//     if (to.path == "/swiper") {
-//  to.meta.keepAlive = true;
-//  }
-    next()
+    //     if (to.path == "/swiper") {
+    //  to.meta.keepAlive = true;
+    //  }
+    next();
   }
-}
+};
 </script>
 
 <style scoped>
@@ -53,7 +55,7 @@ export default {
 }
 .check {
   position: absolute;
-  background: url("http://14.29.221.109:10250/upload/assets/circlecheck.png");
+  background: url("../assets/circlecheck.png");
   height: 108px;
   width: 108px;
   background-size: 100% 100%;

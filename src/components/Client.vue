@@ -20,19 +20,6 @@
       <div class="sidebar">
         <div class="user-img"></div>
         <p class="customer-name">{{customer}}</p>
-        <!-- <div class="history-box">
-            <div class="history"></div><p class="history-p">历年经销协议书</p>
-          </div>
-          <div class="revise-load-box">
-            <div class="revise-load"></div><p class="revise-load-p">修改登陆密码</p>
-          </div>
-          <div class="revise-bill-box">
-            <div class="revise-bill"></div><p class="revise-bill-p">修改对账密码</p>
-          </div>
-          <div class="about-box">
-            <div class="about"></div><p class="about-p">关于APP</p>
-
-        </div>-->
         <div class="quit-box" @click="unlogin">
           <div class="quit"></div>
           <p class="quit-p">退出登录</p>
@@ -44,12 +31,11 @@
         <div class="option1">
           <div class="top-div">
             <div class="item-box">
-              <!-- <p>待审核</p> -->
               <div class="item-img1"></div>
             </div>
           </div>
           <div class="middle-div" @click="toSwiper">
-            <p class="middle-div-p">2019客户资料卡</p>
+            <p class="middle-div-p">客户资料卡</p>
             <div class="right-arrow"></div>
           </div>
           <div class="bottom-div"></div>
@@ -58,12 +44,11 @@
         <div class="option2">
           <div class="top-div">
             <div class="item-box active-item">
-              <!-- <p>已通过</p> -->
               <div class="item-img2"></div>
             </div>
           </div>
           <div class="middle-div" @click="Warn">
-            <p class="middle-div-p2">2019玉兰墙纸经销协议书</p>
+            <p class="middle-div-p2">玉兰墙纸经销协议书</p>
             <div class="right-arrow"></div>
           </div>
           <div class="bottom-div"></div>
@@ -72,7 +57,6 @@
         <div class="option3">
           <div class="top-div">
             <div class="item-box">
-              <!-- <p>待编辑</p> -->
               <div class="item-img3"></div>
             </div>
           </div>
@@ -143,48 +127,7 @@ export default {
       });
     }
   },
-  // beforeRouteEnter (to, from, next) {
-  //   console.log(to);
-  //   console.log(from);
-
-  //   if(from.path=='/protocol' ){
-  //   next(vm => {
-  //     if(vm.$route.query.checked){
-  //       vm.Ischeck =true;
-  //     }
-  //   });
-  //   }
-  //   next();
-  // },
-  mounted() {
-    // console.log(this.$route.query)
-    // if(this.$route.query.a){
-    //   this.Ischeck = true
-    // }
-    // console.log()
-    console.log("this.$store.state.year: " + this.$store.state.year);
-    let url = "/infoState/getCustomerInfoCardState.do";
-    let data = {
-      cid: this.CID,
-      year: this.$store.state.year
-    };
-    this.$http.post(url, data).then(res => {
-      console.log(res);
-      if (res.data.memo != null) {
-        if (
-          res.data.customerInfo == "业务员审核中" ||
-          res.data.customerInfo == "资料卡通过" ||
-          res.data.customerInfo == "订单部审核中"
-        ) {
-          this.kkp = 1;
-        } else {
-          this.kkp = 0;
-        }
-      } else {
-        this.kkp = 0;
-      }
-    });
-  },
+  mounted() {},
   methods: {
     Sidebar() {
       var client = document.getElementsByClassName("client")[0];
@@ -232,16 +175,6 @@ export default {
         });
       }
     }
-  },
-  beforeRouteLeave(to, from, next) {
-    // ...
-    console.log(this.kkp);
-    if (this.kkp == 1) {
-      to.meta.keepAlive = false;
-    } else if (this.kkp == 0) {
-      to.meta.keepAlive = true;
-    }
-    next();
   }
 };
 </script>
@@ -303,17 +236,6 @@ p {
   color: #7d7d7d;
   text-decoration: underline;
 }
-/* .warn-img{
-    background: url('http://14.29.221.109:10250/upload/assets/warn.png');
-    height: 66px;
-    width: 66px;
-    position: relative;
-    top: 40px;
-    left: 50%;
-    margin-left: -33px;
-    background-size: contain;
-    background-position: center;
-  } */
 .shadow {
   position: absolute;
   z-index: 100;
@@ -364,7 +286,6 @@ p {
   font-size: 15px;
   color: #7d7d7d;
   border-top: 1px solid #d8d8d8;
-  /* border-bottom: 1px solid #D8D8D8; */
   position: relative;
   box-sizing: border-box;
 }
@@ -429,8 +350,6 @@ p {
 }
 .about-p {
   margin: 0;
-  /* width: 60px;
-    height: 22px; */
   font-size: 15px;
   color: #7d7d7d;
   position: absolute;
@@ -438,8 +357,6 @@ p {
 }
 .quit-p {
   margin: 0;
-  /* width: 60px; */
-  /* height: 21px; */
   font-size: 15px;
   color: #7d7d7d;
   position: absolute;
@@ -468,9 +385,6 @@ p {
   -moz-transition: margin-left 0.3s; /* Firefox 4 */
   -o-transition: margin-left 0.3s; /* Opera */
 }
-/* .slide-fade-enter-active {
-    transition: all .3s ease;
-} */
 .active-option {
   margin-left: -200px;
 }
@@ -513,7 +427,6 @@ p {
   background-color: #fff;
   border-radius: 7px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
-  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 }
 .top-div {
   position: absolute;
@@ -522,36 +435,26 @@ p {
 .item-box {
   width: 80px;
   height: 93px;
-  /* line-height: 129px; */
   position: relative;
   margin-left: 36px;
   background-color: #a4a4a4;
   border-radius: 7px;
-  /* box-sizing: content-box; */
   border: 1px solid #fff;
 }
-/* .active-item{
-    background-color: #8AC58E;
-  } */
 .item-box > p {
-  /* width: 100%; */
   height: 100%;
-  /* display: inline-block; */
   position: absolute;
   letter-spacing: 5px;
   left: 50%;
   margin-left: -10px;
   font-size: 16px;
   color: #fff;
-  /* text-indent: 18px; */
   writing-mode: vertical-lr;
 }
 .item-img1 {
   width: 50px;
   height: 50px;
-  /* background-image: url('http://14.29.221.109:10250/upload/assets/people1.png'); */
   background-image: url("../assets/people.png");
-  /* background-position:  20px 0px; */
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
@@ -568,7 +471,7 @@ p {
   color: #535353;
   position: absolute;
   top: 50%;
-  right: 55px;
+  left: 50%;
   margin-top: -13px;
 }
 .middle-div-p2 {
@@ -577,7 +480,7 @@ p {
   color: #535353;
   position: absolute;
   top: 50%;
-  right: 31px;
+  left: 50%;
   z-index: 100;
   margin-top: -10px;
 }
@@ -587,7 +490,7 @@ p {
   color: #535353;
   position: absolute;
   top: 50%;
-  right: 95px;
+  left: 50%;
   margin-top: -13px;
 }
 .right-arrow {
@@ -605,21 +508,17 @@ p {
 .option2 {
   position: relative;
   height: 120px;
-  /* top: 135px; */
   margin-top: 10px;
 }
 .option3 {
   position: relative;
-  /* top: 280px; */
   margin-top: 10px;
   height: 120px;
 }
 .item-img2 {
   width: 50px;
   height: 50px;
-  /* background-image: url('http://14.29.221.109:10250/upload/assets/aggrement.png'); */
   background-image: url("../assets/agreement.png");
-  /* background-position:  20px 0px; */
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
@@ -634,7 +533,6 @@ p {
   width: 50px;
   height: 50px;
   background-image: url("../assets/selection.png");
-  /* background-position:  20px 0px; */
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
@@ -646,22 +544,16 @@ p {
   z-index: 4;
 }
 .tick {
-  /* position: absolute; */
-  /* bottom: 55px; */
-  /* top: 620px; */
-  /* bottom: 8vh; */
   display: inline-block;
   vertical-align: baseline;
   width: 16px;
   height: 16px;
   margin-right: 2px;
-  /* margin-top: 2px; */
   margin-bottom: -1px;
   border: 1px solid #707070;
   box-sizing: border-box;
   background: #efefef;
   border-radius: 2px;
-  /* left: 110px; */
 }
 .tick-img {
   background-image: url("../assets/check.png");
@@ -679,20 +571,11 @@ p {
   vertical-align: baseline;
 }
 .bottom > a {
-  /* position: absolute; */
-  /* width: 136px; */
-  /* height: 20px; */
   vertical-align: baseline;
-  /* margin: 0 auto; */
-  /* bottom: 53px; */
-  /* top: 620px; */
-  /* bottom: 8vh; */
   font-size: 16px;
   color: #6e6e6e;
   opacity: 0.66;
   left: 130px;
   text-decoration: none;
-  /* box-sizing: border-box; */
-  /* border-bottom: 1px solid #6E6E6E; */
 }
 </style>

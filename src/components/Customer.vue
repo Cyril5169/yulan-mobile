@@ -23,8 +23,10 @@
               @click="clickToPath(item.MENU_LINK)"
             >
               <div class="btn-img" :class="item.ICON_CLASS">
-                <div v-if="CUSTOMER_BALANCE_PERIOD_COUNT>0&&item.MENU_LINK=='billmanage'" class="tips">{{CUSTOMER_BALANCE_PERIOD_COUNT}}</div>
-
+                <div
+                  v-if="CUSTOMER_BALANCE_PERIOD_COUNT>0&&item.MENU_LINK=='billmanage'"
+                  class="tips"
+                >{{CUSTOMER_BALANCE_PERIOD_COUNT}}</div>
               </div>
               <p class="btn-p">{{item.MENU_NAME}}</p>
             </div>
@@ -67,7 +69,9 @@ export default {
       myRoute: "customer",
       showStudyForm: false,
       studyFormTitle: "填写完此调查表，才能继续操作",
-      CUSTOMER_BALANCE_PERIOD_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.CUSTOMER_BALANCE_PERIOD:0,
+      CUSTOMER_BALANCE_PERIOD_COUNT: this.$store.state.tipsInfo
+        ? this.$store.state.tipsInfo.CUSTOMER_BALANCE_PERIOD
+        : 0
     };
   },
   components: {
@@ -91,9 +95,9 @@ export default {
   },
   mounted() {},
   methods: {
-    classObject(MENU_LINK){
+    classObject(MENU_LINK) {
       var obj = {};
-      if(MENU_LINK == "billmanage"){
+      if (MENU_LINK == "billmanage") {
         obj["reddot"] = true;
       }
       return obj;
@@ -184,10 +188,9 @@ export default {
     this.getMenuTree(); //获得菜单权限树
     this.getStudy();
   },
-  destroyed(){
+  destroyed() {
     page_customer = null;
   }
-
 };
 </script>
 
@@ -203,17 +206,17 @@ p {
   -ms-user-select: none;
   user-select: none;
 }
-.reddot{
+.reddot {
   width: 2.133vw;
   min-width: 0;
   height: 2.133vw;
   background-color: #ee0a24;
   border-radius: 100%;
-  position:absolute;
-  right:5px;
-  top:5px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
 }
-.tips{
+.tips {
   padding: 0 3px;
   min-width: 10px;
   height: 17px;

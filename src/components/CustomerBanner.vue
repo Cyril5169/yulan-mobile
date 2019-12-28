@@ -2,13 +2,21 @@
   <div class="banner">
     <!-- <div class="option-img" ref="option" @click="Sidebar"></div> -->
     <div class="app-name">玉兰B2B</div>
-    <div class="customer-name">{{customer}}</div>
+    <div class="customer-name">
+      {{customer}}
+      <span style="font-size:15px;" v-if="position">({{position}})</span>
+    </div>
     <div class="login-time">
       <span>登陆:</span>
       <span class="time">{{logintime}}</span>
     </div>
     <div class="announce" v-show="newAnounces.length > 0">
-      <van-notice-bar left-icon="volume-o" color="#1989fa" background="transparent" @click="toAnnouncement">{{noticeTitle}}</van-notice-bar>
+      <van-notice-bar
+        left-icon="volume-o"
+        color="#1989fa"
+        background="transparent"
+        @click="toAnnouncement"
+      >{{noticeTitle}}</van-notice-bar>
     </div>
 
     <div class="left-img"></div>
@@ -20,23 +28,22 @@
 import Protocol from "./Protocol";
 // import sidebar from '../utils/move492.js'
 import { bus } from "../utils/eventBus.js";
-import { Icon, NoticeBar } from 'vant';
+import { Icon, NoticeBar } from "vant";
 import { getNewNotification } from "@/api/notificationASP";
-
 
 export default {
   name: "Banner",
   components: {
     [Icon.name]: Icon,
-    [NoticeBar.name]: NoticeBar,
+    [NoticeBar.name]: NoticeBar
   },
   data() {
     return {
       newAnounces: [],
-      noticeTitle: '',
+      noticeTitle: "",
       timer: null,
       currentNoticeIndex: 0,
-      currentNotice: null,
+      currentNotice: null
     };
   },
   props: ["IsSidebarOut"],
@@ -47,6 +54,23 @@ export default {
     },
     logintime() {
       return this.$store.state.info.logintime;
+    },
+    position() {
+      if (this.$store.state.position)
+        switch (this.$store.state.position) {
+          case "SALEMAN_M":
+            return "办事处经理";
+          case "SALEMAN_S":
+            return "业务经理";
+          case "MANAGER":
+            return "中心总经理";
+          case "VSMAPPROVEXII":
+            return "销售总监";
+          case "MARKETCHECKER":
+            return "市场部";
+          case "BILLDEP_APPROVE":
+            return "订单部";
+        }
     }
   },
   mounted() {
@@ -68,38 +92,39 @@ export default {
         "16px";
     }
 
-    getNewNotification({ cid: this.$store.getters.getCId }).then((res) => {
-      var _this = this;
-      this.newAnounces = [];
-      for (let i = 0; i < res.data.length; i++) {
-        this.newAnounces.push(res.data[i]);
-      }
-      if (this.newAnounces.length > 0) {
-        _this.currentNotice = _this.newAnounces[0];
-        this.noticeTitle = this.newAnounces[0].TITLE;
-        if (this.newAnounces.length > 1) {
-          if (this.timer == null) {
-            this.timer = setInterval(function () {
-              if (_this.currentNoticeIndex + 1 >= _this.newAnounces.length) {
-                _this.currentNoticeIndex = 0;
-              } else {
-                _this.currentNoticeIndex++;
-              }
-              _this.currentNotice = _this.newAnounces[_this.currentNoticeIndex];
-              _this.noticeTitle = _this.newAnounces[_this.currentNoticeIndex].TITLE;
-
-            }, 5000);
+    getNewNotification({ cid: this.$store.getters.getCId })
+      .then(res => {
+        var _this = this;
+        this.newAnounces = [];
+        for (let i = 0; i < res.data.length; i++) {
+          this.newAnounces.push(res.data[i]);
+        }
+        if (this.newAnounces.length > 0) {
+          _this.currentNotice = _this.newAnounces[0];
+          this.noticeTitle = this.newAnounces[0].TITLE;
+          if (this.newAnounces.length > 1) {
+            if (this.timer == null) {
+              this.timer = setInterval(function() {
+                if (_this.currentNoticeIndex + 1 >= _this.newAnounces.length) {
+                  _this.currentNoticeIndex = 0;
+                } else {
+                  _this.currentNoticeIndex++;
+                }
+                _this.currentNotice =
+                  _this.newAnounces[_this.currentNoticeIndex];
+                _this.noticeTitle =
+                  _this.newAnounces[_this.currentNoticeIndex].TITLE;
+              }, 5000);
+            }
           }
         }
-      }
-      if (this.newAnounces.length < 2) {
-        if (this.timer != null) {
-          clearInterval(this.timer);
+        if (this.newAnounces.length < 2) {
+          if (this.timer != null) {
+            clearInterval(this.timer);
+          }
         }
-      }
-
-    }).catch((err) => {
-    })
+      })
+      .catch(err => {});
   },
 
   methods: {
@@ -116,14 +141,17 @@ export default {
       }
     },
     toAnnouncement() {
-      this.currentNotice.CONTENT = this.currentNotice.CONTENT.replace(/\[ReplaceMark\]/g, this.fileCenterUrl);//替换网址
+      this.currentNotice.CONTENT = this.currentNotice.CONTENT.replace(
+        /\[ReplaceMark\]/g,
+        this.fileCenterUrl
+      ); //替换网址
       this.$router.push({
         name: "notificationlist",
         params: {
           showNotification: true,
           CONTENT: this.currentNotice.CONTENT,
           TITLE: this.currentNotice.TITLE,
-          from: 'customer',
+          from: "customer"
         }
       });
     }

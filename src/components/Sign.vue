@@ -48,7 +48,7 @@ export default {
       bodyHeight: "",
       warnMsg: "账号或密码错误 ！",
       rememberPassWord: true,
-      autoSign: true,
+      autoSign: true
     };
   },
   beforeRouteEnter(to, from, next) {
@@ -93,7 +93,9 @@ export default {
   },
   methods: {
     normalsign() {
-      if (!this.name || !this.password) { return; }
+      if (!this.name || !this.password) {
+        return;
+      }
       let th = this;
       let year = new Date().getFullYear();
       this.$store.commit("getYear", year);
@@ -159,23 +161,35 @@ export default {
             // );
             //获取clientid
             if (!window.plus) {
-              document.addEventListener("plusready", function (a) {
-                let clientid = plus.push.getClientInfo().clientid;
-                console.log("clientid为" + clientid);
-                console.log("OS name: " + plus.os.name);
-                console.log("OS vendor: " + plus.os.vendor);
-                console.log("OS version: " + plus.os.version);
-                console.log("OS language: " + plus.os.language);
-                console.log("Vendor: " + plus.device.vendor);
-                console.log("UUID: " + plus.device.uuid);
-                plus.runtime.getProperty(plus.runtime.appid, function (inf) {
-                  UpdateAppClientId(th.name, clientid, plus.os.name, plus.device.vendor, inf.version).then((res) => {
-                    console.log("更新clientid成功");
-                  }).catch((err) => {
-                    console.log("更新clientid失败" + JSON.stringify(err));
+              document.addEventListener(
+                "plusready",
+                function(a) {
+                  let clientid = plus.push.getClientInfo().clientid;
+                  console.log("clientid为" + clientid);
+                  console.log("OS name: " + plus.os.name);
+                  console.log("OS vendor: " + plus.os.vendor);
+                  console.log("OS version: " + plus.os.version);
+                  console.log("OS language: " + plus.os.language);
+                  console.log("Vendor: " + plus.device.vendor);
+                  console.log("UUID: " + plus.device.uuid);
+                  plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+                    UpdateAppClientId(
+                      th.name,
+                      clientid,
+                      plus.os.name,
+                      plus.device.vendor,
+                      inf.version
+                    )
+                      .then(res => {
+                        console.log("更新clientid成功");
+                      })
+                      .catch(err => {
+                        console.log("更新clientid失败" + JSON.stringify(err));
+                      });
                   });
-                });
-              }, false);
+                },
+                false
+              );
             } else {
               let clientid = plus.push.getClientInfo().clientid;
               console.log("clientid为" + clientid);
@@ -186,13 +200,31 @@ export default {
               console.log("Vendor: " + plus.device.vendor);
               console.log("UUID: " + plus.device.uuid);
               console.log("plus.runtime.version: " + plus.runtime.version);
-              plus.runtime.getProperty(plus.runtime.appid, function (inf) {
-                UpdateAppClientId(th.name, clientid, plus.os.name, plus.device.vendor, inf.version).then((res) => {
-                  console.log("更新clientid成功");
-                }).catch((err) => {
-                  console.log("更新clientid失败" + JSON.stringify(err));
-                });
+              plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+                UpdateAppClientId(
+                  th.name,
+                  clientid,
+                  plus.os.name,
+                  plus.device.vendor,
+                  inf.version
+                )
+                  .then(res => {
+                    console.log("更新clientid成功");
+                  })
+                  .catch(err => {
+                    console.log("更新clientid失败" + JSON.stringify(err));
+                  });
               });
+            }
+            //职位
+            this.pos = this.$store.state.pos;
+            if (this.pos) {
+              if (this.pos.length == 1) {
+                this.$store.commit("getposition", this.pos[0].position);
+              } else if (this.pos.length > 1) {
+                this.IsShow = true;
+                return;
+              }
             }
             this.$router.push({
               path: "/customer"

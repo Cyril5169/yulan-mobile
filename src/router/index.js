@@ -214,8 +214,7 @@ var router = new Router({
     {
       path: '/swiper',
       name: 'Swiper',
-      component: Swiper,
-      meta: { keepAlive: true }
+      component: Swiper
     },
     {
       path: '/proimage',
