@@ -97,11 +97,19 @@
       <div class="swiper-pagination" slot="pagination"></div>
     </swiper>
     <div class="bottom">
+      <div class="btnBottom" v-if="showEnter && bannerIndex==4">
+        <span class="btnBottom-xg" @click="enter">确 认</span>
+        <span class="btnBottom-dl" @click="change">修 改</span>
+      </div>
+      <div
+        style="text-align:center;color: red;font-size:15px;"
+        v-if="showEnter && bannerIndex!=4"
+      >*当前资料卡继承上一年，客户可浏览完后直接确认。若点击修改，则进入审批流程。</div>
       <!-- <div class="save1">
         <button ref="save" disabled>保存</button>
       </div>-->
-      <div class="save2" @click="sendData2">
-        <button ref="submit">保存并提交</button>
+      <div class="save2">
+        <button ref="submit" @click="sendData2">保存并提交</button>
       </div>
     </div>
     <iosselect2 v-on:listen3="listenmore2" v-on:listen4="listenselect2" v-show="more2"></iosselect2>
@@ -120,6 +128,11 @@ import card5 from "./Card5";
 import { bus } from "../utils/eventBus.js";
 import iosselect5 from "@/components/Iosselect5";
 import iosselect2 from "@/components/Iosselect4";
+import { UpdateState } from "@/api/card";
+import {
+  Toast,
+  Dialog
+} from "vant";
 
 export default {
   data() {
@@ -224,7 +237,8 @@ export default {
       forever3: 0,
       forever4: 0,
       forever: 0,
-      contractyear: this.$store.state.year
+      contractyear: this.$store.state.year,
+      showEnter: false
     };
   },
   components: {
@@ -236,7 +250,9 @@ export default {
     card5,
     "file-msg": file,
     "ios-select5": iosselect5,
-    iosselect2
+    iosselect2,
+    [Toast.name]: Toast,
+    [Dialog.name]: Dialog
   },
   created() {
     bus.$on("select", () => {
@@ -728,7 +744,6 @@ export default {
           console.log(alldata);
           this.name = alldata.cname;
           var c = alldata.invoiceType;
-          // this.tax = alldata.invoiceType;
           if (c == "不开发票") {
             this.item = 1;
           } else if (c == "增值税专用发票") {
@@ -803,6 +818,7 @@ export default {
             for (let i = 0; i < s.length; i++) {
               s[i].disabled = true;
             }
+            this.showEnter = true;
           }
 
           let url = "/infoState/getCustomerInfoCardState.do";
@@ -882,6 +898,54 @@ export default {
     //     }
     //   });
     // },
+    enter() {
+      Dialog.confirm({
+        message: "确认资料卡"
+      }).then(() => {
+        let nowTime = this.initTime(new Date());
+        UpdateState({
+          cid: this.companyId,
+          year: this.contractyear,
+          state: "APPROVED",
+          memo: nowTime + this.name + "确认;"
+        })
+          .then(res => {
+            Toast({
+              duration: 1000,
+              message: "操作成功"
+            });
+            location.reload();
+          })
+          .catch(res => {
+            Toast({
+              duration: 1000,
+              message: "操作失败"
+            });
+          });
+      });
+    },
+    change() {
+      Dialog.confirm({
+        message: "确认开始修改，开始修改后将不可进行确认操作？"
+      }).then(() => {
+        let nowTime = this.initTime(new Date());
+        UpdateState({
+          cid: this.companyId,
+          year: this.contractyear,
+          state: "CUSTOMERPORCESSING",
+          memo: nowTime + this.name + "修改;"
+        })
+          .then(res => {
+            location.reload();
+          })
+          .catch(res => {
+            Toast({
+              duration: 1000,
+              message: "操作失败"
+            });
+          });
+      });
+    },
     changeSubmit() {
       if (this.nowbrand == null || this.nowbrand == "") {
         this.a = "N";
@@ -1435,6 +1499,25 @@ export default {
   color: #ffffff;
   background: -webkit-linear-gradient(left, #bedd81, #87ca81);
   margin: 13px auto 11px 1px;
+}
+.btnBottom {
+  margin-top: 15px;
+}
+.btnBottom span {
+  padding: 8px 13px;
+  border-radius: 18px;
+  margin: 0 10px;
+  width: 65px;
+  height: 20px;
+  line-height: 20px;
+}
+.btnBottom-xg {
+  background: #89cb81;
+  color: white;
+}
+.btnBottom-dl {
+  background: #fd5538;
+  color: white;
 }
 .shadow {
   position: absolute;

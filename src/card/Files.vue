@@ -82,7 +82,7 @@ export default {
           var alldata = res.data.data;
           var cusName = alldata.cname;
           this.contractyear = alldata.contractyear;
-          for (let i = 0; i < 4; i++) {
+          for (let i = 0; i < 5; i++) {
             this.msg2.push(cusName);
           }
           this.msg2.push(" ");
@@ -152,7 +152,7 @@ export default {
 }
 .files {
   width: 100%;
-  height: 70px;
+  height: 50px;
   background: #efefef;
   padding-top: 55px;
   display: flex;

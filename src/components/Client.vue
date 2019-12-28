@@ -105,7 +105,6 @@ export default {
     },
     Ischeck() {
       let userState = this.$store.state.info.data.userState;
-      console.log(userState);
       if (userState == "") return false;
       else if (userState == "1") return true;
     },
