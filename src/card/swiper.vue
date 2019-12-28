@@ -239,10 +239,6 @@ export default {
     iosselect2
   },
   created() {
-    // bus.$on("check", () => {
-    //   this.IsPonitOut = true;
-    //   this.secondWarn = true;
-    // }),
     bus.$on("select", () => {
       this.more = true;
     });

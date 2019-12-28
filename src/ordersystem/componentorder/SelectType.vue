@@ -1,29 +1,6 @@
 <template>
   <div class="view">
-    <!--<div class="shadow" v-show="IsWarn"></div>-->
     <div class="client" ref="client">
-      <!-- <div class="sidebar">
-        <div class="user-img"></div>
-      <p class="customer-name">{{customer}}</p>-->
-      <!-- <div class="history-box">
-            <div class="history"></div><p class="history-p">历年经销协议书</p>
-          </div>
-          <div class="revise-load-box">
-            <div class="revise-load"></div><p class="revise-load-p">修改登陆密码</p>
-          </div>
-          <div class="revise-bill-box">
-            <div class="revise-bill"></div><p class="revise-bill-p">修改对账密码</p>
-          </div>
-          <div class="about-box">
-            <div class="about"></div><p class="about-p">关于APP</p>
-
-      </div>-->
-      <!-- <div class="quit-box" @click="unlogin">
-          <div class="quit"></div>
-          <p class="quit-p">退出登录</p>
-        </div>
-      </div>-->
-
       <section class="content" @click.stop="Sidebar">
         <Banner v-bind:IsSidebarOut="IsSidebarOut" :title="'玉兰产品'"></Banner>
 
@@ -61,7 +38,6 @@
             <p class="middle-div-p">软装</p>
             <div class="right-arrow"></div>
           </div>
-          <!--<div class="bottom-div"></div>-->
         </div>
       </section>
 
@@ -85,7 +61,7 @@ export default {
       set: 0,
       kkp: 0,
       style: "shopstore",
-      myRoute: "customer",
+      myRoute: "customer"
     };
   },
   components: {
@@ -95,9 +71,6 @@ export default {
     navBottom
   },
   computed: {
-    // customer() {
-    //   return this.$store.state.info.data.realName;
-    // },
     Ischeck() {
       let userState = this.$store.state.info.data.userState;
       if (userState == "") return false;
@@ -116,52 +89,9 @@ export default {
       this.IsSidebarOut = msg;
     });
   },
-  // beforeRouteEnter (to, from, next) {
-  //   console.log(to);
-  //   console.log(from);
-
-  //   if(from.path=='/protocol' ){
-  //   next(vm => {
-  //     if(vm.$route.query.checked){
-  //       vm.Ischeck =true;
-  //     }
-  //   });
-  //   }
-  //   next();
-  // },
-  mounted() {
-    // let url = "/infoState/getCustomerInfoCardState.do";
-    // let data = {
-    //   cid: this.CID,
-    //   year: this.$store.state.year
-    // };
-    // this.$http.post(url, data).then(res => {
-    //   if (res.data.memo != null) {
-    //     if (
-    //       res.data.customerInfo == "业务员审核中" ||
-    //       res.data.customerInfo == "资料卡通过" ||
-    //       res.data.customerInfo == "订单部审核中"
-    //     ) {
-    //       this.kkp = 1;
-    //     } else {
-    //       this.kkp = 0;
-    //     }
-    //   } else {
-    //     this.kkp = 0;
-    //   }
-    // });
-  },
+  mounted() {},
   methods: {
-    Sidebar() {
-      // var client = document.getElementsByClassName("client")[0];
-      // if (this.IsSidebarOut == true) {
-      //   client.classList.remove("active-option");
-      //   client.classList.add("noactive-option");
-      //   setTimeout(() => {
-      //     this.IsSidebarOut = false;
-      //   }, 300);
-      // }
-    },
+    Sidebar() {},
     unlogin() {
       this.$router.push({
         path: "/"
@@ -215,14 +145,6 @@ export default {
       });
     }
   }
-  // beforeRouteLeave(to, from, next) {//这句话让customerkeepalive了
-  //   if (this.kkp == 1) {
-  //     to.meta.keepAlive = false;
-  //   } else if (this.kkp == 0) {
-  //     to.meta.keepAlive = true;
-  //   }
-  //   next();
-  // }
 };
 </script>
 
@@ -557,12 +479,10 @@ p {
 .option2 {
   position: relative;
   height: 120px;
-  /* top: 135px; */
   margin-top: 0px;
 }
 .option3 {
   position: relative;
-  /* top: 280px; */
   margin-top: 0px;
   height: 120px;
 }
@@ -570,7 +490,6 @@ p {
   width: 50px;
   height: 50px;
   background-image: url("../assetsorder/softdec.png");
-  /* background-position:  20px 0px; */
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
@@ -585,7 +504,6 @@ p {
   width: 50px;
   height: 50px;
   background-image: url("../assetsorder/curtain.png");
-  /* background-position:  20px 0px; */
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
@@ -597,22 +515,16 @@ p {
   z-index: 4;
 }
 .tick {
-  /* position: absolute; */
-  /* bottom: 55px; */
-  /* top: 620px; */
-  /* bottom: 8vh; */
   display: inline-block;
   vertical-align: baseline;
   width: 16px;
   height: 16px;
   margin-right: 2px;
-  /* margin-top: 2px; */
   margin-bottom: -1px;
   border: 1px solid #707070;
   box-sizing: border-box;
   background: #efefef;
   border-radius: 2px;
-  /* left: 110px; */
 }
 .tick-img {
   background-image: url("../../assets/check.png");
@@ -630,20 +542,11 @@ p {
   vertical-align: baseline;
 }
 .bottom > a {
-  /* position: absolute; */
-  /* width: 136px; */
-  /* height: 20px; */
   vertical-align: baseline;
-  /* margin: 0 auto; */
-  /* bottom: 53px; */
-  /* top: 620px; */
-  /* bottom: 8vh; */
   font-size: 16px;
   color: #6e6e6e;
   opacity: 0.66;
   left: 130px;
   text-decoration: none;
-  /* box-sizing: border-box; */
-  /* border-bottom: 1px solid #6E6E6E; */
 }
 </style>

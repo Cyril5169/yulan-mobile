@@ -1,10 +1,10 @@
 <template>
   <div class="files">
-    <div class="files-word">
+    <div class="files-word"  @click="showItFalse">
       <h4>{{ msg[this.file] }}</h4>
       <p>{{ msg2[this.file] }}</p>
     </div>
-    <div class="exam" v-show="!isShow">
+    <div class="exam" v-if="!isShow">
       <div id="record" @click="showIt"></div>
       <span @click="showIt">评审记录</span>
     </div>
@@ -29,12 +29,16 @@ export default {
       isShow: false,
       messages: [],
       customerInfo: " ",
-      once: 0
+      once: 0,
+      contractyear: this.$store.state.year
     };
   },
   methods: {
     showIt: function() {
-      this.isShow = true;
+      this.isShow = !this.isShow;
+    },
+    showItFalse(){
+      if(this.isShow) this.isShow = false;
     },
     setChange: function(data) {
       this.isShow = data;
@@ -42,8 +46,8 @@ export default {
     getdata1() {
       let url = "/infoState/getCustomerInfoCardState.do";
       let data = {
-        cid: this.CID,
-        year: this.$store.state.year
+        cid: this.companyId,
+        year: this.contractyear
       };
       this.$http.post(url, data).then(res => {
         if (res.data.memo != null) {
@@ -71,16 +75,45 @@ export default {
     getdata2() {
       let url = "/customerInfo/getCustomerInfo.do";
       let data = {
-        CID: this.CID
+        CID: this.companyId
       };
       this.$http.post(url, data).then(res => {
         if (res.data.code == 0 && res.data.data != null) {
           var alldata = res.data.data;
           var cusName = alldata.cname;
+          this.contractyear = alldata.contractyear;
           for (let i = 0; i < 4; i++) {
             this.msg2.push(cusName);
           }
           this.msg2.push(" ");
+
+          let url = "/infoState/getCustomerInfoCardState.do";
+          let data = {
+            cid: this.companyId,
+            year: alldata.contractyear
+          };
+          this.$http.post(url, data).then(res2 => {
+            if (res2.data.memo != null) {
+              var alldata2 = res2.data;
+              this.customerInfo = alldata2.customerInfo;
+              if (
+                this.customerInfo == "业务员审核中" ||
+                this.customerInfo == "资料卡通过" ||
+                this.customerInfo == "订单部审核中"
+              ) {
+                this.once = 2;
+                this.$emit("twice", this.once);
+              } else {
+                this.once = 1;
+                this.$emit("twice", this.once);
+              }
+              this.messages = alldata2.memo.reverse();
+            } else {
+              this.once = 1;
+              this.$emit("twice", this.once);
+              console.log("出错了");
+            }
+          });
         } else if (res.data.code === 1 || res.data.data == null) {
           console.log("不存在");
         }
@@ -97,14 +130,15 @@ export default {
       } else {
         return this.$store.state.info.data.loginName;
       }
+    },
+    companyId() {
+      return this.$store.getters.getCMId;
     }
   },
   mounted() {
-    this.getdata1();
     this.getdata2();
   },
   activated() {
-    this.getdata1();
     this.getdata2();
   }
 };
@@ -126,7 +160,7 @@ export default {
   align-items: center;
 }
 .files-word {
-  width: 188px;
+  width: 100%;
   margin-left: 24px;
   text-align: left;
 }
@@ -141,6 +175,7 @@ export default {
   font-family: PingFang HK;
 }
 .exam {
+  min-width:80px;
   display: flex;
   align-items: center;
   color: #89cb81;

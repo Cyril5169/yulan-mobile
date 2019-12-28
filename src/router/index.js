@@ -261,11 +261,6 @@ var router = new Router({
       name: 'crAgreement',
       component: crAgreement
     },
-    // {
-    //   path: '/cardquery',
-    //   name: 'CardQuery',
-    //   component: cardquery
-    // },
     {
       path: '/cardquery',
       name: 'CardQuery',
@@ -286,13 +281,6 @@ var router = new Router({
       name: 'reviseagreement',
       component: ReviseAgreement
     },
-    // {
-    //   path: '/test',
-    //   name: 'test',
-    //   component: testcard
-    // },
-
-
     //订单系统
     {
       path: '/shopstore',

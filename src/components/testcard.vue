@@ -3,17 +3,17 @@
     <div class="cardQuery">
       <top-show :top="set"></top-show>
       <div class="bigPic" v-show="bigPic1">
-            <img :src="headerImage15" alt="">
-          </div>
-          <div class="bigPic" v-show="bigPic2">
-            <img :src="headerImage25" alt="">
-            </div>
-          <div class="bigPic" v-show="bigPic3">
-            <img :src="headerImage35" alt="">
-          </div>
-          <div class="bigPic" v-show="bigPic4">
-            <img :src="headerImage45" alt="">
-          </div>
+        <img :src="headerImage15" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic2">
+        <img :src="headerImage25" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic3">
+        <img :src="headerImage35" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic4">
+        <img :src="headerImage45" alt />
+      </div>
       <div class="shadow" v-show="bigPic1"></div>
       <div class="shadow" v-show="bigPic2"></div>
       <div class="shadow" v-show="bigPic3"></div>
@@ -39,13 +39,17 @@
         </div>
       </div>
       <div class="bigPic" v-show="bigPic5">
-            <img :src="headerImage55" alt=""></div>
-          <div class="bigPic" v-show="bigPic6">
-            <img :src="headerImage65" alt=""></div>
-          <div class="bigPic" v-show="bigPic7">
-            <img :src="headerImage75" alt=""></div
-            ><div class="bigPic" v-show="bigPic8">
-            <img :src="headerImage85" alt=""></div>
+        <img :src="headerImage55" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic6">
+        <img :src="headerImage65" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic7">
+        <img :src="headerImage75" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic8">
+        <img :src="headerImage85" alt />
+      </div>
       <div class="shadow" v-show="bigPic5"></div>
       <div class="shadow" v-show="bigPic6"></div>
       <div class="shadow" v-show="bigPic7"></div>
@@ -71,13 +75,17 @@
         </div>
       </div>
       <div class="bigPic" v-show="bigPic9">
-            <img :src="headerImage95" alt=""></div>
-          <div class="bigPic" v-show="bigPic10">
-            <img :src="headerImage105" alt=""></div>
-          <div class="bigPic" v-show="bigPic11">
-            <img :src="headerImage115" alt=""></div>
-          <div class="bigPic" v-show="bigPic12">
-            <img :src="headerImage125" alt=""></div>
+        <img :src="headerImage95" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic10">
+        <img :src="headerImage105" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic11">
+        <img :src="headerImage115" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic12">
+        <img :src="headerImage125" alt />
+      </div>
       <div class="shadow" v-show="bigPic9"></div>
       <div class="shadow" v-show="bigPic10"></div>
       <div class="shadow" v-show="bigPic11"></div>
@@ -102,14 +110,18 @@
           <button>确定</button>
         </div>
       </div>
-          <div class="bigPic" v-show="bigPic13">
-            <img :src="headerImage135" alt=""></div>
-          <div class="bigPic" v-show="bigPic14">
-            <img :src="headerImage145" alt=""></div>
-          <div class="bigPic" v-show="bigPic15">
-            <img :src="headerImage155" alt=""></div>
-          <div class="bigPic" v-show="bigPic16">
-            <img :src="headerImage165" alt=""></div>
+      <div class="bigPic" v-show="bigPic13">
+        <img :src="headerImage135" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic14">
+        <img :src="headerImage145" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic15">
+        <img :src="headerImage155" alt />
+      </div>
+      <div class="bigPic" v-show="bigPic16">
+        <img :src="headerImage165" alt />
+      </div>
       <div class="shadow" v-show="bigPic13"></div>
       <div class="shadow" v-show="bigPic14"></div>
       <div class="shadow" v-show="bigPic15"></div>
@@ -154,31 +166,34 @@
       <div class="content">
         <div class="content-all">
           <div class="topBox">
-            <p>主营区域：
-              <input type="text" v-model="district" readonly="true" name="area">
+            <p>
+              主营区域：
+              <input type="text" v-model="district" readonly="true" name="area" />
             </p>
           </div>
           <div class="newbox" id="newbrand">
             <p>
               意向品牌：
               <label class="test1">
-                <input type="checkbox" class="check" name="check" :checked="boxcheck1" disabled>玉兰（墙纸类产品）
+                <input type="checkbox" class="check" name="check" :checked="boxcheck1" disabled />玉兰（墙纸类产品）
               </label>
             </p>
             <p id="second">
               <label class="test1">
-                <input type="checkbox" class="check" name="check" :checked="boxcheck2" disabled>玉兰·兰尚居品（软装类产品）
+                <input type="checkbox" class="check" name="check" :checked="boxcheck2" disabled />玉兰·兰尚居品（软装类产品）
               </label>
             </p>
           </div>
           <div class="box" id="nowbrand">
-            <p>现主经营产品品牌：
-              <input type="text" v-model="nowbrand" name="nowbrand" disabled>
+            <p>
+              现主经营产品品牌：
+              <input type="text" v-model="nowbrand" name="nowbrand" disabled />
             </p>
           </div>
           <div class="box" id="square">
-            <p>店铺面积：
-              <input type="text" v-model="square" name="fax" disabled>平方米
+            <p>
+              店铺面积：
+              <input type="text" v-model="square" name="fax" disabled />平方米
             </p>
           </div>
           <div class="nbox">
@@ -192,7 +207,7 @@
                   value="不开发票"
                   :checked="radiocheck101"
                   disabled
-                >
+                />
                 <label for="tax1" class="intype"></label>
                 <span class="radio-name">不开发票</span>
               </label>
@@ -206,7 +221,7 @@
                   value="增值税普通发票"
                   :checked="radiocheck22"
                   disabled
-                >
+                />
                 <label for="tax2" class="intype"></label>
                 <span class="radio-name">增值税普通发票</span>
               </label>
@@ -218,7 +233,7 @@
                   value="电子普通发票"
                   :checked="radiocheck33"
                   disabled
-                >
+                />
                 <label for="tax3" class="intype"></label>
                 <span class="radio-name">电子普通发票</span>
               </label>
@@ -232,7 +247,7 @@
                   value="增值税专用发票"
                   :checked="radiocheck404"
                   disabled
-                >
+                />
                 <label for="tax4" class="intype" id="num4"></label>
                 <span class="radio-name">增值税专用发票</span>
               </label>
@@ -240,8 +255,9 @@
             </p>
           </div>
           <div class="box" id="email" v-show="showEmail">
-            <p>接收邮箱：
-              <input type="text" name="email" v-model="reEmail" disabled>
+            <p>
+              接收邮箱：
+              <input type="text" name="email" v-model="reEmail" disabled />
             </p>
           </div>
           <div class="nbox" id="people">
@@ -256,7 +272,7 @@
                   :checked="radiocheck5"
                   hidden
                   disabled
-                >
+                />
                 <label for="adviceRadio1" class="advice"></label>
                 <span class="radio-name">是</span>
               </label>
@@ -269,20 +285,22 @@
                   :checked="radiocheck6"
                   hidden
                   disabled
-                >
+                />
                 <label for="adviceRadio2" class="advice"></label>
                 <span class="radio-name">否</span>
               </label>
             </p>
           </div>
           <div class="box" id="manager">
-            <p>法人代表/经营者：
-              <input type="text" v-model="manager" readonly="true" name="address">
+            <p>
+              法人代表/经营者：
+              <input type="text" v-model="manager" readonly="true" name="address" />
             </p>
           </div>
           <div class="box" id="cellphone">
-            <p>手机：
-              <input v-model="phone" type="text" name="cellphone" disabled>
+            <p>
+              手机：
+              <input v-model="phone" type="text" name="cellphone" disabled />
             </p>
           </div>
         </div>
@@ -291,43 +309,51 @@
         <h4>业务信息</h4>
         <div class="content-all2">
           <div class="topBox2">
-            <p>联系人：
-              <input type="text" v-model="person2" readonly="true" name="person">
+            <p>
+              联系人：
+              <input type="text" v-model="person2" readonly="true" name="person" />
             </p>
           </div>
           <div class="box2" id="phone2">
-            <p>电话：
-              <input type="text" v-model="tel2" readonly="true" name="phone">
+            <p>
+              电话：
+              <input type="text" v-model="tel2" readonly="true" name="phone" />
             </p>
           </div>
           <div class="box2" id="phone2">
-            <p>手机：
-              <input type="text" v-model="phone2" readonly="true" name="cellphone">
+            <p>
+              手机：
+              <input type="text" v-model="phone2" readonly="true" name="cellphone" />
             </p>
           </div>
           <div class="box2" id="fax2">
-            <p>传真：
-              <input type="text" v-model="fax2" name="fax" disabled>
+            <p>
+              传真：
+              <input type="text" v-model="fax2" name="fax" disabled />
             </p>
           </div>
           <div class="box2" id="qq2">
-            <p>qq：
-              <input type="text" v-model="qq2" name="QQ" disabled>
+            <p>
+              qq：
+              <input type="text" v-model="qq2" name="QQ" disabled />
             </p>
           </div>
           <div class="box2" id="e-mail2">
-            <p>e-mail：
-              <input type="text" v-model="email2" name="E-mail" disabled>
+            <p>
+              e-mail：
+              <input type="text" v-model="email2" name="E-mail" disabled />
             </p>
           </div>
           <div class="box2" id="address2">
-            <p>通讯地址：
-              <input type="text" v-model="address2" readonly="true" name="address">
+            <p>
+              通讯地址：
+              <input type="text" v-model="address2" readonly="true" name="address" />
             </p>
           </div>
           <div class="box2" id="fax2">
-            <p>邮编：
-              <input type="text" v-model="zip2" name="mail" disabled>
+            <p>
+              邮编：
+              <input type="text" v-model="zip2" name="mail" disabled />
             </p>
           </div>
         </div>
@@ -336,33 +362,39 @@
         <h4>物流信息</h4>
         <div class="content-all3">
           <div class="topBox3">
-            <p>联系人：
-              <input type="text" v-model="person3" readonly="true" name="person">
+            <p>
+              联系人：
+              <input type="text" v-model="person3" readonly="true" name="person" />
             </p>
           </div>
           <div class="box3" id="phone3">
-            <p>电话：
-              <input type="text" v-model="tel3" readonly="true" name="personphone">
+            <p>
+              电话：
+              <input type="text" v-model="tel3" readonly="true" name="personphone" />
             </p>
           </div>
           <div class="box3" id="phone13">
-            <p>物流手机：
-              <input type="text" v-model="phone3" readonly="true" name="logisticsphone">
+            <p>
+              物流手机：
+              <input type="text" v-model="phone3" readonly="true" name="logisticsphone" />
             </p>
           </div>
           <div class="box3" id="fax3">
-            <p>传真：
-              <input type="text" v-model="faxwl3" name="fax" disabled>
+            <p>
+              传真：
+              <input type="text" v-model="faxwl3" name="fax" disabled />
             </p>
           </div>
           <div class="box3" id="readdress3">
-            <p>收货地址：
-              <input type="text" v-model="address3" readonly="true" name="address">
+            <p>
+              收货地址：
+              <input type="text" v-model="address3" readonly="true" name="address" />
             </p>
           </div>
           <div class="box3" id="fax3">
-            <p>邮编：
-              <input type="text" v-model="zipwl3" name="mail" disabled>
+            <p>
+              邮编：
+              <input type="text" v-model="zipwl3" name="mail" disabled />
             </p>
           </div>
         </div>
@@ -382,7 +414,7 @@
                   :checked="radiocheck14"
                   hidden
                   disabled
-                >
+                />
                 <label for="way14" class="way4"></label>
                 <span class="radio-name">有营业执照-有对公账号</span>
               </label>
@@ -397,7 +429,7 @@
                   :checked="radiocheck24"
                   hidden
                   disabled
-                >
+                />
                 <label for="way24" class="way4"></label>
                 <span class="radio-name">有营业执照-无对公账号</span>
               </label>
@@ -418,7 +450,7 @@
                   :checked="radiocheck44"
                   hidden
                   disabled
-                >
+                />
                 <label for="type14" class="way4"></label>
                 <span class="radio-name">是</span>
               </label>
@@ -431,13 +463,15 @@
                   :checked="radiocheck54"
                   hidden
                   disabled
-                >
+                />
                 <label for="type24" class="way4"></label>
                 <span class="radio-name">否</span>
               </label>
             </p>
             <p id="fifth4" v-show="b4">
-              <router-link to="/cardquery/checkproxy"><span id="togo4">查看授权委托账号信息</span></router-link>
+              <router-link to="/cardquery/checkproxy">
+                <span id="togo4">查看授权委托账号信息</span>
+              </router-link>
             </p>
             <p id="inthird4">
               <label class="saleWay4">
@@ -449,7 +483,7 @@
                   :checked="radiocheck34"
                   hidden
                   disabled
-                >
+                />
                 <label for="way34" class="way4"></label>
                 <span class="radio-name">无营业执照</span>
               </label>
@@ -459,39 +493,45 @@
             <p>{{msg4}}：</p>
           </div>
           <div class="box4" id="person4" v-show="acc14">
-            <p>汇款人：
-              <input type="text" v-model="person14" readonly="true" name="monperson1" disabled>
+            <p>
+              汇款人：
+              <input type="text" v-model="person14" readonly="true" name="monperson1" disabled />
             </p>
           </div>
           <div class="box4" id="person4" v-show="acc24">
-            <p>汇款人：
-              <input type="text" v-model="person24" readonly="true" name="monperson2" disabled>
+            <p>
+              汇款人：
+              <input type="text" v-model="person24" readonly="true" name="monperson2" disabled />
             </p>
           </div>
           <div class="box4" id="bank4" v-show="acc14">
-            <p>汇款银行：
-              <input type="text" v-model="bank14" name="bank1" disabled>
+            <p>
+              汇款银行：
+              <input type="text" v-model="bank14" name="bank1" disabled />
             </p>
           </div>
           <div class="box4" id="bank4" v-show="acc24">
-            <p>汇款银行：
-              <input type="text" v-model="bank24" name="bank2" disabled>
+            <p>
+              汇款银行：
+              <input type="text" v-model="bank24" name="bank2" disabled />
             </p>
           </div>
           <div class="box4" id="number4" v-show="acc14">
-            <p>账号：
-              <input type="text" v-model="number14" name="number1" disabled>
+            <p>
+              账号：
+              <input type="text" v-model="number14" name="number1" disabled />
             </p>
           </div>
           <div class="box4" id="number4" v-show="acc24">
-            <p>账号：
-              <input type="text" v-model="number24" name="number2" disabled>
+            <p>
+              账号：
+              <input type="text" v-model="number24" name="number2" disabled />
             </p>
           </div>
           <div class="box4" id="bankaddress4">
             <p>
               银行所在地：
-              <input name id="form_select" disabled="disabled" :value="location4" ref="bank">
+              <input name id="form_select" disabled="disabled" :value="location4" ref="bank" />
             </p>
           </div>
         </div>
@@ -508,7 +548,7 @@
                 readonly="true"
                 class="form_select5"
                 disabled
-              >
+              />
             </p>
           </div>
           <div class="nojoin5" v-show="nojoin5">
@@ -516,17 +556,14 @@
               <div class="IDfirst5">
                 <p>身份证头像面</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig1"
-                  >
-                  <img :src="headerImage15" alt="">
+                  <div class="picture5" @click="showBig1">
+                    <img :src="headerImage15" alt />
                     <input
                       type="file"
                       id="upload15"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload15"></label>
                   </div>
                   <div class="pic5" v-show="isShow15">
@@ -535,22 +572,19 @@
                   </div>
                 </div>
                 <p id="CID5">身份证号码</p>
-                <input type="text" class="CIDnumber5" v-model="CIDnumber5" disabled>
+                <input type="text" class="CIDnumber5" v-model="CIDnumber5" disabled />
               </div>
               <div class="IDfirst5">
                 <p>身份证国徽面</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig2"
-                  >
-                  <img :src="headerImage25" alt="">
+                  <div class="picture5" @click="showBig2">
+                    <img :src="headerImage25" alt />
                     <input
                       type="file"
                       id="upload25"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload25"></label>
                   </div>
                   <div class="pic5" v-show="isShow25">
@@ -564,17 +598,14 @@
               <div class="IDfirst5">
                 <p id="first5">营业执照</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig3"
-                  >
-                  <img :src="headerImage35" alt="">
+                  <div class="picture5" @click="showBig3">
+                    <img :src="headerImage35" alt />
                     <input
                       type="file"
                       id="upload35"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload35"></label>
                   </div>
                   <div class="pic5" v-show="isShow35">
@@ -583,24 +614,21 @@
                   </div>
                 </div>
                 <p id="business5">营业执照注册号</p>
-                <input type="text" class="IDnumber5" v-model="businumber5" readonly="true" disabled>
+                <input type="text" class="IDnumber5" v-model="businumber5" readonly="true" disabled />
                 <p id="business5">营业执照有效期</p>
-                <input name id="form_select25" v-model="selectDate" readonly>
+                <input name id="form_select25" v-model="selectDate" readonly />
               </div>
               <div class="IDfirst5">
                 <p id="second5">税务登记证（国税）</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig4"
-                  >
-                  <img :src="headerImage45" alt="">
+                  <div class="picture5" @click="showBig4">
+                    <img :src="headerImage45" alt />
                     <input
                       type="file"
                       id="upload45"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload45"></label>
                   </div>
                   <div class="pic5" v-show="isShow45">
@@ -609,8 +637,12 @@
                   </div>
                 </div>
                 <p id="tax5">税务证号</p>
-                <input type="text" class="IDnumber5" v-model="taxNumber5" readonly="true" disabled>
-                <div id="forever"><label class="test"><input type="checkbox" class="check" :checked="boxcheck11" disabled> 永久有效</label></div>
+                <input type="text" class="IDnumber5" v-model="taxNumber5" readonly="true" disabled />
+                <div id="forever">
+                  <label class="test">
+                    <input type="checkbox" class="check" :checked="boxcheck11" disabled /> 永久有效
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -619,17 +651,14 @@
               <div class="IDfirst5">
                 <p>身份证头像面</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig5"
-                  >
-                  <img :src="headerImage55" alt="">
+                  <div class="picture5" @click="showBig5">
+                    <img :src="headerImage55" alt />
                     <input
                       type="file"
                       id="upload55"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload55"></label>
                   </div>
                   <div class="pic5" v-show="isShow55">
@@ -638,22 +667,19 @@
                   </div>
                 </div>
                 <p id="CID5">身份证号码</p>
-                <input type="text" class="CIDnumber5" v-model="CIDnumber5" disabled>
+                <input type="text" class="CIDnumber5" v-model="CIDnumber5" disabled />
               </div>
               <div class="IDfirst5">
                 <p>身份证国徽面</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig6"
-                  >
-                  <img :src="headerImage65" alt="">
+                  <div class="picture5" @click="showBig6">
+                    <img :src="headerImage65" alt />
                     <input
                       type="file"
                       id="upload65"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload65"></label>
                   </div>
                   <div class="pic5" v-show="isShow65">
@@ -667,17 +693,14 @@
               <div class="IDfirst5">
                 <p id="first5">营业执照</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig7"
-                  >
-                  <img :src="headerImage75" alt="">
+                  <div class="picture5" @click="showBig7">
+                    <img :src="headerImage75" alt />
                     <input
                       type="file"
                       id="upload75"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload75"></label>
                   </div>
                   <div class="pic5" v-show="isShow75">
@@ -686,11 +709,15 @@
                   </div>
                 </div>
                 <p id="business5">营业执照注册号</p>
-                <input type="text" class="IDnumber5" v-model="businumber5" readonly="true" disabled>
+                <input type="text" class="IDnumber5" v-model="businumber5" readonly="true" disabled />
                 <p id="business5">营业执照有效期</p>
-                <input name id="form_select25" v-model="selectDate" readonly>
+                <input name id="form_select25" v-model="selectDate" readonly />
               </div>
-              <div id="forever2"><label class="test"><input type="checkbox" class="check" :checked="boxcheck22" disabled>永久有效</label></div>
+              <div id="forever2">
+                <label class="test">
+                  <input type="checkbox" class="check" :checked="boxcheck22" disabled />永久有效
+                </label>
+              </div>
             </div>
           </div>
           <div class="single5" v-show="single5">
@@ -698,17 +725,14 @@
               <div class="IDfirst5">
                 <p>身份证头像面</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig8"
-                  >
-                  <img :src="headerImage85" alt="">
+                  <div class="picture5" @click="showBig8">
+                    <img :src="headerImage85" alt />
                     <input
                       type="file"
                       id="upload85"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload85"></label>
                   </div>
                   <div class="pic5" v-show="isShow85">
@@ -717,22 +741,19 @@
                   </div>
                 </div>
                 <p id="CID5">身份证号码</p>
-                <input type="text" class="CIDnumber5" v-model="CIDnumber5" disabled>
+                <input type="text" class="CIDnumber5" v-model="CIDnumber5" disabled />
               </div>
               <div class="IDfirst5">
                 <p>身份证国徽面</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig9"
-                  >
-                  <img :src="headerImage95" alt="">
+                  <div class="picture5" @click="showBig9">
+                    <img :src="headerImage95" alt />
                     <input
                       type="file"
                       id="upload95"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload95"></label>
                   </div>
                   <div class="pic5" v-show="isShow95">
@@ -748,17 +769,14 @@
               <div class="IDfirst5">
                 <p>身份证头像面</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig10"
-                  >
-                  <img :src="headerImage105" alt="">
+                  <div class="picture5" @click="showBig10">
+                    <img :src="headerImage105" alt />
                     <input
                       type="file"
                       id="upload105"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload105"></label>
                   </div>
                   <div class="pic5" v-show="isShow105">
@@ -767,22 +785,19 @@
                   </div>
                 </div>
                 <p id="CID5">身份证号码</p>
-                <input type="text" class="CIDnumber5" v-model="CIDnumber5" disabled>
+                <input type="text" class="CIDnumber5" v-model="CIDnumber5" disabled />
               </div>
               <div class="IDfirst5">
                 <p>身份证国徽面</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig11"
-                  >
-                  <img :src="headerImage115" alt="">
+                  <div class="picture5" @click="showBig11">
+                    <img :src="headerImage115" alt />
                     <input
                       type="file"
                       id="upload115"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload115"></label>
                   </div>
                   <div class="pic5" v-show="isShow115">
@@ -796,17 +811,14 @@
               <div class="IDfirst5">
                 <p id="first5">营业执照</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig12"
-                  >
-                  <img :src="headerImage125" alt="">
+                  <div class="picture5" @click="showBig12">
+                    <img :src="headerImage125" alt />
                     <input
                       type="file"
                       id="upload125"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload125"></label>
                   </div>
                   <div class="pic5" v-show="isShow125">
@@ -815,24 +827,21 @@
                   </div>
                 </div>
                 <p id="business5">营业执照注册号</p>
-                <input type="text" class="IDnumber5" v-model="businumber5" readonly="true" disabled>
+                <input type="text" class="IDnumber5" v-model="businumber5" readonly="true" disabled />
                 <p id="business5">营业执照有效期</p>
-                <input name id="form_select25" v-model="selectDate" readonly>
+                <input name id="form_select25" v-model="selectDate" readonly />
               </div>
               <div class="IDfirst5">
                 <p id="second5">税务登记证（国税）</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig13"
-                  >
-                  <img :src="headerImage135" alt="">
+                  <div class="picture5" @click="showBig13">
+                    <img :src="headerImage135" alt />
                     <input
                       type="file"
                       id="upload135"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload135"></label>
                   </div>
                   <div class="pic5" v-show="isShow135">
@@ -841,8 +850,12 @@
                   </div>
                 </div>
                 <p id="tax5">税务证号</p>
-                <input type="text" class="IDnumber5" v-model="taxNumber5" readonly="true" disabled>
-                <div id="forever"><label class="test"><input type="checkbox" class="check" :checked="boxcheck33" disabled> 永久有效</label></div>
+                <input type="text" class="IDnumber5" v-model="taxNumber5" readonly="true" disabled />
+                <div id="forever">
+                  <label class="test">
+                    <input type="checkbox" class="check" :checked="boxcheck33" disabled /> 永久有效
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -851,17 +864,14 @@
               <div class="IDfirst5">
                 <p>身份证头像面</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig14"
-                  >
-                  <img :src="headerImage145" alt="">
+                  <div class="picture5" @click="showBig14">
+                    <img :src="headerImage145" alt />
                     <input
                       type="file"
                       id="upload145"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload145"></label>
                   </div>
                   <div class="pic5" v-show="isShow145">
@@ -870,22 +880,19 @@
                   </div>
                 </div>
                 <p id="CID5">身份证号码</p>
-                <input type="text" class="CIDnumber5" v-model="CIDnumber5" disabled>
+                <input type="text" class="CIDnumber5" v-model="CIDnumber5" disabled />
               </div>
               <div class="IDfirst5">
                 <p>身份证国徽面</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig15"
-                  >
-                  <img :src="headerImage155" alt="">
+                  <div class="picture5" @click="showBig15">
+                    <img :src="headerImage155" alt />
                     <input
                       type="file"
                       id="upload155"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload155"></label>
                   </div>
                   <div class="pic5" v-show="isShow155">
@@ -899,17 +906,14 @@
               <div class="IDfirst5">
                 <p id="first5">营业执照</p>
                 <div class="show5">
-                  <div
-                    class="picture5"
-                    @click="showBig16"
-                  >
-                  <img :src="headerImage165" alt="">
+                  <div class="picture5" @click="showBig16">
+                    <img :src="headerImage165" alt />
                     <input
                       type="file"
                       id="upload165"
                       accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                       disabled
-                    >
+                    />
                     <label for="upload165"></label>
                   </div>
                   <div class="pic5" v-show="isShow165">
@@ -924,17 +928,22 @@
                   v-model="businumber5"
                   readonly="true"
                   disabled
-                >
+                />
                 <p id="business5">营业执照有效期</p>
-                <input name id="form_select25" v-model="selectDate" readonly>
+                <input name id="form_select25" v-model="selectDate" readonly />
               </div>
-              <div id="forever2"><label class="test"><input type="checkbox" class="check" :checked="boxcheck44" disabled>永久有效</label></div>
+              <div id="forever2">
+                <label class="test">
+                  <input type="checkbox" class="check" :checked="boxcheck44" disabled />永久有效
+                </label>
+              </div>
             </div>
           </div>
         </div>
         <div class="tips">
-          <span>*灰色底框内容只供客户核对，不允许修改。如要修改提供
-            <br>纸质证明，并提交订单业务部修改ERP。
+          <span>
+            *灰色底框内容只供客户核对，不允许修改。如要修改提供
+            <br />纸质证明，并提交订单业务部修改ERP。
           </span>
         </div>
         <div class="nthing"></div>
@@ -981,7 +990,8 @@
       <div class="foldbox" v-show="show3">
         <div class="box-top">
           <div class="close" @click="cancel3"></div>
-          <div class="title">退回原因
+          <div class="title">
+            退回原因
             <span>(*必填)</span>
           </div>
           <textarea v-model="reason" placeholder="请输入退回原因..." class="reason"></textarea>
@@ -1007,7 +1017,7 @@ import Review from "@/components/review";
 export default {
   data() {
     return {
-      checkProxy:0,
+      checkProxy: 0,
       set: 3,
       isShow: false,
       district: "",
@@ -1092,10 +1102,10 @@ export default {
       headerImage145: "",
       headerImage155: "",
       headerImage165: "", //5
-      boxcheck11:false,
-      boxcheck22:false,
-      boxcheck33:false,
-      boxcheck44:false,
+      boxcheck11: false,
+      boxcheck22: false,
+      boxcheck33: false,
+      boxcheck44: false,
       picValue15: "",
       picValue25: "",
       picValue35: "",
@@ -1179,7 +1189,8 @@ export default {
       bigPic13: false,
       bigPic14: false,
       bigPic15: false,
-      bigPic16: false //5
+      bigPic16: false,
+      contractyear: this.$store.state.year
     };
   },
   components: {
@@ -1228,11 +1239,12 @@ export default {
       this.$http
         .post("/infoState/bussinessCheckCustomerInfoCard.do", {
           //客户代码S
-          cid: this.$store.state.CCID,
+          cid: this.$store.state.companyId,
           //操作后资料卡状态
           state: this.state,
           //审核记录
-          memo:nowTime+
+          memo:
+            nowTime +
             this.position +
             this.$store.state.info.data.realName +
             "通过资料卡;"
@@ -1430,33 +1442,31 @@ export default {
     sure3() {
       let th = this;
       let nowTime = this.initTime(new Date());
-      if(!this.reason){
-        alert("请填写退回原因!")
-      }
-      else{
-          this.show3 = false;
-          this.$http
-            .post("/infoState/bussinessCheckCustomerInfoCard.do", {
-              //客户代码S
-              cid: this.$store.state.CCID,
-              //操作后资料卡状态
-              state: "CUSTOMERPORCESSING2",
-              //审核记录
-              memo:
-                nowTime+
-                this.position +
-                this.$store.state.info.data.realName +
-                "退回资料卡 [" +
-                this.reason +
-                "];"
-            })
-            .then(function(res) {
-              th.$router.push({
-                path: "/success6"
-              });
+      if (!this.reason) {
+        alert("请填写退回原因!");
+      } else {
+        this.show3 = false;
+        this.$http
+          .post("/infoState/bussinessCheckCustomerInfoCard.do", {
+            //客户代码S
+            cid: this.$store.state.companyId,
+            //操作后资料卡状态
+            state: "CUSTOMERPORCESSING2",
+            //审核记录
+            memo:
+              nowTime +
+              this.position +
+              this.$store.state.info.data.realName +
+              "退回资料卡 [" +
+              this.reason +
+              "];"
+          })
+          .then(function(res) {
+            th.$router.push({
+              path: "/success6"
             });
+          });
       }
-
     },
     cancel3() {
       this.show3 = false;
@@ -1467,13 +1477,12 @@ export default {
     setChange: function(data) {
       this.isShow = data;
     },
-    lookProxy: function(){
-      if(this.checkProxy == 1){
+    lookProxy: function() {
+      if (this.checkProxy == 1) {
         this.radiocheck44 = true;
         this.radiocheck54 = false;
         this.b4 = true;
-      }
-      else if(this.checkProxy == 0){
+      } else if (this.checkProxy == 0) {
         this.radiocheck54 = true;
         this.radiocheck44 = false;
         this.b4 = false;
@@ -1514,15 +1523,12 @@ export default {
     getdata1() {
       let url = "/infoState/getCustomerInfoCardState.do	";
       let data = {
-        cid: this.CID,
-        year: this.$store.state.year
+        cid: this.companyId,
+        year: this.contractyear
       };
 
       this.$http.post(url, data).then(res => {
         console.log(res);
-        // var alldata = res.data;
-        // this.customerInfo = alldata.customerInfo;
-        // this.messages = alldata.memo.reverse();
         if (res.data.memo != null) {
           var alldata = res.data;
           this.customerInfo = alldata.customerInfo;
@@ -1533,329 +1539,349 @@ export default {
       });
     },
     getdata2() {
-      console.log(this.CID);
       let th = this;
       let url = "/customerInfo/getCustomerInfo.do";
       let data = {
-        CID: this.CID
+        CID: this.companyId
       };
       this.$http.post(url, data).then(res => {
-        console.log(res.data);
-        th.cardstate = res.data.data.state;
-        if (this.$store.state.position == "SALEMAN_M") {
-          this.position = "中心总经理";
-          console.log(2);
-          if (this.cardstate == "BUSINESSCHECKING") {
-            console.log(1);
-            this.reviseflag = true;
+        if (res.data.code == 0 || res.data.data != null) {
+          th.cardstate = res.data.data.state;
+          if (this.$store.state.position == "SALEMAN_M") {
+            this.position = "中心总经理";
+            console.log(2);
+            if (this.cardstate == "BUSINESSCHECKING") {
+              console.log(1);
+              this.reviseflag = true;
+            }
+          } else if (this.$store.state.position == "SALEMAN_S") {
+            this.position = "办事处经理";
+            if (this.cardstate == "BUSINESSCHECKING") this.reviseflag = true;
+          } else if (this.$store.state.position == "BILLDEP_APPROVE") {
+            this.position = "订单部";
+            if (this.cardstate == "BIILDEPCHECKING") this.reviseflag = true;
           }
-        } else if (this.$store.state.position == "SALEMAN_S") {
-          this.position = "办事处经理";
-          if (this.cardstate == "BUSINESSCHECKING") this.reviseflag = true;
-        } else if (this.$store.state.position == "BILLDEP_APPROVE") {
-          this.position = "订单部";
-          if (this.cardstate == "BIILDEPCHECKING") this.reviseflag = true;
-        }
-        if (!this.reviseflag) {
-          this.$refs.backcard.style.background = "#c2c2c2";
-          this.$refs.build.style.background = "#c2c2c2";
-        }
-        var alldata = res.data.data;
-        this.cusName = alldata.cname;
-        this.district = alldata.districtText;
-        this.phone = alldata.juridicPersonHandset;
-        if (alldata.preferedbrand != null) {
-          var newband = alldata.preferedbrand.split("");
-          if (newband.indexOf("墙") > -1) {
-            this.boxcheck1 = true;
+          if (!this.reviseflag) {
+            this.$refs.backcard.style.background = "#c2c2c2";
+            this.$refs.build.style.background = "#c2c2c2";
           }
-          if (newband.indexOf("软") > -1) {
-            this.boxcheck2 = true;
+          var alldata = res.data.data;
+          this.contractyear = alldata.contractyear;
+          this.cusName = alldata.cname;
+          this.district = alldata.districtText;
+          this.phone = alldata.juridicPersonHandset;
+          if (alldata.preferedbrand != null) {
+            var newband = alldata.preferedbrand.split("");
+            if (newband.indexOf("墙") > -1) {
+              this.boxcheck1 = true;
+            }
+            if (newband.indexOf("软") > -1) {
+              this.boxcheck2 = true;
+            }
           }
-          // switch(this.$store.state.position){
-          //         case 'SALEMAN_M': break;
-          //         case 'SALEMAN_S':this.position = '片区经理';if(this.cardstate == "BUSINESSCHECKING")this.reviseflag = true; break;//业务员
-          //         case 'BILLDEP_APPROVE':this.position = '订单部审核';if(this.cardstate == "BIILDEPCHECKING")this.reviseflag = true; break;//订单部审核
-          //         default : break;
-          // }
-        }
-        this.nowbrand = alldata.currentProduct;
-        this.square = alldata.shopArea;
-        this.manager = alldata.xJuridicPerson;
-        var invoiceType = alldata.invoiceType;
-        if (invoiceType == "不开发票") {
-          this.radiocheck101 = true;
-          this.radiocheck6 = true;
-          this.radiocheck33 = false;
-          this.radiocheck22 = false;
-          this.radiocheck404 = false;
-        }
-        if (invoiceType == "增值税普通发票") {
-          this.radiocheck22 = true;
-          this.radiocheck6 = true;
-          this.radiocheck33 = false;
-          this.radiocheck101 = false;
-          this.radiocheck404 = false;
-        }
-        if (invoiceType == "电子普通发票") {
-          this.radiocheck33 = true;
-          this.showEmail = true;
-          this.radiocheck6 = true;
-          this.radiocheck101 = false;
-          this.radiocheck22 = false;
-          this.radiocheck404 = false;
-        }
-        if (invoiceType == "增值税专用发票") {
-          this.radiocheck404 = true;
-          this.goTo = true;
-          this.radiocheck5 = true;
-          this.radiocheck33 = false;
-          this.radiocheck22 = false;
-          this.radiocheck101 = false;
-        }
-        this.reEmail = alldata.recipeTargetMb; //1
-        this.person2 = alldata.txAgentName;
-        this.phone2 = alldata.xHandset2;
-        var tell2 = alldata.xOfficeTel;
-        this.tel2 = tell2.split(" ")[0];
-        this.fax2 = alldata.xFax;
-        this.qq2 = alldata.qq;
-        this.email2 = alldata.xEmail;
-        this.address2 = alldata.xPostAddress;
-        this.zip2 = alldata.xZipCode; //2
-        this.person3 = alldata.wlAgentName;
-        this.tel3 = alldata.xOfficeTel1.split(" ")[0];
-        this.phone3 = alldata.xHandset;
-        this.faxwl3 = alldata.faxWl;
-        this.address3 = alldata.xDeliveryAdress;
-        this.zipwl3 = alldata.zipCodeWl; //3
-        this.person14 = alldata.account1Name;
-        this.bank14 = alldata.account1Bank;
-        this.bank1Location4 = alldata.account1Location;
-        this.person24 = alldata.account2Name;
-        this.bank24 = alldata.account2Bank;
-        this.bank2Location4 = alldata.account2Location;
-        this.number14 = alldata.account1;
-        this.number24 = alldata.account2;
-        this.no4 = alldata.hasPublicAccount;
-        var difference = alldata.busientType;
-        if (difference == "公司" && this.no4 == "N") {
-          this.radiocheck2 = true;
-          this.change2();
-          this.lookProxy()
-        }
-        if (difference == "公司" && this.no4 == "Y") {
-          this.radiocheck1 = true;
-          this.change1();
-        }
-        if (difference == "个体户") {
-          this.radiocheck3 = true;
-          this.change3();
-        }
-        if (this.no4 == "Y") {
-          this.location4 = this.bank1Location4;
-        } else {
-          this.location4 = this.bank2Location4;
-        }
-        this.spouse = alldata.privateAccountAuthed;
-        if (this.spouse == "Y") {
-          this.radiocheck44 = true;
-          this.radiocheck54 = false;
-        }
-        if (this.spouse == "N") {
-          this.radiocheck44 = false;
-          this.radiocheck54 = true;
-        } //4
-        if (alldata.customerentitytypex == 1) {
-          this.sss = "公司-三证五证合一";
-        }
-        if (alldata.customerentitytypex == 2) {
-          this.sss = "公司-三证五证未合";
-        }
-        if (alldata.customerentitytypex == 3) {
-          this.sss = "个体户-有税务登记证";
-        }
-        if (alldata.customerentitytypex == 4) {
-          this.sss = "个体户-无税务登记证";
-        }
-        if (alldata.customerentitytypex == 5) {
-          this.sss = "个人";
-        }
-        this.dateForever = alldata.file2BusinesslicenseNoend
-        this.selectDate = alldata.file2BusinesslicenseEnd;
-        this.businumber5 = alldata.file2BusinesslicenseNo;
-        this.CIDnumber5 = alldata.file1IdcardNo;
-        this.taxNumber5 = alldata.file4GtqcNo;
-        var customerIndex5 = alldata.customerentitytypex;
-        this.FileImage15 = remoteImageURL + alldata.file1Idcard;
-        this.FileImage25 = remoteImageURL + alldata.file5IdcardBg;
-        this.FileImage35 = remoteImageURL + alldata.file2Businesslicense;
-        this.FileImage45 = remoteImageURL + alldata.file4Gtqc;
-        this.FileImage55 = remoteImageURL + alldata.file1Idcard;
-        this.FileImage65 = remoteImageURL + alldata.file5IdcardBg;
-        this.FileImage75 = remoteImageURL + alldata.file2Businesslicense;
-        this.FileImage85 = remoteImageURL + alldata.file1Idcard;
-        this.FileImage95 = remoteImageURL + alldata.file5IdcardBg;
-        this.FileImage105 = remoteImageURL + alldata.file1Idcard;
-        this.FileImage115 = remoteImageURL + alldata.file5IdcardBg;
-        this.FileImage125 = remoteImageURL + alldata.file2Businesslicense;
-        this.FileImage135 = remoteImageURL + alldata.file4Gtqc;
-        this.FileImage145 = remoteImageURL + alldata.file1Idcard;
-        this.FileImage155 = remoteImageURL + alldata.file5IdcardBg;
-        this.FileImage165 = remoteImageURL + alldata.file2Businesslicense;
-        if (customerIndex5 == 2) {
-          if(this.dateForever == 0){
-          this.boxcheck11 = false
-        } else if(this.dateForever == 1){
-          this.boxcheck11 = true
-          this.selectDate = ""
-        }
-          if (alldata.file1Idcard != null) {
-            this.isShow15 = false;
-            this.headerImage15 = this.FileImage15;
+          this.nowbrand = alldata.currentProduct;
+          this.square = alldata.shopArea;
+          this.manager = alldata.xJuridicPerson;
+          var invoiceType = alldata.invoiceType;
+          if (invoiceType == "不开发票") {
+            this.radiocheck101 = true;
+            this.radiocheck6 = true;
+            this.radiocheck33 = false;
+            this.radiocheck22 = false;
+            this.radiocheck404 = false;
+          }
+          if (invoiceType == "增值税普通发票") {
+            this.radiocheck22 = true;
+            this.radiocheck6 = true;
+            this.radiocheck33 = false;
+            this.radiocheck101 = false;
+            this.radiocheck404 = false;
+          }
+          if (invoiceType == "电子普通发票") {
+            this.radiocheck33 = true;
+            this.showEmail = true;
+            this.radiocheck6 = true;
+            this.radiocheck101 = false;
+            this.radiocheck22 = false;
+            this.radiocheck404 = false;
+          }
+          if (invoiceType == "增值税专用发票") {
+            this.radiocheck404 = true;
+            this.goTo = true;
+            this.radiocheck5 = true;
+            this.radiocheck33 = false;
+            this.radiocheck22 = false;
+            this.radiocheck101 = false;
+          }
+          this.reEmail = alldata.recipeTargetMb; //1
+          this.person2 = alldata.txAgentName;
+          this.phone2 = alldata.xHandset2;
+          var tell2 = alldata.xOfficeTel;
+          this.tel2 = tell2.split(" ")[0];
+          this.fax2 = alldata.xFax;
+          this.qq2 = alldata.qq;
+          this.email2 = alldata.xEmail;
+          this.address2 = alldata.xPostAddress;
+          this.zip2 = alldata.xZipCode; //2
+          this.person3 = alldata.wlAgentName;
+          this.tel3 = alldata.xOfficeTel1.split(" ")[0];
+          this.phone3 = alldata.xHandset;
+          this.faxwl3 = alldata.faxWl;
+          this.address3 = alldata.xDeliveryAdress;
+          this.zipwl3 = alldata.zipCodeWl; //3
+          this.person14 = alldata.account1Name;
+          this.bank14 = alldata.account1Bank;
+          this.bank1Location4 = alldata.account1Location;
+          this.person24 = alldata.account2Name;
+          this.bank24 = alldata.account2Bank;
+          this.bank2Location4 = alldata.account2Location;
+          this.number14 = alldata.account1;
+          this.number24 = alldata.account2;
+          this.no4 = alldata.hasPublicAccount;
+          var difference = alldata.busientType;
+          if (difference == "公司" && this.no4 == "N") {
+            this.radiocheck2 = true;
+            this.change2();
+            this.lookProxy();
+          }
+          if (difference == "公司" && this.no4 == "Y") {
+            this.radiocheck1 = true;
+            this.change1();
+          }
+          if (difference == "个体户") {
+            this.radiocheck3 = true;
+            this.change3();
+          }
+          if (this.no4 == "Y") {
+            this.location4 = this.bank1Location4;
           } else {
-            this.isShow15 = true;
+            this.location4 = this.bank2Location4;
           }
-          if (alldata.file5IdcardBg != null) {
-            this.isShow25 = false;
-            this.headerImage25 = this.FileImage25;
-          } else {
-            this.isShow25 = true;
+          this.spouse = alldata.privateAccountAuthed;
+          if (this.spouse == "Y") {
+            this.radiocheck44 = true;
+            this.radiocheck54 = false;
           }
-          if (alldata.file2Businesslicense != null) {
-            this.isShow35 = false;
-            this.headerImage35 = this.FileImage35;
-          } else {
-            this.isShow35 = true;
+          if (this.spouse == "N") {
+            this.radiocheck44 = false;
+            this.radiocheck54 = true;
+          } //4
+          if (alldata.customerentitytypex == 1) {
+            this.sss = "公司-三证五证合一";
           }
-          if (alldata.file4Gtqc != null) {
-            this.isShow45 = false;
-            this.headerImage45 = this.FileImage45;
-          } else {
-            this.isShow45 = true;
+          if (alldata.customerentitytypex == 2) {
+            this.sss = "公司-三证五证未合";
           }
+          if (alldata.customerentitytypex == 3) {
+            this.sss = "个体户-有税务登记证";
+          }
+          if (alldata.customerentitytypex == 4) {
+            this.sss = "个体户-无税务登记证";
+          }
+          if (alldata.customerentitytypex == 5) {
+            this.sss = "个人";
+          }
+          this.dateForever = alldata.file2BusinesslicenseNoend;
+          this.selectDate = alldata.file2BusinesslicenseEnd;
+          this.businumber5 = alldata.file2BusinesslicenseNo;
+          this.CIDnumber5 = alldata.file1IdcardNo;
+          this.taxNumber5 = alldata.file4GtqcNo;
+          var customerIndex5 = alldata.customerentitytypex;
+          this.FileImage15 = remoteImageURL + alldata.file1Idcard;
+          this.FileImage25 = remoteImageURL + alldata.file5IdcardBg;
+          this.FileImage35 = remoteImageURL + alldata.file2Businesslicense;
+          this.FileImage45 = remoteImageURL + alldata.file4Gtqc;
+          this.FileImage55 = remoteImageURL + alldata.file1Idcard;
+          this.FileImage65 = remoteImageURL + alldata.file5IdcardBg;
+          this.FileImage75 = remoteImageURL + alldata.file2Businesslicense;
+          this.FileImage85 = remoteImageURL + alldata.file1Idcard;
+          this.FileImage95 = remoteImageURL + alldata.file5IdcardBg;
+          this.FileImage105 = remoteImageURL + alldata.file1Idcard;
+          this.FileImage115 = remoteImageURL + alldata.file5IdcardBg;
+          this.FileImage125 = remoteImageURL + alldata.file2Businesslicense;
+          this.FileImage135 = remoteImageURL + alldata.file4Gtqc;
+          this.FileImage145 = remoteImageURL + alldata.file1Idcard;
+          this.FileImage155 = remoteImageURL + alldata.file5IdcardBg;
+          this.FileImage165 = remoteImageURL + alldata.file2Businesslicense;
+          if (customerIndex5 == 2) {
+            if (this.dateForever == 0) {
+              this.boxcheck11 = false;
+            } else if (this.dateForever == 1) {
+              this.boxcheck11 = true;
+              this.selectDate = "";
+            }
+            if (alldata.file1Idcard != null) {
+              this.isShow15 = false;
+              this.headerImage15 = this.FileImage15;
+            } else {
+              this.isShow15 = true;
+            }
+            if (alldata.file5IdcardBg != null) {
+              this.isShow25 = false;
+              this.headerImage25 = this.FileImage25;
+            } else {
+              this.isShow25 = true;
+            }
+            if (alldata.file2Businesslicense != null) {
+              this.isShow35 = false;
+              this.headerImage35 = this.FileImage35;
+            } else {
+              this.isShow35 = true;
+            }
+            if (alldata.file4Gtqc != null) {
+              this.isShow45 = false;
+              this.headerImage45 = this.FileImage45;
+            } else {
+              this.isShow45 = true;
+            }
+          }
+          if (customerIndex5 == 1) {
+            if (this.dateForever == 0) {
+              this.boxcheck22 = false;
+            } else if (this.dateForever == 1) {
+              this.boxcheck22 = true;
+              this.selectDate = "";
+            }
+            if (alldata.file1Idcard != null) {
+              this.isShow55 = false;
+              this.headerImage55 = this.FileImage55;
+            } else {
+              this.isShow55 = true;
+            }
+            if (alldata.file5IdcardBg != null) {
+              this.isShow65 = false;
+              this.headerImage65 = this.FileImage65;
+            } else {
+              this.isShow65 = true;
+            }
+            if (alldata.file2Businesslicense != null) {
+              this.isShow75 = false;
+              this.headerImage75 = this.FileImage75;
+            } else {
+              this.isShow75 = true;
+            }
+          }
+          if (customerIndex5 == 4) {
+            if (this.dateForever == 0) {
+              this.boxcheck44 = false;
+            } else if (this.dateForever == 1) {
+              this.boxcheck44 = true;
+              this.selectDate = "";
+            }
+            if (alldata.file1Idcard != null) {
+              this.isShow145 = false;
+              this.headerImage145 = this.FileImage145;
+            } else {
+              this.isShow145 = true;
+            }
+            if (alldata.file5IdcardBg != null) {
+              this.isShow155 = false;
+              this.headerImage155 = this.FileImage155;
+            } else {
+              this.isShow155 = true;
+            }
+            if (alldata.file2Businesslicense != null) {
+              this.isShow165 = false;
+              this.headerImage165 = this.FileImage165;
+            } else {
+              this.isShow165 = true;
+            }
+          }
+          if (customerIndex5 == 5) {
+            if (alldata.file1Idcard != null) {
+              this.isShow85 = false;
+              this.headerImage85 = this.FileImage85;
+            } else {
+              this.isShow85 = true;
+            }
+            if (alldata.file5IdcardBg != null) {
+              this.isShow95 = false;
+              this.headerImage95 = this.FileImage95;
+            } else {
+              this.isShow95 = true;
+            }
+          }
+          if (customerIndex5 == 3) {
+            if (this.dateForever == 0) {
+              this.boxcheck33 = false;
+            } else if (this.dateForever == 1) {
+              this.boxcheck33 = true;
+              this.selectDate = "";
+            }
+            if (alldata.file1Idcard != null) {
+              this.isShow105 = false;
+              this.headerImage105 = this.FileImage105;
+            } else {
+              this.isShow105 = true;
+            }
+            if (alldata.file5IdcardBg != null) {
+              this.isShow115 = false;
+              this.headerImage115 = this.FileImage115;
+            } else {
+              this.isShow115 = true;
+            }
+            if (alldata.file2Businesslicense != null) {
+              this.isShow125 = false;
+              this.headerImage125 = this.FileImage125;
+            } else {
+              this.isShow125 = true;
+            }
+            if (alldata.file4Gtqc != null) {
+              this.isShow135 = false;
+              this.headerImage135 = this.FileImage135;
+            } else {
+              this.isShow135 = true;
+            }
+          }
+
+          let url1 = "/infoState/getCustomerInfoCardState.do	";
+          let data1 = {
+            cid: this.companyId,
+            year: this.contractyear
+          };
+
+          this.$http.post(url1, data1).then(res1 => {
+            if (res1.data.memo != null) {
+              var alldata = res1.data;
+              this.customerInfo = alldata.customerInfo;
+              this.messages = alldata.memo.reverse();
+            } else {
+              console.log("无评审记录");
+            }
+          });
+
+          let url2 = "/customerInfo/getYLcontract.do";
+          let data2 = {
+            ccid: this.companyId,
+            ccyear: this.contractyear
+          };
+          this.$http.post(url2, data2).then(res2 => {
+            if (res2.data.code == 0 && res2.data.data != null) {
+              this.checkProxy = 1;
+            } else if (res2.data.code == 1 || res2.data.data == null) {
+              console.log("不存在");
+              this.checkProxy = 0;
+            }
+          });
         }
-        if (customerIndex5 == 1) {
-          if(this.dateForever == 0){
-          this.boxcheck22 = false
-        } else if(this.dateForever == 1){
-          this.boxcheck22 = true
-          this.selectDate = ""
-        }
-          if (alldata.file1Idcard != null) {
-            this.isShow55 = false;
-            this.headerImage55 = this.FileImage55;
-          } else {
-            this.isShow55 = true;
-          }
-          if (alldata.file5IdcardBg != null) {
-            this.isShow65 = false;
-            this.headerImage65 = this.FileImage65;
-          } else {
-            this.isShow65 = true;
-          }
-          if (alldata.file2Businesslicense != null) {
-            this.isShow75 = false;
-            this.headerImage75 = this.FileImage75;
-          } else {
-            this.isShow75 = true;
-          }
-        }
-        if (customerIndex5 == 4) {
-          if(this.dateForever == 0){
-          this.boxcheck44 = false
-        } else if(this.dateForever == 1){
-          this.boxcheck44 = true
-          this.selectDate = ""
-        }
-          if (alldata.file1Idcard != null) {
-            this.isShow145 = false;
-            this.headerImage145 = this.FileImage145;
-          } else {
-            this.isShow145 = true;
-          }
-          if (alldata.file5IdcardBg != null) {
-            this.isShow155 = false;
-            this.headerImage155 = this.FileImage155;
-          } else {
-            this.isShow155 = true;
-          }
-          if (alldata.file2Businesslicense != null) {
-            this.isShow165 = false;
-            this.headerImage165 = this.FileImage165;
-          } else {
-            this.isShow165 = true;
-          }
-        }
-        if (customerIndex5 == 5) {
-          if (alldata.file1Idcard != null) {
-            this.isShow85 = false;
-            this.headerImage85 = this.FileImage85;
-          } else {
-            this.isShow85 = true;
-          }
-          if (alldata.file5IdcardBg != null) {
-            this.isShow95 = false;
-            this.headerImage95 = this.FileImage95;
-          } else {
-            this.isShow95 = true;
-          }
-        }
-        if (customerIndex5 == 3) {
-          if(this.dateForever == 0){
-          this.boxcheck33 = false
-        } else if(this.dateForever == 1){
-          this.boxcheck33 = true
-          this.selectDate = ""
-        }
-          if (alldata.file1Idcard != null) {
-            this.isShow105 = false;
-            this.headerImage105 = this.FileImage105;
-          } else {
-            this.isShow105 = true;
-          }
-          if (alldata.file5IdcardBg != null) {
-            this.isShow115 = false;
-            this.headerImage115 = this.FileImage115;
-          } else {
-            this.isShow115 = true;
-          }
-          if (alldata.file2Businesslicense != null) {
-            this.isShow125 = false;
-            this.headerImage125 = this.FileImage125;
-          } else {
-            this.isShow125 = true;
-          }
-          if (alldata.file4Gtqc != null) {
-            this.isShow135 = false;
-            this.headerImage135 = this.FileImage135;
-          } else {
-            this.isShow135 = true;
-          }
-        } //5
       });
     },
-    getData3(){
+    getData3() {
       let url = "/customerInfo/getYLcontract.do";
       let data = {
-        "ccid" : this.CID,
-        "ccyear" : this.$store.state.year
-      }
-      this.$http.post(url,data)
-      .then(res => {
-        console.log(res)
-        if(res.data.code == 0 && res.data.data != null){
+        ccid: this.companyId,
+        ccyear: this.contractyear
+      };
+      this.$http.post(url, data).then(res => {
+        console.log(res);
+        if (res.data.code == 0 && res.data.data != null) {
           this.checkProxy = 1;
+        } else if (res.data.code == 1 || res.data.data == null) {
+          console.log("不存在");
+          this.checkProxy = 0;
         }
-        else if(res.data.code == 1 || res.data.data == null){
-      console.log("不存在")
-      // this.radiocheck54 = true;
-      // this.radiocheck44 = false;
-      // this.b4 = false;
-      this.checkProxy = 0;
+      });
     }
-      })
-    },
   },
   computed: {
     CID() {
@@ -1864,12 +1890,13 @@ export default {
       } else {
         return this.$store.state.info.data.loginName;
       }
+    },
+    companyId() {
+      return this.$store.getters.getCMId;
     }
   },
   mounted() {
-    this.getdata1();
     this.getdata2();
-    this.getData3();
   },
 
   watch: {
@@ -1976,7 +2003,7 @@ export default {
 #record {
   width: 12px;
   height: 12px;
-  background: url("http://14.29.221.109:10250/upload/assets/triangle_down_fill.png");
+  background: url("../assets/triangle_down_fill.png");
   background-size: 100% 100%;
 }
 .content {
@@ -2081,7 +2108,8 @@ export default {
   margin-right: 5px;
 }
 .check[type="checkbox"]:checked {
-  background: url("http://14.29.221.109:10250/upload/assets/check1.png") no-repeat center;
+  background: url("http://14.29.221.109:10250/upload/assets/check1.png")
+    no-repeat center;
 }
 .invoice {
   margin: 5px;
@@ -2108,7 +2136,7 @@ export default {
   height: 12px;
   width: 12px;
   display: inline-block;
-  background: url("http://14.29.221.109:10250/upload/assets/select1.png");
+  background: url("../assets/select1.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -2116,13 +2144,13 @@ export default {
   margin-top: -4px;
 }
 input[type="radio"]:checked + .advice {
-  background-image: url("http://14.29.221.109:10250/upload/assets/select3.png");
+  background-image: url("../assets/select3.png");
 }
 .intype {
   height: 12px;
   width: 12px;
   display: inline-block;
-  background: url("http://14.29.221.109:10250/upload/assets/select1.png");
+  background: url("../assets/select1.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -2130,7 +2158,7 @@ input[type="radio"]:checked + .advice {
   margin-top: -4px;
 }
 input[type="radio"]:checked + .intype {
-  background-image: url("http://14.29.221.109:10250/upload/assets/select3.png");
+  background-image: url("../assets/select3.png");
 }
 #second {
   margin-left: 79px;
@@ -2552,7 +2580,7 @@ input[type="radio"]:checked + .way4 {
   font-size: 13px;
   color: #7d7d7d;
   padding: 0 6px;
-  background: white
+  background: white;
 }
 #form_select25 {
   /* 清除默认边框 */
@@ -2568,7 +2596,7 @@ input[type="radio"]:checked + .way4 {
   -moz-appearance: none;
   -webkit-appearance: none;
   /* 右侧添加小箭头的背景图 */
-  background: url("http://14.29.221.109:10250/upload/assets/select_arrow.png") 132px center no-repeat;
+  background: url("../assets/select_arrow.png") 132px center no-repeat;
   background-size: 6px 6px;
 }
 .linefirst5 {
@@ -2615,7 +2643,7 @@ input[type="file"] + label {
   pointer-events: none;
 }
 .add5 {
-  background: url("http://14.29.221.109:10250/upload/assets/add.png");
+  background: url("../assets/add.png");
   background-size: 100% 100%;
   width: 28px;
   height: 28px;
@@ -2629,7 +2657,7 @@ input[type="file"] + label {
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
-.picture5 img{
+.picture5 img {
   width: 140px;
   height: 70px;
 }
@@ -2644,7 +2672,7 @@ input[type="file"] + label {
   background-size: 100% 100%;
   z-index: 100;
 }
-.bigPic img{
+.bigPic img {
   width: 80%;
   height: 80%;
 }
@@ -2799,16 +2827,6 @@ input[type="file"] + label {
   height: 155px;
   width: 100%;
 }
-/* .warnimg{
-        background-image: url("http://14.29.221.109:10250/upload/assets/warn.png");
-        width:  65px;
-        height: 65px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        position: relative;
-        top: 28px;
-        display: inline-block;
-    } */
 .warnmsg {
   position: relative;
   top: 35px;
@@ -2853,7 +2871,7 @@ input[type="file"] + label {
   top: 65px;
 }
 .close {
-  background: url(http://14.29.221.109:10250/upload/assets/close.png);
+  background: url(../assets/close.png);
   background-size: contain;
   background-repeat: no-repeat;
   width: 15px;
@@ -2869,8 +2887,8 @@ input[type="file"] + label {
   color: #000000;
   padding-left: 32px;
 }
-.title span{
-  color:red;
+.title span {
+  color: red;
 }
 .reason {
   width: 236px;
@@ -2886,30 +2904,30 @@ input[type="file"] + label {
   color: #b1b1b1;
   padding-left: 8px;
 }
-#forever{
+#forever {
   margin-top: 25px;
 }
-#forever2{
+#forever2 {
   margin-top: 180px;
 }
-.test{
+.test {
   display: inline-block;
   font-size: 13px;
   font-weight: bold;
   margin-right: 60px;
 }
-.check[type='checkbox']{
-    width: 15px;
-    height: 15px;
-    -webkit-appearance:none;
-    border: 1px solid black;
-    border-radius: 2px;
-    outline: none;
-    vertical-align: top;
-    margin-top: 2px;
-    margin-right: 5px;
+.check[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  -webkit-appearance: none;
+  border: 1px solid black;
+  border-radius: 2px;
+  outline: none;
+  vertical-align: top;
+  margin-top: 2px;
+  margin-right: 5px;
 }
-.check[type='checkbox']:checked{
-    background: url("../assets/check2.png")no-repeat center;
+.check[type="checkbox"]:checked {
+  background: url("../assets/check2.png") no-repeat center;
 }
 </style>

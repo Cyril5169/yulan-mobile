@@ -426,15 +426,6 @@ export default {
       csa: " "
     };
   },
-  computed: {
-    CID() {
-      if (this.$store.state.info.data.type != "ECWEB") {
-        return this.$store.state.CCID;
-      } else {
-        return this.$store.state.info.data.loginName;
-      }
-    }
-  },
   methods: {
     initTime(time) {
       let year = time.getFullYear();
@@ -464,17 +455,13 @@ export default {
       this.show4 = false;
     },
     getdata() {
-      console.log(this.CID);
       let url = "/infoState/getYLcontractentryState.do";
       let data = {
-        cid: this.CID,
+        cid: this.companyId,
         cyear: this.$store.state.year
       };
-      console.log(typeof this.$store.state.year);
-      console.log("cid: " + this.CID);
 
       this.$http.post(url, data).then(res => {
-        console.log(res);
         var alldata = res.data;
         this.customerInfo = alldata.yLcontractInfo;
         this.messages = alldata.yLcontractentryMemo.reverse();
@@ -518,9 +505,8 @@ export default {
       if (this.$store.state.position == "MARKETCHECKER") {
         this.market = this.$store.state.info.data.realName;
       }
-      console.log(this.state);
       let data = {
-        cid: this.CID,
+        cid: this.companyId,
         state: this.state,
         wfmemo:
           nowTime +
@@ -572,7 +558,7 @@ export default {
         }
         this.$http
           .post("/infoState/checkYLcontractentryState.do", {
-            cid: this.CID,
+            cid: this.companyId,
             state: "SALEMANMODIFYING",
             wfmemo:
               nowTime +
@@ -600,24 +586,18 @@ export default {
   },
   mounted() {
     let th = this;
-    console.log(this.$store.state);
     if (this.$store.state.info.data.type == "ECWEB") {
       this.ccid = this.$store.state.info.data.loginName;
     } else {
       this.ccid = this.$store.state.CCID;
     }
-    console.log(this.ccid);
     this.$http.post("/infoState/getYLcontractentryState.do",{
-        cid:this.CID,
+        cid:this.companyId,
         cyear:this.$store.state.year
     }).then(res => {
-      console.log(res.data.customerInfo);
 
       if(res.data.yLcontractInfo != undefined){
         this.IsShow = true;
-      console.log(this.IsShow);
-
-      console.log(111);
 
     this.$http
       .post("/customerInfo/getNcustomerinfo.do", {
@@ -626,21 +606,16 @@ export default {
         page: "1",
         state: "",
         cid: "",
-        find: this.ccid,
+        find: this.getNcustomerinfo,
         area_1: "",
         area_2: "",
         position: "",
         ylcstate: ""
       })
       .then(function(res) {
-        console.log(res.data);
-        console.log(res.data.data[0].YLCSTATE);
-        console.log(th.$store.state.info.data.type);
         let ylcstate = res.data.data[0].YLCSTATE;
         if (th.$store.state.info.data.type == "ECWEB") {
-          console.log(ylcstate);
           if (ylcstate == "CUSTOMERAFFIRM") {
-            console.log(2);
             th.reviseflag = true;
           }
         } else {
@@ -692,10 +667,9 @@ export default {
     this.getdata(),
       this.$http
         .post("/YLcontractentry/getYLcontractAPP.do", {
-          cid: this.CID
+          cid: this.getNcustomerinfo
         })
         .then(res => {
-          console.log(res.data);
           this.who = parseInt(res.data.State);
           this.user = res.data.cname;
           this.userAddress = res.data.xPostAddress;
@@ -754,6 +728,9 @@ export default {
       } else {
         return this.$store.state.info.data.loginName;
       }
+    },
+    companyId() {
+      return this.$store.getters.getCMId;
     }
   }
 };
@@ -799,7 +776,7 @@ body {
   height: 34px;
   padding-top: 17px;
   display: inline-block;
-  background-image: url(http://14.29.221.109:10250/upload/assets/download.png);
+  background-image: url(../assets/download.png);
   background-repeat: no-repeat;
   background-size: 34px;
   background-position-y: 17px;
@@ -821,7 +798,7 @@ body {
   right: 35px;
   font-size: 15px;
   color: #89cb81;
-  background-image: url(http://14.29.221.109:10250/upload/assets/triangle_down_fill.png);
+  background-image: url(../assets/triangle_down_fill.png);
   background-size: 12px 17px;
   background-repeat: no-repeat;
   background-position: 6px 2px;
