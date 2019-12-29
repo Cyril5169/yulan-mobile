@@ -54,7 +54,7 @@ export default {
 }
 .check {
   position: absolute;
-  background: url("http://14.29.221.109:10250/upload/assets/circlecheck.png");
+  background: url("../assets/circlecheck.png");
   height: 108px;
   width: 108px;
   background-size: 100% 100%;

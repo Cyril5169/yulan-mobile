@@ -4,9 +4,6 @@
       <div class="sidebar">
         <div class="user-img"></div>
         <p class="customer-name">{{customer}}</p>
-        <!-- <div class="history-box">
-            <div class="history"></div><p class="history-p">历年经销协议书</p>
-        </div>-->
         <div class="quit-box" @click="unlogin">
           <div class="quit"></div>
           <p class="quit-p">退出登录</p>
@@ -18,6 +15,7 @@
           <div class="blockH">
             <div
               v-for="(item,index) in menuTreeList"
+              v-if="item.MENU_LINK!='msgsearch' && item.MENU_LINK!='reviewedprotocol' && item.MENU_LINK!='showprotocol' && item.MENU_LINK!='reviseagreement'"
               :key="index"
               class="btn"
               @click="clickToPath(item.MENU_LINK)"
@@ -30,6 +28,35 @@
               </div>
               <p class="btn-p">{{item.MENU_NAME}}</p>
             </div>
+            <!-- 网签菜单先这样处理，以后再想办法 -->
+            <div class="btn" @click="clickToPath('msgsearch')" v-if="isContainAttr('msgsearch')">
+              <div class="btn-img btn12-img"></div>
+              <p class="btn-p">资料卡查询</p>
+            </div>
+            <div
+              class="btn"
+              @click="clickToPath('showprotocol')"
+              v-if="isContainAttr('showprotocol') && position !='SALEMAN_S' && position !='SALEMAN_M'"
+            >
+              <div class="btn-img btn10-img"></div>
+              <p class="btn-p">待审核协议</p>
+            </div>
+            <div
+              class="btn"
+              @click="clickToPath('reviewedprotocol')"
+              v-if="isContainAttr('showprotocol') && position !='SALEMAN_S' && position !='SALEMAN_M'"
+            >
+              <div class="btn-img btn11-img"></div>
+              <p class="btn-p">已审核协议</p>
+            </div>
+            <!-- <div
+              class="btn"
+              @click="clickToPath('reviseagreement')"
+              v-if="isContainAttr('showprotocol') && (position =='SALEMAN_S' || position =='SALEMAN_M')"
+            >
+              <div class="btn-img btn13-img"></div>
+              <p class="btn-p">待修改协议书</p>
+            </div> -->
           </div>
         </div>
       </section>
@@ -91,6 +118,9 @@ export default {
       return this.$store.state.menuTreeListFlatten.filter(
         item => item.MENU_TYPE == "appmenu"
       );
+    },
+    position() {
+      if (this.$store.state.position) return this.$store.state.position;
     }
   },
   mounted() {},

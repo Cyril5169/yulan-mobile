@@ -233,7 +233,7 @@ export default {
     }
       .wrap .more{
        position: absolute;
-        background-image:url(http://14.29.221.109:10250/upload/assets/right1.png);
+        background-image:url(../assets/right1.png);
         width: 12px;
         height:12px;
         top: 23px;
@@ -375,7 +375,7 @@ export default {
         width: 100%;
     }
     .warnimg{
-        background-image: url("http://14.29.221.109:10250/upload/assets/warn.png");
+        background-image: url("../assets/warn.png");
         width:  65px;
         height: 65px;
         background-size: contain;

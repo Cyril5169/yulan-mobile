@@ -40,7 +40,7 @@
           <p
             class="content-text indent"
           >经双方友好协商，就所销产品及任务、市场划分及市场规范管理等方面事项达成如下协议，双方共同遵守，并作为处理和解决争端的依据。协议内容如下：</p>
-          <br>
+          <br />
 
           <div class="content-title">
             <p class="title-text">一、经营区域及经营期限</p>
@@ -61,7 +61,8 @@
           <div class="content-title">
             <p class="title-text">二、经销产品及价格确定</p>
           </div>
-          <p class="content-text indent">1、经营品牌：
+          <p class="content-text indent">
+            1、经营品牌：
             <span class="green">{{ preferedbrand }}</span>
           </p>
           <p class="content-text indent">
@@ -136,10 +137,11 @@
           <p class="content-text">
             <strong>总任务完成返利=（全年总含税净销售-兰居品牌全年含税净销售）×返点；</strong>
           </p>
-          <p
-            class="content-text indent"
-          >2) 玉兰·兰居尚品任务完成奖励：在乙方完成年度总销售任务且同时完成玉兰·兰居尚品品牌任务时，甲方同意，给予乙方当年“兰居尚品”品牌产品含税净销售的(
-            <span class="green">{{precent2}}</span>%)返点作为奖励，奖励计算方式为：
+          <p class="content-text indent">
+            2) 玉兰·兰居尚品任务完成奖励：在乙方完成年度总销售任务且同时完成玉兰·兰居尚品品牌任务时，甲方同意，给予乙方当年“兰居尚品”品牌产品含税净销售的(
+            <span
+              class="green"
+            >{{precent2}}</span>%)返点作为奖励，奖励计算方式为：
           </p>
           <p class="content-text">
             <strong>兰居尚品品牌返利=兰居品牌全年含税净销售×返点；</strong>
@@ -260,29 +262,33 @@
           <p class="content-text">受委托人：</p>
           <p class="content-text">年&nbsp;&nbsp; 月&nbsp;&nbsp; 日</p>
           <p class="content-text">联系电话：</p>
-          <br>
+          <br />
           <p class="content-text">乙方（加盖章）：</p>
           <p class="content-text">法人代表（或指定代表）：</p>
           <p class="content-text">受委托人：</p>
           <p class="content-text">年 &nbsp;&nbsp;月 &nbsp;&nbsp;日</p>
           <p class="content-text">联系电话：</p>
-          <br>
+          <br />
 
           <div class="content-title">
             <p class="title-text">客户银行账号基本信息</p>
           </div>
           <p class="content-text" v-if="who">公司汇款账号信息：</p>
           <p class="content-text" v-else>个人汇款账号信息：</p>
-          <p class="content-text">开户名：
+          <p class="content-text">
+            开户名：
             <span class="green">{{account_name}}</span>
           </p>
-          <p class="content-text">开户行：
+          <p class="content-text">
+            开户行：
             <span class="green">{{account_bank}}</span>
           </p>
-          <p class="content-text">银行账号：
+          <p class="content-text">
+            银行账号：
             <span class="green">{{account}}</span>
           </p>
-          <p class="content-text">银行所在地：
+          <p class="content-text">
+            银行所在地：
             <span class="green">{{account_location}}</span>
           </p>
 
@@ -364,7 +370,7 @@ import review from "@/components/review";
 export default {
   data() {
     return {
-      IsShow:false,
+      IsShow: false,
       top: 9,
       ccid: "",
       textmodel: "",
@@ -591,130 +597,131 @@ export default {
     } else {
       this.ccid = this.$store.state.CCID;
     }
-    this.$http.post("/infoState/getYLcontractentryState.do",{
-        cid:this.companyId,
-        cyear:this.$store.state.year
-    }).then(res => {
-
-      if(res.data.yLcontractInfo != undefined){
-        this.IsShow = true;
-
     this.$http
-      .post("/customerInfo/getNcustomerinfo.do", {
-        year: this.$store.state.year,
-        limit: "10",
-        page: "1",
-        state: "",
-        cid: "",
-        find: this.getNcustomerinfo,
-        area_1: "",
-        area_2: "",
-        position: "",
-        ylcstate: ""
+      .post("/infoState/getYLcontractentryState.do", {
+        cid: this.companyId,
+        cyear: this.$store.state.year
       })
-      .then(function(res) {
-        let ylcstate = res.data.data[0].YLCSTATE;
-        if (th.$store.state.info.data.type == "ECWEB") {
-          if (ylcstate == "CUSTOMERAFFIRM") {
-            th.reviseflag = true;
+      .then(res => {
+        if (res.data.yLcontractInfo != undefined) {
+          this.IsShow = true;
+
+          this.$http
+            .post("/customerInfo/getNcustomerinfo.do", {
+              year: this.$store.state.year,
+              limit: "10",
+              page: "1",
+              state: "",
+              cid: "",
+              find: this.getNcustomerinfo,
+              area_1: "",
+              area_2: "",
+              position: "",
+              ylcstate: ""
+            })
+            .then(function(res) {
+              let ylcstate = res.data.data[0].YLCSTATE;
+              if (th.$store.state.info.data.type == "ECWEB") {
+                if (ylcstate == "CUSTOMERAFFIRM") {
+                  th.reviseflag = true;
+                }
+              } else {
+                switch (th.$store.state.position) {
+                  case "SALEMAN_M":
+                    th.position = "办事处经理";
+                    th.reviseflag = false;
+                    break;
+                  case "SALEMAN_S":
+                    th.position = "业务经理";
+                    th.reviseflag = false;
+                    break;
+                  case "MANAGER":
+                    th.position = "中心总经理";
+                    if (ylcstate == "ASM_CHECKING") {
+                      th.reviseflag = true;
+                    }
+                    break;
+                  case "MARKETCHECKER":
+                    th.position = "市场部";
+                    if (ylcstate == "DEP_MARKET_CHECK") {
+                      th.reviseflag = true;
+                    }
+                    break;
+                  case "VSMAPPROVEXII":
+                    th.position = "销售总监";
+                    if (ylcstate == "CSA_CHECK") {
+                      th.reviseflag = true;
+                    }
+                    break;
+                  default:
+                    break;
+                }
+              }
+              if (!th.reviseflag) {
+                th.$refs.backcard.style.background = "#c2c2c2";
+                th.$refs.build.style.background = "#c2c2c2";
+              }
+            })
+            .catch(function(res) {
+              console.log(res);
+            });
+
+          if (this.$store.state.position == undefined) {
+            this.position = "客户" + this.$store.state.info.data.realName;
+            this.reviseflag = true;
           }
+
+          this.getdata(),
+            this.$http
+              .post("/YLcontractentry/getYLcontractAPP.do", {
+                cid: this.getNcustomerinfo
+              })
+              .then(res => {
+                this.who = parseInt(res.data.State);
+                this.user = res.data.cname;
+                this.userAddress = res.data.xPostAddress;
+                this.capital = res.data.xDistrict;
+                this.city = res.data.xAreaDistrict2;
+                this.county = res.data.xAreaDistrict3;
+                this.start = res.data.startDate;
+                this.end = res.data.endDate;
+                this.m1 = res.data.m1;
+                this.m2 = res.data.m2;
+                this.m3 = res.data.m3;
+                this.m4 = res.data.m4;
+                this.m5 = res.data.m5;
+                this.m6 = res.data.m6;
+                this.m7 = res.data.m7;
+                this.m8 = res.data.m8;
+                this.m9 = res.data.m9;
+                this.m10 = res.data.m10;
+                this.m11 = res.data.m11;
+                this.m12 = res.data.m12;
+                this.account_name = res.data.Account2Name;
+                this.account_bank = res.data.Account2Bank;
+                this.account = res.data.Account2;
+                this.account_location = res.data.Account2Location;
+                this.money1 = res.data.total;
+                this.money2 = res.data.aRetailing;
+                this.money3 = res.data.cMatching;
+                this.money4 = res.data.RMB;
+                this.totalm = res.data.totalm;
+                this.precent1 = res.data.rewordpercent;
+                this.precent2 = res.data.rewordpercent2;
+                this.precent3 = res.data.Stockpercent;
+                this.startDate = res.data.startDate;
+                this.endDate = res.data.endDate;
+                this.preferedbrand = res.data.preferedbrand;
+              });
         } else {
-          switch (th.$store.state.position) {
-            case "SALEMAN_M":
-              th.position = "办事处经理";
-              th.reviseflag = false;
-              break;
-            case "SALEMAN_S":
-              th.position = "业务经理";
-              th.reviseflag = false;
-              break;
-            case "MANAGER":
-              th.position = "中心总经理";
-              if (ylcstate == "ASM_CHECKING") {
-                th.reviseflag = true;
-              }
-              break;
-            case "MARKETCHECKER":
-              th.position = "市场部";
-              if (ylcstate == "DEP_MARKET_CHECK") {
-                th.reviseflag = true;
-              }
-              break;
-            case "VSMAPPROVEXII":
-              th.position = "销售总监";
-              if (ylcstate == "CSA_CHECK") {
-                th.reviseflag = true;
-              }
-              break;
-            default:
-              break;
-          }
-        }
-        if (!th.reviseflag) {
-          th.$refs.backcard.style.background = "#c2c2c2";
-          th.$refs.build.style.background = "#c2c2c2";
+          alert("如资料卡已通过审批，请联系业务经理生成协议书，谢谢!");
+          this.IsShow = false;
         }
       })
-      .catch(function(res) {
-        console.log(res);
+      .catch(err => {
+        console.log(err);
       });
-
-    if (this.$store.state.position == undefined) {
-      this.position = "客户" + this.$store.state.info.data.realName;
-      this.reviseflag = true;
-    }
-
-    this.getdata(),
-      this.$http
-        .post("/YLcontractentry/getYLcontractAPP.do", {
-          cid: this.getNcustomerinfo
-        })
-        .then(res => {
-          this.who = parseInt(res.data.State);
-          this.user = res.data.cname;
-          this.userAddress = res.data.xPostAddress;
-          this.capital = res.data.xDistrict;
-          this.city = res.data.xAreaDistrict2;
-          this.county = res.data.xAreaDistrict3;
-          this.start = res.data.startDate;
-          this.end = res.data.endDate;
-          this.m1 = res.data.m1;
-          this.m2 = res.data.m2;
-          this.m3 = res.data.m3;
-          this.m4 = res.data.m4;
-          this.m5 = res.data.m5;
-          this.m6 = res.data.m6;
-          this.m7 = res.data.m7;
-          this.m8 = res.data.m8;
-          this.m9 = res.data.m9;
-          this.m10 = res.data.m10;
-          this.m11 = res.data.m11;
-          this.m12 = res.data.m12;
-          this.account_name = res.data.Account2Name;
-          this.account_bank = res.data.Account2Bank;
-          this.account = res.data.Account2;
-          this.account_location = res.data.Account2Location;
-          this.money1 = res.data.total;
-          this.money2 = res.data.aRetailing;
-          this.money3 = res.data.cMatching;
-          this.money4 = res.data.RMB;
-          this.totalm = res.data.totalm;
-          this.precent1 = res.data.rewordpercent;
-          this.precent2 = res.data.rewordpercent2;
-          this.precent3 = res.data.Stockpercent;
-          this.startDate = res.data.startDate;
-          this.endDate = res.data.endDate;
-          this.preferedbrand = res.data.preferedbrand;
-        });
-      }else{
-        alert("如资料卡已通过审批，请联系业务经理生成协议书，谢谢!")
-        this.IsShow = false;
-      }
-    }).catch(err =>{
-      console.log(err);
-    })
-    if( this.IsShow == true){
-
+    if (this.IsShow == true) {
     }
   },
   components: {
@@ -978,8 +985,7 @@ body {
   top: 65px;
 }
 .close {
-  background: url(http://14.29.221.109:10250/upload/assets/close.png);
-
+  background: url(../assets/close.png);
   background-size: contain;
   background-repeat: no-repeat;
   width: 15px;
@@ -1025,5 +1031,3 @@ td {
   border: 1px solid #eee;
 }
 </style>
-
-

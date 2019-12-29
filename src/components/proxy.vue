@@ -864,7 +864,7 @@ export default {
   -moz-appearance: none;
   -webkit-appearance: none;
   /* 右侧添加小箭头的背景图 */
-  background-image: url(http://14.29.221.109:10250/upload/assets/select_arrow.png);
+  background-image: url(../assets/select_arrow.png);
   background: 160px center no-repeat;
   background-size: 6px 6px;
 }

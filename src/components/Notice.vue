@@ -50,7 +50,7 @@ export default {
     right: 30px;
   }
   .arrow{
-    background: url('http://14.29.221.109:10250/upload/assets/right1.png');
+    background: url('../assets/right1.png');
     width: 14px;
     height: 14px;
     background-position: center;

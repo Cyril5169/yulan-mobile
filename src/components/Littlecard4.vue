@@ -111,7 +111,7 @@ export default {
     }
     .wrap .more{
       position: absolute;
-      background-image:url(http://14.29.221.109:10250/upload/assets/right1.png);
+      background-image:url(../assets/right1.png);
       width: 12px;
       height:12px;
       top:33px;

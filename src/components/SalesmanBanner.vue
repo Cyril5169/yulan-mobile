@@ -83,7 +83,7 @@ export default {
     background-color: #EFEFEF;
   }
   .suona-img{
-    background-image: url('http://14.29.221.109:10250/upload/assets/suona2.png');
+    background-image: url('../assets/suona2.png');
     width: 24px;
     height: 20px;
     background-size: contain;
@@ -100,7 +100,7 @@ export default {
     left: 64px;
   }
   .option-img{
-    background-image: url('http://14.29.221.109:10250/upload/assets/setting.png');
+    background-image: url('../assets/setting.png');
     background-repeat: no-repeat;
     width: 24px;
     height: 24px;
@@ -135,7 +135,7 @@ export default {
     left: 27px;
   }
   .right-img{
-    background: url('http://14.29.221.109:10250/upload/assets/right-img.png');
+    background: url('../assets/right-img.png');
     /* background-position: center; */
     background-size: contain;
     width: 250px;
@@ -145,7 +145,7 @@ export default {
     top: -23px;
   }
   .left-img{
-    background: url('http://14.29.221.109:10250/upload/assets/left-img.png');
+    background: url('../assets/left-img.png');
     /* background-position: center; */
     background-size: contain;
     width: 115px;

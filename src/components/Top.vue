@@ -355,9 +355,8 @@ export default {
       this.msg = "客户资料卡";
     }
     if (this.top == 2) {
-      this.msg = "2019资料卡查询";
+      this.msg = "资料卡查询";
       let a = this.$refs.top;
-      console.log(1);
       a.className = "top-green";
     }
     if (this.top == 3) {

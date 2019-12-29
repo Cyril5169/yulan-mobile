@@ -9,26 +9,26 @@
 </template>
 
 <script>
-import top from '../components/Top'
+import top from "../components/Top";
 export default {
-  components:{
+  components: {
     top
   },
-  data(){
-    return{
-      set:6,
-    }
+  data() {
+    return {
+      set: 6
+    };
   },
-  created(){
+  created() {
     setTimeout(() => {
-      if(this.$store.state.info.data.type != "ECWEB"){
-            this.$router.push({
-              path:'/msgsearch'
-            }) ;
-        }
+      if (this.$store.state.info.data.type != "ECWEB") {
+        this.$router.push({
+          path: "/msgsearch"
+        });
+      }
     }, 1500);
   }
-}
+};
 </script>
 
 <style scoped>
@@ -43,7 +43,7 @@ export default {
 }
 .check {
   position: absolute;
-  background: url("http://14.29.221.109:10250/upload/assets/circlecheck.png");
+  background: url("../assets/circlecheck.png");
   height: 108px;
   width: 108px;
   background-size: 100% 100%;

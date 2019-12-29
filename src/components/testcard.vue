@@ -1239,7 +1239,7 @@ export default {
       this.$http
         .post("/infoState/bussinessCheckCustomerInfoCard.do", {
           //客户代码S
-          cid: this.$store.state.companyId,
+          cid: this.$store.state.CID,
           //操作后资料卡状态
           state: this.state,
           //审核记录
@@ -1449,7 +1449,7 @@ export default {
         this.$http
           .post("/infoState/bussinessCheckCustomerInfoCard.do", {
             //客户代码S
-            cid: this.$store.state.companyId,
+            cid: this.$store.state.CID,
             //操作后资料卡状态
             state: "CUSTOMERPORCESSING2",
             //审核记录
@@ -1523,7 +1523,7 @@ export default {
     getdata1() {
       let url = "/infoState/getCustomerInfoCardState.do	";
       let data = {
-        cid: this.companyId,
+        cid: this.CID,
         year: this.contractyear
       };
 
@@ -1542,16 +1542,15 @@ export default {
       let th = this;
       let url = "/customerInfo/getCustomerInfo.do";
       let data = {
-        CID: this.companyId
+        CID: this.CID
       };
       this.$http.post(url, data).then(res => {
         if (res.data.code == 0 || res.data.data != null) {
+          console.log(res)
           th.cardstate = res.data.data.state;
           if (this.$store.state.position == "SALEMAN_M") {
             this.position = "中心总经理";
-            console.log(2);
             if (this.cardstate == "BUSINESSCHECKING") {
-              console.log(1);
               this.reviseflag = true;
             }
           } else if (this.$store.state.position == "SALEMAN_S") {
@@ -1834,9 +1833,9 @@ export default {
             }
           }
 
-          let url1 = "/infoState/getCustomerInfoCardState.do	";
+          let url1 = "/infoState/getCustomerInfoCardState.do";
           let data1 = {
-            cid: this.companyId,
+            cid: this.CID,
             year: this.contractyear
           };
 
@@ -1852,7 +1851,7 @@ export default {
 
           let url2 = "/customerInfo/getYLcontract.do";
           let data2 = {
-            ccid: this.companyId,
+            ccid: this.CID,
             ccyear: this.contractyear
           };
           this.$http.post(url2, data2).then(res2 => {
@@ -1869,7 +1868,7 @@ export default {
     getData3() {
       let url = "/customerInfo/getYLcontract.do";
       let data = {
-        ccid: this.companyId,
+        ccid: this.CID,
         ccyear: this.contractyear
       };
       this.$http.post(url, data).then(res => {
@@ -1890,9 +1889,6 @@ export default {
       } else {
         return this.$store.state.info.data.loginName;
       }
-    },
-    companyId() {
-      return this.$store.getters.getCMId;
     }
   },
   mounted() {
@@ -2108,7 +2104,7 @@ export default {
   margin-right: 5px;
 }
 .check[type="checkbox"]:checked {
-  background: url("http://14.29.221.109:10250/upload/assets/check1.png")
+  background: url("../assets/check1.png")
     no-repeat center;
 }
 .invoice {
@@ -2170,7 +2166,7 @@ input[type="radio"]:checked + .intype {
   font-size: 13px;
   text-align: center;
   margin-top: 4px;
-  margin-left: 102px;
+  margin-left: 98px;
 }
 #inthird {
   margin-top: 4px;
@@ -2433,7 +2429,7 @@ input[type="radio"]:checked + .intype {
   height: 12px;
   width: 12px;
   display: inline-block;
-  background: url("http://14.29.221.109:10250/upload/assets/select1.png");
+  background: url("../assets/select1.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -2441,7 +2437,7 @@ input[type="radio"]:checked + .intype {
   margin-top: -4px;
 }
 input[type="radio"]:checked + .way4 {
-  background-image: url("http://14.29.221.109:10250/upload/assets/select3.png");
+  background-image: url("../assets/select3.png");
 }
 #insecond4 {
   font-size: 13px;

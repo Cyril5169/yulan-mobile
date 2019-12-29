@@ -162,7 +162,7 @@ export default {
 .saveImg {
   width: 34px;
   height: 34px;
-  background: url("http://14.29.221.109:10250/upload/assets/save.png");
+  background: url("../assets/save.png");
   background-size: 100% 100%;
   margin: 17px 16px 5px 17px;
 }
