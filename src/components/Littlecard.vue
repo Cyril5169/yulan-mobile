@@ -260,6 +260,7 @@ export default {
   methods: {
     sendCID() {
       this.$store.commit("getCCID", this.card.CID);
+      this.$store.commit("getCYEAR", this.card.CONTRACTYEAR);
     },
     getCID() {
       this.$emit("sendCID", this.card.CID);

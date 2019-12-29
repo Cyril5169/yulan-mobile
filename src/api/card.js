@@ -7,3 +7,10 @@ export function UpdateState(data, config = {}) {
         return Promise.reject(err);
     })
 }
+export function GetCardByCustomer(data, config = {}) {
+    return post('/CUSTOMERINFOCARD/GetCardByCustomer', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}

@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state: {
     info: {},
     CCID: '',
+    CYEAR: '',
     pos: {},
     position: [],
     revised: false,
@@ -18,14 +19,14 @@ export default new Vuex.Store({
     //order
     //存储订单信息
     orderProduct: [],
-    orderHead:[],
+    orderHead: [],
     //当前选中地址信息
     address: {},
     //所有购物车列表
     allCart: {
-      wallpaper:[],
-      curtain:[],
-      soft:[]
+      wallpaper: [],
+      curtain: [],
+      soft: []
     },
     //loading加载
     LOADING: false,
@@ -68,7 +69,7 @@ export default new Vuex.Store({
     getCartlist: state => {
       return state.allCart
     },
-    getTipsInfo: state=>{
+    getTipsInfo: state => {
       return state.tipsInfo;
     }
   },
@@ -76,18 +77,19 @@ export default new Vuex.Store({
     initState(state) {
       state.info = {};
       state.CCID = '';
+      state.CYEAR = '';
       state.pos = {};
       state.position = [];
       state.revised = false;
       state.area_M = [];
       state.route = "";
       state.orderProduct = [];
-      state.orderHead=[];
+      state.orderHead = [];
       state.address = {};
       state.allCart = {
-        wallpaper:[],
-        curtain:[],
-        soft:[]
+        wallpaper: [],
+        curtain: [],
+        soft: []
       };
       state.LOADING = false;
       state.orderBaseUrl = "http://14.29.223.114:10250/yulan-order";
@@ -103,6 +105,9 @@ export default new Vuex.Store({
     },
     getCCID(state, obj) {
       state.CCID = obj;
+    },
+    getCYEAR(state, obj) {
+      state.CYEAR = obj;
     },
     userCheck(state, obj) {
       state.info.data.userState = obj;
@@ -144,7 +149,7 @@ export default new Vuex.Store({
     hideLoading(state) {
       state.LOADING = false
     },
-    setTipsInfo(state, obj){
+    setTipsInfo(state, obj) {
       state.tipsInfo = obj;
     },
     /*

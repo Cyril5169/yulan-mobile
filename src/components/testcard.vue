@@ -1014,6 +1014,8 @@
 var remoteImageURL = "http://14.29.221.109:10250/upload";
 import top from "./Top";
 import Review from "@/components/review";
+import { UpdateState, GetCardByCustomer } from "@/api/card";
+
 export default {
   data() {
     return {
@@ -1236,26 +1238,31 @@ export default {
       let nowTime = this.initTime(new Date());
       this.show3 = false;
       this.show3 = false;
-      this.$http
-        .post("/infoState/bussinessCheckCustomerInfoCard.do", {
-          //客户代码S
-          cid: this.$store.state.CID,
-          //操作后资料卡状态
-          state: this.state,
-          //审核记录
-          memo:
-            nowTime +
-            this.position +
-            this.$store.state.info.data.realName +
-            "通过资料卡;"
-        })
-        .then(function(res) {
-          console.log(th.state);
-          th.show = false;
-          th.$router.push({
-            path: "/success6"
-          });
+      // this.$http
+      //   .post("/infoState/bussinessCheckCustomerInfoCard.do", {
+      //     cid: this.$store.state.CID,
+      //     state: this.state,
+      //     memo:
+      //       nowTime +
+      //       this.position +
+      //       this.$store.state.info.data.realName +
+      //       "通过;"
+      //   })
+      UpdateState({
+        cid: this.CID,
+        year: this.$store.state.CYEAR,
+        state: this.state,
+        memo:
+          nowTime +
+          this.position +
+          this.$store.state.info.data.realName +
+          "通过;"
+      }).then(function(res) {
+        th.show = false;
+        th.$router.push({
+          path: "/success6"
         });
+      });
     },
     cancel() {
       this.show = false;
@@ -1446,26 +1453,34 @@ export default {
         alert("请填写退回原因!");
       } else {
         this.show3 = false;
-        this.$http
-          .post("/infoState/bussinessCheckCustomerInfoCard.do", {
-            //客户代码S
-            cid: this.$store.state.CID,
-            //操作后资料卡状态
-            state: "CUSTOMERPORCESSING2",
-            //审核记录
-            memo:
-              nowTime +
-              this.position +
-              this.$store.state.info.data.realName +
-              "退回资料卡 [" +
-              this.reason +
-              "];"
-          })
-          .then(function(res) {
-            th.$router.push({
-              path: "/success6"
-            });
+        // this.$http
+        //   .post("/infoState/bussinessCheckCustomerInfoCard.do", {
+        //     cid: this.$store.state.CID,
+        //     state: "CUSTOMERPORCESSING2",
+        //     memo:
+        //       nowTime +
+        //       this.position +
+        //       this.$store.state.info.data.realName +
+        //       "退回资料卡 [" +
+        //       this.reason +
+        //       "];"
+        //   })
+        UpdateState({
+          cid: this.CID,
+          year: this.$store.state.CYEAR,
+          state: "CUSTOMERPORCESSING2",
+          memo:
+            nowTime +
+            this.position +
+            this.$store.state.info.data.realName +
+            "退回，原因是[" +
+            this.reason +
+            "];"
+        }).then(function(res) {
+          th.$router.push({
+            path: "/success6"
           });
+        });
       }
     },
     cancel3() {
@@ -1540,330 +1555,332 @@ export default {
     },
     getdata2() {
       let th = this;
-      let url = "/customerInfo/getCustomerInfo.do";
-      let data = {
-        CID: this.CID
-      };
-      this.$http.post(url, data).then(res => {
-        if (res.data.code == 0 || res.data.data != null) {
-          console.log(res)
-          th.cardstate = res.data.data.state;
-          if (this.$store.state.position == "SALEMAN_M") {
-            this.position = "中心总经理";
-            if (this.cardstate == "BUSINESSCHECKING") {
-              this.reviseflag = true;
+      // let url = "/customerInfo/getCustomerInfo.do";
+      // let data = {
+      //   CID: this.CID
+      // };
+      // this.$http.post(url, data)
+      GetCardByCustomer({ cid: this.CID, year: this.$store.state.CYEAR }).then(
+        res => {
+          if (res.data != null) {
+            th.cardstate = res.data[0].state;
+            if (this.$store.state.position == "SALEMAN_M") {
+              this.position = "中心总经理";
+              if (this.cardstate == "BUSINESSCHECKING") {
+                this.reviseflag = true;
+              }
+            } else if (this.$store.state.position == "SALEMAN_S") {
+              this.position = "办事处经理";
+              if (this.cardstate == "BUSINESSCHECKING") this.reviseflag = true;
+            } else if (this.$store.state.position == "BILLDEP_APPROVE") {
+              this.position = "订单部";
+              if (this.cardstate == "BIILDEPCHECKING") this.reviseflag = true;
             }
-          } else if (this.$store.state.position == "SALEMAN_S") {
-            this.position = "办事处经理";
-            if (this.cardstate == "BUSINESSCHECKING") this.reviseflag = true;
-          } else if (this.$store.state.position == "BILLDEP_APPROVE") {
-            this.position = "订单部";
-            if (this.cardstate == "BIILDEPCHECKING") this.reviseflag = true;
-          }
-          if (!this.reviseflag) {
-            this.$refs.backcard.style.background = "#c2c2c2";
-            this.$refs.build.style.background = "#c2c2c2";
-          }
-          var alldata = res.data.data;
-          this.contractyear = alldata.contractyear;
-          this.cusName = alldata.cname;
-          this.district = alldata.districtText;
-          this.phone = alldata.juridicPersonHandset;
-          if (alldata.preferedbrand != null) {
-            var newband = alldata.preferedbrand.split("");
-            if (newband.indexOf("墙") > -1) {
-              this.boxcheck1 = true;
+            if (!this.reviseflag) {
+              this.$refs.backcard.style.background = "#c2c2c2";
+              this.$refs.build.style.background = "#c2c2c2";
             }
-            if (newband.indexOf("软") > -1) {
-              this.boxcheck2 = true;
+            var alldata = res.data[0];
+            this.contractyear = alldata.contractyear;
+            this.cusName = alldata.cname;
+            this.district = alldata.districtText;
+            this.phone = alldata.juridicPersonHandset;
+            if (alldata.preferedbrand != null) {
+              var newband = alldata.preferedbrand.split("");
+              if (newband.indexOf("墙") > -1) {
+                this.boxcheck1 = true;
+              }
+              if (newband.indexOf("软") > -1) {
+                this.boxcheck2 = true;
+              }
             }
-          }
-          this.nowbrand = alldata.currentProduct;
-          this.square = alldata.shopArea;
-          this.manager = alldata.xJuridicPerson;
-          var invoiceType = alldata.invoiceType;
-          if (invoiceType == "不开发票") {
-            this.radiocheck101 = true;
-            this.radiocheck6 = true;
-            this.radiocheck33 = false;
-            this.radiocheck22 = false;
-            this.radiocheck404 = false;
-          }
-          if (invoiceType == "增值税普通发票") {
-            this.radiocheck22 = true;
-            this.radiocheck6 = true;
-            this.radiocheck33 = false;
-            this.radiocheck101 = false;
-            this.radiocheck404 = false;
-          }
-          if (invoiceType == "电子普通发票") {
-            this.radiocheck33 = true;
-            this.showEmail = true;
-            this.radiocheck6 = true;
-            this.radiocheck101 = false;
-            this.radiocheck22 = false;
-            this.radiocheck404 = false;
-          }
-          if (invoiceType == "增值税专用发票") {
-            this.radiocheck404 = true;
-            this.goTo = true;
-            this.radiocheck5 = true;
-            this.radiocheck33 = false;
-            this.radiocheck22 = false;
-            this.radiocheck101 = false;
-          }
-          this.reEmail = alldata.recipeTargetMb; //1
-          this.person2 = alldata.txAgentName;
-          this.phone2 = alldata.xHandset2;
-          var tell2 = alldata.xOfficeTel;
-          this.tel2 = tell2.split(" ")[0];
-          this.fax2 = alldata.xFax;
-          this.qq2 = alldata.qq;
-          this.email2 = alldata.xEmail;
-          this.address2 = alldata.xPostAddress;
-          this.zip2 = alldata.xZipCode; //2
-          this.person3 = alldata.wlAgentName;
-          this.tel3 = alldata.xOfficeTel1.split(" ")[0];
-          this.phone3 = alldata.xHandset;
-          this.faxwl3 = alldata.faxWl;
-          this.address3 = alldata.xDeliveryAdress;
-          this.zipwl3 = alldata.zipCodeWl; //3
-          this.person14 = alldata.account1Name;
-          this.bank14 = alldata.account1Bank;
-          this.bank1Location4 = alldata.account1Location;
-          this.person24 = alldata.account2Name;
-          this.bank24 = alldata.account2Bank;
-          this.bank2Location4 = alldata.account2Location;
-          this.number14 = alldata.account1;
-          this.number24 = alldata.account2;
-          this.no4 = alldata.hasPublicAccount;
-          var difference = alldata.busientType;
-          if (difference == "公司" && this.no4 == "N") {
-            this.radiocheck2 = true;
-            this.change2();
-            this.lookProxy();
-          }
-          if (difference == "公司" && this.no4 == "Y") {
-            this.radiocheck1 = true;
-            this.change1();
-          }
-          if (difference == "个体户") {
-            this.radiocheck3 = true;
-            this.change3();
-          }
-          if (this.no4 == "Y") {
-            this.location4 = this.bank1Location4;
-          } else {
-            this.location4 = this.bank2Location4;
-          }
-          this.spouse = alldata.privateAccountAuthed;
-          if (this.spouse == "Y") {
-            this.radiocheck44 = true;
-            this.radiocheck54 = false;
-          }
-          if (this.spouse == "N") {
-            this.radiocheck44 = false;
-            this.radiocheck54 = true;
-          } //4
-          if (alldata.customerentitytypex == 1) {
-            this.sss = "公司-三证五证合一";
-          }
-          if (alldata.customerentitytypex == 2) {
-            this.sss = "公司-三证五证未合";
-          }
-          if (alldata.customerentitytypex == 3) {
-            this.sss = "个体户-有税务登记证";
-          }
-          if (alldata.customerentitytypex == 4) {
-            this.sss = "个体户-无税务登记证";
-          }
-          if (alldata.customerentitytypex == 5) {
-            this.sss = "个人";
-          }
-          this.dateForever = alldata.file2BusinesslicenseNoend;
-          this.selectDate = alldata.file2BusinesslicenseEnd;
-          this.businumber5 = alldata.file2BusinesslicenseNo;
-          this.CIDnumber5 = alldata.file1IdcardNo;
-          this.taxNumber5 = alldata.file4GtqcNo;
-          var customerIndex5 = alldata.customerentitytypex;
-          this.FileImage15 = remoteImageURL + alldata.file1Idcard;
-          this.FileImage25 = remoteImageURL + alldata.file5IdcardBg;
-          this.FileImage35 = remoteImageURL + alldata.file2Businesslicense;
-          this.FileImage45 = remoteImageURL + alldata.file4Gtqc;
-          this.FileImage55 = remoteImageURL + alldata.file1Idcard;
-          this.FileImage65 = remoteImageURL + alldata.file5IdcardBg;
-          this.FileImage75 = remoteImageURL + alldata.file2Businesslicense;
-          this.FileImage85 = remoteImageURL + alldata.file1Idcard;
-          this.FileImage95 = remoteImageURL + alldata.file5IdcardBg;
-          this.FileImage105 = remoteImageURL + alldata.file1Idcard;
-          this.FileImage115 = remoteImageURL + alldata.file5IdcardBg;
-          this.FileImage125 = remoteImageURL + alldata.file2Businesslicense;
-          this.FileImage135 = remoteImageURL + alldata.file4Gtqc;
-          this.FileImage145 = remoteImageURL + alldata.file1Idcard;
-          this.FileImage155 = remoteImageURL + alldata.file5IdcardBg;
-          this.FileImage165 = remoteImageURL + alldata.file2Businesslicense;
-          if (customerIndex5 == 2) {
-            if (this.dateForever == 0) {
-              this.boxcheck11 = false;
-            } else if (this.dateForever == 1) {
-              this.boxcheck11 = true;
-              this.selectDate = "";
+            this.nowbrand = alldata.currentProduct;
+            this.square = alldata.shopArea;
+            this.manager = alldata.xJuridicPerson;
+            var invoiceType = alldata.invoiceType;
+            if (invoiceType == "不开发票") {
+              this.radiocheck101 = true;
+              this.radiocheck6 = true;
+              this.radiocheck33 = false;
+              this.radiocheck22 = false;
+              this.radiocheck404 = false;
             }
-            if (alldata.file1Idcard != null) {
-              this.isShow15 = false;
-              this.headerImage15 = this.FileImage15;
+            if (invoiceType == "增值税普通发票") {
+              this.radiocheck22 = true;
+              this.radiocheck6 = true;
+              this.radiocheck33 = false;
+              this.radiocheck101 = false;
+              this.radiocheck404 = false;
+            }
+            if (invoiceType == "电子普通发票") {
+              this.radiocheck33 = true;
+              this.showEmail = true;
+              this.radiocheck6 = true;
+              this.radiocheck101 = false;
+              this.radiocheck22 = false;
+              this.radiocheck404 = false;
+            }
+            if (invoiceType == "增值税专用发票") {
+              this.radiocheck404 = true;
+              this.goTo = true;
+              this.radiocheck5 = true;
+              this.radiocheck33 = false;
+              this.radiocheck22 = false;
+              this.radiocheck101 = false;
+            }
+            this.reEmail = alldata.recipeTargetMb; //1
+            this.person2 = alldata.txAgentName;
+            this.phone2 = alldata.xHandset2;
+            var tell2 = alldata.xOfficeTel;
+            this.tel2 = tell2.split(" ")[0];
+            this.fax2 = alldata.xFax;
+            this.qq2 = alldata.qq;
+            this.email2 = alldata.xEmail;
+            this.address2 = alldata.xPostAddress;
+            this.zip2 = alldata.xZipCode; //2
+            this.person3 = alldata.wlAgentName;
+            this.tel3 = alldata.xOfficeTel1.split(" ")[0];
+            this.phone3 = alldata.xHandset;
+            this.faxwl3 = alldata.faxWl;
+            this.address3 = alldata.xDeliveryAdress;
+            this.zipwl3 = alldata.zipCodeWl; //3
+            this.person14 = alldata.account1Name;
+            this.bank14 = alldata.account1Bank;
+            this.bank1Location4 = alldata.account1Location;
+            this.person24 = alldata.account2Name;
+            this.bank24 = alldata.account2Bank;
+            this.bank2Location4 = alldata.account2Location;
+            this.number14 = alldata.account1;
+            this.number24 = alldata.account2;
+            this.no4 = alldata.hasPublicAccount;
+            var difference = alldata.busientType;
+            if (difference == "公司" && this.no4 == "N") {
+              this.radiocheck2 = true;
+              this.change2();
+              this.lookProxy();
+            }
+            if (difference == "公司" && this.no4 == "Y") {
+              this.radiocheck1 = true;
+              this.change1();
+            }
+            if (difference == "个体户") {
+              this.radiocheck3 = true;
+              this.change3();
+            }
+            if (this.no4 == "Y") {
+              this.location4 = this.bank1Location4;
             } else {
-              this.isShow15 = true;
+              this.location4 = this.bank2Location4;
             }
-            if (alldata.file5IdcardBg != null) {
-              this.isShow25 = false;
-              this.headerImage25 = this.FileImage25;
-            } else {
-              this.isShow25 = true;
+            this.spouse = alldata.privateAccountAuthed;
+            if (this.spouse == "Y") {
+              this.radiocheck44 = true;
+              this.radiocheck54 = false;
             }
-            if (alldata.file2Businesslicense != null) {
-              this.isShow35 = false;
-              this.headerImage35 = this.FileImage35;
-            } else {
-              this.isShow35 = true;
+            if (this.spouse == "N") {
+              this.radiocheck44 = false;
+              this.radiocheck54 = true;
+            } //4
+            if (alldata.customerentitytypex == 1) {
+              this.sss = "公司-三证五证合一";
             }
-            if (alldata.file4Gtqc != null) {
-              this.isShow45 = false;
-              this.headerImage45 = this.FileImage45;
-            } else {
-              this.isShow45 = true;
+            if (alldata.customerentitytypex == 2) {
+              this.sss = "公司-三证五证未合";
             }
-          }
-          if (customerIndex5 == 1) {
-            if (this.dateForever == 0) {
-              this.boxcheck22 = false;
-            } else if (this.dateForever == 1) {
-              this.boxcheck22 = true;
-              this.selectDate = "";
+            if (alldata.customerentitytypex == 3) {
+              this.sss = "个体户-有税务登记证";
             }
-            if (alldata.file1Idcard != null) {
-              this.isShow55 = false;
-              this.headerImage55 = this.FileImage55;
-            } else {
-              this.isShow55 = true;
+            if (alldata.customerentitytypex == 4) {
+              this.sss = "个体户-无税务登记证";
             }
-            if (alldata.file5IdcardBg != null) {
-              this.isShow65 = false;
-              this.headerImage65 = this.FileImage65;
-            } else {
-              this.isShow65 = true;
+            if (alldata.customerentitytypex == 5) {
+              this.sss = "个人";
             }
-            if (alldata.file2Businesslicense != null) {
-              this.isShow75 = false;
-              this.headerImage75 = this.FileImage75;
-            } else {
-              this.isShow75 = true;
+            this.dateForever = alldata.file2BusinesslicenseNoend;
+            this.selectDate = alldata.file2BusinesslicenseEnd;
+            this.businumber5 = alldata.file2BusinesslicenseNo;
+            this.CIDnumber5 = alldata.file1IdcardNo;
+            this.taxNumber5 = alldata.file4GtqcNo;
+            var customerIndex5 = alldata.customerentitytypex;
+            this.FileImage15 = remoteImageURL + alldata.file1Idcard;
+            this.FileImage25 = remoteImageURL + alldata.file5IdcardBg;
+            this.FileImage35 = remoteImageURL + alldata.file2Businesslicense;
+            this.FileImage45 = remoteImageURL + alldata.file4Gtqc;
+            this.FileImage55 = remoteImageURL + alldata.file1Idcard;
+            this.FileImage65 = remoteImageURL + alldata.file5IdcardBg;
+            this.FileImage75 = remoteImageURL + alldata.file2Businesslicense;
+            this.FileImage85 = remoteImageURL + alldata.file1Idcard;
+            this.FileImage95 = remoteImageURL + alldata.file5IdcardBg;
+            this.FileImage105 = remoteImageURL + alldata.file1Idcard;
+            this.FileImage115 = remoteImageURL + alldata.file5IdcardBg;
+            this.FileImage125 = remoteImageURL + alldata.file2Businesslicense;
+            this.FileImage135 = remoteImageURL + alldata.file4Gtqc;
+            this.FileImage145 = remoteImageURL + alldata.file1Idcard;
+            this.FileImage155 = remoteImageURL + alldata.file5IdcardBg;
+            this.FileImage165 = remoteImageURL + alldata.file2Businesslicense;
+            if (customerIndex5 == 2) {
+              if (this.dateForever == 0) {
+                this.boxcheck11 = false;
+              } else if (this.dateForever == 1) {
+                this.boxcheck11 = true;
+                this.selectDate = "";
+              }
+              if (alldata.file1Idcard != null) {
+                this.isShow15 = false;
+                this.headerImage15 = this.FileImage15;
+              } else {
+                this.isShow15 = true;
+              }
+              if (alldata.file5IdcardBg != null) {
+                this.isShow25 = false;
+                this.headerImage25 = this.FileImage25;
+              } else {
+                this.isShow25 = true;
+              }
+              if (alldata.file2Businesslicense != null) {
+                this.isShow35 = false;
+                this.headerImage35 = this.FileImage35;
+              } else {
+                this.isShow35 = true;
+              }
+              if (alldata.file4Gtqc != null) {
+                this.isShow45 = false;
+                this.headerImage45 = this.FileImage45;
+              } else {
+                this.isShow45 = true;
+              }
             }
-          }
-          if (customerIndex5 == 4) {
-            if (this.dateForever == 0) {
-              this.boxcheck44 = false;
-            } else if (this.dateForever == 1) {
-              this.boxcheck44 = true;
-              this.selectDate = "";
+            if (customerIndex5 == 1) {
+              if (this.dateForever == 0) {
+                this.boxcheck22 = false;
+              } else if (this.dateForever == 1) {
+                this.boxcheck22 = true;
+                this.selectDate = "";
+              }
+              if (alldata.file1Idcard != null) {
+                this.isShow55 = false;
+                this.headerImage55 = this.FileImage55;
+              } else {
+                this.isShow55 = true;
+              }
+              if (alldata.file5IdcardBg != null) {
+                this.isShow65 = false;
+                this.headerImage65 = this.FileImage65;
+              } else {
+                this.isShow65 = true;
+              }
+              if (alldata.file2Businesslicense != null) {
+                this.isShow75 = false;
+                this.headerImage75 = this.FileImage75;
+              } else {
+                this.isShow75 = true;
+              }
             }
-            if (alldata.file1Idcard != null) {
-              this.isShow145 = false;
-              this.headerImage145 = this.FileImage145;
-            } else {
-              this.isShow145 = true;
+            if (customerIndex5 == 4) {
+              if (this.dateForever == 0) {
+                this.boxcheck44 = false;
+              } else if (this.dateForever == 1) {
+                this.boxcheck44 = true;
+                this.selectDate = "";
+              }
+              if (alldata.file1Idcard != null) {
+                this.isShow145 = false;
+                this.headerImage145 = this.FileImage145;
+              } else {
+                this.isShow145 = true;
+              }
+              if (alldata.file5IdcardBg != null) {
+                this.isShow155 = false;
+                this.headerImage155 = this.FileImage155;
+              } else {
+                this.isShow155 = true;
+              }
+              if (alldata.file2Businesslicense != null) {
+                this.isShow165 = false;
+                this.headerImage165 = this.FileImage165;
+              } else {
+                this.isShow165 = true;
+              }
             }
-            if (alldata.file5IdcardBg != null) {
-              this.isShow155 = false;
-              this.headerImage155 = this.FileImage155;
-            } else {
-              this.isShow155 = true;
+            if (customerIndex5 == 5) {
+              if (alldata.file1Idcard != null) {
+                this.isShow85 = false;
+                this.headerImage85 = this.FileImage85;
+              } else {
+                this.isShow85 = true;
+              }
+              if (alldata.file5IdcardBg != null) {
+                this.isShow95 = false;
+                this.headerImage95 = this.FileImage95;
+              } else {
+                this.isShow95 = true;
+              }
             }
-            if (alldata.file2Businesslicense != null) {
-              this.isShow165 = false;
-              this.headerImage165 = this.FileImage165;
-            } else {
-              this.isShow165 = true;
+            if (customerIndex5 == 3) {
+              if (this.dateForever == 0) {
+                this.boxcheck33 = false;
+              } else if (this.dateForever == 1) {
+                this.boxcheck33 = true;
+                this.selectDate = "";
+              }
+              if (alldata.file1Idcard != null) {
+                this.isShow105 = false;
+                this.headerImage105 = this.FileImage105;
+              } else {
+                this.isShow105 = true;
+              }
+              if (alldata.file5IdcardBg != null) {
+                this.isShow115 = false;
+                this.headerImage115 = this.FileImage115;
+              } else {
+                this.isShow115 = true;
+              }
+              if (alldata.file2Businesslicense != null) {
+                this.isShow125 = false;
+                this.headerImage125 = this.FileImage125;
+              } else {
+                this.isShow125 = true;
+              }
+              if (alldata.file4Gtqc != null) {
+                this.isShow135 = false;
+                this.headerImage135 = this.FileImage135;
+              } else {
+                this.isShow135 = true;
+              }
             }
-          }
-          if (customerIndex5 == 5) {
-            if (alldata.file1Idcard != null) {
-              this.isShow85 = false;
-              this.headerImage85 = this.FileImage85;
-            } else {
-              this.isShow85 = true;
-            }
-            if (alldata.file5IdcardBg != null) {
-              this.isShow95 = false;
-              this.headerImage95 = this.FileImage95;
-            } else {
-              this.isShow95 = true;
-            }
-          }
-          if (customerIndex5 == 3) {
-            if (this.dateForever == 0) {
-              this.boxcheck33 = false;
-            } else if (this.dateForever == 1) {
-              this.boxcheck33 = true;
-              this.selectDate = "";
-            }
-            if (alldata.file1Idcard != null) {
-              this.isShow105 = false;
-              this.headerImage105 = this.FileImage105;
-            } else {
-              this.isShow105 = true;
-            }
-            if (alldata.file5IdcardBg != null) {
-              this.isShow115 = false;
-              this.headerImage115 = this.FileImage115;
-            } else {
-              this.isShow115 = true;
-            }
-            if (alldata.file2Businesslicense != null) {
-              this.isShow125 = false;
-              this.headerImage125 = this.FileImage125;
-            } else {
-              this.isShow125 = true;
-            }
-            if (alldata.file4Gtqc != null) {
-              this.isShow135 = false;
-              this.headerImage135 = this.FileImage135;
-            } else {
-              this.isShow135 = true;
-            }
-          }
 
-          let url1 = "/infoState/getCustomerInfoCardState.do";
-          let data1 = {
-            cid: this.CID,
-            year: this.contractyear
-          };
+            let url1 = "/infoState/getCustomerInfoCardState.do";
+            let data1 = {
+              cid: this.CID,
+              year: this.contractyear
+            };
 
-          this.$http.post(url1, data1).then(res1 => {
-            if (res1.data.memo != null) {
-              var alldata = res1.data;
-              this.customerInfo = alldata.customerInfo;
-              this.messages = alldata.memo.reverse();
-            } else {
-              console.log("无评审记录");
-            }
-          });
+            this.$http.post(url1, data1).then(res1 => {
+              if (res1.data.memo != null) {
+                var alldata = res1.data;
+                this.customerInfo = alldata.customerInfo;
+                this.messages = alldata.memo.reverse();
+              } else {
+                console.log("无评审记录");
+              }
+            });
 
-          let url2 = "/customerInfo/getYLcontract.do";
-          let data2 = {
-            ccid: this.CID,
-            ccyear: this.contractyear
-          };
-          this.$http.post(url2, data2).then(res2 => {
-            if (res2.data.code == 0 && res2.data.data != null) {
-              this.checkProxy = 1;
-            } else if (res2.data.code == 1 || res2.data.data == null) {
-              console.log("不存在");
-              this.checkProxy = 0;
-            }
-          });
+            let url2 = "/customerInfo/getYLcontract.do";
+            let data2 = {
+              ccid: this.CID,
+              ccyear: this.contractyear
+            };
+            this.$http.post(url2, data2).then(res2 => {
+              if (res2.data.code == 0 && res2.data.data != null) {
+                this.checkProxy = 1;
+              } else if (res2.data.code == 1 || res2.data.data == null) {
+                console.log("不存在");
+                this.checkProxy = 0;
+              }
+            });
+          }
         }
-      });
+      );
     },
     getData3() {
       let url = "/customerInfo/getYLcontract.do";
@@ -2104,8 +2121,7 @@ export default {
   margin-right: 5px;
 }
 .check[type="checkbox"]:checked {
-  background: url("../assets/check1.png")
-    no-repeat center;
+  background: url("../assets/check1.png") no-repeat center;
 }
 .invoice {
   margin: 5px;
