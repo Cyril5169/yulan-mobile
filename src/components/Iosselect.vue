@@ -42,6 +42,14 @@ export default {
       this.index = index;
     }
   },
+  watch: {
+    area_M(val) {
+      this.columns = ["全部"];
+      this.$store.state.area_M.forEach(e => {
+        this.columns.push(e.bname);
+      });
+    }
+  },
   computed: {
     CID() {
       if (this.$store.state.info.data.type != "ECWEB") {
@@ -49,16 +57,23 @@ export default {
       } else {
         return this.$store.state.info.data.loginName;
       }
+    },
+    area_M() {
+      if (this.$store.state.position != "SALEMAN_S") {
+        if (this.$store.state.area_M) {
+          return this.$store.state.area_M;
+        }
+      }
     }
   },
   mounted() {
-    if (this.$store.state.position != "SALEMAN_S") {
-      if (this.$store.state.area_M) {
-        this.$store.state.area_M.forEach(e => {
-          this.columns.push(e.bname);
-        });
-      }
-    }
+    // if (this.$store.state.position != "SALEMAN_S") {
+    //   if (this.$store.state.area_M) {
+    //     this.$store.state.area_M.forEach(e => {
+    //       this.columns.push(e.bname);
+    //     });
+    //   }
+    // }
   }
 };
 </script>

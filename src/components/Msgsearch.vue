@@ -3,12 +3,10 @@
     <top :top="set"></top>
     <div class="search">
       <searchselect
-        :back="select2"
         v-on:listen="listen"
         v-on:listen2="listen2"
         v-on:listentarget="listen3"
         @listenYear="listen6"
-        :area_M="area_M"
       ></searchselect>
       <ul class="ulhead" id="ulhead">
         <li class="lileft">客户号</li>
@@ -66,8 +64,6 @@ export default {
       CCID: "",
       reviseflag: true, //通过登录的position判断是否能能对协议书进行修改
       ylcstate: "",
-      area_1: "",
-      area_M: [], //第一个地区
       selYear: this.$store.state.year,
       currentPage: 1
     };
@@ -115,8 +111,8 @@ export default {
         th.cardshow = res.data.data;
         th.count1 = Math.ceil(res.data.count / 10).toString();
         th.count2 = res.data.count;
-        th.area_M = res.data.area;
-        th.$store.commit("getarea_M", th.area_M);
+        var area_M = res.data.area;
+        th.$store.commit("getarea_M", area_M);
       })
       .catch(function(res) {
         console.log(res);
@@ -177,7 +173,7 @@ export default {
     listen4(data) {
       this.more = data;
     },
-    listen5(data, data2) {
+    listen5(data) {
       this.select4 = data;
       this.currentPage = 1;
       this.searchAll();
@@ -256,7 +252,7 @@ ul {
 .search-result {
   width: 100%;
   height: 400px;
-  padding-top: 149px;
+  padding-top: 140px;
   box-sizing: border-box;
 }
 </style>

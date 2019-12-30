@@ -44,7 +44,6 @@ import iosselect2 from "@/components/Iosselect2";
 import { Popup, Picker } from "vant";
 
 export default {
-  props: ["area_M"],
   data() {
     return {
       more: false,
@@ -67,7 +66,7 @@ export default {
   watch: {
     selected() {
       this.$refs.btn_2.value = "全部";
-      this.$emit("listen2", this.selected2);
+      //this.$emit("listen2", this.selected2);
     },
     selected2(val, oldval) {
       if (val == "") {
