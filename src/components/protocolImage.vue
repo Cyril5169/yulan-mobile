@@ -25,7 +25,9 @@ export default {
     getTime(time1) {
       let year = "" + time1.getFullYear();
       let month = "" + (time1.getMonth() + 1);
+      month = month < 10 ? "0" + month : month;
       let day = "" + time1.getDate();
+      day = day < 10 ? "0" + day : day;
       return year + "." + month + "." + day;
     }
   },
@@ -38,15 +40,12 @@ export default {
       area3 = "",
       name = this.$store.state.info.data.realName,
       cyear = this.$store.state.year;
-
-    // console.log(this.$store.state.info.data);
     this.$http
       .post("/infoState/getYLcontractentryState.do", {
         cid: loginname,
         cyear: cyear
       })
       .then(function(res) {
-        // console.log(res.data.yLcontractInfo);
         if (res.data.yLcontractInfo == "协议书通过") {
           th.$http
             .post("/customerInfo/getAuthorization.do", {
@@ -54,8 +53,6 @@ export default {
               cyear: cyear
             })
             .then(function(res) {
-              console.log(res.data);
-              console.log(loginname);
               area1 = res.data.districtText;
               area2 = res.data.areaDistrict2Text;
               area3 = res.data.areaDistrict3Text;
@@ -70,53 +67,35 @@ export default {
                   ccid: loginname
                 })
                 .then(function(res) {
-                  console.log(res);
-                  // th.time = res.data.startDate + '-'+ res.data.endDate
                   if (res.data.data.startDate && res.data.data.endDate) {
                     time =
                       th.getTime(new Date(res.data.data.startDate)) +
                       " - " +
                       th.getTime(new Date(res.data.data.endDate));
-                    console.log(time);
-                  }else{
-                    console.log('获取时间失败')
+                  } else {
+                    console.log("获取时间失败");
                   }
                   var picture = th.$refs.picture,
                     ctx = picture.getContext("2d"),
                     img = new Image();
-
+                  img.src =
+                    "http://14.29.221.109:10250/upload/assets/proimage.jpg";
                   img.onload = function() {
                     ctx.scale(360 / img.width, 492 / img.height);
                     ctx.drawImage(img, 0, 0);
-                    // ctx.font = '64px';
-                    ctx.font = "16px Arial";
+                    ctx.font = "bold 16px serif";
                     ctx.style = "black";
-                    ctx.fillText(name, 85, 385);
-                    ctx.fillText(area1 + "  " + area2 + "  " + area3, 160, 445);
-                    console.log(time);
-
+                    let namex = (275 - name.length * 14) / 2 + 85;
+                    ctx.fillText(name, namex, 385);
+                    ctx.fillText(area1 + area2  + area3, 160, 445);
                     ctx.fillText(time, 195, 474);
                   };
-                  img.src =
-                    "http://14.29.221.109:10250/upload/assets/proimage.jpg";
                 });
             });
         } else {
           alert("协议书暂未通过，请耐心等候");
         }
       });
-
-    // this.$http.post('/customerInfo/createYLcontract.do',{
-    //   "ccyear": 2019,
-    //     "ccid": "C0000",
-    //     "name": "咕咕咕",
-    //     "accountBank": "邮政储蓄银行",
-    //     "account": null,
-    //     "accountLocation": "吉林省-白城市-洮南市",
-    //     "idcardNo": "220881198207061142"
-    // }).then(res => {
-    //   console.log(res);
-    // })
   },
   components: {
     top

@@ -78,7 +78,7 @@ export default {
 <style scoped>
 .wrap {
   display: inline-block;
-  width: 354px;
+  width: 350px;
   height: 77px;
   text-align: left;
   border-radius: 7px;
@@ -89,9 +89,6 @@ export default {
   box-sizing: border-box;
   font-size: 0;
 }
-/* .wrap div{
-
-    } */
 .area1 {
   font-size: 8px;
   color: #7d7d7d;
@@ -108,30 +105,20 @@ export default {
   display: inline-flex;
   align-items: center;
   font-size: 13px;
-  /* height: 100%; */
-  /* line-height: 77px; */
 }
 .protocol-name {
-  /* width: 107px; */
   position: absolute;
-  /* right:35px; */
   height: 77px;
   max-width: 100px;
-  /* margin-left: 10px; */
   text-align: center;
-  /* margin-right: 20px; */
-  /* margin-top: -20px; */
-  right: 85px;
+  right: 65px;
   display: inline-flex;
   justify-content: center;
   flex-direction: column;
-  /* flex-wrap: wrap; */
 }
 .protocol-name span {
   height: 15px;
   font-size: 10px;
-  /* line-height: 15px;
-        height: 15px; */
 }
 .name {
   display: inline-flex;
@@ -159,7 +146,7 @@ export default {
 }
 .wrap .more {
   position: absolute;
-  background-image: url(http://14.29.221.109:10250/upload/assets/right1.png);
+  background-image: url(../assets/right1.png);
   width: 12px;
   height: 12px;
   top: 33px;

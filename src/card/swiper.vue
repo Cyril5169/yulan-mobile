@@ -56,6 +56,7 @@
       <swiper-slide>
         <card5
           :sss="options"
+          :status="customerInfo"
           v-on:put14="input14"
           v-on:put15="input15"
           v-on:put16="input16"
@@ -238,7 +239,8 @@ export default {
       forever4: 0,
       forever: 0,
       contractyear: this.$store.state.year,
-      showEnter: false
+      showEnter: false,
+      customerInfo:''
     };
   },
   components: {
@@ -741,7 +743,6 @@ export default {
       this.$http.post(url, data).then(res => {
         if (res.data.code == 0 || res.data.data != null) {
           var alldata = res.data.data;
-          console.log(alldata);
           this.name = alldata.cname;
           var c = alldata.invoiceType;
           if (c == "不开发票") {

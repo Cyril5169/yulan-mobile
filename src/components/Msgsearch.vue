@@ -149,6 +149,7 @@ export default {
     },
     sendCID(data) {
       this.$store.commit("getCCID", data);
+      this.$store.commit("getCYEAR", data);
       this.$store.state.CCID = data;
       this.CCID = data;
     },

@@ -495,6 +495,10 @@ export default {
       current_month = current_month < 10 ? "0" + current_month : current_month;
       this.ksDataSet = current_year + "-" + current_month + "-" + current_date;
       this.ksData = new Date(this.ksDataSet);
+      current_date = this.ksData.getDate();
+      current_month = this.ksData.getMonth() + 1;
+      current_year = this.ksData.getFullYear();
+       this.ksDataSet = current_year + "-" + current_month + "-" + current_date;//实际时间
     },
     //结束时间设置
     jsSet(time) {
@@ -1063,7 +1067,6 @@ ul {
   border: none;
   padding-left: 15px;
   text-align: left;
-
   background-image: url("../../assetsorder/time-zk.png");
   background-repeat: no-repeat;
   background-position-x: 23vw;

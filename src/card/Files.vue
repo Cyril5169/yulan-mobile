@@ -1,6 +1,6 @@
 <template>
   <div class="files">
-    <div class="files-word"  @click="showItFalse">
+    <div class="files-word" @click="showItFalse">
       <h4>{{ msg[this.file] }}</h4>
       <p>{{ msg2[this.file] }}</p>
     </div>
@@ -8,13 +8,13 @@
       <div id="record" @click="showIt"></div>
       <span @click="showIt">评审记录</span>
     </div>
-    <reviews-show
+    <review
       v-on:set="setChange"
       v-show="isShow"
       :show="isShow"
       :message="messages"
       :customerInfo="customerInfo"
-    ></reviews-show>
+    ></review>
   </div>
 </template>
 
@@ -28,7 +28,7 @@ export default {
       msg2: [],
       isShow: false,
       messages: [],
-      customerInfo: " ",
+      customerInfo: "",
       once: 0,
       contractyear: this.$store.state.year
     };
@@ -37,8 +37,8 @@ export default {
     showIt: function() {
       this.isShow = !this.isShow;
     },
-    showItFalse(){
-      if(this.isShow) this.isShow = false;
+    showItFalse() {
+      if (this.isShow) this.isShow = false;
     },
     setChange: function(data) {
       this.isShow = data;
@@ -53,6 +53,7 @@ export default {
         if (res.data.memo != null) {
           var alldata = res.data;
           this.customerInfo = alldata.customerInfo;
+          if (alldata.state == "ONCREATE") this.customerInfo = "资料卡确认中";
           if (
             this.customerInfo == "业务员审核中" ||
             this.customerInfo == "资料卡通过" ||
@@ -64,7 +65,7 @@ export default {
             this.once = 1;
             this.$emit("twice", this.once);
           }
-          this.messages = alldata.memo.reverse();
+          if (alldata.memo) this.messages = alldata.memo.reverse();
         } else {
           this.once = 1;
           this.$emit("twice", this.once);
@@ -93,26 +94,21 @@ export default {
             year: alldata.contractyear
           };
           this.$http.post(url, data).then(res2 => {
-            if (res2.data.memo != null) {
-              var alldata2 = res2.data;
-              this.customerInfo = alldata2.customerInfo;
-              if (
-                this.customerInfo == "业务员审核中" ||
-                this.customerInfo == "资料卡通过" ||
-                this.customerInfo == "订单部审核中"
-              ) {
-                this.once = 2;
-                this.$emit("twice", this.once);
-              } else {
-                this.once = 1;
-                this.$emit("twice", this.once);
-              }
-              this.messages = alldata2.memo.reverse();
+            var alldata2 = res2.data;
+            this.customerInfo = alldata2.customerInfo;
+            if (alldata.state == "ONCREATE") this.customerInfo = "资料卡确认中";
+            if (
+              this.customerInfo == "业务员审核中" ||
+              this.customerInfo == "资料卡通过" ||
+              this.customerInfo == "订单部审核中"
+            ) {
+              this.once = 2;
+              this.$emit("twice", this.once);
             } else {
               this.once = 1;
               this.$emit("twice", this.once);
-              console.log("出错了");
             }
+            if (alldata2.memo) this.messages = alldata2.memo.reverse();
           });
         } else if (res.data.code === 1 || res.data.data == null) {
           console.log("不存在");
@@ -121,7 +117,7 @@ export default {
     }
   },
   components: {
-    "reviews-show": Review
+    review: Review
   },
   computed: {
     CID() {
@@ -175,7 +171,7 @@ export default {
   font-family: PingFang HK;
 }
 .exam {
-  min-width:80px;
+  min-width: 80px;
   display: flex;
   align-items: center;
   color: #89cb81;

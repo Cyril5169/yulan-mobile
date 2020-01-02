@@ -46,6 +46,9 @@ export default {
       this.isShow = !this.show;
       this.$emit("set", this.isShow);
     }
+  },
+  mounted(){
+    this.texts = this.message;
   }
 };
 </script>

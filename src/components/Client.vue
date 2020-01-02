@@ -61,7 +61,7 @@
             </div>
           </div>
           <div class="middle-div" @click="toProImage">
-            <p class="middle-div-p3">授权书</p>
+            <p class="middle-div-p">授权书</p>
             <div class="right-arrow"></div>
           </div>
           <div class="bottom-div"></div>
@@ -474,22 +474,13 @@ p {
   margin-top: -13px;
 }
 .middle-div-p2 {
-  height: 20px;
-  font-size: 15px;
-  color: #535353;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 100;
-  margin-top: -10px;
-}
-.middle-div-p3 {
   height: 26px;
   font-size: 18px;
   color: #535353;
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 40%;
+  z-index: 100;
   margin-top: -13px;
 }
 .right-arrow {

@@ -267,10 +267,8 @@ export default {
     },
     slide() {
       let slide = this.$refs.slide;
-      // var littlecard = this.$refs.littlecard;
       slide.style.height = this.slideflag ? "0px" : "79vw";
       slide.style.marginBottom = this.slideflag ? "0px" : "-30px";
-      // littlecard.style.height = this.slideflag?'67px':'340px';
       this.slideflag = !this.slideflag;
     },
     sure() {
@@ -291,6 +289,7 @@ export default {
     build() {
       this.show = this.revised2 ? true : false;
       this.$store.commit("getCCID", this.card.CID);
+      this.$store.commit("getCYEAR", this.card.CONTRACTYEAR);
     },
     revise() {
       this.show = true;

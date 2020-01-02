@@ -26,7 +26,6 @@
       <li v-for="cardMsg in cardMsgs" :key="cardMsg.id">
         <littlecard :cardMsg="cardMsg"></littlecard>
       </li>
-    </div>
     <changepage
       v-on:listennext="listennext"
       :count1="count1"
@@ -35,7 +34,10 @@
       :select2="select2"
       :select3="select3"
       :signed="signed"
+      :change="1"
+      @pageChange="pageChange"
     ></changepage>
+    </div>
     <div class="bottom-box"></div>
   </div>
 </template>
@@ -44,7 +46,7 @@
 <script>
 import littlecard from "./LittleCard4";
 import searchselect from "@/components/Searchselect";
-import changepage from "@/components/Pagechange2";
+import changepage from "@/components/Pagechange";
 
 export default {
   data() {
@@ -67,7 +69,7 @@ export default {
     var th = this;
     this.$http
       .post("/YLcontractentry/getYlcsbysigned.do", {
-        limit: "5",
+        limit: "10",
         page: "1",
         year: this.$store.state.year,
         cid: this.$store.state.info.data.loginName,
@@ -147,6 +149,10 @@ export default {
       this.selYear = year;
       this.currentPage = 1;
       this.searchAll();
+    },
+    pageChange(page) {
+      this.currentPage = page;
+      this.searchAll();
     }
   },
   components: {
@@ -166,14 +172,13 @@ export default {
 .show-protocol {
   background-color: rgb(239, 239, 239);
   height: 100vh;
-  position: relative;
   overflow: scroll;
 }
 li {
   display: inline-block;
 }
 .bottom-box {
-  width: 375px;
+  width: 100%;
   height: 20px;
   background-color: rgb(239, 239, 239);
 }
@@ -223,10 +228,12 @@ li {
   position: absolute;
   top: 135px;
   background-color: rgb(239, 239, 239);
+  overflow-x: hidden;
 }
-
 .search {
   width: 100%;
+  height: 44px;
+  background: -webkit-linear-gradient(left, #bedd81, #87ca81);
   position: absolute;
   bottom: 0;
 }
@@ -235,14 +242,14 @@ ul {
   padding: 0;
 }
 .ulhead {
-  position: absolute;
-  bottom: 0;
-  background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
-  line-height: 37px;
-  padding-left: 7px;
+  position: fixed;
+  top: 98px;
   text-align: left;
+  line-height: 37px;
   width: 100%;
+  height: 37px;
   font-size: 15px;
+  background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
 }
 .lileft {
@@ -254,16 +261,15 @@ ul {
   display: inline-block;
 }
 .licenter {
-  padding-left: 22px;
-  padding-right: 82px;
+  padding-left: 30px;
+  padding-right: 60px;
   box-sizing: content-box;
 }
 .liright {
   position: relative;
 }
 .changepage {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
+  position: relative;
+  left: 4px;
 }
 </style>

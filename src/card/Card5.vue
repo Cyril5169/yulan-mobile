@@ -36,7 +36,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload1"
@@ -52,7 +52,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload2"
@@ -68,7 +68,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload3"
@@ -84,7 +84,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload4"
@@ -230,7 +230,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload5"
@@ -246,7 +246,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload6"
@@ -262,7 +262,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload7"
@@ -379,7 +379,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload8"
@@ -395,7 +395,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload9"
@@ -477,7 +477,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload10"
@@ -493,7 +493,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload11"
@@ -509,7 +509,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload12"
@@ -525,7 +525,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload13"
@@ -671,7 +671,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload14"
@@ -687,7 +687,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload15"
@@ -703,7 +703,7 @@
               <button>确定</button>
             </div>
             <div class="save2">
-              <button>
+              <button v-if="status!='资料卡通过'">
                 <input
                   type="file"
                   id="upload16"
@@ -822,7 +822,7 @@ var remoteImageURL = "http://14.29.221.109:10250/upload";
 import Exif from "exif-js";
 import { bus } from "../utils/eventBus.js";
 export default {
-  props: ["sss"],
+  props: ["sss", "status"],
   data() {
     // let self = this;
     return {

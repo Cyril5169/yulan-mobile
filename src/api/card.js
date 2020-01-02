@@ -14,3 +14,17 @@ export function GetCardByCustomer(data, config = {}) {
         return Promise.reject(err);
     })
 }
+export function GetYlContractByCustomer(data, config = {}) {
+    return post('/YLCONTRACTENTRY/GetYlContractByCustomer', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+export function UpdateContractState(data, config = {}) {
+    return post('/YLCONTRACTENTRY/UpdateContractState', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}

@@ -2,10 +2,11 @@
   <div class="tax">
     <div class="point-out" v-show="IsPonitOut">
       <div class="warn"></div>
-      <p v-show="warn">是否确定填写信息
-        <br>完整且无误？
-        <br>点击确定将创建对应客户
-        <br>协议书
+      <p v-show="warn">
+        是否确定填写信息
+        <br />完整且无误？
+        <br />点击确定将创建对应客户
+        <br />协议书
       </p>
       <div class="btn1" v-show="warn" @click="sendData">确定</div>
       <div class="btn2" @click="Cancel">取消</div>
@@ -24,7 +25,7 @@
               name="check"
               :checked="boxcheck1"
               @click="changeCheck1"
-            >玉兰（墙纸类产品）
+            />玉兰（墙纸类产品）
           </label>
         </div>
         <div class="p2">
@@ -35,14 +36,14 @@
               name="check"
               :checked="boxcheck2"
               @click="changeCheck2"
-            >玉兰·兰尚居品（软装类产品）
+            />玉兰·兰尚居品（软装类产品）
           </label>
         </div>
       </div>
       <div class="taskall">
         <p id="first">销售总任务</p>
         <p>
-          <input type="text" v-model="add" readonly="true" id="taskall">&nbsp;&nbsp;万元
+          <input type="text" v-model="add" readonly="true" id="taskall" />&nbsp;&nbsp;万元
         </p>
       </div>
       <div class="brand">
@@ -56,7 +57,7 @@
               ref="yulan"
               class="getGrey"
               :readonly="!boxcheck1"
-            >&nbsp;万元
+            />&nbsp;万元
           </p>
         </div>
         <div class="right">
@@ -69,7 +70,7 @@
               ref="yulansj"
               class="getGrey"
               :readonly="!boxcheck2"
-            >&nbsp;万元
+            />&nbsp;万元
           </p>
         </div>
       </div>
@@ -86,25 +87,25 @@
           </tr>
           <tr>
             <td>
-              <input type="text" readonly="true" v-model="average">
+              <input type="text" readonly="true" v-model="average" />
             </td>
             <td>
-              <input type="text" readonly="true" v-model="average">
+              <input type="text" readonly="true" v-model="average" />
             </td>
             <td>
-              <input type="text" readonly="true" v-model="average">
+              <input type="text" readonly="true" v-model="average" />
             </td>
             <td>
-              <input type="text" readonly="true" v-model="average">
+              <input type="text" readonly="true" v-model="average" />
             </td>
             <td>
-              <input type="text" readonly="true" v-model="average">
+              <input type="text" readonly="true" v-model="average" />
             </td>
             <td>
-              <input type="text" readonly="true" v-model="average">
+              <input type="text" readonly="true" v-model="average" />
             </td>
             <td id="clear">
-              <input type="text" readonly="true" v-model="average">
+              <input type="text" readonly="true" v-model="average" />
             </td>
           </tr>
           <tr>
@@ -118,22 +119,22 @@
           </tr>
           <tr>
             <td id="clear2">
-              <input type="text" readonly="true" v-model="average">
+              <input type="text" readonly="true" v-model="average" />
             </td>
             <td id="clear2">
-              <input type="text" readonly="true" v-model="average">
+              <input type="text" readonly="true" v-model="average" />
             </td>
             <td id="clear2">
-              <input type="text" readonly="true" v-model="average">
+              <input type="text" readonly="true" v-model="average" />
             </td>
             <td id="clear2">
-              <input type="text" readonly="true" v-model="average">
+              <input type="text" readonly="true" v-model="average" />
             </td>
             <td id="clear2">
-              <input type="text" readonly="true" v-model="Dec">
+              <input type="text" readonly="true" v-model="Dec" />
             </td>
             <td id="clear2">
-              <input type="text" readonly="true" v-model="add">
+              <input type="text" readonly="true" v-model="add" />
             </td>
           </tr>
         </table>
@@ -141,44 +142,42 @@
       <div class="box">
         <p id="first">总任务完成返点</p>
         <p>
-          <input type="text" v-model="percent">&nbsp;%
+          <input type="text" v-model="percent" />&nbsp;%
         </p>
         <div class="rewordpercent2">
           <div>兰居尚品任务返点</div>
-          <input type="text" class="reword" v-model="rewordpercent2"> %
+          <input type="text" class="reword" v-model="rewordpercent2" /> %
         </div>
       </div>
       <div class="bottom">
         <div class="box">
           <p id="first">备货金额占比</p>
           <p>
-            <input type="text" v-model="goods">&nbsp;%
+            <input type="text" v-model="goods" />&nbsp;%
           </p>
         </div>
         <div class="box2">
           <p id="first">合人民币</p>
           <p>
-            <input type="text" v-model="sum" readonly>&nbsp;元
+            <input type="text" v-model="sum" readonly />&nbsp;元
           </p>
         </div>
         <div class="box3">
           <p>
             协议生效时间
-            <input type="text" readonly @click="calendar1" v-model="selectDate1">
+            <input type="text" readonly @click="calendar1" v-model="selectDate1" />
           </p>
         </div>
         <div class="box4">
           <p>
             协议截止时间
-            <input type="text" readonly @click="calendar2" v-model="selectDate2">
+            <input type="text" readonly @click="calendar2" v-model="selectDate2" />
           </p>
         </div>
       </div>
-
-     
     </div>
     <div class="save" @click="showIt" ref="save">创建协议书</div>
-     <calendar v-model="calendarShow" @change="handelChage" :selectDate="selectDate"></calendar>
+    <calendar v-model="calendarShow" @change="handelChage" :selectDate="selectDate"></calendar>
     <!-- <calendar
             v-model="calendarShow"
             @change="handelChage"
@@ -285,7 +284,6 @@ export default {
       }
     },
     add() {
-      // return ""+ Math.floor((Number(this.yulan) + Number(this.yulansj))*100) / 100;
       return "" + (Number(this.yulan) + Number(this.yulansj)).toFixed(2);
     },
     average() {
@@ -299,14 +297,12 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$route.query.ylcstate);
     switch (this.$route.query.revised) {
       case "SALEMANMODIFYING":
         this.revised = true;
         this.$refs.save.innerHTML = "修改协议书";
         break;
     }
-    console.log(this.CID);
   },
   methods: {
     initTime(time) {
@@ -339,7 +335,6 @@ export default {
       this.$emit("select2", this.boxcheck2);
     },
     handelChage(data, selectDate) {
-      console.log(selectDate);
       if (this.IsCal1) {
         this.selectDate1 = selectDate;
       } else {
@@ -359,7 +354,6 @@ export default {
       this.warn = false;
     },
     showIt() {
-      console.log("hello");
       if (
         !(
           this.yulan != "" &&
@@ -378,29 +372,25 @@ export default {
         } else {
           alert("信息填写不完整，请重新确认");
         }
-
       } else {
-        if(this.boxcheck1 && this.yulan == '0'){
-          alert("请填写玉兰品牌金额")
-        }else if(this.boxcheck2 && this.yulansj == '0'){
-          alert("请填写玉兰尚居金额")
-        }else{
-        this.IsPonitOut = true;
-        this.warn = true;
+        if (this.boxcheck1 && this.yulan == "0") {
+          alert("请填写玉兰品牌金额");
+        } else if (this.boxcheck2 && this.yulansj == "0") {
+          alert("请填写玉兰尚居金额");
+        } else {
+          this.IsPonitOut = true;
+          this.warn = true;
         }
       }
     },
     sendData() {
       let th = this;
       var nowTime = this.initTime(new Date());
-      console.log(1);
       let url = this.revised
         ? "/YLcontractentry/updateYLcontract.do"
         : "/YLcontractentry/createYLcontract.do";
-      console.log(url);
       let data = {
-        // "ccyear":new Date().getFullYear()-1,
-        ccyear: this.$store.state.year,
+        ccyear: this.$store.state.CYEAR,
         ccid: this.$store.state.CCID,
         aRetailing: this.yulan,
         bEngineering: 0, //无效
@@ -427,16 +417,9 @@ export default {
         startDate: this.selectDate1, //协议开始日期
         endDate: this.selectDate2 //协议结束日期
       };
-      console.log("this.preferedbrand:  " + this.preferedbrand);
-
       this.$http
         .post(url, data)
         .then(res => {
-          console.log("url: " + url);
-          console.log(nowTime);
-
-          // let nowTime = th.initTime(new Date())
-          // console.log("this.time : " + this.time);
           switch (this.$store.state.position) {
             case "SALEMAN_M":
             case "SALEMAN_S":
@@ -473,26 +456,20 @@ export default {
             market: "",
             csa: ""
           };
-          console.log(data);
           this.$http
             .post("/infoState/checkYLcontractentryState.do", data)
-            .then(res => {
-              console.log(res);
-            })
+            .then(res => {})
             .catch(res => {
               console.log(res);
             });
-          console.log(res.data);
 
           this.$router.push({
             path: "/success3"
           });
-          // }
         })
         .catch(err => {
           console.log("错误信息" + err);
         });
-      console.log(2);
     }
   }
 };
@@ -555,8 +532,8 @@ export default {
   background-color: rgb(255, 255, 255);
   overflow: hidden;
 }
-calendar{
-  width:331px;
+calendar {
+  width: 331px;
 }
 #first {
   margin-left: 3px;

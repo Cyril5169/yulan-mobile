@@ -35,9 +35,10 @@
         :select2="select2"
         :select3="select3"
         :signed="signed"
+        :change="1"
+        @pageChange="pageChange"
       ></changepage>
     </div>
-
     <div class="bottom-box"></div>
   </div>
 </template>
@@ -46,7 +47,7 @@
 <script>
 import littlecard from "./LittleCard2";
 import searchselect from "@/components/Searchselect";
-import changepage from "@/components/Pagechange2";
+import changepage from "@/components/Pagechange";
 
 export default {
   data() {
@@ -148,6 +149,10 @@ export default {
       this.selYear = year;
       this.currentPage = 1;
       this.searchAll();
+    },
+    pageChange(page) {
+      this.currentPage = page;
+      this.searchAll();
     }
   },
   components: {
@@ -173,7 +178,7 @@ li {
   display: inline-block;
 }
 .bottom-box {
-  width: 375px;
+  width: 100%;
   height: 20px;
   background-color: rgb(239, 239, 239);
 }
@@ -223,6 +228,7 @@ li {
   position: absolute;
   top: 135px;
   background-color: rgb(239, 239, 239);
+  overflow-x: hidden;
 }
 .search {
   width: 100%;

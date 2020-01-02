@@ -1238,16 +1238,6 @@ export default {
       let nowTime = this.initTime(new Date());
       this.show3 = false;
       this.show3 = false;
-      // this.$http
-      //   .post("/infoState/bussinessCheckCustomerInfoCard.do", {
-      //     cid: this.$store.state.CID,
-      //     state: this.state,
-      //     memo:
-      //       nowTime +
-      //       this.position +
-      //       this.$store.state.info.data.realName +
-      //       "通过;"
-      //   })
       UpdateState({
         cid: this.CID,
         year: this.$store.state.CYEAR,
