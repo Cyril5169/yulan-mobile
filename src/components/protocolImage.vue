@@ -33,7 +33,7 @@ export default {
   },
   mounted() {
     let th = this;
-    var loginname = this.$store.state.info.data.loginName;
+    var loginname = this.$store.state.info.data.companyId;
     var time = "",
       area1 = "",
       area2 = "",
