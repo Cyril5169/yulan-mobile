@@ -78,18 +78,19 @@ export default {
                   var picture = th.$refs.picture,
                     ctx = picture.getContext("2d"),
                     img = new Image();
-                  img.src =
-                    "http://14.29.221.109:10250/upload/assets/proimage.jpg";
+                  
                   img.onload = function() {
                     ctx.scale(360 / img.width, 492 / img.height);
                     ctx.drawImage(img, 0, 0);
-                    ctx.font = "bold 16px serif";
+                    ctx.font = "bold 16px 宋体";
                     ctx.style = "black";
                     let namex = (275 - name.length * 14) / 2 + 85;
                     ctx.fillText(name, namex, 385);
                     ctx.fillText(area1 + area2  + area3, 160, 445);
                     ctx.fillText(time, 195, 474);
                   };
+                  img.src =
+                    "http://14.29.221.109:10250/upload/assets/proimage.jpg";
                 });
             });
         } else {
