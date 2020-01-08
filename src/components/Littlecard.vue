@@ -263,7 +263,7 @@ export default {
       this.$store.commit("getCYEAR", this.card.CONTRACTYEAR);
     },
     getCID() {
-      this.$emit("sendCID", this.card.CID);
+      this.$emit("sendCID", this.card.CID, this.card.CONTRACTYEAR);
     },
     slide() {
       let slide = this.$refs.slide;
@@ -292,7 +292,7 @@ export default {
       this.$store.commit("getCYEAR", this.card.CONTRACTYEAR);
     },
     revise() {
-      this.show = true;
+      this.sure();
     }
   },
   components: {

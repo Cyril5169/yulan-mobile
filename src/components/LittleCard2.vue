@@ -66,9 +66,15 @@ export default {
   methods: {
     toAgreement() {
       this.$store.commit("getCCID", this.cardMsg.CID);
+      this.$store.commit("getCYEAR", this.cardMsg.CYEAR);
       this.$store.commit("setReviewed", true);
       this.$router.push({
-        path: "/agreement"
+        path: "/agreement",
+        query:{
+          reviewed:false,
+          ccid:this.cardMsg.CID,
+          cyear:this.cardMsg.CYEAR
+        }
       });
     }
   }

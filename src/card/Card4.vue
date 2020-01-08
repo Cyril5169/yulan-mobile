@@ -34,7 +34,7 @@
               <span class="radio-name">有营业执照-无对公账号</span>
             </label>
           </p>
-          <p id="third" v-show="isShow">
+          <!-- <p id="third" v-show="isShow">
             <span>是否增加委托授权付款银行账号</span>
           </p>
           <p id="thirdc" v-show="isShow">
@@ -67,7 +67,7 @@
               <label for="type2" class="way"></label>
               <span class="radio-name">否</span>
             </label>
-          </p>
+          </p> -->
           <!-- <p id="fifth" v-show="b"><span id="download" @click="download">下载《授权付款委托书》</span>
             <span style="color:red">*</span><span id="togo" @click="sendData">填写授权委托账号信息</span>
           </p>-->

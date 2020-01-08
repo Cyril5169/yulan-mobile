@@ -434,7 +434,7 @@
                 <span class="radio-name">有营业执照-无对公账号</span>
               </label>
             </p>
-            <p id="third4" v-show="isShow4">
+            <!-- <p id="third4" v-show="isShow4">
               <span>是否增加委托授权付款银行账号</span>
             </p>
             <p id="thirdc4" v-show="isShow4">
@@ -467,7 +467,7 @@
                 <label for="type24" class="way4"></label>
                 <span class="radio-name">否</span>
               </label>
-            </p>
+            </p> -->
             <p id="fifth4" v-show="b4">
               <router-link to="/cardquery/checkproxy">
                 <span id="togo4">查看授权委托账号信息</span>
@@ -1580,7 +1580,7 @@ export default {
               if (newband.indexOf("墙") > -1) {
                 this.boxcheck1 = true;
               }
-              if (newband.indexOf("软") > -1) {
+              if (newband.indexOf("软") > -1 || newband.indexOf("布") > -1) {
                 this.boxcheck2 = true;
               }
             }

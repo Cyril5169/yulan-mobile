@@ -33,7 +33,7 @@
             :checked="boxcheck2"
             @click="changeCheck2"
           />
-          <span>玉兰·兰尚居品（软装类产品）</span>
+          <span>兰尚居品（布艺类产品）</span>
         </div>
         <div class="box" id="nowbrand">
           <p>
@@ -283,14 +283,13 @@ export default {
     boxcheck1(curVal, oldVal) {
       if (curVal) {
         if (this.boxcheck2) {
-          this.preferedbrand =
-            "√玉兰（墙纸类产品）√玉兰·兰居尚品（软装类产品）";
+          this.preferedbrand = "√玉兰（墙纸类产品）√兰居尚品（布艺类产品）";
         } else {
           this.preferedbrand = "√玉兰（墙纸类产品）";
         }
       } else {
         if (this.boxcheck2) {
-          this.preferedbrand = "√玉兰·兰居尚品（软装类产品）";
+          this.preferedbrand = "√兰居尚品（布艺类产品）";
         } else {
           this.preferedbrand = "";
         }
@@ -299,10 +298,9 @@ export default {
     boxcheck2(curVal, oldVal) {
       if (curVal) {
         if (this.boxcheck1) {
-          this.preferedbrand =
-            "√玉兰（墙纸类产品）√玉兰·兰居尚品（软装类产品）";
+          this.preferedbrand = "√玉兰（墙纸类产品）√兰居尚品（布艺类产品）";
         } else {
-          this.preferedbrand = "√玉兰·兰居尚品（软装类产品）";
+          this.preferedbrand = "√兰居尚品（布艺类产品）";
         }
       } else {
         if (this.boxcheck1) {
@@ -478,7 +476,7 @@ export default {
             if (newband.indexOf("墙") > -1) {
               this.boxcheck1 = true;
             }
-            if (newband.indexOf("软") > -1) {
+            if (newband.indexOf("软") > -1 || newband.indexOf("布") > -1) {
               this.boxcheck2 = true;
             }
           }

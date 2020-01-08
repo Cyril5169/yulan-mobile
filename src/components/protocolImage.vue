@@ -1,24 +1,27 @@
 <template>
   <div class="protocolImg">
     <top :top="set"></top>
-    <!-- <div class="proImage">
-
-    </div>
-    <div class="save">
-      <div class="saveImg"></div>
-      <p>保存图片</p>
-    </div>-->
     <canvas width="360px" height="492px" ref="picture" class="proImage"></canvas>
+    <div class="proImage" v-if="imgLoading">
+      <span>正在生成授权书，请稍后...</span>
+    </div>
+    <!-- <div class="save2" v-if="showButtom && !imgLoading">
+      <button ref="submit" @click="saveImage">保存图片</button>
+    </div> -->
   </div>
 </template>
 
 <script>
+import { GetCardByCustomer, GetYlContractByCustomer } from "@/api/card";
 import top from "./Top";
+
 export default {
   data() {
     return {
       set: 10,
-      name: ""
+      name: "",
+      imgLoading: false,
+      showButtom: false
     };
   },
   methods: {
@@ -29,70 +32,92 @@ export default {
       let day = "" + time1.getDate();
       day = day < 10 ? "0" + day : day;
       return year + "." + month + "." + day;
+    },
+    saveImage() {
+      var picture = this.$refs.picture;
+      var image = picture.toDataURL("image/jpeg");//跨域问题
+      var image = image.replace("image/jpeg", "image/octet-stream");
+      window.location.href = image;
     }
   },
   mounted() {
     let th = this;
-    var loginname = this.$store.state.info.data.companyId;
+    var companyId = this.$store.state.info.data.companyId;
     var time = "",
       area1 = "",
       area2 = "",
       area3 = "",
+      businesslicenseNO = "",
       name = this.$store.state.info.data.realName,
       cyear = this.$store.state.year;
     this.$http
       .post("/infoState/getYLcontractentryState.do", {
-        cid: loginname,
+        cid: companyId,
         cyear: cyear
       })
       .then(function(res) {
         if (res.data.yLcontractInfo == "协议书通过") {
-          th.$http
-            .post("/customerInfo/getAuthorization.do", {
-              cid: loginname,
-              cyear: cyear
-            })
-            .then(function(res) {
-              area1 = res.data.districtText;
-              area2 = res.data.areaDistrict2Text;
-              area3 = res.data.areaDistrict3Text;
-              if (area3 == null) {
-                area3 = " ";
+          // th.$http
+          //   .post("/customerInfo/getAuthorization.do", {
+          //     cid: companyId,
+          //     cyear: cyear
+          //   })
+          GetCardByCustomer({
+            cid: companyId,
+            year: cyear
+          }).then(function(res2) {
+            area1 = res2.data[0].districtText;
+            area2 = res2.data[0].areaDistrict2Text;
+            area3 = res2.data[0].areaDistrict3Text;
+            businesslicenseNO = res2.data[0].file2BusinesslicenseNo;
+            if (area3 == null) {
+              area3 = " ";
+            }
+            if (area2 == null) {
+              area2 = " ";
+            }
+            // th.$http
+            //   .post("/YLcontractentry/getYLcontract.do", {
+            //     ccid: companyId
+            //   })
+            GetYlContractByCustomer({
+              cid: companyId,
+              year: cyear
+            }).then(function(res3) {
+              if (res3.data.contract.startDate && res3.data.contract.endDate) {
+                time =
+                  th.getTime(new Date(res3.data.contract.startDate)) +
+                  " - " +
+                  th.getTime(new Date(res3.data.contract.endDate));
+              } else {
+                console.log("获取时间失败");
               }
-              if (area2 == null) {
-                area2 = " ";
-              }
-              th.$http
-                .post("/YLcontractentry/getYLcontract.do", {
-                  ccid: loginname
-                })
-                .then(function(res) {
-                  if (res.data.data.startDate && res.data.data.endDate) {
-                    time =
-                      th.getTime(new Date(res.data.data.startDate)) +
-                      " - " +
-                      th.getTime(new Date(res.data.data.endDate));
-                  } else {
-                    console.log("获取时间失败");
-                  }
-                  var picture = th.$refs.picture,
-                    ctx = picture.getContext("2d"),
-                    img = new Image();
-                  
-                  img.onload = function() {
-                    ctx.scale(360 / img.width, 492 / img.height);
-                    ctx.drawImage(img, 0, 0);
-                    ctx.font = "bold 16px 宋体";
-                    ctx.style = "black";
-                    let namex = (275 - name.length * 14) / 2 + 85;
-                    ctx.fillText(name, namex, 385);
-                    ctx.fillText(area1 + area2  + area3, 160, 445);
-                    ctx.fillText(time, 195, 474);
-                  };
-                  img.src =
-                    "http://14.29.221.109:10250/upload/assets/proimage.jpg";
-                });
+
+              th.imgLoading = true;
+              th.showButtom = true;
+              var picture = th.$refs.picture,
+                ctx = picture.getContext("2d"),
+                img = new Image();
+
+              img.onload = function() {
+                ctx.scale(360 / img.width, 492 / img.height);
+                ctx.drawImage(img, 0, 0);
+                ctx.font = "bold 64px 宋体";
+                ctx.style = "black";
+                let namex = ((500 - name.length * 19) / 2 + 150) * 3.25;
+                ctx.fillText(name, namex, 1535);
+                let buNox =
+                  ((350 - businesslicenseNO.length * 19) / 2 + 270) * 3.25;
+                ctx.fillText(businesslicenseNO, buNox, 1635);
+                ctx.fillText(area1 + area2 + area3, 650, 1985);
+                ctx.fillText(time, 775, 2105);
+                th.imgLoading = false;
+              };
+              //img.src = "http://14.29.221.109:10250/upload/assets/proimage.jpg";
+              img.src =
+                "http://14.29.221.109:10250/upload/images/newcertificate.jpg";
             });
+          });
         } else {
           alert("协议书暂未通过，请耐心等候");
         }
@@ -122,7 +147,7 @@ export default {
   z-index: 100;
   left: 50%;
   margin-left: -180px;
-  top: 88px;
+  top: 65px;
   background-size: contain;
   width: 360px;
   height: 492px;
@@ -149,5 +174,21 @@ export default {
 .save p {
   font-size: 10px;
   color: #7d7d7d;
+}
+.save2 {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+.save2 button {
+  box-sizing: border-box;
+  width: 360px;
+  height: 43px;
+  border-radius: 26px;
+  border: none;
+  font-size: 15px;
+  color: #ffffff;
+  background: -webkit-linear-gradient(left, #bedd81, #87ca81);
+  margin: 13px auto 11px 1px;
 }
 </style>

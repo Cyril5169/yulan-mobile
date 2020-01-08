@@ -3,7 +3,14 @@
     <Top :top="top"></Top>
     <div class="content">
       <div class="review">
-        <input class="yearSelect" type="text" @click="showYear=true" v-model="selYear" readonly />
+        <input
+          class="yearSelect"
+          type="text"
+          @click="showYear=true"
+          v-model="selYear"
+          readonly
+          v-if="showSelYear"
+        />
         <div class="review-box" @click="more">
           <span>评审记录</span>
         </div>
@@ -15,7 +22,7 @@
       <div class="nt-content" v-if="IsShow">
         <div v-html="b2b2"></div>
       </div>
-      <div class="bottom1" v-if="reviseflag">
+      <div class="bottom1" v-if="reviseflag && !reviewed">
         <div class="save2">
           <div @click="build" ref="build">通过协议书</div>
         </div>
@@ -160,10 +167,14 @@ export default {
       contractInfoData: [],
       b2b2: "",
       yearColumn: [],
-      showYear: false
+      showYear: false,
+      showSelYear: true,
+      ccid: this.$route.query.ccid,
+      cyear: this.$route.query.cyear,
+      reviewed: false,
+      customerCheck: true
     };
   },
-  props: ["ccid", "cyear"],
   methods: {
     initTime(time) {
       let year = time.getFullYear();
@@ -221,7 +232,7 @@ export default {
       if (this.$store.state.info.data.type === "ECWEB") {
         this.state = "ASM_CHECKING";
         this.signed = 0;
-        this.position = " ";
+        this.position = "";
       }
       if (this.$store.state.position == "VSMAPPROVEXII") {
         this.csa = this.$store.state.info.data.realName;
@@ -230,14 +241,13 @@ export default {
         this.market = this.$store.state.info.data.realName;
       }
       let data = {
-        cid: this.companyId,
+        cid: this.ccid,
         state: this.state,
         wfmemo:
           nowTime +
           this.position +
-          " " +
           this.$store.state.info.data.realName +
-          " 通过协议书;",
+          "通过协议书;",
         signed: this.signed,
         market: this.market,
         csa: this.csa
@@ -245,13 +255,12 @@ export default {
       // this.$http
       //   .post("/infoState/checkYLcontractentryState.do", data)
       UpdateContractState({
-        cid: this.companyId,
+        cid: this.ccid,
         year: this.selYear,
         state: this.state,
         wfmemo:
           nowTime +
           this.position +
-          " " +
           this.$store.state.info.data.realName +
           "通过协议书;",
         signed: this.signed,
@@ -287,25 +296,24 @@ export default {
       } else {
         this.show3 = false;
         if (this.$store.state.info.data.type === "ECWEB") {
-          this.position = " ";
+          this.position = "";
         }
-        this.$http.post("/infoState/checkYLcontractentryState.do", {
-          cid: this.companyId,
-          state: "SALEMANMODIFYING",
-          wfmemo:
-            nowTime +
-            this.position +
-            " " +
-            this.$store.state.info.data.realName +
-            "退回协议书，原因是[" +
-            this.reason +
-            "];",
-          signed: 2,
-          market: this.market,
-          csa: this.csa
-        });
+        // this.$http.post("/infoState/checkYLcontractentryState.do", {
+        //   cid: this.ccid,
+        //   state: "SALEMANMODIFYING",
+        //   wfmemo:
+        //     nowTime +
+        //     this.position +
+        //     this.$store.state.info.data.realName +
+        //     "退回协议书，原因是[" +
+        //     this.reason +
+        //     "];",
+        //   signed: 2,
+        //   market: "",
+        //   csa: ""
+        // });
         UpdateContractState({
-          cid: this.companyId,
+          cid: this.ccid,
           year: this.selYear,
           state: "SALEMANMODIFYING",
           wfmemo:
@@ -336,7 +344,7 @@ export default {
     },
     getData() {
       GetYlContractByCustomer({
-        cid: this.companyId,
+        cid: this.ccid,
         year: this.selYear
       }).then(res => {
         if (res.data != null && res.data.contract) {
@@ -344,15 +352,48 @@ export default {
           this.contractData = res.data.contract;
           this.contractInfoData = res.data.contractInfo;
           this.b2b2 = res.data.htmlText;
-          if (this.contractData.state == "CUSTOMERAFFIRM") {
-            this.reviseflag = true;
+          if (this.customerCheck) {
+            if (this.contractData.state == "CUSTOMERAFFIRM") {
+              this.reviseflag = true;
+            } else {
+              this.reviseflag = false;
+            }
           } else {
-            this.reviseflag = false;
+            switch (this.$store.state.position) {
+              case "SALEMAN_M":
+                this.position = "办事处经理";
+                this.reviseflag = false;
+                break;
+              case "SALEMAN_S":
+                this.position = "业务经理";
+                this.reviseflag = false;
+                break;
+              case "MANAGER":
+                this.position = "中心总经理";
+                if (this.contractData.state == "ASM_CHECKING") {
+                  this.reviseflag = true;
+                }
+                break;
+              case "MARKETCHECKER":
+                this.position = "市场部";
+                if (this.contractData.state == "DEP_MARKET_CHECK") {
+                  this.reviseflag = true;
+                }
+                break;
+              case "VSMAPPROVEXII":
+                this.position = "销售总监";
+                if (this.contractData.state == "CSA_CHECK") {
+                  this.reviseflag = true;
+                }
+                break;
+              default:
+                break;
+            }
           }
 
           this.$http
             .post("/infoState/getYLcontractentryState.do", {
-              cid: this.companyId,
+              cid: this.ccid,
               cyear: this.selYear
             })
             .then(res => {
@@ -371,38 +412,6 @@ export default {
           this.IsShow = false;
         }
       });
-      // else {
-      //   switch (th.$store.state.position) {
-      //     case "SALEMAN_M":
-      //       th.position = "办事处经理";
-      //       th.reviseflag = false;
-      //       break;
-      //     case "SALEMAN_S":
-      //       th.position = "业务经理";
-      //       th.reviseflag = false;
-      //       break;
-      //     case "MANAGER":
-      //       th.position = "中心总经理";
-      //       if (ylcstate == "ASM_CHECKING") {
-      //         th.reviseflag = true;
-      //       }
-      //       break;
-      //     case "MARKETCHECKER":
-      //       th.position = "市场部";
-      //       if (ylcstate == "DEP_MARKET_CHECK") {
-      //         th.reviseflag = true;
-      //       }
-      //       break;
-      //     case "VSMAPPROVEXII":
-      //       th.position = "销售总监";
-      //       if (ylcstate == "CSA_CHECK") {
-      //         th.reviseflag = true;
-      //       }
-      //       break;
-      //     default:
-      //       break;
-      //   }
-      // }
     }
   },
   mounted() {
@@ -411,8 +420,15 @@ export default {
     }
     if (!this.ccid) {
       //客户
-      this.getData();
+      this.ccid = this.companyId;
+    } else {
+      //审核
+      this.reviewed = this.$route.query.reviewed;
+      this.showSelYear = false;
+      this.selYear = this.cyear;
+      this.customerCheck = false;
     }
+    this.getData();
   },
   components: {
     Top,
@@ -594,7 +610,7 @@ export default {
 .bottom1 {
   position: fixed;
   bottom: 0;
-  height: 60px;
+  height: 50px;
   width: 100%;
   background: rgb(112, 111, 111);
 }
@@ -608,7 +624,7 @@ export default {
   color: #ffffff;
   background: #4b4b4b;
   float: left;
-  margin: 11px auto 11px 55px;
+  margin: 8px auto 0 55px;
 }
 .save2 div {
   box-sizing: border-box;
@@ -620,7 +636,7 @@ export default {
   color: #ffffff;
   background: -webkit-linear-gradient(left, #bedd81, #87ca81);
   float: left;
-  margin: 11px auto 11px 44px;
+  margin: 8px auto 0 55px;
 }
 .foldwrap {
   width: 100%;

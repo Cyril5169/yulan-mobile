@@ -36,32 +36,25 @@
               name="check"
               :checked="boxcheck2"
               @click="changeCheck2"
-            />玉兰·兰尚居品（软装类产品）
+            />兰尚居品（布艺类产品）
           </label>
         </div>
       </div>
-      <div class="taskall">
+      <!-- <div class="taskall">
         <p id="first">销售总任务</p>
         <p>
           <input type="text" v-model="add" readonly="true" id="taskall" />&nbsp;&nbsp;万元
         </p>
-      </div>
+      </div>-->
       <div class="brand">
         <div class="left">
-          <p id="second">玉兰品牌</p>
-          <p>
-            <input
-              type="text"
-              v-model="yulan"
-              id="yulan"
-              ref="yulan"
-              class="getGrey"
-              :readonly="!boxcheck1"
-            />&nbsp;万元
-          </p>
+          <span id="second">销售总任务</span>
+          <span>
+            <input type="text" v-model="yulan" id="yulan" ref="yulan" />&nbsp;万元
+          </span>
         </div>
-        <div class="right">
-          <p id="first">玉兰·玉兰尚居</p>
+        <!-- <div class="right">
+          <p id="first">玉兰尚居</p>
           <p>
             <input
               type="text"
@@ -72,7 +65,7 @@
               :readonly="!boxcheck2"
             />&nbsp;万元
           </p>
-        </div>
+        </div>-->
       </div>
       <div class="monthbox">
         <table>
@@ -93,19 +86,19 @@
               <input type="text" readonly="true" v-model="average" />
             </td>
             <td>
-              <input type="text" readonly="true" v-model="average" />
+              <input type="text" readonly="true" v-model="average2" />
             </td>
             <td>
-              <input type="text" readonly="true" v-model="average" />
+              <input type="text" readonly="true" v-model="average2" />
             </td>
             <td>
-              <input type="text" readonly="true" v-model="average" />
+              <input type="text" readonly="true" v-model="average2" />
             </td>
             <td>
-              <input type="text" readonly="true" v-model="average" />
+              <input type="text" readonly="true" v-model="average2" />
             </td>
             <td id="clear">
-              <input type="text" readonly="true" v-model="average" />
+              <input type="text" readonly="true" v-model="average2" />
             </td>
           </tr>
           <tr>
@@ -114,27 +107,26 @@
             <td>10月</td>
             <td>11月</td>
             <td>12月</td>
-            <td>合计</td>
-            <td id="clear"></td>
+            <td colspan="2">合计</td>
           </tr>
           <tr>
             <td id="clear2">
-              <input type="text" readonly="true" v-model="average" />
+              <input type="text" readonly="true" v-model="average2" />
             </td>
             <td id="clear2">
-              <input type="text" readonly="true" v-model="average" />
+              <input type="text" readonly="true" v-model="average2" />
             </td>
             <td id="clear2">
-              <input type="text" readonly="true" v-model="average" />
+              <input type="text" readonly="true" v-model="average2" />
             </td>
             <td id="clear2">
-              <input type="text" readonly="true" v-model="average" />
+              <input type="text" readonly="true" v-model="average2" />
             </td>
             <td id="clear2">
               <input type="text" readonly="true" v-model="Dec" />
             </td>
-            <td id="clear2">
-              <input type="text" readonly="true" v-model="add" />
+            <td id="clear2" colspan="2">
+              <input type="text" style="width:70px;" readonly="true" v-model="add" />
             </td>
           </tr>
         </table>
@@ -144,16 +136,16 @@
         <p>
           <input type="text" v-model="percent" />&nbsp;%
         </p>
-        <div class="rewordpercent2">
+        <!-- <div class="rewordpercent2">
           <div>兰居尚品任务返点</div>
           <input type="text" class="reword" v-model="rewordpercent2" /> %
-        </div>
+        </div>-->
       </div>
       <div class="bottom">
         <div class="box">
           <p id="first">备货金额占比</p>
           <p>
-            <input type="text" v-model="goods" />&nbsp;%
+            <input type="text" style="background-color: #efefef;" v-model="goods" readonly />&nbsp;%
           </p>
         </div>
         <div class="box2">
@@ -189,6 +181,8 @@
 <script>
 const feel = true;
 import top from "./Top";
+import { GetYlContractByCustomer, UpdateContractState } from "@/api/card";
+
 export default {
   data() {
     return {
@@ -199,13 +193,13 @@ export default {
       yulansj: "",
       percent: "",
       rewordpercent2: "",
-      goods: "",
+      goods: "10",
       // sum:"",
       calendarShow: false,
       // defaultDate:new Date('2019-01-01'),
       selectDate: "",
-      selectDate1: "2019-01-01",
-      selectDate2: "2019-12-31",
+      selectDate1: new Date().getFullYear() + "-01-01",
+      selectDate2: new Date().getFullYear() + "-12-31",
       IsCal1: true,
       revised: false,
       time: "",
@@ -221,26 +215,25 @@ export default {
     boxcheck1(curVal, oldVal) {
       if (curVal) {
         // this.yulan = "";
-        this.$refs.yulan.classList.remove("getGrey");
+        //this.$refs.yulan.classList.remove("getGrey");
         if (this.boxcheck2) {
-          this.$refs.yulansj.classList.remove("getGrey");
+          //this.$refs.yulansj.classList.remove("getGrey");
           // this.yulansj = "";
-          this.preferedbrand =
-            "√玉兰（墙纸类产品）√玉兰·兰居尚品（软装类产品）";
+          this.preferedbrand = "√玉兰（墙纸类产品）√兰居尚品（布艺类产品）";
         } else {
-          this.$refs.yulansj.classList.add("getGrey");
+          //this.$refs.yulansj.classList.add("getGrey");
           this.yulansj = "0";
           this.preferedbrand = "√玉兰（墙纸类产品）";
         }
       } else {
-        this.$refs.yulan.classList.add("getGrey");
+        //this.$refs.yulan.classList.add("getGrey");
         this.yulan = "0";
         if (this.boxcheck2) {
           // this.yulansj = "";
-          this.$refs.yulansj.classList.remove("getGrey");
-          this.preferedbrand = "√玉兰·兰居尚品（软装类产品）";
+          //this.$refs.yulansj.classList.remove("getGrey");
+          this.preferedbrand = "√兰居尚品（布艺类产品）";
         } else {
-          this.$refs.yulansj.classList.add("getGrey");
+          //this.$refs.yulansj.classList.add("getGrey");
           this.yulansj = "0";
           this.preferedbrand = "";
         }
@@ -249,26 +242,25 @@ export default {
     boxcheck2(curVal, oldVal) {
       if (curVal) {
         this.yulansj = "";
-        this.$refs.yulansj.classList.remove("getGrey");
+        //this.$refs.yulansj.classList.remove("getGrey");
         if (this.boxcheck1) {
           // this.yulan = "";
-          this.$refs.yulan.classList.remove("getGrey");
-          this.preferedbrand =
-            "√玉兰（墙纸类产品）√玉兰·兰居尚品（软装类产品）";
+          //this.$refs.yulan.classList.remove("getGrey");
+          this.preferedbrand = "√玉兰（墙纸类产品）√兰居尚品（布艺类产品）";
         } else {
-          this.$refs.yulan.classList.add("getGrey");
+          //this.$refs.yulan.classList.add("getGrey");
           this.yulan = "0";
-          this.preferedbrand = "√玉兰·兰居尚品（软装类产品）";
+          this.preferedbrand = "√兰居尚品（布艺类产品）";
         }
       } else {
         this.yulansj = "0";
-        this.$refs.yulansj.classList.add("getGrey");
+        //this.$refs.yulansj.classList.add("getGrey");
         if (this.boxcheck1) {
           // this.yulan = "";
-          this.$refs.yulan.classList.remove("getGrey");
+          //this.$refs.yulan.classList.remove("getGrey");
           this.preferedbrand = "√玉兰（墙纸类产品）";
         } else {
-          this.$refs.yulan.classList.add("getGrey");
+          //this.$refs.yulan.classList.add("getGrey");
           this.yulan = "0";
           this.preferedbrand = "";
         }
@@ -287,13 +279,23 @@ export default {
       return "" + (Number(this.yulan) + Number(this.yulansj)).toFixed(2);
     },
     average() {
-      return "" + Math.floor((Number(this.add) / 12) * 100) / 100;
+      return "" + Math.floor(Number(this.add) * 0.05 * 100) / 100;
+    },
+    average2() {
+      return "" + Math.floor(Number(this.add) * 0.09 * 100) / 100;
     },
     Dec() {
-      return "" + (Number(this.add) - Number(this.average) * 11).toFixed(2);
+      return (
+        "" +
+        (
+          Number(this.add) -
+          Number(this.average) * 2 -
+          Number(this.average2) * 9
+        ).toFixed(2)
+      );
     },
     sum() {
-      return this.add * this.goods * 100;
+      return (this.add * this.goods * 100).toFixed(2);
     }
   },
   mounted() {
@@ -302,6 +304,40 @@ export default {
         this.revised = true;
         this.$refs.save.innerHTML = "修改协议书";
         break;
+    }
+    if (this.revised) {
+      //修改
+      GetYlContractByCustomer({
+        cid: this.$store.state.CCID,
+        year: this.$store.state.CYEAR
+      })
+        .then(res => {
+          if (res.data != null && res.data.contractInfo) {
+            var allData = res.data.contractInfo;
+            if (allData.preferedbrand) {
+              this.preferedbrand = allData.preferedbrand;
+              if (allData.preferedbrand.indexOf("墙") > -1) {
+                this.boxcheck1 = true;
+              }
+              if (
+                allData.preferedbrand.indexOf("软") > -1 ||
+                allData.preferedbrand.indexOf("布") > -1
+              ) {
+                this.boxcheck2 = true;
+              }
+            }
+            this.yulan = allData.aRetailing;
+            this.yulansj = allData.cMatching;
+            this.percent = allData.rewordpercent;
+            this.rewordpercent2 = allData.rewordpercent2;
+            this.startDate = new Date(allData.startDate);
+            this.endDate = new Date(allData.endDate);
+            this.goods = allData.stockpercent;
+          }
+        })
+        .catch(err => {
+          console.log("获取协议书信息失败", err);
+        });
     }
   },
   methods: {
@@ -354,29 +390,22 @@ export default {
       this.warn = false;
     },
     showIt() {
+      if (!this.preferedbrand) {
+        alert("请选择意向品牌！");
+        return;
+      }
+
       if (
-        !(
-          this.yulan != "" &&
-          this.yulansj != "" &&
-          this.goods &&
-          this.percent &&
-          this.preferedbrand &&
-          this.rewordpercent2 &&
-          this.selectDate1 &&
-          this.selectDate2 &&
-          (this.boxcheck1 || this.boxcheck2)
-        )
+        !this.yulan ||
+        this.yulan == "0" ||
+        !this.percent ||
+        !this.selectDate1 ||
+        !this.selectDate2
       ) {
-        if (!(this.boxcheck1 || this.boxcheck2)) {
-          alert("请选择经营品牌");
-        } else {
-          alert("信息填写不完整，请重新确认");
-        }
+        alert("信息填写不完整，请重新确认");
       } else {
-        if (this.boxcheck1 && this.yulan == "0") {
+        if (this.yulan == "0") {
           alert("请填写玉兰品牌金额");
-        } else if (this.boxcheck2 && this.yulansj == "0") {
-          alert("请填写玉兰尚居金额");
         } else {
           this.IsPonitOut = true;
           this.warn = true;
@@ -393,29 +422,30 @@ export default {
         ccyear: this.$store.state.CYEAR,
         ccid: this.$store.state.CCID,
         aRetailing: this.yulan,
-        bEngineering: 0, //无效
         cMatching: this.yulansj,
-        m1: this.average,
-        m2: this.average,
-        m3: this.average,
-        m4: this.average,
-        m5: this.average,
-        m6: this.average,
-        m7: this.average,
-        m8: this.average,
-        m9: this.average,
-        m10: this.average,
-        m11: this.average,
+        m1: Number(this.average),
+        m2: Number(this.average),
+        m3: Number(this.average2),
+        m4: Number(this.average2),
+        m5: Number(this.average2),
+        m6: Number(this.average2),
+        m7: Number(this.average2),
+        m8: Number(this.average2),
+        m9: Number(this.average2),
+        m10: Number(this.average2),
+        m11: Number(this.average2),
         m12: this.Dec,
         stockpercent: this.goods,
         payminimum: 0,
+        bEngineering: 0, //无效
         rewordpercent: this.percent,
         memo2: null, //补充协议内容
         preferedbrand: this.preferedbrand, //销售品牌
         privateAccountAuthed: "N", //--X 表示无关， Y 表示客户授权配偶账号 N 无需授权
         rewordpercent2: this.rewordpercent2, //兰居返点比例 %
         startDate: this.selectDate1, //协议开始日期
-        endDate: this.selectDate2 //协议结束日期
+        endDate: this.selectDate2, //协议结束日期
+        legalchecked: 0
       };
       this.$http
         .post(url, data)
@@ -456,16 +486,29 @@ export default {
             market: "",
             csa: ""
           };
-          this.$http
-            .post("/infoState/checkYLcontractentryState.do", data)
-            .then(res => {})
+          // this.$http
+          //   .post("/infoState/checkYLcontractentryState.do", data)
+          UpdateContractState({
+            cid: this.$store.state.CCID,
+            year: Number(this.$store.state.CYEAR),
+            state: "CUSTOMERAFFIRM",
+            wfmemo:
+              nowTime +
+              "被办事处经理" +
+              this.$store.state.info.data.realName +
+              (this.revised ? "重新提交;" : "提交;"),
+            signed: this.signed,
+            market: "",
+            csa: ""
+          })
+            .then(res => {
+              this.$router.push({
+                path: "/success3"
+              });
+            })
             .catch(res => {
               console.log(res);
             });
-
-          this.$router.push({
-            path: "/success3"
-          });
         })
         .catch(err => {
           console.log("错误信息" + err);
@@ -526,7 +569,7 @@ export default {
   margin: 26px 22px 0 22px;
   width: 331px;
   position: relative;
-  height: 520px; /*485*/
+  height: 450px;
   border-radius: 7px;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
   background-color: rgb(255, 255, 255);
@@ -691,6 +734,7 @@ calendar {
   height: 33px;
   padding: 0 6px;
   background-color: #efefef;
+  text-align: center;
 }
 #clear {
   border-right: none;

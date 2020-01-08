@@ -779,7 +779,7 @@ export default {
             if (newband.indexOf("墙") > -1) {
               this.checkbox1 = true;
             }
-            if (newband.indexOf("软") > -1) {
+            if (newband.indexOf("软") > -1 || newband.indexOf("布") > -1) {
               this.checkbox2 = true;
             }
           }
@@ -828,7 +828,6 @@ export default {
             year: alldata.contractyear
           };
           this.$http.post(url, data).then(res2 => {
-            if (res2.data.memo != null) {
               var alldata2 = res2.data;
               this.customerInfo = alldata2.customerInfo;
               if (alldata.state == "ONCREATE")
@@ -845,7 +844,6 @@ export default {
                   s[i].disabled = true;
                 }
               }
-            }
           });
           let url1 = "/customerInfo/getYLcontract.do";
           let data1 = {

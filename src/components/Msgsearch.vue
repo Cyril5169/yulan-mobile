@@ -147,11 +147,9 @@ export default {
         })
         .catch(function(res) {});
     },
-    sendCID(data) {
+    sendCID(data, year) {
       this.$store.commit("getCCID", data);
-      this.$store.commit("getCYEAR", data);
-      this.$store.state.CCID = data;
-      this.CCID = data;
+      this.$store.commit("getCYEAR", year);
     },
     select_pass() {
       this.more = true;
