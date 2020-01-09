@@ -22,9 +22,9 @@
             >
               <div class="btn-img" :class="item.ICON_CLASS">
                 <div
-                  v-if="CUSTOMER_BALANCE_PERIOD_COUNT>0&&item.MENU_LINK=='billmanage'"
+                  v-if="getIconCount(item.MENU_LINK)>0"
                   class="tips"
-                >{{CUSTOMER_BALANCE_PERIOD_COUNT}}</div>
+                >{{getIconCount(item.MENU_LINK)}}</div>
               </div>
               <p class="btn-p">{{item.MENU_NAME}}</p>
             </div>
@@ -56,7 +56,7 @@
             >
               <div class="btn-img btn13-img"></div>
               <p class="btn-p">待修改协议书</p>
-            </div> -->
+            </div>-->
           </div>
         </div>
       </section>
@@ -98,6 +98,10 @@ export default {
       studyFormTitle: "填写完此调查表，才能继续操作",
       CUSTOMER_BALANCE_PERIOD_COUNT: this.$store.state.tipsInfo
         ? this.$store.state.tipsInfo.CUSTOMER_BALANCE_PERIOD
+        : 0,
+      CUSTOMERINFOCARD_COUNT: this.$store.state.tipsInfo
+        ? this.$store.state.tipsInfo.CUSTOMERINFOCARD +
+          this.$store.state.tipsInfo.YLCONTRACTENTRY
         : 0
     };
   },
@@ -125,12 +129,13 @@ export default {
   },
   mounted() {},
   methods: {
-    classObject(MENU_LINK) {
-      var obj = {};
-      if (MENU_LINK == "billmanage") {
-        obj["reddot"] = true;
+    getIconCount(MENU_LINK) {
+      switch (MENU_LINK) {
+        case "billmanage":
+          return this.CUSTOMER_BALANCE_PERIOD_COUNT;
+        case "client":
+          return this.CUSTOMERINFOCARD_COUNT;
       }
-      return obj;
     },
     //获得菜单数组并传入store ,await并不会阻塞主线程，这里并不起作用
     async getMenuTree() {

@@ -6,7 +6,7 @@
         <div class="home-pic1" ref="homePic" v-else></div>
         <div class="my-font" ref="f_homePic" v-if="tabStage != 'customer'">主页</div>
         <div class="my-font2" ref="f_homePic" v-else>主页</div>
-        <div v-if="CUSTOMER_BALANCE_PERIOD_COUNT>0" class="tips">{{CUSTOMER_BALANCE_PERIOD_COUNT}}</div>
+        <div v-if="MAIN_COUNT>0" class="tips">{{MAIN_COUNT}}</div>
       </div>
       <div v-if="isContainAttr('myorder')" class="form" @click="clickToPath('myorder')">
         <div class="form-pic1" ref="formPic" v-if="tabStage != 'order'"></div>
@@ -42,8 +42,10 @@ export default {
   props: ["changeStyle", "tabStage"],
   data() {
     return {
-      CUSTOMER_BALANCE_PERIOD_COUNT: this.$store.state.tipsInfo
-        ? this.$store.state.tipsInfo.CUSTOMER_BALANCE_PERIOD
+      MAIN_COUNT: this.$store.state.tipsInfo
+        ? this.$store.state.tipsInfo.CUSTOMER_BALANCE_PERIOD +
+         this.$store.state.tipsInfo.CUSTOMERINFOCARD +
+         this.$store.state.tipsInfo.YLCONTRACTENTRY
         : 0,
       ORDER_COUNT: this.$store.state.tipsInfo
         ? this.$store.state.tipsInfo.ORDER
@@ -78,43 +80,43 @@ export default {
     getTip() {
       GetTips(this.$store.getters.getCId).then(res => {
         this.$store.commit("setTipsInfo", res.data);
-        this.CUSTOMER_BALANCE_PERIOD_COUNT = res.data.CUSTOMER_BALANCE_PERIOD;
-        this.ORDER_COUNT = res.data.ORDER;
-        this.MY_COUNT = res.data.STUDY_FORM + res.data.NOTIFICATION;
-        this.SHOPPING_COUNT =
-          res.data.CART_ITEM_WALLPAPER +
-          res.data.CART_ITEM_CURTAIN +
-          res.data.CART_ITEM_SOFT;
-        if (res.data.CUSTOMER_BALANCE_PERIOD_COUNT > 0) {
-          if (page_customer) {
-            Vue.set(
-              page_customer,
-              "CUSTOMER_BALANCE_PERIOD_COUNT",
-              res.data.CUSTOMER_BALANCE_PERIOD
-            );
-          }
-        }
-        if (page_myPersonal) {
-          Vue.set(page_myPersonal, "STUDY_FORM_COUNT", res.data.STUDY_FORM);
-          Vue.set(page_myPersonal, "NOTIFICATION_COUNT", res.data.NOTIFICATION);
-        }
-        if (page_shoppingcart) {
-          Vue.set(
-            page_shoppingcart,
-            "CART_ITEM_WALLPAPER_COUNT",
-            res.data.CART_ITEM_WALLPAPER
-          );
-          Vue.set(
-            page_shoppingcart,
-            "CART_ITEM_CURTAIN_COUNT",
-            res.data.CART_ITEM_CURTAIN
-          );
-          Vue.set(
-            page_shoppingcart,
-            "CART_ITEM_SOFT_COUNT",
-            res.data.CART_ITEM_SOFT
-          );
-        }
+        // this.MAIN_COUNT = res.data.CUSTOMER_BALANCE_PERIOD;
+        // this.ORDER_COUNT = res.data.ORDER;
+        // this.MY_COUNT = res.data.STUDY_FORM + res.data.NOTIFICATION;
+        // this.SHOPPING_COUNT =
+        //   res.data.CART_ITEM_WALLPAPER +
+        //   res.data.CART_ITEM_CURTAIN +
+        //   res.data.CART_ITEM_SOFT;
+        // if (res.data.CUSTOMER_BALANCE_PERIOD > 0) {
+        //   if (page_customer) {
+        //     Vue.set(
+        //       page_customer,
+        //       "MAIN_COUNT",
+        //       res.data.CUSTOMER_BALANCE_PERIOD
+        //     );
+        //   }
+        // }
+        // if (page_myPersonal) {
+        //   Vue.set(page_myPersonal, "STUDY_FORM_COUNT", res.data.STUDY_FORM);
+        //   Vue.set(page_myPersonal, "NOTIFICATION_COUNT", res.data.NOTIFICATION);
+        // }
+        // if (page_shoppingcart) {
+        //   Vue.set(
+        //     page_shoppingcart,
+        //     "CART_ITEM_WALLPAPER_COUNT",
+        //     res.data.CART_ITEM_WALLPAPER
+        //   );
+        //   Vue.set(
+        //     page_shoppingcart,
+        //     "CART_ITEM_CURTAIN_COUNT",
+        //     res.data.CART_ITEM_CURTAIN
+        //   );
+        //   Vue.set(
+        //     page_shoppingcart,
+        //     "CART_ITEM_SOFT_COUNT",
+        //     res.data.CART_ITEM_SOFT
+        //   );
+        // }
       });
     }
   },
@@ -266,7 +268,7 @@ export default {
 }
 .tips {
   padding: 0 3px;
-  min-width: 10px;
+  min-width: 11px;
   height: 17px;
   line-height: 17px;
   background-color: #ee0a24;

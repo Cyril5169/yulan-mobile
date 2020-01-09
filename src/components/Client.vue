@@ -37,6 +37,7 @@
           <div class="middle-div" @click="toSwiper">
             <p class="middle-div-p">客户资料卡</p>
             <div class="right-arrow"></div>
+            <div v-if="CUSTOMERINFOCARD_COUNT>0" class="reddot"></div>
           </div>
           <div class="bottom-div"></div>
         </div>
@@ -50,6 +51,7 @@
           <div class="middle-div" @click="Warn">
             <p class="middle-div-p2">玉兰墙纸经销协议书</p>
             <div class="right-arrow"></div>
+            <div v-if="YLCONTRACTENTRY_COUNT>0" class="reddot"></div>
           </div>
           <div class="bottom-div"></div>
         </div>
@@ -91,7 +93,13 @@ export default {
       marginLeft: 0,
       IsWarn: false,
       set: 0,
-      kkp: 0
+      kkp: 0,
+      CUSTOMERINFOCARD_COUNT: this.$store.state.tipsInfo
+        ? this.$store.state.tipsInfo.CUSTOMERINFOCARD
+        : 0,
+      YLCONTRACTENTRY_COUNT: this.$store.state.tipsInfo
+        ? this.$store.state.tipsInfo.YLCONTRACTENTRY
+        : 0
     };
   },
   components: {
@@ -567,5 +575,16 @@ p {
   opacity: 0.66;
   left: 130px;
   text-decoration: none;
+}
+.reddot {
+  width: 2.133vw;
+  min-width: 0;
+  height: 2.133vw;
+  background-color: #ee0a24;
+  border-radius: 100%;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  margin-top: -5px;
 }
 </style>
