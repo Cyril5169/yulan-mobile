@@ -130,10 +130,7 @@ import { bus } from "../utils/eventBus.js";
 import iosselect5 from "@/components/Iosselect5";
 import iosselect2 from "@/components/Iosselect4";
 import { UpdateState } from "@/api/card";
-import {
-  Toast,
-  Dialog
-} from "vant";
+import { Toast, Dialog } from "vant";
 
 export default {
   data() {
@@ -240,7 +237,7 @@ export default {
       forever: 0,
       contractyear: this.$store.state.year,
       showEnter: false,
-      customerInfo:''
+      customerInfo: ""
     };
   },
   components: {
@@ -828,22 +825,21 @@ export default {
             year: alldata.contractyear
           };
           this.$http.post(url, data).then(res2 => {
-              var alldata2 = res2.data;
-              this.customerInfo = alldata2.customerInfo;
-              if (alldata.state == "ONCREATE")
-                this.customerInfo = "资料卡确认中";
-              if (
-                res2.data.customerInfo == "业务员审核中" ||
-                res2.data.customerInfo == "资料卡通过" ||
-                res2.data.customerInfo == "订单部审核中"
-              ) {
-                this.$refs.submit.style.background = "#c2c2c2";
-                this.$refs.submit.disabled = true;
-                const s = document.getElementsByTagName("input");
-                for (let i = 0; i < s.length; i++) {
-                  s[i].disabled = true;
-                }
+            var alldata2 = res2.data;
+            this.customerInfo = alldata2.customerInfo;
+            if (alldata.state == "ONCREATE") this.customerInfo = "资料卡确认中";
+            if (
+              res2.data.customerInfo == "业务员审核中" ||
+              res2.data.customerInfo == "资料卡通过" ||
+              res2.data.customerInfo == "订单部审核中"
+            ) {
+              this.$refs.submit.style.background = "#c2c2c2";
+              this.$refs.submit.disabled = true;
+              const s = document.getElementsByTagName("input");
+              for (let i = 0; i < s.length; i++) {
+                s[i].disabled = true;
               }
+            }
           });
           let url1 = "/customerInfo/getYLcontract.do";
           let data1 = {
@@ -956,11 +952,11 @@ export default {
       // }else{
       //   this.p = "Y"
       // }
-      if (this.square == null || this.square == "") {
-        this.b = "N";
-      } else {
-        this.b = "Y";
-      }
+      // if (this.square == null || this.square == "") {
+      //   this.b = "N";
+      // } else {
+      //   this.b = "Y";
+      // }
       if (this.phone == null || this.phone == "") {
         this.c = "N";
       } else {
@@ -1430,14 +1426,14 @@ export default {
       }
       this.foreverDate();
       this.changeSubmit();
-      if (this.proxy == 0) {
-        if (this.lp == 1) {
-          this.doSub7 = "N";
-        }
-        if (this.lp == 0) {
-          this.doSub7 = "Y";
-        }
-      }
+      // if (this.proxy == 0) {
+      //   if (this.lp == 1) {
+      //     this.doSub7 = "N";
+      //   }
+      //   if (this.lp == 0) {
+      //     this.doSub7 = "Y";
+      //   }
+      // }
       if (
         this.loc == 1 &&
         this.doSub1 == "Y" &&

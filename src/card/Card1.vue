@@ -38,13 +38,13 @@
         <div class="box" id="nowbrand">
           <p>
             <span style="color:red">*</span>
-            <label class="testWord">现主经营产品品牌：</label>
+            <label class="testWord">主营品牌(非玉兰)：</label>
             <input type="text" v-model="nowbrand" @keyup="input1" name="nowbrand" />
           </p>
         </div>
         <div class="box" id="square">
           <p>
-            <span style="color:red">*</span>
+            <!-- <span style="color:red">*</span> -->
             <label class="testWord">店铺面积：</label>
             <input type="number" v-model="square" @keyup="input2" name="square" />
             <span>&nbsp;平方米</span>

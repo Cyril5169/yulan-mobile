@@ -67,7 +67,7 @@
               <label for="type2" class="way"></label>
               <span class="radio-name">否</span>
             </label>
-          </p> -->
+          </p>-->
           <!-- <p id="fifth" v-show="b"><span id="download" @click="download">下载《授权付款委托书》</span>
             <span style="color:red">*</span><span id="togo" @click="sendData">填写授权委托账号信息</span>
           </p>-->
