@@ -26,7 +26,7 @@
         <img class="item-more" src="../../assetsorder/more.png" alt />
         <div v-if="NOTIFICATION_COUNT>0" class="reddot"></div>
       </div>
-      <div class="item" @click="checkVersion()">
+      <div v-if="showCheckVersion" class="item" @click="checkVersion()">
         <img class="item-icon" src="../../assetsorder/version_update.png" alt />
         <span v-text="checkVersionText"></span>
         <img class="item-more" src="../../assetsorder/more.png" alt />
