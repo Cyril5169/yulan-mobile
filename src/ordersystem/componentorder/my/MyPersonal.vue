@@ -64,6 +64,7 @@ export default {
       checkVersionText:"检查新版本"+(urlSetting.describe?"["+urlSetting.describe+"]":""),
       NOTIFICATION_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.NOTIFICATION:0,
       STUDY_FORM_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.STUDY_FORM:0,
+      showCheckVersion: window.plus && window.plus.os.name == "Android"
     };
   },
   computed: {
@@ -90,11 +91,7 @@ export default {
       });
     },
     checkVersion() {
-      if (!window.plus) {
-        Toast("网页版模式，不能检查更新");
-      } else {
-        vm.UpdateVersion(true);
-      }
+      vm.UpdateVersion(true);
     },
     changePassword(){
 
