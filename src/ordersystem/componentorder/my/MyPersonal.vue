@@ -50,7 +50,6 @@ import top from "../../../components/Top";
 import navBottom from "../../../components/navBottom";
 import { Toast } from "vant";
 
-
 export default {
   name: "",
   components: {
@@ -63,7 +62,7 @@ export default {
       myRoute: "personal",
       checkVersionText:"检查新版本"+(urlSetting.describe?"["+urlSetting.describe+"]":""),
       NOTIFICATION_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.NOTIFICATION:0,
-      STUDY_FORM_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.STUDY_FORM:0,
+      STUDY_FORM_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.STUDY_FORM:0
     };
   },
   computed: {
@@ -83,7 +82,7 @@ export default {
     },
     clickToPath(path) {
       this.$router.push({
-        name: path,//name不能忽略大小写
+        name: path, //name不能忽略大小写
         params: {
           from: "mypersonal"
         }
@@ -96,9 +95,7 @@ export default {
         vm.UpdateVersion(true);
       }
     },
-    changePassword(){
-
-    },
+    changePassword() {},
     logout() {
       this.$router.push({
         name: "Sign",
@@ -107,11 +104,11 @@ export default {
       this.$store.commit("initState");
     }
   },
-  created(){
-    page_myPersonal=this;
+  created() {
+    page_myPersonal = this;
   },
-  destroyed(){
-    page_myPersonal=null;
+  destroyed() {
+    page_myPersonal = null;
   }
 };
 </script>
@@ -216,13 +213,13 @@ export default {
   margin-top: -11px;
   left: 52px;
 }
-.reddot{
+.reddot {
   width: 2.133vw;
   min-width: 0;
   height: 2.133vw;
   background-color: #ee0a24;
   border-radius: 100%;
-  position:absolute;
+  position: absolute;
   right: 30px;
   top: 20px;
 }

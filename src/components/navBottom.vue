@@ -44,8 +44,8 @@ export default {
     return {
       MAIN_COUNT: this.$store.state.tipsInfo
         ? this.$store.state.tipsInfo.CUSTOMER_BALANCE_PERIOD +
-         this.$store.state.tipsInfo.CUSTOMERINFOCARD +
-         this.$store.state.tipsInfo.YLCONTRACTENTRY
+          this.$store.state.tipsInfo.CUSTOMERINFOCARD +
+          this.$store.state.tipsInfo.YLCONTRACTENTRY
         : 0,
       ORDER_COUNT: this.$store.state.tipsInfo
         ? this.$store.state.tipsInfo.ORDER
@@ -80,43 +80,43 @@ export default {
     getTip() {
       GetTips(this.$store.getters.getCId).then(res => {
         this.$store.commit("setTipsInfo", res.data);
-        // this.MAIN_COUNT = res.data.CUSTOMER_BALANCE_PERIOD;
-        // this.ORDER_COUNT = res.data.ORDER;
-        // this.MY_COUNT = res.data.STUDY_FORM + res.data.NOTIFICATION;
-        // this.SHOPPING_COUNT =
-        //   res.data.CART_ITEM_WALLPAPER +
-        //   res.data.CART_ITEM_CURTAIN +
-        //   res.data.CART_ITEM_SOFT;
-        // if (res.data.CUSTOMER_BALANCE_PERIOD > 0) {
-        //   if (page_customer) {
-        //     Vue.set(
-        //       page_customer,
-        //       "MAIN_COUNT",
-        //       res.data.CUSTOMER_BALANCE_PERIOD
-        //     );
-        //   }
-        // }
-        // if (page_myPersonal) {
-        //   Vue.set(page_myPersonal, "STUDY_FORM_COUNT", res.data.STUDY_FORM);
-        //   Vue.set(page_myPersonal, "NOTIFICATION_COUNT", res.data.NOTIFICATION);
-        // }
-        // if (page_shoppingcart) {
-        //   Vue.set(
-        //     page_shoppingcart,
-        //     "CART_ITEM_WALLPAPER_COUNT",
-        //     res.data.CART_ITEM_WALLPAPER
-        //   );
-        //   Vue.set(
-        //     page_shoppingcart,
-        //     "CART_ITEM_CURTAIN_COUNT",
-        //     res.data.CART_ITEM_CURTAIN
-        //   );
-        //   Vue.set(
-        //     page_shoppingcart,
-        //     "CART_ITEM_SOFT_COUNT",
-        //     res.data.CART_ITEM_SOFT
-        //   );
-        // }
+        this.MAIN_COUNT = res.data.CUSTOMER_BALANCE_PERIOD;
+        this.ORDER_COUNT = res.data.ORDER;
+        this.MY_COUNT = res.data.STUDY_FORM + res.data.NOTIFICATION;
+        this.SHOPPING_COUNT =
+          res.data.CART_ITEM_WALLPAPER +
+          res.data.CART_ITEM_CURTAIN +
+          res.data.CART_ITEM_SOFT;
+        if (res.data.CUSTOMER_BALANCE_PERIOD > 0) {
+          if (page_customer) {
+            Vue.set(
+              page_customer,
+              "MAIN_COUNT",
+              res.data.CUSTOMER_BALANCE_PERIOD
+            );
+          }
+        }
+        if (page_myPersonal) {
+          Vue.set(page_myPersonal, "STUDY_FORM_COUNT", res.data.STUDY_FORM);
+          Vue.set(page_myPersonal, "NOTIFICATION_COUNT", res.data.NOTIFICATION);
+        }
+        if (page_shoppingcart) {
+          Vue.set(
+            page_shoppingcart,
+            "CART_ITEM_WALLPAPER_COUNT",
+            res.data.CART_ITEM_WALLPAPER
+          );
+          Vue.set(
+            page_shoppingcart,
+            "CART_ITEM_CURTAIN_COUNT",
+            res.data.CART_ITEM_CURTAIN
+          );
+          Vue.set(
+            page_shoppingcart,
+            "CART_ITEM_SOFT_COUNT",
+            res.data.CART_ITEM_SOFT
+          );
+        }
       });
     }
   },

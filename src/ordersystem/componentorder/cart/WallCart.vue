@@ -13,7 +13,7 @@
               v-model="checkGroupModel"
               class="qiang"
               @change.stop="pickGroup(group, index)"
-              :disabled="checkActiviyEffect(group)"
+              :disabled="checkActiviyEffect(group) && !showManage"
             />
             <!--<img class="qiang" src="../../assetsorder/wallCart.png" alt="">-->
             <span class="type">
@@ -33,7 +33,7 @@
               v-model="checkBoxModel"
               class="checkbox"
               @change.stop="pickOne(product, index, inndex)"
-              :disabled="checkActiviyEffect2(product)"
+              :disabled="checkActiviyEffect2(product) && !showManage"
             />
             <div style="width:100%;height:100%" @click="wallDetails(index, inndex)">
               <table>
@@ -94,7 +94,7 @@
       </van-pull-refresh>
     </div>
     <div class="cart-bottom">
-      <div class="cart-right" v-if="!showSubmitCheck && !showManage">
+      <div class="cart-right" v-if="!showManage">
         <span>合计：</span>
         <span v-if="showPrice" class="total-price">￥{{ totalPrice }}</span>
         <span v-else class="total-price">***</span>
@@ -103,10 +103,6 @@
       <!--购物车管理-->
       <div class="cart-right" v-if="showManage">
         <span class="delete-cart" @click="deleteCart">删除</span>
-      </div>
-      <!--窗帘产品提交审核-->
-      <div class="cart-right" v-if="showSubmitCheck && !showManage">
-        <span class="submit-check">提交审核</span>
       </div>
     </div>
     <van-loading class="loading" type="spinner" v-if="loading" color="black" />
@@ -146,8 +142,6 @@ export default {
       manage: "管理",
       //是否切换为管理购物车
       showManage: false,
-      //窗帘提交审核
-      showSubmitCheck: false,
       //所有购物车列表
       allCartList: {},
       //购物车列表
@@ -332,11 +326,10 @@ export default {
     },
     manageCompleted() {
       this.showManage = false;
-      if (this.$route.path == "/cart/curtaincart") {
-        this.showSubmitCheck = true;
-      } else {
-        this.showSubmitCheck = false;
-      }
+      //取消选中
+      this.checkBoxModel = [];
+      this.checkGroupModel = [];
+      this.thisGroup = "";
     },
     searchCartList() {
       this.loading = true;
