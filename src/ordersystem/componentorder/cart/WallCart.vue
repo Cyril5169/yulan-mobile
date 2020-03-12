@@ -49,7 +49,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <th>发货说明：</th>
+                  <th nowrap="nowrap">发货说明：</th>
                   <td>{{ product.newsplitShipment }}</td>
                 </tr>
                 <tr>

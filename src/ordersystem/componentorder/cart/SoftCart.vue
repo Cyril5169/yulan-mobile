@@ -38,7 +38,7 @@
             <div style="width:100%;height:100%" @click="wallDetails(index, inndex)">
               <table>
                 <tr>
-                  <th>型号：</th>
+                  <th nowrap="nowrap">型号：</th>
                   <td>{{ product.item.itemNo }}</td>
                 </tr>
                 <!--<tr>-->
@@ -180,7 +180,7 @@ export default {
         name: "softdetails",
         params: {
           //墙纸类型,获取墙纸信息
-          itemType: this.cartlist[index].commodities[inndex].item.productType,
+          itemType: this.cartlist[index].commodities[inndex].softType,
           itemNo: this.cartlist[index].commodities[inndex].item.itemNo, //模糊查询内容
           commodityID: this.cartlist[index].commodities[inndex].id, //商品条ID
           activityID: this.cartlist[index].commodities[inndex].activityId, //新活动ID

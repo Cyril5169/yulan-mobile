@@ -49,7 +49,7 @@
                   <td>{{ product.width }}*{{ product.height }}(米)</td>
                 </tr>
                 <tr>
-                  <th>帘外包宽度：</th>
+                  <th nowrap="nowrap">帘外包宽度：</th>
                   <td v-if="product.outsourcingBoxExist === 1">
                     {{
                     product.outsourcingBoxWidth !== null &&

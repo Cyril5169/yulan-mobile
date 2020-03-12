@@ -144,8 +144,6 @@
         </van-list>
       </div>
     </div>
-    <!--<navBottom :tab-stage="myRoute" v-show="hidshow"></navBottom>-->
-    <!-- <van-loading class="loading" type="spinner" v-if="loading" color="black" /> -->
     <!--时间选择-->
     <van-popup v-model="showks" position="bottom">
       <van-datetime-picker
@@ -266,7 +264,6 @@ import {
   GetOrderUseRebate
 } from "@/api/orderListASP";
 import top from "../../../components/Top";
-import navBottom from "../../../components/navBottom";
 import "../../assetsorder/actionsheet.css";
 import { async } from "q";
 
@@ -274,7 +271,6 @@ export default {
   name: "",
   components: {
     top,
-    navBottom,
     [DatetimePicker.name]: DatetimePicker,
     [Popup.name]: Popup,
     [Picker.name]: Picker,

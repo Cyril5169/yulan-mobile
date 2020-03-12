@@ -102,7 +102,6 @@
 import axios from "axios";
 import { Search, Toast, ActionSheet, List, Popup } from "vant";
 import "../assetsorder/actionsheet.css";
-import navBottom from "../../components/navBottom";
 
 export default {
   name: "",
@@ -151,7 +150,6 @@ export default {
     };
   },
   components: {
-    navBottom,
     [Search.name]: Search,
     [ActionSheet.name]: ActionSheet,
     [Toast.name]: Toast,

@@ -187,7 +187,6 @@
         @change="changePage"
       />
     </div>
-    <!--<navBottom v-show="hidshow"></navBottom>-->
   </div>
 </template>
 
@@ -211,7 +210,6 @@ import {
 } from "vant";
 import "../assetsorder/actionsheet.css";
 import { getItemById, GetPromotionByItem } from "@/api/orderListASP";
-import navBottom from "../../components/navBottom";
 
 export default {
   name: "",
@@ -262,8 +260,7 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     [Pagination.name]: Pagination,
-    [Dialog.name]: Dialog,
-    navBottom
+    [Dialog.name]: Dialog
   },
   filters: {
     calLength(str) {
