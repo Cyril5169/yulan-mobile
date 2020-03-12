@@ -180,7 +180,9 @@ export default {
         name: "softdetails",
         params: {
           //墙纸类型,获取墙纸信息
-          itemType: this.cartlist[index].commodities[inndex].softType,
+          itemType: this.cartlist[index].commodities[inndex].softType
+            ? this.cartlist[index].commodities[inndex].softType
+            : this.cartlist[index].commodities[inndex].item.productType,
           itemNo: this.cartlist[index].commodities[inndex].item.itemNo, //模糊查询内容
           commodityID: this.cartlist[index].commodities[inndex].id, //商品条ID
           activityID: this.cartlist[index].commodities[inndex].activityId, //新活动ID
