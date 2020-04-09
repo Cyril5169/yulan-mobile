@@ -10,8 +10,8 @@
         :finished="finished"
         finished-text="没有更多了"
       >
-        <van-cell @click="onClick(item)" v-for="item in list" :key="item.ID" is-link center>
-          <van-icon slot="icon" name="volume-o" size="18px" dot color="gray" />
+        <van-cell @click="onClick(item,index)" v-for="(item,index) in list" :key="item.ID" is-link center>
+          <van-icon slot="icon" name="volume-o" size="18px" :dot ="item.readFlag == 0" color="gray" />
           <div slot="title" class="nt-cell">
             <span>{{item.TITLE}}</span>
           </div>
@@ -28,7 +28,7 @@
 <script>
 import top from "../../../components/Top";
 import { Popup, Toast, List, Cell, Icon } from "vant";
-import { getPageDataTable, GetById } from "@/api/notificationASP";
+import { getPageDataTable, GetById,InserFlag } from "@/api/notificationASP";
 
 export default {
   components: {
@@ -52,6 +52,8 @@ export default {
       CONTENT: "",
       TITLE: "",
       ID: null,
+      showId: null,
+      selIndex:null
     };
   },
   computed: {
@@ -67,7 +69,7 @@ export default {
         let data = {
           cid: this.$store.getters.getCId, //客户号
           condition: "",
-          limit: 20,
+          limit: 99,
           page: this.page
         };
         getPageDataTable(data)
@@ -86,9 +88,11 @@ export default {
           .catch(err => { });
       }, 500);
     },
-    onClick(e, a) {
+    onClick(e, index) {
       this.CONTENT = e.CONTENT;
       this.TITLE = e.TITLE;
+      this.showId = e.ID;
+      this.selIndex = index;
       this.showNotification = true;
     },
     hideNotification() {
@@ -106,10 +110,12 @@ export default {
     //如果传入ID，就去查找改公告并展示
     if (this.$route.params.ID) {
       this.ID = this.$route.params.ID;
+      this.showId = this.$route.params.ID;
     } else {
       this.CONTENT = this.$route.params.CONTENT;
       this.TITLE = this.$route.params.TITLE;
       this.showNotification = this.$route.params.showNotification;
+      this.showId = this.$route.params.showId;
     }
   },
   destroyed(){
@@ -125,6 +131,15 @@ export default {
       }).catch(err => {
         me.TITLE = error;
       })
+    },
+    showNotification:function(val){
+        if(val){
+          //显示就标记为已读
+          InserFlag({ nid: this.showId, cid: this.$store.getters.getCId,accept:2 });
+          if(this.selIndex){
+            this.$set(this.list[this.selIndex],"readFlag", 1)
+          }
+        }
     }
   }
 };
