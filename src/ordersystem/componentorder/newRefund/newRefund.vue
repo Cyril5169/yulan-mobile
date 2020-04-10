@@ -17,7 +17,7 @@
         <li >
           <div style="height:31px;margin-top:7px" >
             <van-cell-group style="height:31px;">
-               <input  class="searchInput" type="text" v-model="selectCreator" placeholder="请输入创建者姓名" />
+               <input  class="searchInput" type="text" v-model="selectCreator" placeholder="请输入客户名称" />
             </van-cell-group>
           </div>
         </li>
@@ -52,7 +52,7 @@
         </div>
         <table>
           <tr>
-            <td>创建者</td>
+            <td>客户名称</td>
             <td>{{item.ERP_CREATORNAME}}</td>
           </tr>
           <tr>
@@ -270,7 +270,7 @@ export default {
         startDate: ksTime, //开始日期
         endDate: jsTime, //结束日期
         state: this.myTypeCode, //状态
-        createName: this.selectCreator, //创建者名称
+        cName: this.selectCreator, //创建者名称
         itemNo: this.selectItemNo //产品号
       };
       GetUserCompensation(data).then(res => {

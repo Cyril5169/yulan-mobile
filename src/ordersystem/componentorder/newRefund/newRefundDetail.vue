@@ -27,7 +27,9 @@
         <div><span class="left">产品名称</span><span class="right">{{productVersionTrans(checkTable.PRODUCTION_VERSION)}}</span></div>
         <div><span class="left">单位</span><span class="right">{{checkTable.UNIT}}</span></div>
         <div><span class="left">数量</span><span class="right">{{checkTable.QTY}}</span></div>
-        <div><span class="left">问题描述</span><span class="right">{{checkTable.NOTES}}</span></div>
+        <div><span class="left">问题描述</span></div>
+        <div><span class="left" style="text-align:left;">{{checkTable.NOTES}}</span></div>
+        <div></div>
       </div>
       <div class="msg" v-if="checkTable.STATE!='SUBMITTED'">
         <div><span class="left"><b>玉兰处理意见</b></span></div>
@@ -35,10 +37,11 @@
       <div class="msg" v-if="checkTable.STATE!='SUBMITTED'">
         <div><span class="left">退货方式</span><span class="right">{{checkTable.RETURN_TYPE}}</span></div>
         <div><span class="left">初审意见</span><span class="right">{{checkTable.FIRST_AUDITION}}</span></div>
-        <div v-if="checkTable.RETURN_TYPE=='玉兰取货'"><span class="left">备注信息</span></div>
-        <div v-if="checkTable.RETURN_TYPE=='玉兰取货'"><span class="left">我公司已安排物流公司上门取货，请保持电话畅通</span></div>
+        <div v-if="checkTable.RETURN_TYPE=='玉兰取货'"><span class="left">备注信息</span><span class="right" >我公司已安排物流公司上门取货</span></div>
+        <div v-if="checkTable.RETURN_TYPE=='玉兰取货'"><span class="right">请保持电话畅通</span></div>
         <div v-if="checkTable.RETURN_TYPE=='客户邮寄'"><span class="left">备注信息</span><span class="right" >请您在快递单上备注提货单号</span></div>
         <div v-if="checkTable.RETURN_TYPE=='客户邮寄'"><span style="text-align:left;float:left;">退货或寄样信息</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="text-align:right">{{checkTable.RETURN_ADDRESS}}</span></div>
+        <div v-if="checkTable.RETURN_TYPE=='客户邮寄'"><span style="text-align:right;float:right;" ></span></div>
         <div v-if="checkTable.RETURN_TYPE=='客户邮寄'"><span style="text-align:right;float:right;" ></span></div>
         <div v-if="checkTable.RETURN_TYPE=='客户邮寄'"><span class="left" >邮寄备注信息</span><span class="right">您的提货单号：{{checkTable.SALE_NO}}</span></div>
 
@@ -88,9 +91,6 @@
 <script>
   import top from '../../../components/Top'
   import axios from 'axios'
-  // import {
-  // CheckDetailByID,
-  // } from "../../../api/complaintASP";
   import { digitUppercase,GetCompensationById,UpdateState } from "@/api/newRefundASP";
   import { Popup,Dialog ,Toast, Collapse, CollapseItem ,DatetimePicker,Uploader ,Button } from 'vant';
   export default {
