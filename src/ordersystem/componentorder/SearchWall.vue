@@ -81,7 +81,6 @@
       <!--暂无查询结果-->
       <!--</div>-->
     </div>
-    <navBottom v-show="hidshow"></navBottom>
     <!--查看库存-->
     <van-action-sheet class="kucun-popup" v-model="showKucun" title="库存查询结果">
       <div class="kucun-result">
@@ -111,7 +110,6 @@
 import axios from "axios";
 import { Search, ActionSheet, Toast, Loading, Icon, Dialog, Popup } from "vant";
 import "../assetsorder/actionsheet.css";
-import navBottom from "../../components/navBottom";
 import scan from "../componentorder/Scan";
 import {
   GetWallpaperInfo,
@@ -141,7 +139,7 @@ export default {
       hidshow: true, //显示或者隐藏footer
       loading: false,
       showScan: false,
-      baobei: false
+      baobei: false,
     };
   },
   components: {
@@ -153,8 +151,7 @@ export default {
     [Loading.name]: Loading,
     [Icon.name]: Icon,
     [Popup.name]: Popup,
-    [Dialog.Component.name]: Dialog.Component,
-    navBottom
+    [Dialog.Component.name]: Dialog.Component
   },
   methods: {
     back() {

@@ -342,6 +342,7 @@ export default {
       if (this.myActivity == "未选择活动" && this.allHd.length == 0) {
         this.myActivity = "此产品不参与活动";
       }
+      this.showMoreHd = true;//有过期的还可以选择
     },
     //加入购物车时的库存判断
     kuCunjudge() {

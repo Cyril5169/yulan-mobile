@@ -80,8 +80,6 @@
             <p class="btn6-p">待修改协议书</p>
           </div>
       </section>
-
-      <!-- <navBottom></navBottom> -->
     </div>
   </div>
 </template>
@@ -89,7 +87,6 @@
 <script>
 import {bus} from '../utils/eventBus.js'
 import SalesmanBanner from './SalesmanBanner'
-import navBottom from './navBottom'
 
 export default {
   data() {
@@ -99,8 +96,7 @@ export default {
   },
   components: {
     SalesmanBanner,
-    bus,
-    navBottom
+    bus
   },
   mounted(){
         //用于资料卡查询获取地区，用于清除缓存bug

@@ -151,6 +151,7 @@ export default {
           showNotification: true,
           CONTENT: this.currentNotice.CONTENT,
           TITLE: this.currentNotice.TITLE,
+          showId: this.currentNotice.ID,
           from: "customer"
         }
       });

@@ -102,7 +102,6 @@
 import axios from "axios";
 import { Search, Toast, ActionSheet, List, Popup } from "vant";
 import "../assetsorder/actionsheet.css";
-import navBottom from "../../components/navBottom";
 
 export default {
   name: "",
@@ -113,7 +112,7 @@ export default {
         {text: "花边", itemType: "XHB", searchText: "请输入花边型号", isActive:true},
         {text: "挂袋/配件包", itemType: "PJB", searchText: "请输入挂袋/配件包型号", isActive:false},
         {text: "抱枕", itemType: "BZ", searchText: "请输入抱枕型号", isActive:false},
-        {text: "挂画", itemType: "GH", searchText: "请输入挂画型号", isActive:false},
+        {text: "装饰画", itemType: "GH", searchText: "请输入装饰画型号", isActive:false},
         {text: "成品帘", itemType: "TC", searchText: "请输入成品帘型号", isActive:false},
         {text: "其他", itemType: "other", searchText: "请输入其他软装型号", isActive:false},
       ],
@@ -151,7 +150,6 @@ export default {
     };
   },
   components: {
-    navBottom,
     [Search.name]: Search,
     [ActionSheet.name]: ActionSheet,
     [Toast.name]: Toast,
