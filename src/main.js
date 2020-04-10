@@ -123,7 +123,8 @@ function plusReady() {
     },
     false
   );
-  vm.UpdateVersion();
+  if(plus.os.name == "Android")
+    vm.UpdateVersion();
 }
 
 if (!window.plus) {
@@ -135,7 +136,8 @@ if (!window.plus) {
 }
 //从后台切换到前台,检查更新
 document.addEventListener("resume", function() {
-  vm.UpdateVersion();
+  if(plus.os.name == "Android")
+    vm.UpdateVersion();
 });
 //从前台切换到后台
 document.addEventListener("pause", function() {

@@ -26,7 +26,7 @@
         <img class="item-more" src="../../assetsorder/more.png" alt />
         <div v-if="NOTIFICATION_COUNT>0" class="reddot"></div>
       </div>
-      <div class="item" @click="checkVersion()">
+      <div v-if="showCheckVersion" class="item" @click="checkVersion()">
         <img class="item-icon" src="../../assetsorder/version_update.png" alt />
         <span v-text="checkVersionText"></span>
         <img class="item-more" src="../../assetsorder/more.png" alt />
@@ -62,7 +62,8 @@ export default {
       myRoute: "personal",
       checkVersionText:"检查新版本"+(urlSetting.describe?"["+urlSetting.describe+"]":""),
       NOTIFICATION_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.NOTIFICATION:0,
-      STUDY_FORM_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.STUDY_FORM:0
+      STUDY_FORM_COUNT: this.$store.state.tipsInfo?this.$store.state.tipsInfo.STUDY_FORM:0,
+      showCheckVersion: window.plus && window.plus.os.name == "Android"
     };
   },
   computed: {
@@ -89,11 +90,7 @@ export default {
       });
     },
     checkVersion() {
-      if (!window.plus) {
-        Toast("网页版模式，不能检查更新");
-      } else {
-        vm.UpdateVersion(true);
-      }
+      vm.UpdateVersion(true);
     },
     changePassword() {},
     logout() {

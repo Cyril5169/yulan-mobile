@@ -30,10 +30,10 @@
     <script>
         //导航栏图标颜色 #89CB81
         var vm, app, notificationlist,
-        page_customer,//主页
-        page_myPersonal,//个人中心
-        page_shoppingcart//购物车
-        ;
+            page_customer,//主页
+            page_myPersonal,//个人中心
+            page_shoppingcart//购物车
+            ;
         var urlArr = {
             local: {
                 baseUrl: 'http://localhost:49438/',
@@ -65,42 +65,51 @@
         var updateUrl = baseUrl + "app/version.json";
         document.addEventListener("plusready", function (a) {
             window.plus = plus;
+            //处理点击推送消息
+            function handlerPushMsg(payload) {
+				console.log(payload.msg_type);
+				console.log(payload.bill_id);
+                //公告提醒
+                if (payload.msg_type == "notification") {
+                    vm.showPushNotification(payload.bill_id);
+                } else if (payload.msg_type == "customer_balance_period") {//对账单提醒
+                    vm.showPush_customer_balance_period();
+                } else if (payload.msg_type == "order") {
+
+                }
+                var loginname = app.$store.getters.getCId;
+                var cid = plus.push.getClientInfo().clientid;
+				console.log(loginname);
+				console.log(cid);
+                //更新响应的时间
+                vm.UpdatePushResponseTime(loginname, cid, payload.bill_id, payload.msg_type, "all");
+            }
             //创建本地消息
-            function createLocalPushMsg(msg) {
-                var options = { cover: false };
-                plus.push.createMessage(msg.content, "LocalMSG", options);
+            function createLocalPushMsg(message, payload) {
+                var options = { cover: true };
+                plus.push.createMessage(message, payload, options);
                 if (plus.os.name == "iOS") {
                     console.log('*如果无法创建消息，请到"设置"->"通知"中配置应用在通知中心显示!');
                 }
             }
-            //获取推送通知
+            //获取推送通知,IOS收到消息后，创建本地消息覆盖本来的消息，因为本来的消息内容是显示content中的内容，与安卓不同
             plus.push.addEventListener(
                 "receive",
                 function (msg) {
                     console.log("接收到的透传推送 " + JSON.stringify(msg));
-                    var obj = JSON.parse(msg.content);
-                    //公告提醒
-                    if (obj.msg_type == "notification") {
-                        vm.showPushNotification(obj.bill_id);
-                    } else if (obj.msg_type == "customer_balance_period") {//对账单提醒
-                        vm.showPush_customer_balance_period();
-                    }else if(obj.msg_type == "order"){
-
-                    }
-                    var loginname = app.$store.getters.getCId;
-                    var cid = plus.push.getClientInfo().clientid;
-                    //更新响应的时间
-                    vm.UpdatePushResponseTime(loginname, cid, obj.bill_id, obj.msg_type, "all");
+                    var content = JSON.parse(msg.content);
+					console.log(plus.os.name);
                     if (plus.os.name == "iOS") {
-                        switch (msg.payload) {
-                            case "LocalMSG":
-                                alert("本地创建消息的 " + JSON.stringify(msg));
-                                break;
-                            default:
-                                //测试本地推送
-                                createLocalPushMsg(msg);
-                                break;
+                        if (msg.payload.LocalMSG) {
+                            handlerPushMsg(content);
+                        } else {
+                            //生成本地推送消息
+                            content.LocalMSG = true;
+                            createLocalPushMsg(content.message, JSON.stringify(content));
                         }
+                    } else {
+						console.log(JSON.stringify(content));
+                        handlerPushMsg(content);
                     }
                 },
                 false
