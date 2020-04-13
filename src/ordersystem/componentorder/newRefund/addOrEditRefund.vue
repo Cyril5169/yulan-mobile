@@ -3,11 +3,6 @@
     <top :top="set" :from="from"></top>
     <span v-if="STATE=='SUBMITTED'" class="lanju-details-state">新增售后单</span>
     <div class="lanju-details-msg">
-      <!-- <div class="msg">
-        <div><span class="left">客户代码</span><span class="right">{{companyId}}</span></div>
-        <div><span class="left">客户名称</span><span class="right">{{companyName}}</span></div>
-        <div><span class="left">单据状态</span><span class="right">{{submit.STATE|statusTrans}}</span></div>
-      </div> -->
       <div  class="msg">
         <div><span class="left">客户代码</span><span class="right">系统带出</span></div>
         <div><span class="left">客户名称</span><span class="right">系统带出</span></div>
