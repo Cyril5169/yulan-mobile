@@ -6,7 +6,7 @@ import router from "./router";
 import axios from "axios";
 import Calendar from "vue-mobile-calendar";
 import VueAwesomeSwiper from "vue-awesome-swiper";
-import { Picker } from "vant";
+import { Picker,ImagePreview } from "vant";
 import store from "./store";
 //订单系统的URL
 import Global from "./Global.vue";
@@ -58,6 +58,7 @@ axios.interceptors.response.use(
 Vue.use(Calendar);
 Vue.use(Picker);
 Vue.use(VueAwesomeSwiper);
+Vue.use(ImagePreview);
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;

@@ -49,14 +49,20 @@
             </td>
           </tr>
         </table>-->
-        <table class="order-item" style="margin-top:5px;">
-          <tr class="delivery">
-            <td class="left">用户姓名</td>
-            <td class="right">
-              <input class="delivery-mark" v-model="buyUser" placeholder="请填写用户姓名" type="text" />
-            </td>
-          </tr>
-        </table>
+        <div style="margin-top:5px;">
+          <div
+            style="text-align:left;font-size:14px;color:#4994df;background:white;padding-left:20px;"
+            @click="onShowAddress"
+          >管理购买用户信息 ></div>
+          <table class="order-item">
+            <tr class="delivery">
+              <td class="left">用户姓名</td>
+              <td class="right">
+                <input class="delivery-mark" v-model="buyUser" placeholder="请填写用户姓名" type="text" />
+              </td>
+            </tr>
+          </table>
+        </div>
         <table class="order-item">
           <tr class="delivery">
             <td class="left">用户电话</td>
@@ -67,12 +73,26 @@
         </table>
         <table class="order-item">
           <tr class="delivery">
-            <td class="left">用户地址</td>
+            <td class="left">选择地区</td>
             <td class="right">
               <input
                 class="delivery-mark"
-                v-model="buyUserAddress"
-                placeholder="请填写用户地址"
+                v-model="selLocation"
+                 @click="iosselect"
+                placeholder="选择省/市/县"
+                readonly
+              />
+            </td>
+          </tr>
+        </table>
+        <table class="order-item">
+          <tr class="delivery">
+            <td class="left">详细地址</td>
+            <td class="right">
+              <input
+                class="delivery-mark"
+                v-model="buyUserPostAddress"
+                placeholder="请填写详细地址"
                 type="text"
               />
             </td>
@@ -104,7 +124,12 @@
           <tr class="delivery">
             <td class="left">工程报备单号</td>
             <td class="right">
-              <input class="delivery-mark" v-model="gongchenhao" placeholder="请填写工程报备单号" type="text" />
+              <input
+                class="delivery-mark"
+                v-model="gongchenhao"
+                placeholder="请填写工程报备单号"
+                type="text"
+              />
             </td>
           </tr>
         </table>
@@ -419,6 +444,49 @@
         :initAddress="initAddress"
       ></addressEdit>
     </van-popup>
+
+    <van-popup
+      style="width:100%;height:100%;"
+      v-model="showBuyserAddress"
+      v-if="showBuyserAddress"
+      position="right"
+    >
+      <div class="coupon-title">
+        <img class="backCoupon" @click="showBuyserAddress=false" src="../../assetsorder/back.png" alt />
+        <span>管理购买人地址</span>
+      </div>
+      <div class="all-address">
+        <van-address-list
+          id="dress-list"
+          v-model="selAddress.id"
+          :list="allBuyserAddress"
+          @add="onAddAddress2"
+          @edit="onEditAddress2"
+          @select="onSelectAddress2"
+        />
+      </div>
+    </van-popup>
+    <iosselect2 v-on:listen3="listenmore" v-on:listen4="listenselect" v-show="showLocation"></iosselect2>
+    <van-popup
+      style="width:100%;height:100%;"
+      v-model="showBuyserAddressAdd"
+      v-if="showBuyserAddressAdd"
+      position="right"
+    >
+      <buyserNewAddress @backclick="backclick" @refreshAddress="refreshAddress2"></buyserNewAddress>
+    </van-popup>
+    <van-popup
+      style="width:100%;height:100%;"
+      v-model="showBuyserAddressEdit"
+      v-if="showBuyserAddressEdit"
+      position="right"
+    >
+      <buyserEditAddress
+        @backclick="backclick"
+        @refreshAddress="refreshAddress2"
+        :initAddress="initBuyserAddress"
+      ></buyserEditAddress>
+    </van-popup>
   </div>
 </template>
 
@@ -447,11 +515,15 @@ import {
   getCustomerInfo,
   getTotalRecordSum,
   GetPromotionsById,
-  UploadBuyUserFiles
+  UploadBuyUserFiles,
+  GetBuyUserInfo
 } from "@/api/orderListASP";
 import newAddress from "./NewAddress";
+import buyserNewAddress from "./buyserNewAddress";
 import addressEdit from "./AddressEdit";
+import buyserEditAddress from "./buyserEditAddress";
 import top from "../../../components/Top";
+import iosselect2 from "@/components/Iosselect4";
 
 const coupon = [
   {
@@ -471,7 +543,10 @@ export default {
   components: {
     top,
     newAddress,
+    buyserNewAddress,
     addressEdit,
+    buyserEditAddress,
+    iosselect2,
     [SubmitBar.name]: SubmitBar,
     [Popup.name]: Popup,
     [CouponCell.name]: CouponCell,
@@ -497,7 +572,11 @@ export default {
       showAddress: false,
       showAddressAdd: false,
       showAddressEdit: false,
+      showBuyserAddress: false,
+      showBuyserAddressAdd:false,
+      showBuyserAddressEdit:false,
       initAddress: "",
+      initBuyserAddress:"",
       //物流类型
       deliveryType: "普通物流(运费由甲方支付)",
       isdeliveryType: "",
@@ -536,13 +615,21 @@ export default {
       buyUserAddress: "",
       //购买人凭证
       buyUserPicture: "",
+      buyUserArea1: "",
+        buyUserArea2: "",
+        buyUserArea3: "",
+        buyUserPostAddress: "",
+        selLocation:"",
+        showLocation:false,
       //订单备注
       orderBei: "",
       //分包提示
       packingNote: "请选择包装信息",
       //选中地址(对象)
       allAddress: [],
+      allBuyserAddress:[],
       address: [],
+      selAddress:[],
       //是否为默认地址标志
       isDefaultAdd: "0",
       // 订单商品详情，为多个集合（数组）
@@ -715,6 +802,14 @@ export default {
         }
       });
     },
+    splitAddress2() {
+      var address = `${this.buyUserArea1 ? this.buyUserArea1 : ""}${
+        this.buyUserArea2 ? this.buyUserArea2 : ""
+      }${this.buyUserArea3 ? this.buyUserArea3 : ""}${
+        this.buyUserPostAddress ? this.buyUserPostAddress : ""
+      }`;
+      return address;
+    },
     onSubmitOrder() {
       if (this.delInput == false && this.deliveryBei == "") {
         Toast({
@@ -741,6 +836,7 @@ export default {
       } else {
         this.isDefaultAdd = "1";
       }
+      this.buyUserAddress = this.splitAddress2();
       //附件拼接
       this.buyUserPicture = "";
       for (var i = 0; i < this.fileList.length; i++) {
@@ -750,6 +846,30 @@ export default {
           "/" +
           this.fileList[i].file.name +
           ";";
+      }
+      if (this.activityArray.BUYER_FLAG == 1) {
+        //要填写购买人信息
+        if (
+          !this.buyUser ||
+          !this.buyUserPhone ||
+          !this.buyUserArea1 ||
+          !this.buyUserArea2 ||
+          !this.buyUserArea3 ||
+          !this.buyUserPostAddress
+        ) {
+          Toast({
+          duration: 2000,
+          message: "请填写完整的购买用户信息"
+        });
+          return;
+        }
+        if (!this.buyUserPicture) {
+          Toast({
+          duration: 2000,
+          message: "请上传购买凭证"
+        });
+          return;
+        }
       }
       //订单商品详情，为多个集合（数组）
       this.productList = [];
@@ -770,8 +890,8 @@ export default {
         singleProduct.curtainWbhSize = this.allProduct[i].outsourcingBoxWidth
           ? this.allProduct[i].outsourcingBoxWidth
           : 0;
-        singleProduct.curtainRoomName = this.allProduct[i].location
-          ? this.allProduct[i].location
+        singleProduct.curtainRoomName = this.allProduct[i].selLocation
+          ? this.allProduct[i].selLocation
           : "";
         singleProduct.orderNo = this.allProduct[i].orderNumber;
         singleProduct.lineNo = this.allProduct[i].lineNo;
@@ -856,6 +976,10 @@ export default {
           buyUserPhone: this.buyUserPhone,
           buyUserAddress: this.buyUserAddress,
           buyUserPicture: this.buyUserPicture,
+          buyUserArea1 : this.buyUserArea1,
+          buyUserArea2 : this.buyUserArea2,
+          buyUserArea3 : this.buyUserArea3,
+          buyUserPostAddress : this.buyUserPostAddress,
           packingNote: this.packingNote
         },
         ctm_orders: this.productList,
@@ -915,6 +1039,9 @@ export default {
       };
       axios.post(url, data).then(data => {
         GetPromotionsById({ PID: this.activityArray }).then(ress => {
+          if (ress.data.length > 0) {
+            this.activityArray = ress.data[0]; //一般只有一个活动参与结算
+          }
           //优惠券列表（数组）
           for (let k = 0; k < data.data.data.length; k++) {
             if (
@@ -945,7 +1072,6 @@ export default {
               );
             }
             if (ress.data.length > 0) {
-              this.activityArray = ress.data[0]; //一般只有一个活动参与结算
               for (let i = 0; i < this.couponLists.length; i++) {
                 if (this.activityArray.REBATE_FLAG == "N") {
                   //不能使用优惠券
@@ -1052,7 +1178,11 @@ export default {
           buyUser: this.buyUser,
           buyUserPhone: this.buyUserPhone,
           buyUserAddress: this.buyUserAddress,
-          buyUserPicture: this.buyUserPicture
+          buyUserPicture: this.buyUserPicture,
+          buyUserArea1 : this.buyUserArea1,
+          buyUserArea2 : this.buyUserArea2,
+          buyUserArea3 : this.buyUserArea3,
+          buyUserPostAddress : this.buyUserPostAddress,
         },
         ctm_orders: this.productList
       };
@@ -1189,24 +1319,94 @@ export default {
         this.$store.commit("setAddress", this.address);
       });
     },
+    getBuyUser() {
+      GetBuyUserInfo(
+        {
+          cid: this.$store.getters.getCId,
+          condition: "",
+          page: 1,
+          limit: 99999
+        }
+      ).then(res => {
+        this.allBuyserAddress = res.data;
+        for (let i = 0; i < this.allBuyserAddress.length; i++) {
+          this.allBuyserAddress[i].id = this.allBuyserAddress[i].ADDRESS_ID;
+          this.allBuyserAddress[i].name = this.allBuyserAddress[i].BUYUSER;
+          this.allBuyserAddress[i].tel = this.allBuyserAddress[i].BUYUSER_PHONE;
+          this.allBuyserAddress[i].reciverArea1 = this.allBuyserAddress[i].PROVINCE;
+          this.allBuyserAddress[i].reciverArea2 = this.allBuyserAddress[i].CITY;
+          this.allBuyserAddress[i].reciverArea3 = this.allBuyserAddress[i].COUNTRY;
+          this.allBuyserAddress[i].province =
+            (this.allBuyserAddress[i].PROVINCE ? this.allBuyserAddress[i].PROVINCE : "") +
+            (this.allBuyserAddress[i].CITY ? this.allBuyserAddress[i].CITY : "") +
+            (this.allBuyserAddress[i].COUNTRY ? this.allBuyserAddress[i].COUNTRY : "");
+          this.allBuyserAddress[i].address =
+            (this.allBuyserAddress[i].province ? this.allBuyserAddress[i].province : "") +
+            (this.allBuyserAddress[i].POST_ADDRESS
+              ? this.allBuyserAddress[i].POST_ADDRESS
+              : "");
+        }
+      });
+    },
+    onShowAddress(){
+      this.getBuyUser();
+      this.showBuyserAddress = true;
+    },
     onSelectAddress(item, index) {
       this.address = item;
       this.showAddress = false;
     },
+    onSelectAddress2(item, index) {
+      this.selAddress = item;
+      this.buyUser = item.BUYUSER;
+      this.buyUserPhone = item.BUYUSER_PHONE;
+      this.buyUserArea1 = item.PROVINCE;
+      this.buyUserArea2 = item.CITY;
+      this.buyUserArea3 = item.COUNTRY;
+      this.buyUserPostAddress = item.POST_ADDRESS;
+      this.selLocation = item.province + "-" + item.CITY + "-" + item.COUNTRY;
+      this.showBuyserAddress = false;
+    },
     onAddAddress() {
       this.showAddressAdd = true;
+    },
+    onAddAddress2() {
+      this.showBuyserAddressAdd = true;
     },
     onEditAddress(item, index) {
       this.initAddress = this.allAddress[index];
       this.showAddressEdit = true;
     },
+    onEditAddress2(item, index) {
+      this.initBuyserAddress = this.allBuyserAddress[index];
+      this.showBuyserAddressEdit = true;
+    },
+    listenmore(data) {
+      this.showLocation = data;
+    },
+    listenselect(data) {
+      this.selLocation = data;
+    },
+    iosselect() {
+      this.showLocation = true;
+    },
     backclick(status) {
-      if (status) this.showAddressAdd = false;
-      else this.showAddressEdit = false;
+      if (status){
+        this.showAddressAdd = false;
+        this.showBuyserAddressAdd = false;
+      }
+      else{
+        this.showAddressEdit = false;
+        this.showBuyserAddressEdit = false;
+      }
     },
     refreshAddress(status) {
       this.backclick(status);
       this.getAddress();
+    },
+    refreshAddress2(status){
+      this.backclick(status);
+      this.getBuyUser();
     },
     //优惠券使用记录
     UseRecord(couponId) {
@@ -1315,6 +1515,10 @@ export default {
         this.buyUserPhone = orderHead.BUYUSERPHONE.trim();
         this.buyUserAddress = orderHead.BUYUSER_ADDRESS.trim();
         this.buyUserPicture = orderHead.BUYUSER_PICTURE.trim();
+        this.buyUserArea1 = orderHead.BUYUSER_AREA1.trim();
+        this.buyUserArea2 = orderHead.BUYUSER_AREA2.trim();
+        this.buyUserArea3 = orderHead.BUYUSER_AREA3.trim();
+        this.buyUserPostAddress = orderHead.BUYUSER_POST_ADDRESS.trim();
         if (this.buyUserPicture) {
           var list = this.buyUserPicture.split(";");
           for (var i = 0; i < list.length - 1; i++) {
@@ -1559,6 +1763,7 @@ export default {
 .more-right {
   width: 15px;
   height: 15px;
+  vertical-align: middle;
 }
 
 .delivery,
@@ -1822,6 +2027,7 @@ export default {
   font-size: 11px;
 }
 .all-address {
+  width: 100%;
   position: fixed;
   top: 50px;
   bottom: 50px;

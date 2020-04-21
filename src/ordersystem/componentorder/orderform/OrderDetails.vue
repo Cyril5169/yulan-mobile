@@ -51,6 +51,22 @@
     <div class="order-msg">
       <table>
         <tr>
+          <th>购买人：</th>
+          <td>{{oneOrder.BUYUSER}}({{ oneOrder.BUYUSERPHONE }})</td>
+        </tr>
+        <tr>
+          <th>购买人地址：</th>
+          <td>{{oneOrder.BUYUSER_ADDRESS}}</td>
+        </tr>
+        <tr v-if="oneOrder.BUYUSER_PICTURE">
+          <th>购买凭证：</th>
+          <td><u style="color:#4994df;" @click="showPic = true">查看购买凭证</u></td>
+        </tr>
+      </table>
+    </div>
+    <div class="order-msg">
+      <table>
+        <tr>
           <th>配送方式：</th>
           <td>普通物流(由甲方支付运费)</td>
         </tr>
@@ -203,6 +219,7 @@
         @getChangeData="getChangeData"
       ></detailCurtain>
     </van-popup>
+    <van-image-preview v-model="showPic" :images="imgSrc"></van-image-preview>
   </div>
 </template>
 
@@ -253,6 +270,8 @@ export default {
       timeRemain: false,
       notpayBottom: false,
       completeBottom: false,
+      showPic:false,
+      imgSrc:[],
       //单个订单详情
       oneOrder: "",
       //订单状态
@@ -340,6 +359,15 @@ export default {
           this.oneOrder.PACKING_NOTE = res.data.PACKING_NOTE; //先这样处理，后台换了后台就不需要了
           this.oneOrder.BUYUSER_ADDRESS = res.data.BUYUSER_ADDRESS;
           this.oneOrder.BUYUSER_PICTURE = res.data.BUYUSER_PICTURE;
+          if (this.oneOrder.BUYUSER_PICTURE) {
+            var list = this.oneOrder.BUYUSER_PICTURE.split(";");
+            for (var i = 0; i < list.length - 1; i++) {
+              var index = list[i].lastIndexOf("/");
+              if (index == -1) index = list[i].lastIndexOf("\\");
+              var fileName = list[i].substr(index + 1);
+              this.imgSrc.push(this.baseUrlASP + list[i]);
+            }
+          }
           for (let i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
             if (this.oneOrder.ORDERBODY[i].PART_SEND_ID == "0") {
               this.oneOrder.ORDERBODY[i].productTip = "等生产";

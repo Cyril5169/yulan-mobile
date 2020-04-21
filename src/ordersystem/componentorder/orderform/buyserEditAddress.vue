@@ -1,26 +1,14 @@
 <template>
   <div>
-    <top msgtitle="新增地址" @backclick="backclick"></top>
+    <top msgtitle="修改地址" @backclick="backclick"></top>
     <div class="new-address">
       <div class="item">
         <span class="item-title">姓名</span>
-        <input
-          class="item-input"
-          @blur.prevent="confirmInput()"
-          type="text"
-          placeholder="收货人姓名"
-          v-model="name"
-        />
+        <input class="item-input" type="text" placeholder="收货人姓名" v-model="initAddress.name" />
       </div>
       <div class="item">
         <span class="item-title">电话</span>
-        <input
-          class="item-input"
-          @blur.prevent="confirmInput()"
-          type="number"
-          placeholder="收货人电话"
-          v-model="tel"
-        />
+        <input class="item-input" type="text" placeholder="收货人电话" v-model="initAddress.tel" />
       </div>
       <div class="item">
         <span class="item-title">地区</span>
@@ -28,7 +16,8 @@
           class="item-input"
           @click="iosselect"
           readonly
-          :value="location"
+          v-model="location"
+          ref="bank"
           placeholder="选择省/市/县"
         />
       </div>
@@ -36,14 +25,14 @@
         <span class="item-title">详细地址</span>
         <input
           class="item-input"
-          @blur.prevent="confirmInput()"
           type="text"
-          v-model="address"
+          v-model="initAddress.POST_ADDRESS"
           placeholder="街道门牌/楼层房间等信息"
         />
       </div>
       <div class="address-save">
         <span class="save" @click="saveAddress">保存</span>
+        <span class="delete" @click="deleteAddress">删除</span>
       </div>
     </div>
     <iosselect2 v-on:listen3="listenmore" v-on:listen4="listenselect" v-show="more"></iosselect2>
@@ -55,27 +44,30 @@ import axios from "axios";
 import iosselect2 from "@/components/Iosselect4";
 import top from "../../../components/Top";
 import { bus } from "../../../utils/eventBus.js";
-import { Toast } from "vant";
+import { Toast, Dialog } from "vant";
+import { UpdateBuyUser, DeleteBuyUser } from "@/api/orderListASP";
 
 export default {
   data() {
     return {
       set: 18,
       more: false,
-      location: "",
+      location: this.initAddress.province,
       name: "",
       tel: "",
       address: ""
     };
   },
+  props: ["initAddress"],
   components: {
     top,
     iosselect2,
-    [Toast.name]: Toast
+    [Toast.name]: Toast,
+    [Dialog.name]: Dialog
   },
   methods: {
     backclick() {
-      this.$emit("backclick",true);
+      this.$emit("backclick");
     },
     iosselect() {
       this.more = true;
@@ -87,48 +79,55 @@ export default {
     listenselect(data) {
       this.location = data;
     },
-    confirmInput() {
-      if (event.target.value == "") {
-        Toast({
-          duration: 1000,
-          message: "请填写" + event.target.placeholder
-        });
-        event.target.focus();
-        return;
-      }
-    },
     saveAddress() {
-      if (this.name == "" || this.tel == "" || this.address == "") {
-        return;
-      }
       //地址截取
       var reg = /.+?(省|市|自治区|自治州|县|区)/g;
       var addsressAry = this.location.match(reg);
-      let url = this.orderBaseUrl + "/postAddress/addPostAddress.do";
       let data = {
-        // "cid":"C01613", //客户ID
-        cid: this.$store.getters.getCId,
-        postAddress: this.address, //客户地址，具体地址
-        wlContacts: this.name, //收货人
-        wlTel: this.tel, //联系电话
-        province: addsressAry[0], //省
-        city: addsressAry[1], //市
-        country: addsressAry[2], //县
-        provinceID: "", //省ID
-        cityID: "", //市ID
-        countryID: null //县ID
+        ADDRESS_ID: this.initAddress.id,
+        CUSTOMER_CODE: this.$store.getters.getCMId,
+        POST_ADDRESS: this.initAddress.POST_ADDRESS, //客户地址，具体地址
+        BUYUSER: this.initAddress.name, //收货人
+        BUYUSER_PHONE: this.initAddress.tel, //联系电话
+        PROVINCE: addsressAry[0], //省
+        CITY: addsressAry[1], //市
+        COUNTRY: addsressAry[2], //县
+        PROVINCE_ID: this.initAddress.PROVINCE_ID, //省ID
+        CITY_ID: this.initAddress.CITY_ID, //市ID
+        COUNTRY_ID: this.initAddress.COUNTRY_ID //县ID
       };
-      axios.post(url, data).then(data => {
-        if (data.data.code == 0) {
-          Toast({
-            duration: 1000,
-            message: "添加地址成功"
-          });
-          this.$emit("refreshAddress",true);
-        }
+      UpdateBuyUser(data).then(data => {
+        Toast({
+          duration: 1000,
+          message: "修改地址成功"
+        });
+        this.$emit("refreshAddress");
       });
+    },
+    //删除地址
+    deleteAddress() {
+      Dialog.confirm({
+        message: "是否确认删除地址"
+      })
+        .then(() => {
+          let data = {
+            CUSTOMER_CODE: this.$store.getters.getCMId,
+            ADDRESS_ID: this.initAddress.id
+          };
+          DeleteBuyUser(data).then(res => {
+              Toast({
+                duration: 1000,
+                message: "删除地址成功"
+              });
+              this.$emit("refreshAddress");
+          });
+        })
+        .catch(() => {
+          // on cancel
+        });
     }
-  }
+  },
+  created() {}
 };
 </script>
 
@@ -166,6 +165,7 @@ export default {
 
 .address-save {
   text-align: center;
+  padding: 32px 16px;
 }
 
 .save {
@@ -173,9 +173,20 @@ export default {
   width: 300px;
   height: 40px;
   line-height: 40px;
-  margin: 20px;
+  margin-bottom: 15px;
   background: #ff2d41;
   color: white;
+  font-size: 14px;
+}
+.delete {
+  display: inline-block;
+  width: 300px;
+  height: 40px;
+  line-height: 40px;
+  margin-bottom: 15px;
+  background: #fff;
+  color: #323233;
+  border: 1px solid #ebedf0;
   font-size: 14px;
 }
 </style>

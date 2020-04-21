@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       columns: [""],
-      selected: "",
+      selected: "广西壮族自治区-南宁市-兴宁区",//默认
       more: false,
       a: 1,
       index: 0,

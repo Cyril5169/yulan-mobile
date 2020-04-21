@@ -56,6 +56,9 @@ import iosselect2 from "@/components/Iosselect4";
 import top from "../../../components/Top";
 import { bus } from "../../../utils/eventBus.js";
 import { Toast } from "vant";
+import {
+  InsertBuyUser
+} from "@/api/orderListASP";
 
 export default {
   data() {
@@ -104,28 +107,24 @@ export default {
       //地址截取
       var reg = /.+?(省|市|自治区|自治州|县|区)/g;
       var addsressAry = this.location.match(reg);
-      let url = this.orderBaseUrl + "/postAddress/addPostAddress.do";
       let data = {
-        // "cid":"C01613", //客户ID
-        cid: this.$store.getters.getCId,
-        postAddress: this.address, //客户地址，具体地址
-        wlContacts: this.name, //收货人
-        wlTel: this.tel, //联系电话
-        province: addsressAry[0], //省
-        city: addsressAry[1], //市
-        country: addsressAry[2], //县
-        provinceID: "", //省ID
-        cityID: "", //市ID
-        countryID: null //县ID
+        CUSTOMER_CODE: this.$store.getters.getCMId,
+        POST_ADDRESS: this.address, //客户地址，具体地址
+        BUYUSER: this.name, //收货人
+        BUYUSER_PHONE: this.tel, //联系电话
+        PROVINCE: addsressAry[0], //省
+        CITY: addsressAry[1], //市
+        COUNTRY: addsressAry[2], //县
+        PROVINCE_ID: "", //省ID
+        CITY_ID: "", //市ID
+        COUNTRY_ID: "" //县ID
       };
-      axios.post(url, data).then(data => {
-        if (data.data.code == 0) {
+      InsertBuyUser(data).then(data => {
           Toast({
             duration: 1000,
             message: "添加地址成功"
           });
           this.$emit("refreshAddress",true);
-        }
       });
     }
   }

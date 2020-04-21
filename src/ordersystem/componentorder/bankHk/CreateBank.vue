@@ -83,9 +83,10 @@
       <span class="edit-bank-dl" @click="toDelBank">作废凭证</span>
     </div>
     <!--查看图片-->
-    <van-popup v-model="showPic">
+    <!-- <van-popup v-model="showPic">
       <img :src="imgSrc" alt class="bank-img-big" />
-    </van-popup>
+    </van-popup>-->
+    <van-image-preview v-model="showPic" :images="[imgSrc]"></van-image-preview>
   </div>
 </template>
 
@@ -100,14 +101,16 @@ import {
   CollapseItem,
   DatetimePicker,
   Uploader,
-  Button
+  Button,
+  ImagePreview
 } from "vant";
 export default {
   name: "",
   components: {
     top,
     [Popup.name]: Popup,
-    [Dialog.name]: Dialog
+    [Dialog.name]: Dialog,
+    [ImagePreview.name]: ImagePreview
   },
   data() {
     return {

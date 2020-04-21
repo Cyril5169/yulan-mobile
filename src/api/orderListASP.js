@@ -184,3 +184,31 @@ export function GetBalancePeriod(data, config = {}) {
         return Promise.reject(err);
     })
 }
+export function GetBuyUserInfo(data, config = {}) {
+    return post('/BUYUSER_INFO/GetBuyUserInfo', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+export function InsertBuyUser(data, config = {}) {
+    return post('/BUYUSER_INFO/InsertBuyUser', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+export function UpdateBuyUser(data, config = {}) {
+    return post('/BUYUSER_INFO/UpdateBuyUser', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+export function DeleteBuyUser(data, config = {}) {
+    return post('/BUYUSER_INFO/DeleteBuyUser', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
