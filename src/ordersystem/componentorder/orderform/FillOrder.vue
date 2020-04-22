@@ -854,7 +854,7 @@ export default {
           !this.buyUserPhone ||
           !this.buyUserArea1 ||
           !this.buyUserArea2 ||
-          !this.buyUserArea3 ||
+          //!this.buyUserArea3 ||
           !this.buyUserPostAddress
         ) {
           Toast({
