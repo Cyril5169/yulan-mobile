@@ -988,7 +988,7 @@ export default {
         },
         ctm_orders: this.productList,
         cartItemIDs: deleteArray,
-        device: "app"
+        device: window.plus? window.plus.os.name : "app"
       };
       if (this.isX) {
         //窗帘提交
