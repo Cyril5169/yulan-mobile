@@ -66,13 +66,28 @@
                   <td
                     class="price"
                     v-if="showPrice && product.quantity"
-                  >￥{{ (product.quantity * product.price).toFixed(2) }}</td>
+                  >￥{{ product.quantity * product.price | dosageFilter }}</td>
+                  <td
+                    class="price"
+                    v-else-if="showPrice && !product.quantity"
+                  >￥{{ product.width.mul(product.height) * product.price | dosageFilter }}</td>
+                  <td class="price" v-else-if="!showPrice">***</td>
+                </tr>
+                <tr v-if="product.activityName">
+                  <th>折后：</th>
+                  <td class="price" v-if="showPrice && product.quantity">
+                    ￥{{ product.salPromotion?
+                    (product.salPromotion.type == 1?
+                    product.salPromotion.discount * product.quantity * product.price
+                    : product.salPromotion.price * product.quantity)
+                    : product.quantity * product.price | dosageFilter}}
+                  </td>
                   <td class="price" v-else-if="showPrice && !product.quantity">
-                    ￥{{
-                    (product.width * product.height * product.price).toFixed(
-                    2
-                    )
-                    }}
+                    ￥{{ product.salPromotion?
+                    (product.salPromotion.type == 1?
+                    product.salPromotion.discount * product.width.mul(product.height) * product.price
+                    : product.salPromotion.price * product.width.mul(product.height))
+                    : product.width.mul(product.height) * product.price | dosageFilter}}
                   </td>
                   <td class="price" v-else-if="!showPrice">***</td>
                 </tr>
@@ -102,7 +117,7 @@
     <div class="cart-bottom">
       <div class="cart-right" v-if="!showManage">
         <span>合计：</span>
-        <span v-if="showPrice" class="total-price">￥{{ totalPrice }}</span>
+        <span v-if="showPrice" class="total-price">￥{{ totalPrice | dosageFilter }}</span>
         <span v-else class="total-price">****</span>
         <span class="settle-down" @click="fillOrder">结算</span>
       </div>
@@ -433,16 +448,35 @@ export default {
       this.total = 0;
       for (var i = 0; i < this.checkBoxModel.length; i++) {
         if (this.checkBoxModel[i].quantity) {
-          this.total +=
+          let sub =
             this.checkBoxModel[i].price * this.checkBoxModel[i].quantity;
-        } else {
           this.total +=
+            Math.round(
+              (this.checkBoxModel[i].salPromotion
+                ? this.checkBoxModel[i].salPromotion.type == 1
+                  ? this.checkBoxModel[i].salPromotion.discount * sub
+                  : this.checkBoxModel[i].salPromotion.price *
+                    this.checkBoxModel[i].quantity
+                : sub) * 100
+            ) / 100;
+        } else {
+          let sub =
             this.checkBoxModel[i].price *
-            this.checkBoxModel[i].width *
-            this.checkBoxModel[i].height;
+            this.checkBoxModel[i].width.mul(this.checkBoxModel[i].height);
+          this.total +=
+            Math.round(
+              (this.checkBoxModel[i].salPromotion
+                ? this.checkBoxModel[i].salPromotion.type == 1
+                  ? this.checkBoxModel[i].salPromotion.discount * sub
+                  : this.checkBoxModel[i].salPromotion.price *
+                    this.checkBoxModel[i].width.mul(
+                      this.checkBoxModel[i].height
+                    )
+                : sub) * 100
+            ) / 100;
         }
       }
-      return this.total.toFixed(2);
+      return this.total;
     }
   },
   activated() {

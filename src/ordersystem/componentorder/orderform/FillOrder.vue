@@ -78,7 +78,7 @@
               <input
                 class="delivery-mark"
                 v-model="selLocation"
-                 @click="iosselect"
+                @click="iosselect"
                 placeholder="选择省/市/县"
                 readonly
               />
@@ -452,7 +452,12 @@
       position="right"
     >
       <div class="coupon-title">
-        <img class="backCoupon" @click="showBuyserAddress=false" src="../../assetsorder/back.png" alt />
+        <img
+          class="backCoupon"
+          @click="showBuyserAddress=false"
+          src="../../assetsorder/back.png"
+          alt
+        />
         <span>管理购买人地址</span>
       </div>
       <div class="all-address">
@@ -573,10 +578,10 @@ export default {
       showAddressAdd: false,
       showAddressEdit: false,
       showBuyserAddress: false,
-      showBuyserAddressAdd:false,
-      showBuyserAddressEdit:false,
+      showBuyserAddressAdd: false,
+      showBuyserAddressEdit: false,
       initAddress: "",
-      initBuyserAddress:"",
+      initBuyserAddress: "",
       //物流类型
       deliveryType: "普通物流(运费由甲方支付)",
       isdeliveryType: "",
@@ -616,20 +621,20 @@ export default {
       //购买人凭证
       buyUserPicture: "",
       buyUserArea1: "",
-        buyUserArea2: "",
-        buyUserArea3: "",
-        buyUserPostAddress: "",
-        selLocation:"",
-        showLocation:false,
+      buyUserArea2: "",
+      buyUserArea3: "",
+      buyUserPostAddress: "",
+      selLocation: "",
+      showLocation: false,
       //订单备注
       orderBei: "",
       //分包提示
       packingNote: "请选择包装信息",
       //选中地址(对象)
       allAddress: [],
-      allBuyserAddress:[],
+      allBuyserAddress: [],
       address: [],
-      selAddress:[],
+      selAddress: [],
       //是否为默认地址标志
       isDefaultAdd: "0",
       // 订单商品详情，为多个集合（数组）
@@ -750,9 +755,8 @@ export default {
       }
       axios.post(priceUrl, this.huodprice).then(data => {
         for (var i = 0; i < this.allProduct.length; i++) {
-          this.allProduct[i].activityPrice = data.data.data[
-            i
-          ].promotion_cost.toFixed(2);
+          this.allProduct[i].activityPrice =
+            Math.round(data.data.data[i].promotion_cost * 100) / 100;
           this.totalHdPrice += parseFloat(this.allProduct[i].activityPrice);
         }
         this.orderPrice = this.totalHdPrice;
@@ -779,7 +783,7 @@ export default {
         companyId: this.$store.getters.getCMId
       };
       axios.post(monUrl, mondata).then(val => {
-        if (val.data.data > this.orderPrice.toFixed(2)) {
+        if (val.data.data > Math.round(this.orderPrice * 100) / 100) {
           this.onSubmitOrder();
         } else {
           Dialog.confirm({
@@ -858,16 +862,16 @@ export default {
           !this.buyUserPostAddress
         ) {
           Toast({
-          duration: 2000,
-          message: "请填写完整的购买用户信息"
-        });
+            duration: 2000,
+            message: "请填写完整的购买用户信息"
+          });
           return;
         }
         if (!this.buyUserPicture) {
           Toast({
-          duration: 2000,
-          message: "请上传购买凭证"
-        });
+            duration: 2000,
+            message: "请上传购买凭证"
+          });
           return;
         }
       }
@@ -976,10 +980,10 @@ export default {
           buyUserPhone: this.buyUserPhone,
           buyUserAddress: this.buyUserAddress,
           buyUserPicture: this.buyUserPicture,
-          buyUserArea1 : this.buyUserArea1,
-          buyUserArea2 : this.buyUserArea2,
-          buyUserArea3 : this.buyUserArea3,
-          buyUserPostAddress : this.buyUserPostAddress,
+          buyUserArea1: this.buyUserArea1,
+          buyUserArea2: this.buyUserArea2,
+          buyUserArea3: this.buyUserArea3,
+          buyUserPostAddress: this.buyUserPostAddress,
           packingNote: this.packingNote
         },
         ctm_orders: this.productList,
@@ -1179,22 +1183,20 @@ export default {
           buyUserPhone: this.buyUserPhone,
           buyUserAddress: this.buyUserAddress,
           buyUserPicture: this.buyUserPicture,
-          buyUserArea1 : this.buyUserArea1,
-          buyUserArea2 : this.buyUserArea2,
-          buyUserArea3 : this.buyUserArea3,
-          buyUserPostAddress : this.buyUserPostAddress,
+          buyUserArea1: this.buyUserArea1,
+          buyUserArea2: this.buyUserArea2,
+          buyUserArea3: this.buyUserArea3,
+          buyUserPostAddress: this.buyUserPostAddress
         },
         ctm_orders: this.productList
       };
       axios.post(orderUrl, data).then(val => {
         if (val.data.code == 0) {
           for (let i = 0; i < val.data.data.rebate.length; i++) {
-            this.allProduct[i].mCoupon = val.data.data.rebate[
-              i
-            ].rebateMonth.toFixed(2);
-            this.allProduct[i].yCoupon = val.data.data.rebate[
-              i
-            ].rebateYear.toFixed(2);
+            this.allProduct[i].mCoupon =
+              Math.round(val.data.data.rebate[i].rebateMonth * 100) / 100;
+            this.allProduct[i].yCoupon =
+              Math.round(val.data.data.rebate[i].rebateYear * 100) / 100;
           }
           if (
             this.allProduct[0].yCoupon > 0 &&
@@ -1320,35 +1322,45 @@ export default {
       });
     },
     getBuyUser() {
-      GetBuyUserInfo(
-        {
-          cid: this.$store.getters.getCId,
-          condition: "",
-          page: 1,
-          limit: 99999
-        }
-      ).then(res => {
+      GetBuyUserInfo({
+        cid: this.$store.getters.getCId,
+        condition: "",
+        page: 1,
+        limit: 99999
+      }).then(res => {
         this.allBuyserAddress = res.data;
         for (let i = 0; i < this.allBuyserAddress.length; i++) {
           this.allBuyserAddress[i].id = this.allBuyserAddress[i].ADDRESS_ID;
           this.allBuyserAddress[i].name = this.allBuyserAddress[i].BUYUSER;
           this.allBuyserAddress[i].tel = this.allBuyserAddress[i].BUYUSER_PHONE;
-          this.allBuyserAddress[i].reciverArea1 = this.allBuyserAddress[i].PROVINCE;
+          this.allBuyserAddress[i].reciverArea1 = this.allBuyserAddress[
+            i
+          ].PROVINCE;
           this.allBuyserAddress[i].reciverArea2 = this.allBuyserAddress[i].CITY;
-          this.allBuyserAddress[i].reciverArea3 = this.allBuyserAddress[i].COUNTRY;
+          this.allBuyserAddress[i].reciverArea3 = this.allBuyserAddress[
+            i
+          ].COUNTRY;
           this.allBuyserAddress[i].province =
-            (this.allBuyserAddress[i].PROVINCE ? this.allBuyserAddress[i].PROVINCE : "") +
-            (this.allBuyserAddress[i].CITY ? this.allBuyserAddress[i].CITY : "") +
-            (this.allBuyserAddress[i].COUNTRY ? this.allBuyserAddress[i].COUNTRY : "");
+            (this.allBuyserAddress[i].PROVINCE
+              ? this.allBuyserAddress[i].PROVINCE
+              : "") +
+            (this.allBuyserAddress[i].CITY
+              ? this.allBuyserAddress[i].CITY
+              : "") +
+            (this.allBuyserAddress[i].COUNTRY
+              ? this.allBuyserAddress[i].COUNTRY
+              : "");
           this.allBuyserAddress[i].address =
-            (this.allBuyserAddress[i].province ? this.allBuyserAddress[i].province : "") +
+            (this.allBuyserAddress[i].province
+              ? this.allBuyserAddress[i].province
+              : "") +
             (this.allBuyserAddress[i].POST_ADDRESS
               ? this.allBuyserAddress[i].POST_ADDRESS
               : "");
         }
       });
     },
-    onShowAddress(){
+    onShowAddress() {
       this.getBuyUser();
       this.showBuyserAddress = true;
     },
@@ -1391,11 +1403,10 @@ export default {
       this.showLocation = true;
     },
     backclick(status) {
-      if (status){
+      if (status) {
         this.showAddressAdd = false;
         this.showBuyserAddressAdd = false;
-      }
-      else{
+      } else {
         this.showAddressEdit = false;
         this.showBuyserAddressEdit = false;
       }
@@ -1404,7 +1415,7 @@ export default {
       this.backclick(status);
       this.getAddress();
     },
-    refreshAddress2(status){
+    refreshAddress2(status) {
       this.backclick(status);
       this.getBuyUser();
     },

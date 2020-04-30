@@ -92,7 +92,18 @@
                   <td
                     class="price"
                     v-if="showPrice"
-                  >￥{{ (product.count * product.price).toFixed(2) }}</td>
+                  >￥{{ product.count * product.price | dosageFilter}}</td>
+                  <td class="price" v-else-if="!showPrice">***</td>
+                </tr>
+                <tr v-if="product.activity != '不参与活动'">
+                  <th>折后：</th>
+                  <td class="price" v-if="showPrice">
+                    ￥{{ product.salPromotion
+                    ? (product.salPromotion.type == 1?
+                    product.salPromotion.discount *(product.price * product.count)
+                    :product.salPromotion.price * product.count)
+                    : (product.price * product.count) | dosageFilter}}
+                  </td>
                   <td class="price" v-else-if="!showPrice">***</td>
                 </tr>
               </table>
@@ -105,7 +116,7 @@
     <div class="cart-bottom">
       <div class="cart-right" v-if="!showManage">
         <span>合计：</span>
-        <span v-if="showPrice" class="total-price">￥{{ totalPrice }}</span>
+        <span v-if="showPrice" class="total-price">￥{{ totalPrice | dosageFilter}}</span>
         <span v-else class="total-price">***</span>
         <span class="settle-down" @click="fillOrder">结算</span>
       </div>
@@ -383,9 +394,18 @@ export default {
     totalPrice: function() {
       this.total = 0;
       for (var i = 0; i < this.checkBoxModel.length; i++) {
-        this.total += this.checkBoxModel[i].price * this.checkBoxModel[i].count;
+        let sub = this.checkBoxModel[i].price * this.checkBoxModel[i].count;
+        this.total +=
+          Math.round(
+            (this.checkBoxModel[i].salPromotion
+              ? this.checkBoxModel[i].salPromotion.type == 1
+                ? this.checkBoxModel[i].salPromotion.discount * sub
+                : this.checkBoxModel[i].salPromotion.price *
+                  this.checkBoxModel[i].count
+              : sub) * 100
+          ) / 100;
       }
-      return this.total.toFixed(2);
+      return this.total;
     }
   },
   activated() {

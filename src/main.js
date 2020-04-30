@@ -6,14 +6,14 @@ import router from "./router";
 import axios from "axios";
 import Calendar from "vue-mobile-calendar";
 import VueAwesomeSwiper from "vue-awesome-swiper";
-import { Picker,ImagePreview } from "vant";
+import { Picker, ImagePreview } from "vant";
 import store from "./store";
 //订单系统的URL
 import Global from "./Global.vue";
 import mui from "./assets/mui/js/mui";
 import IScroll from "./assets/iscroll/iscroll";
 //import * as baseUrlASP from "./api/httpASP.js";
-import {UpdatePushResponseTime} from "./api/webUserASP";
+import { UpdatePushResponseTime } from "./api/webUserASP";
 
 axios.defaults.baseURL = "http://14.29.221.109:10250/yulan";
 //全局loading
@@ -91,7 +91,7 @@ function plusReady() {
   window.plus = plus;
   plus.key.addEventListener(
     "backbutton",
-    function() {
+    function () {
       var overlays = document.getElementsByClassName("van-overlay"); //获取遮罩层
       if (
         overlays.length > 0 &&
@@ -111,7 +111,7 @@ function plusReady() {
       if (!first) {
         first = new Date().getTime(); //获取第一次点击的时间戳
         mui.toast("再按一次切换至桌面", { duration: 1000 }); // 调用mui 上的toast 提示框
-        setTimeout(function() {
+        setTimeout(function () {
           first = null;
         }, 1000);
       } else {
@@ -124,33 +124,33 @@ function plusReady() {
     },
     false
   );
-  if(plus.os.name == "Android")
+  if (plus.os.name == "Android")
     vm.UpdateVersion();
 }
 
 if (!window.plus) {
-  document.addEventListener("plusready", function(a) {
+  document.addEventListener("plusready", function (a) {
     plusReady();
   });
 } else {
   plusReady();
 }
 //从后台切换到前台,检查更新
-document.addEventListener("resume", function() {
-  if(plus.os.name == "Android")
+document.addEventListener("resume", function () {
+  if (plus.os.name == "Android")
     vm.UpdateVersion();
 });
 //从前台切换到后台
-document.addEventListener("pause", function() {
+document.addEventListener("pause", function () {
   console.log("已切换至后台");
   mui.toast("温馨提示：玉兰B2B继续在后台运行", { duration: 1500 });
 });
 // 获取错误信息
-document.addEventListener("error", function(e) {
+document.addEventListener("error", function (e) {
   mui.alert("请求的页面无法打开", "发生错误");
 });
 // 禁止选择
-document.oncontextmenu = function() {
+document.oncontextmenu = function () {
   return false;
 };
 //使用示例 a+b => a.add(b)   a-b => a.sub(b)  a*b => a.mul(b)  a/b => a.div(b)
@@ -230,3 +230,7 @@ function operation(a, b, opType) {
       return result;
   }
 }
+Vue.filter('dosageFilter', data => {
+  if (typeof (data) !== 'number') return '';
+  return Math.round(data * 100) / 100;
+})
