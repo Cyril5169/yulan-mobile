@@ -27,6 +27,16 @@
           <span class="title-left">位置</span>
           <span class="title-right">{{location === "" ? "无" :location}}</span>
         </div>
+        <div class="title-item">
+          <span class="title-left">活动</span>
+          <span class="title-right">{{activityName}}</span>
+        </div>
+        <div class="title-item">
+          <span class="title-left">总计</span>
+          <span class="title-right">
+            <span style="color:red;">￥{{allTotal | dosageFilter}}</span>
+          </span>
+        </div>
       </div>
       <div class="show-result">
         <van-collapse v-model="activeName">
@@ -64,10 +74,18 @@
                       v-else
                     >{{ getTypeName(liantou.itemType) }}</span>
                   </div>
-                  <!-- <div class="title-item2" v-if="showPrice">
+                  <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>-->
+                  </div>
+                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2">
+                      {{salPromotion.TYPE == 1?
+                      salPromotion.DISCOUNT * liantou.price
+                      : salPromotion.PRICE | dosageFilter}}元
+                    </span>
+                  </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.specification}}</span>
@@ -90,6 +108,10 @@
                       <span v-else>{{liantou.dosage}}</span>
                       <span>{{liantou.unit}}</span>
                     </span>
+                  </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">总价</span>
+                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
                   </div>
                   <div
                     class="title-item2"
@@ -198,10 +220,18 @@
                       v-else
                     >{{ getTypeName(liantou.itemType) }}</span>
                   </div>
-                  <!-- <div class="title-item2" v-if="showPrice">
+                  <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>-->
+                  </div>
+                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2">
+                      {{salPromotion.TYPE == 1?
+                      salPromotion.DISCOUNT * liantou.price
+                      : salPromotion.PRICE | dosageFilter}}元
+                    </span>
+                  </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.specification}}</span>
@@ -233,6 +263,10 @@
                       <span v-else>{{liantou.dosage}}</span>
                       <span>{{liantou.unit}}</span>
                     </span>
+                  </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">总价</span>
+                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
                   </div>
                   <div
                     class="title-item2"
@@ -351,10 +385,18 @@
                       v-else
                     >{{ getTypeName(liantou.itemType) }}</span>
                   </div>
-                  <!-- <div class="title-item2" v-if="showPrice">
+                  <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>-->
+                  </div>
+                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2">
+                      {{salPromotion.TYPE == 1?
+                      salPromotion.DISCOUNT * liantou.price
+                      : salPromotion.PRICE | dosageFilter}}元
+                    </span>
+                  </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.specification}}</span>
@@ -497,10 +539,18 @@
                       v-else
                     >{{ getTypeName(liantou.itemType) }}</span>
                   </div>
-                  <!-- <div class="title-item2" v-if="showPrice">
+                  <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>-->
+                  </div>
+                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2">
+                      {{salPromotion.TYPE == 1?
+                      salPromotion.DISCOUNT * liantou.price
+                      : salPromotion.PRICE | dosageFilter}}元
+                    </span>
+                  </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.specification}}</span>
@@ -532,6 +582,10 @@
                       <span v-else>{{liantou.dosage}}</span>
                       <span>{{liantou.unit}}</span>
                     </span>
+                  </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">总价</span>
+                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
                   </div>
                   <div
                     class="title-item2"
@@ -637,10 +691,18 @@
                       v-else
                     >{{ getTypeName(liantou.itemType) }}</span>
                   </div>
-                  <!-- <div class="title-item2" v-if="showPrice">
+                  <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>-->
+                  </div>
+                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2">
+                      {{salPromotion.TYPE == 1?
+                      salPromotion.DISCOUNT * liantou.price
+                      : salPromotion.PRICE | dosageFilter}}元
+                    </span>
+                  </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
                     <span class="title-right">{{liantou.specification}}</span>
@@ -663,6 +725,10 @@
                       <span v-else>{{liantou.dosage}}</span>
                       <span>{{liantou.unit}}</span>
                     </span>
+                  </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">总价</span>
+                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">说明</span>
@@ -743,6 +809,7 @@
 import axios from "axios";
 import top from "../../../components/Top";
 import { GetDosageAll, GetDosageByNo } from "@/api/itemInfoASP";
+import { GetPromotionsById } from "@/api/orderListASP";
 import {
   Search,
   Checkbox,
@@ -793,7 +860,7 @@ export default {
       multiple: "", //褶皱倍数
       location: "",
       isWBH: "",
-      activity: "",
+      activityName: "",
       groupType: "",
       highJia: 0,
       //制造工艺
@@ -828,7 +895,8 @@ export default {
       itemMLGY: {},
       dosage: "", //用量
       allData: [],
-      showPrice: this.$store.getters.getIsManage != "0"
+      showPrice: this.$store.getters.getIsManage != "0",
+      activityOptions: []
     };
   },
   filters: {
@@ -840,6 +908,54 @@ export default {
           return "定宽";
       }
       return "--";
+    }
+  },
+  computed: {
+    salPromotion() {
+      var selectActivity = this.activityOptions.filter(
+        item => item.P_ID == this.curtainData.curtains[0].activityId
+      );
+      if (selectActivity.length) {
+        return selectActivity[0];
+      } else {
+        return {};
+      }
+    },
+    allTotal() {
+      var _curtainData = [];
+      for (var i = 0; i < this.lt.length; i++) {
+        if (this.lt[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.lt[i])));
+        }
+      }
+      for (var i = 0; i < this.ls.length; i++) {
+        if (this.ls[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.ls[i])));
+        }
+      }
+      for (var i = 0; i < this.lspb.length; i++) {
+        if (this.lspb[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.lspb[i])));
+        }
+      }
+      for (var i = 0; i < this.sha.length; i++) {
+        if (this.sha[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.sha[i])));
+        }
+      }
+      for (var i = 0; i < this.pjb.length; i++) {
+        if (this.pjb[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.pjb[i])));
+        }
+      }
+      let totalMoney = 0;
+      for (let i = 0; i < _curtainData.length; i++) {
+        if (_curtainData[i].choose != false) {
+          totalMoney += this.oneTotal(_curtainData[i]);
+        }
+      }
+
+      return totalMoney;
     }
   },
   methods: {
@@ -1287,7 +1403,7 @@ export default {
       this.multiple = this.curtainData.CURTAIN_SIZE_TIMES;
       this.location = this.curtainData.CURTAIN_ROOM_NAME;
       this.isWBH = this.curtainData.CURTAIN_WBH_SIZE != -1;
-      //this.activity = this.curtainData.PROMOTION_TYPE;
+      this.activityName = this.curtainData.PROMOTION;
       //this.groupType = this.curtainData.activityGroupType;
       this.highJia = this.curtainData.CURTAIN_HEIGHT2;
       //明细
@@ -1378,13 +1494,33 @@ export default {
         _curtainData.push(JSON.parse(JSON.stringify(this.pjb[i])));
       }
 
-      var _chooseBig = JSON.parse(JSON.stringify( this.chooseBig));
-      this.$emit('getChangeData',_curtainData,_chooseBig);
+      var _chooseBig = JSON.parse(JSON.stringify(this.chooseBig));
+      this.$emit("getChangeData", _curtainData, _chooseBig);
+    },
+    getActivity() {
+      this.activityOptions = [];
+      GetPromotionsById({ PID: this.curtainData.curtains[0].activityId }).then(
+        res => {
+          this.activityOptions = res.data;
+        }
+      );
+    },
+    oneTotal(row) {
+      return (
+        Math.round(
+          (this.salPromotion.P_ID
+            ? this.salPromotion.TYPE == 1
+              ? this.salPromotion.DISCOUNT * row.price
+              : this.salPromotion.PRICE
+            : row.price) * 100
+        ) / 100
+      ).mul(row.dosage);
     }
   },
   created() {
     this.getNowData();
     //this.getOldData();
+    this.getActivity();
   }
 };
 </script>

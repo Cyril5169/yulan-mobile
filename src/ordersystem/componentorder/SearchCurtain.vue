@@ -79,7 +79,7 @@
               <input
                 class="select-multiple"
                 disabled
-                :value="changeActivi(singleCurtain.activity,index)"
+                :value="changeActivi(singleCurtain.activityId,index)"
               />
               <img style="width:15px;height:15px;" src="../assetsorder/more.png" alt />
             </td>
@@ -149,7 +149,7 @@
           </van-popup>
         </div>
         <van-popup v-model="singleCurtain.showActivity">
-          <van-radio-group v-model="singleCurtain.activity">
+          <van-radio-group v-model="singleCurtain.activityId">
             <van-cell-group>
               <template v-for="(hdg,indexx) in activityOptions[index]">
                 <van-cell
@@ -279,13 +279,13 @@ export default {
   },
   methods: {
     oninput(e, index) {
-      e.target.value = this.splitStr(e.target.value,20);
+      e.target.value = this.splitStr(e.target.value, 20);
       this.allCurtain[index].myposition = e.target.value;
     },
-    splitStr(str,length){
-       var len = 0;
-       var returnStr = '';
-       for (var i = 0; i < str.length; i++) {
+    splitStr(str, length) {
+      var len = 0;
+      var returnStr = "";
+      for (var i = 0; i < str.length; i++) {
         var c = str.charCodeAt(i);
         //单字节加1
         if ((c >= 0x0001 && c <= 0x007e) || (0xff60 <= c && c <= 0xff9f)) {
@@ -293,7 +293,7 @@ export default {
         } else {
           len += 2;
         }
-        if(len <= length) returnStr += String.fromCharCode(c);
+        if (len <= length) returnStr += String.fromCharCode(c);
       }
       return returnStr;
     },
@@ -338,7 +338,7 @@ export default {
               this.$set(this.$data.allCurtain[i], "isNeed", false);
               this.$set(this.$data.allCurtain[i], "showMultiple", false);
               this.$set(this.$data.allCurtain[i], "showActivity", false);
-              this.allCurtain[i].activity = "";
+              this.allCurtain[i].activityId = "";
               this.allCurtain[i].myposition = "";
             }
           }
@@ -368,7 +368,7 @@ export default {
           this.$set(this.$data.allCurtain[i], "isNeed", false);
           this.$set(this.$data.allCurtain[i], "showMultiple", false);
           this.$set(this.$data.allCurtain[i], "showActivity", false);
-          this.allCurtain[i].activity = "";
+          this.allCurtain[i].activityId = "";
           this.allCurtain[i].myposition = "";
         }
       });
@@ -430,7 +430,7 @@ export default {
         this.activityOptions.push(_obj);
 
         if (defaultSel.pri != 0 && this.allCurtain[i]) {
-          this.allCurtain[i].activity = defaultSel.id;
+          this.allCurtain[i].activityId = defaultSel.id;
           this.$set(this.allCurtain, i, this.allCurtain[i]);
         }
       }
@@ -457,7 +457,7 @@ export default {
     },
     selectthisHd(index, indexx) {
       this.allCurtain[index].showActivity = false;
-      this.allCurtain[index].activity = this.activityOptions[index][
+      this.allCurtain[index].activityId = this.activityOptions[index][
         indexx
       ].value;
     },
@@ -503,7 +503,7 @@ export default {
       }
       var groupType;
       this.activityGroup.forEach(item => {
-        if (item.pId === this.allCurtain[index].activity) {
+        if (item.pId === this.allCurtain[index].activityId) {
           groupType = item.groupType;
         }
       });
@@ -517,7 +517,7 @@ export default {
           isWBH: this.allCurtain[index].isNeed,
           multiple: this.allCurtain[index].multiple, //褶皱倍数
           location: this.allCurtain[index].myposition,
-          activity: this.allCurtain[index].activity,
+          activityId: this.allCurtain[index].activityId,
           groupType: groupType,
           from: "searchcurtain",
           AddOrNot: true
@@ -743,4 +743,4 @@ export default {
 .need-head .van-checkbox__icon .van-icon {
   border: 1px solid #666;
 }
-</style>>
+</style>

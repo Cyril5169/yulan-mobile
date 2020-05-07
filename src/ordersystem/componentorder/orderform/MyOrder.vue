@@ -831,7 +831,11 @@ export default {
         transCookies[i].lineNo = orderBody[i].LINE_NO;
         transCookies[i].activityId = orderBody[i].curtains[0].activityId;
         transCookies[i].quantity = orderBody[i].QTY_REQUIRED;
-        transCookies[i].price = orderBody[i].UNIT_PRICE;
+        var price = 0;
+        for(let j = 0;j< orderBody[i].curtains.length;j++){
+          price += (orderBody[i].curtains[j].price.mul(orderBody[i].curtains[j].dosage));
+        }
+        transCookies[i].price = price;
         transCookies[i].splitShipment = orderBody[i].PART_SEND_ID;
         transCookies[i].newactivityId = orderBody[i].PROMOTION;
         transCookies[i].unit = "米";

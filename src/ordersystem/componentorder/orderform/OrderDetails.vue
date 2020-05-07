@@ -60,7 +60,9 @@
         </tr>
         <tr v-if="oneOrder.BUYUSER_PICTURE">
           <th>购买凭证：</th>
-          <td><u style="color:#4994df;" @click="showPic = true">查看购买凭证</u></td>
+          <td>
+            <u style="color:#4994df;" @click="showPic = true">查看购买凭证</u>
+          </td>
         </tr>
       </table>
     </div>
@@ -148,15 +150,15 @@
           <span style="color:red;">修改后的价格以实际提交时为准</span>
         </div>
         <!-- 判断是否有出货详情 -->
-        <div class="good-item2" v-if="good.packDetailId!=0"> 
+        <div class="good-item2" v-if="good.packDetailId!=0">
           <span class="edit-bank-xg" style="float:right;" @click="addRefundRecord(good)">售 后</span>
-          <span class="edit-bank-ts" style="float:right;" @click="complaints_1(good)">投 诉 </span>
+          <span class="edit-bank-ts" style="float:right;" @click="complaints_1(good)">投 诉</span>
         </div>
         <!-- <div >
           <div>
             <van-button v-if="good.packDetailId!= 0"  @click="complaints_1(good)">投 诉</van-button>
           </div>
-        </div> -->
+        </div>-->
       </div>
     </div>
     <div class="order-msg order-msg-item2">
@@ -226,11 +228,21 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import { Toast, Popup, Dialog, Collapse, CollapseItem, Icon ,Button} from "vant";
 import {
-  QueryNoById
-  } from "@/api/complaintASP";
-import { getPackDetailInfo,getReturnInfo,getCompanyInfo} from "@/api/orderListASP";
+  Toast,
+  Popup,
+  Dialog,
+  Collapse,
+  CollapseItem,
+  Icon,
+  Button
+} from "vant";
+import { QueryNoById } from "@/api/complaintASP";
+import {
+  getPackDetailInfo,
+  getReturnInfo,
+  getCompanyInfo
+} from "@/api/orderListASP";
 import {
   updateCurtainOrder,
   InsertOperationRecord,
@@ -255,7 +267,7 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     [Icon.name]: Icon,
-    [Button.name]:Button,
+    [Button.name]: Button
   },
   data() {
     return {
@@ -270,8 +282,8 @@ export default {
       timeRemain: false,
       notpayBottom: false,
       completeBottom: false,
-      showPic:false,
-      imgSrc:[],
+      showPic: false,
+      imgSrc: [],
       //单个订单详情
       oneOrder: "",
       //订单状态
@@ -286,8 +298,8 @@ export default {
       changeFlag: false,
       activeName: [],
       operationRecords: [],
-      ORDER_NO:"",
-      getNo:[],
+      ORDER_NO: "",
+      getNo: []
     };
   },
   computed: {
@@ -298,38 +310,38 @@ export default {
   methods: {
     //新增售后赔偿单
     addRefundRecord(good) {
-        console.log(good);
-        this.$router.push({
-           name: "addOrEditRefund",
-           params: {
-              partInfo:good,//获取订单详情中的部分数据
-              STATE:"SUBMITTED",//新增后的状态：已提交
-              from:"orderdetails/" + this.orderNo
-           }
-        });
+      console.log(good);
+      this.$router.push({
+        name: "addOrEditRefund",
+        params: {
+          partInfo: good, //获取订单详情中的部分数据
+          STATE: "SUBMITTED", //新增后的状态：已提交
+          from: "orderdetails/" + this.orderNo
+        }
+      });
     },
     //投诉
-    complaints_1(val){
-      this.ORDER_NO=val.ORDER_NO
+    complaints_1(val) {
+      this.ORDER_NO = val.ORDER_NO;
       getPackDetailInfo({
         orderNo: val.ORDER_NO,
         lineNo: val.LINE_NO,
         itemNo: val.ITEM_NO
       }).then(res => {
         this.getNo = res.data[0].packDetails[0];
-        this.complaints(this.getNo)
+        this.complaints(this.getNo);
         //this.showComplaints = true;
       });
     },
-    complaints(val){
+    complaints(val) {
       this.$router.push({
         name: "addOrEditComplaint",
         params: {
-          ORDER_NO:this.ORDER_NO,
-          ITEM_NO:val.ITEM_NO,
-          SALE_NO:val.SALE_NO,
-          TRANS_ID:val.TRANS_ID,
-          STATUS:1,
+          ORDER_NO: this.ORDER_NO,
+          ITEM_NO: val.ITEM_NO,
+          SALE_NO: val.SALE_NO,
+          TRANS_ID: val.TRANS_ID,
+          STATUS: 1,
           from: "orderdetails/" + this.ORDER_NO
         }
       });
@@ -359,6 +371,10 @@ export default {
           this.oneOrder.PACKING_NOTE = res.data.PACKING_NOTE; //先这样处理，后台换了后台就不需要了
           this.oneOrder.BUYUSER_ADDRESS = res.data.BUYUSER_ADDRESS;
           this.oneOrder.BUYUSER_PICTURE = res.data.BUYUSER_PICTURE;
+          this.oneOrder.BUYUSER_AREA1 = res.data.BUYUSER_AREA1;
+          this.oneOrder.BUYUSER_AREA2 = res.data.BUYUSER_AREA2;
+          this.oneOrder.BUYUSER_AREA3 = res.data.BUYUSER_AREA3;
+          this.oneOrder.BUYUSER_POST_ADDRESS = res.data.BUYUSER_POST_ADDRESS;
           if (this.oneOrder.BUYUSER_PICTURE) {
             var list = this.oneOrder.BUYUSER_PICTURE.split(";");
             for (var i = 0; i < list.length - 1; i++) {
@@ -549,7 +565,13 @@ export default {
         transCookies[i].lineNo = orderBody[i].LINE_NO;
         transCookies[i].activityId = orderBody[i].curtains[0].activityId;
         transCookies[i].quantity = orderBody[i].QTY_REQUIRED;
-        transCookies[i].price = orderBody[i].UNIT_PRICE;
+        var price = 0;
+        for (let j = 0; j < orderBody[i].curtains.length; j++) {
+          price += orderBody[i].curtains[j].price.mul(
+            orderBody[i].curtains[j].dosage
+          );
+        }
+        transCookies[i].price = price;
         transCookies[i].splitShipment = orderBody[i].PART_SEND_ID;
         transCookies[i].newactivityId = orderBody[i].PROMOTION;
         transCookies[i].unit = "米";
@@ -996,27 +1018,27 @@ export default {
   color: white;
 }
 .edit-bank-xg {
-  width:45px;
+  width: 45px;
   border-radius: 3px;
   height: 22px;
   line-height: 22px;
   text-align: center;
-  background:  #f05454;
+  background: #f05454;
   color: white;
-  position:relative;
-  top:0px;
-  right:0px;
+  position: relative;
+  top: 0px;
+  right: 0px;
 }
 .edit-bank-ts {
-  width:45px;
+  width: 45px;
   border-radius: 3px;
   height: 22px;
   line-height: 22px;
   text-align: center;
-  background:  #278be9;
+  background: #278be9;
   color: white;
-  position:relative;
-  top:0px;
-  right:12px;
+  position: relative;
+  top: 0px;
+  right: 12px;
 }
 </style>

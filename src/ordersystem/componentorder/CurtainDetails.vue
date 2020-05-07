@@ -27,6 +27,23 @@
           <span class="title-left">位置</span>
           <span class="title-right">{{location === "" ? "无" :location}}</span>
         </div>
+        <div class="title-item">
+          <span class="title-left" style="color:#1989fa;">活动</span>
+          <span
+            class="title-right"
+            style="width:70%;display:inline-flex;align-items: center;justify-content: flex-end;"
+            @click="showActivity = true"
+          >
+            {{changeActivi}}
+            <img style="width:15px;height:15px;" src="../assetsorder/more.png" alt />
+          </span>
+        </div>
+        <div class="title-item">
+          <span class="title-left">总计</span>
+          <span class="title-right">
+            <span style="color:red;">￥{{allTotal | dosageFilter}}</span>
+          </span>
+        </div>
       </div>
       <div class="show-result">
         <van-collapse v-model="activeName" accordion>
@@ -66,9 +83,17 @@
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
                   </div>
+                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2">
+                      {{salPromotion.TYPE == 1?
+                      salPromotion.DISCOUNT * liantou.price
+                      : salPromotion.PRICE | dosageFilter}}元
+                    </span>
+                  </div>
                   <div class="title-item2" v-if="liantou.fixGrade">
-                    <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.fixGrade/1000}}</span>
+                    <span class="title-left">规格</span>
+                    <span class="title-right">{{liantou.fixGrade/1000}}米/对</span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">用量</span>
@@ -89,12 +114,16 @@
                       <span>{{liantou.unit}}</span>
                     </span>
                   </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">总价</span>
+                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
+                  </div>
                   <div
                     class="title-item2"
                     v-if="liantou.manufacturingInstructions"
                     @click="liantou.showZZSM = true"
                   >
-                    <span class="title-left">制造说明</span>
+                    <span class="title-left" style="color:#1989fa;">制造说明</span>
                     <span class="title-right title-right2">{{liantou.manufacturingInstructions}}</span>
                     <span class="item-icon"></span>
                   </div>
@@ -191,16 +220,24 @@
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
                   </div>
+                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2">
+                      {{salPromotion.TYPE == 1?
+                      salPromotion.DISCOUNT * liantou.price
+                      : salPromotion.PRICE | dosageFilter}}元
+                    </span>
+                  </div>
                   <div class="title-item2" v-if="liantou.fixGrade">
-                    <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.fixGrade/1000}}</span>
+                    <span class="title-left">规格</span>
+                    <span class="title-right">{{liantou.fixGrade/1000}}米/对</span>
                   </div>
                   <div
                     class="title-item2"
                     @click="liantou.showFG = true"
-                    v-if="liantou.fixType  && liantou.itemMLGY.productType =='ML'"
+                    v-if="liantou.fixType && liantou.itemMLGY.productType =='ML'"
                   >
-                    <span class="title-left">面料属性</span>
+                    <span class="title-left" style="color:#1989fa;">面料属性</span>
                     <span class="title-right">{{liantou.fixType | fixTypeFilter}}</span>
                     <span class="item-icon"></span>
                   </div>
@@ -223,12 +260,16 @@
                       <span>{{liantou.unit}}</span>
                     </span>
                   </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">总价</span>
+                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
+                  </div>
                   <div
                     class="title-item2"
                     v-if="liantou.manufacturingInstructions"
                     @click="liantou.showZZSM = true"
                   >
-                    <span class="title-left">制造说明</span>
+                    <span class="title-left" style="color:#1989fa;">制造说明</span>
                     <span class="title-right title-right2">{{liantou.manufacturingInstructions}}</span>
                     <span class="item-icon"></span>
                   </div>
@@ -335,16 +376,24 @@
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
                   </div>
+                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2">
+                      {{salPromotion.TYPE == 1?
+                      salPromotion.DISCOUNT * liantou.price
+                      : salPromotion.PRICE | dosageFilter}}元
+                    </span>
+                  </div>
                   <div class="title-item2" v-if="liantou.fixGrade">
-                    <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.fixGrade/1000}}</span>
+                    <span class="title-left">规格</span>
+                    <span class="title-right">{{liantou.fixGrade/1000}}米/对</span>
                   </div>
                   <div
                     class="title-item2"
                     v-if="liantou.manufacturingInstructions"
                     @click="liantou.showZZSM = true"
                   >
-                    <span class="title-left">制造说明</span>
+                    <span class="title-left" style="color:#1989fa;">制造说明</span>
                     <span class="title-right title-right2">{{liantou.manufacturingInstructions}}</span>
                     <span class="item-icon"></span>
                   </div>
@@ -480,16 +529,24 @@
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
                   </div>
+                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2">
+                      {{salPromotion.TYPE == 1?
+                      salPromotion.DISCOUNT * liantou.price
+                      : salPromotion.PRICE | dosageFilter}}元
+                    </span>
+                  </div>
                   <div class="title-item2" v-if="liantou.fixGrade">
-                    <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.fixGrade/1000}}</span>
+                    <span class="title-left">规格</span>
+                    <span class="title-right">{{liantou.fixGrade/1000}}米/对</span>
                   </div>
                   <div
                     class="title-item2"
                     @click="liantou.showFG = true"
                     v-if="liantou.fixType && liantou.itemMLGY.productType =='ML'"
                   >
-                    <span class="title-left">面料属性</span>
+                    <span class="title-left" style="color:#1989fa;">面料属性</span>
                     <span class="title-right">{{liantou.fixType | fixTypeFilter}}</span>
                     <span class="item-icon"></span>
                   </div>
@@ -512,12 +569,16 @@
                       <span>{{liantou.unit}}</span>
                     </span>
                   </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">总价</span>
+                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
+                  </div>
                   <div
                     class="title-item2"
                     v-if="liantou.manufacturingInstructions"
                     @click="liantou.showZZSM = true"
                   >
-                    <span class="title-left">制造说明</span>
+                    <span class="title-left" style="color:#1989fa;">制造说明</span>
                     <span class="title-right title-right2">{{liantou.manufacturingInstructions}}</span>
                     <span class="item-icon"></span>
                   </div>
@@ -624,9 +685,17 @@
                     <span class="title-left">单价</span>
                     <span class="title-right title-right2">{{liantou.price}}元</span>
                   </div>
+                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2">
+                      {{salPromotion.TYPE == 1?
+                      salPromotion.DISCOUNT * liantou.price
+                      : salPromotion.PRICE | dosageFilter}}元
+                    </span>
+                  </div>
                   <div class="title-item2" v-if="liantou.fixGrade">
-                    <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.fixGrade/1000}}</span>
+                    <span class="title-left">规格</span>
+                    <span class="title-right">{{liantou.fixGrade/1000}}米/对</span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">用量</span>
@@ -646,6 +715,10 @@
                       <span v-else>{{liantou.dosage}}</span>
                       <span>{{liantou.unit}}</span>
                     </span>
+                  </div>
+                  <div class="title-item2" v-if="showPrice">
+                    <span class="title-left">总价</span>
+                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">说明</span>
@@ -669,6 +742,7 @@
         </van-collapse>
       </div>
     </div>
+    <div class="shop-btn" @click="toCart">{{AddOrNot?'加入购物车':'保存至购物车'}}</div>
     <!--替换item-->
     <van-popup v-model="showGy" position="right" class="show-gy">
       <div class="searchtop">
@@ -716,7 +790,20 @@
         />
       </div>
     </van-popup>
-    <div class="shop-btn" @click="toCart">{{AddOrNot?'加入购物车':'保存至购物车'}}</div>
+    <van-popup v-model="showActivity" style="width:300px;">
+      <van-radio-group v-model="activityId">
+        <van-cell-group>
+          <template v-for="(hdg,index) in activityOptions">
+            <van-cell :key="index +'hdground' +  index" clickable @click="selectthisHd(hdg.P_ID)">
+              <div style="text-align:center">
+                <span>{{hdg.ORDER_TYPE? hdg.ORDER_TYPE + ' -- ' + hdg.ORDER_NAME : hdg.ORDER_NAME}}</span>
+                <van-radio style="display:inline-block" :name="hdg.P_ID" checked-color="#89cb81" />
+              </div>
+            </van-cell>
+          </template>
+        </van-cell-group>
+      </van-radio-group>
+    </van-popup>
   </div>
 </template>
 
@@ -724,6 +811,8 @@
 import axios from "axios";
 import top from "../../components/Top";
 import { GetDosageAll, GetDosageByNo } from "@/api/itemInfoASP";
+import { getItemById, GetPromotionByItem } from "@/api/orderListASP";
+import { UpdateCartItem } from "@/api/shopASP";
 import {
   Search,
   Checkbox,
@@ -774,7 +863,7 @@ export default {
       multiple: this.$route.params.multiple, //褶皱倍数
       location: this.$route.params.location,
       isWBH: this.$route.params.isWBH,
-      activity: this.$route.params.activity,
+      activityId: this.$route.params.activityId,
       groupType: this.$route.params.groupType,
       highJia: 0,
       //制造工艺
@@ -810,7 +899,9 @@ export default {
       dosage: "", //用量
       from: "",
       allData: [],
-      showPrice: this.$store.getters.getIsManage != "0"
+      showPrice: this.$store.getters.getIsManage != "0",
+      activityOptions: [],
+      showActivity: false
     };
   },
   filters: {
@@ -822,6 +913,67 @@ export default {
           return "定高";
       }
       return "--";
+    }
+  },
+  computed: {
+    changeActivi() {
+      if (this.activityId && this.activityOptions.length) {
+        var active = this.activityOptions.filter(
+          item => item.P_ID == this.activityId
+        )[0];
+        var name = active.ORDER_TYPE
+          ? active.ORDER_TYPE + " -- " + active.ORDER_NAME
+          : active.ORDER_NAME;
+        return name;
+      } else {
+        return "不参与活动";
+      }
+    },
+    salPromotion() {
+      var selectActivity = this.activityOptions.filter(
+        item => item.P_ID == this.activityId
+      );
+      if (selectActivity.length) {
+        return selectActivity[0];
+      } else {
+        return {};
+      }
+    },
+    allTotal() {
+      var _curtainData = [];
+      for (var i = 0; i < this.lt.length; i++) {
+        if (this.lt[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.lt[i])));
+        }
+      }
+      for (var i = 0; i < this.ls.length; i++) {
+        if (this.ls[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.ls[i])));
+        }
+      }
+      for (var i = 0; i < this.lspb.length; i++) {
+        if (this.lspb[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.lspb[i])));
+        }
+      }
+      for (var i = 0; i < this.sha.length; i++) {
+        if (this.sha[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.sha[i])));
+        }
+      }
+      for (var i = 0; i < this.pjb.length; i++) {
+        if (this.pjb[i].choose) {
+          _curtainData.push(JSON.parse(JSON.stringify(this.pjb[i])));
+        }
+      }
+      let totalMoney = 0;
+      for (let i = 0; i < _curtainData.length; i++) {
+        if (_curtainData[i].choose != false) {
+          totalMoney += this.oneTotal(_curtainData[i]);
+        }
+      }
+
+      return totalMoney;
     }
   },
   methods: {
@@ -912,10 +1064,14 @@ export default {
           var gy003 = dosageFilter.filter(item => item.ITEM_NO == "GY-003");
           if (gy003.length > 0) res.data.GY = gy003[0].dosage;
           if (res.data.lt) {
-            res.data.lt = dosageFilter.filter(item => item.type == "lt")[0].dosage;
+            res.data.lt = dosageFilter.filter(
+              item => item.type == "lt"
+            )[0].dosage;
           }
           if (res.data.ls) {
-            res.data.ls = dosageFilter.filter(item => item.type == "ls")[0].dosage;
+            res.data.ls = dosageFilter.filter(
+              item => item.type == "ls"
+            )[0].dosage;
           }
           if (res.data.XHBlt) {
             res.data.XHBlt = dosageFilter.filter(
@@ -928,10 +1084,14 @@ export default {
             )[0].dosage;
           }
           if (res.data.LCB) {
-            res.data.LCB = dosageFilter.filter(item => item.type == "LCB")[0].dosage;
+            res.data.LCB = dosageFilter.filter(
+              item => item.type == "LCB"
+            )[0].dosage;
           }
           if (res.data.sha) {
-            res.data.sha = dosageFilter.filter(item => item.type == "sha")[0].dosage;
+            res.data.sha = dosageFilter.filter(
+              item => item.type == "sha"
+            )[0].dosage;
           }
           //将数据进行分类
           for (let i = 0; i < itemLists.length; i++) {
@@ -1425,7 +1585,7 @@ export default {
           if (this.AddOrNot) {
             //新增
             _obj1 = {
-              activityId: this.activity,
+              activityId: this.salPromotion.P_ID,
               item: {
                 itemNo: _curtainData[j].itemNo
               },
@@ -1458,7 +1618,7 @@ export default {
               id: _curtainData[j].id,
               cartItemId: _curtainData[j].cartItemId,
               price: _curtainData[j].price,
-              activityId: _curtainData[j].activityId,
+              activityId: this.salPromotion.P_ID,
               item: {
                 itemNo: _curtainData[j].item.itemNo
               },
@@ -1510,7 +1670,7 @@ export default {
           CID: this.$store.getters.getCId,
           customerType: this.$store.getters.getCtype,
           price: "",
-          activityGroupType: this.groupType,
+          activityGroupType: this.salPromotion.GROUP_TYPE,
           width: this.width,
           height: this.height,
           drape: this.multiple,
@@ -1542,15 +1702,21 @@ export default {
         };
         axios.post(url, obj).then(res => {
           if (res.data.code == 0) {
-            Toast({
-              duration: 2000,
-              message: "修改成功"
-            });
-            this.$router.push({
-              name: "shoppingcart",
-              params: {
-                activeName: "/mycart/curtaincart"
-              }
+            UpdateCartItem({
+              CART_ITEM_ID: _curtainData[0].cartItemId,
+              ACTIVITY_GROUP_TYPE: this.salPromotion.GROUP_TYPE,
+              UpdateColumns: ["ACTIVITY_GROUP_TYPE"]
+            }).then(res2 => {
+              Toast({
+                duration: 2000,
+                message: "修改成功"
+              });
+              this.$router.push({
+                name: "shoppingcart",
+                params: {
+                  activeName: "/mycart/curtaincart"
+                }
+              });
             });
           }
         });
@@ -1659,7 +1825,7 @@ export default {
       this.multiple = this.curtainData.drape;
       this.location = this.curtainData.location;
       this.isWBH = this.curtainData.outsourcingBoxExist == 1;
-      this.activity = this.curtainData.activityId;
+      this.activityId = this.curtainData.activityId;
       this.groupType = this.curtainData.activityGroupType;
       this.highJia = this.curtainData.falseShadeHigh;
       //明细
@@ -1760,6 +1926,41 @@ export default {
           }
         }
       });
+    },
+    getActivity() {
+      this.activityOptions = [];
+      getItemById({ itemNo: this.itemNo }).then(itemRes => {
+        GetPromotionByItem({
+          cid: this.$store.getters.getCId,
+          customerType: this.$store.getters.getCtype,
+          itemNo: itemRes.data.ITEM_NO,
+          itemVersion: itemRes.data.ITEM_VERSION,
+          productType: itemRes.data.PRODUCT_TYPE,
+          productBrand: itemRes.data.PRODUCT_BRAND
+        }).then(res => {
+          this.activityOptions = res.data;
+          this.activityOptions.push({
+            ORDER_TYPE: "",
+            ORDER_NAME: "不参与活动",
+            P_ID: null
+          });
+        });
+      });
+    },
+    selectthisHd(id) {
+      this.showActivity = false;
+      this.activityId = id;
+    },
+    oneTotal(row) {
+      return (
+        Math.round(
+          (this.salPromotion.P_ID
+            ? this.salPromotion.TYPE == 1
+              ? this.salPromotion.DISCOUNT * row.price
+              : this.salPromotion.PRICE
+            : row.price) * 100
+        ) / 100
+      ).mul(row.dosage);
     }
   },
   created() {
@@ -1768,10 +1969,12 @@ export default {
       this.AddOrNot = this.$route.params.AddOrNot;
     if (this.AddOrNot) {
       //新增
+      this.getActivity();
       this.selectThis();
     } else {
       this.getNowData();
       this.getOldData();
+      this.getActivity();
     }
   }
 };
