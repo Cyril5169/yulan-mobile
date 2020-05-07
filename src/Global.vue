@@ -5,29 +5,57 @@ const orderBaseUrl = "http://14.29.223.114:10250/yulan-order"; //正式
 //const orderBaseUrl = "http://120.79.140.75:567/yulan-order"; //测试
 
 const capitalUrl = "http://14.29.223.114:10250/yulan-capital";
-
+function checkversion(o, n) {
+  var tempo = o.split(".");
+  var tempn = n.split(".");
+  if (
+    tempo[0] * 100 + tempo[1] * 10 + tempo[2] * 1 <
+    tempn[0] * 100 + tempn[1] * 10 + tempn[2] * 1
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 function UpdateVersion(ischeck) {
   var showLoading;
   plus.runtime.getProperty(plus.runtime.appid, function(inf) {
     console.log("当前版本号为:" + inf.version);
+    if (plus.os.name == "iOS") {
+      mui.ajax(
+        "http://itunes.apple.com/cn/lookup?id=1500678970&v=" +
+          Date.parse(new Date()),
+        {
+          data: {},
+          dataType: "json",
+          type: "get",
+          success: function(data) {
+            if (data.results.length == 0) return;
+            var iosVersion = data.results[0].version;
+            if (checkversion(inf.version, iosVersion)) {
+              mui.confirm(
+                `当前版本为${inf.version}，最新版本为${iosVersion}，检查到新版本，前往苹果商店下载更新？`,
+                "检查更新",
+                ["确定"],
+                function(e) {
+                  https: appUrl =
+                    "itms-apps://itunes.apple.com/cn/app/id1500678970?mt=8";
+                  plus.runtime.openURL(appUrl);
+                  plus.runtime.quit(); //退出应用
+                }
+              );
+            }
+          }
+        }
+      );
+      return;
+    }
     mui.ajax(updateUrl + "?v=" + Date.parse(new Date()), {
       data: {},
       dataType: "json",
       type: "get",
       success: function(data) {
         console.log("服务器版本号为：" + data.version);
-        function checkversion(o, n) {
-          var tempo = o.split(".");
-          var tempn = n.split(".");
-          if (
-            tempo[0] * 100 + tempo[1] * 10 + tempo[2] * 1 <
-            tempn[0] * 100 + tempn[1] * 10 + tempn[2] * 1
-          ) {
-            return true;
-          } else {
-            return false;
-          }
-        }
         function installApp(path) {
           plus.nativeUI.showWaiting("安装文件...");
           plus.runtime.install(
@@ -59,22 +87,6 @@ function UpdateVersion(ischeck) {
               );
             }
           );
-        }
-        if (plus.os.name == "iOS") {
-          if (checkversion(inf.version, data.iOsVersion)) {
-            mui.confirm(
-              `当前版本为${inf.version}，最新版本为${data.iOSVersion}，检查到新版本，前往苹果商店下载更新？`,
-              "检查更新",
-              ["确定"],
-              function(e) {
-                appUrl =
-                  "itms-apps://itunes.apple.com/cn/app/id1500678970?mt=8";
-                plus.runtime.openURL(appUrl);
-                plus.runtime.quit(); //退出应用
-              }
-            );
-          }
-          return;
         }
         // 如果有新版本，则提示需要更新
         if (checkversion(inf.version, data.version)) {
