@@ -3,8 +3,8 @@
     <div class="left-arrow" @click="back"></div>
     <p class="top-p">{{title}}</p>
     <!-- <div class="option-img" @click="Sidebar"></div> -->
-    <p class="welcome">欢迎,</p>
-    <p class="customer-name">{{customer}}</p>
+    <!-- <p class="welcome">欢迎,</p>
+    <p class="customer-name">{{customer}}</p> -->
     <!-- <div class="suona-img"></div>
     <p class="notice">{{notice}}</p>-->
   </div>
@@ -37,12 +37,12 @@ export default {
   mounted() {
     window.vTop = this;
 
-    if (this.$store.state.info.data.realName.length >= 7) {
-      document.getElementsByClassName('customer-name')[0].style.fontSize = "25px"
-    }
-    if (this.$store.state.info.data.realName.length >= 10) {
-      document.getElementsByClassName('customer-name')[0].style.fontSize = "18px"
-    }
+    // if (this.$store.state.info.data.realName.length >= 7) {
+    //   document.getElementsByClassName('customer-name')[0].style.fontSize = "25px"
+    // }
+    // if (this.$store.state.info.data.realName.length >= 10) {
+    //   document.getElementsByClassName('customer-name')[0].style.fontSize = "18px"
+    // }
   },
   destroyed(){
     if(window.vTop==this)
@@ -95,7 +95,8 @@ p {
 }
 .banner {
   width: 375px;
-  height: 120px; /*185*/
+  /* height: 120px; */
+  height: 50px;
   position: relative;
   box-shadow: 3px 0px 6px rgba(0, 0, 0, 0.16);
   background: -webkit-linear-gradient(left, #abd46c, #89cb81);

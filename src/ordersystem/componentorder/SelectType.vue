@@ -4,39 +4,43 @@
       <section class="content" @click.stop="Sidebar">
         <Banner v-bind:IsSidebarOut="IsSidebarOut" :title="'玉兰产品'"></Banner>
 
-        <div class="option1">
-          <div class="top-div">
-            <div class="item-box">
-              <div class="item-img1"></div>
+        <div class="optionCt">
+          <div class="optionCt_Ct">
+            <div class="optionItem">
+              <div class="top-div">
+                <div class="item-box">
+                  <div class="item-img1"></div>
+                </div>
+              </div>
+              <div class="middle-div" @click="toSearchWall">
+                <p class="middle-div-p">墙纸配套类</p>
+                <div class="right-arrow"></div>
+              </div>
             </div>
-          </div>
-          <div class="middle-div" @click="toSearchWall">
-            <p class="middle-div-p">墙纸配套类</p>
-            <div class="right-arrow"></div>
-          </div>
-        </div>
 
-        <div class="option3">
-          <div class="top-div">
-            <div class="item-box">
-              <div class="item-img3"></div>
+            <div class="optionItem">
+              <div class="top-div">
+                <div class="item-box">
+                  <div class="item-img3"></div>
+                </div>
+              </div>
+              <div class="middle-div" @click="toSearchCurtain">
+                <p class="middle-div-p">定制窗帘</p>
+                <div class="right-arrow"></div>
+              </div>
             </div>
-          </div>
-          <div class="middle-div" @click="toSearchCurtain">
-            <p class="middle-div-p">定制窗帘</p>
-            <div class="right-arrow"></div>
-          </div>
-        </div>
 
-        <div class="option2">
-          <div class="top-div">
-            <div class="item-box active-item">
-              <div class="item-img2"></div>
+            <div class="optionItem">
+              <div class="top-div">
+                <div class="item-box active-item">
+                  <div class="item-img2"></div>
+                </div>
+              </div>
+              <div class="middle-div" @click="toSearchSoft">
+                <p class="middle-div-p">软装</p>
+                <div class="right-arrow"></div>
+              </div>
             </div>
-          </div>
-          <div class="middle-div" @click="toSearchSoft">
-            <p class="middle-div-p">软装</p>
-            <div class="right-arrow"></div>
           </div>
         </div>
       </section>
@@ -379,10 +383,20 @@ p {
   z-index: 10;
   box-shadow: 3px 0px 6px rgba(0, 0, 0, 0.16);
 }
-.option1 {
+.optionCt {
+  width: 100%;
+  height: calc(100% - 114px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.optionCt_Ct {
+  width: 100%;
+}
+.optionItem {
   position: relative;
-  height: 120px;
-  margin-top: 20px;
+  height: 100px;
+  margin: 20px 0;
 }
 .bottom-div {
   width: 312px;
@@ -406,7 +420,6 @@ p {
   background-color: #fff;
   border-radius: 7px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
-  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 }
 .top-div {
   position: absolute;
@@ -415,36 +428,29 @@ p {
 .item-box {
   width: 80px;
   height: 93px;
-  /* line-height: 129px; */
   position: relative;
-  /* margin-top: -29px; */
   margin-left: 36px;
   background-color: #a4a4a4;
   border-radius: 7px;
-  /* box-sizing: content-box; */
   border: 1px solid #fff;
 }
 /* .active-item{
     background-color: #8AC58E;
   } */
 .item-box > p {
-  /* width: 100%; */
   height: 100%;
-  /* display: inline-block; */
   position: absolute;
   letter-spacing: 5px;
   left: 50%;
   margin-left: -10px;
   font-size: 16px;
   color: #fff;
-  /* text-indent: 18px; */
   writing-mode: vertical-lr;
 }
 .item-img1 {
   width: 50px;
   height: 50px;
   background-image: url("../assetsorder/wallpaper.png");
-  /* background-position:  20px 0px; */
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
@@ -475,16 +481,6 @@ p {
   top: 50%;
   margin-top: -10px;
   right: 5px;
-}
-.option2 {
-  position: relative;
-  height: 120px;
-  margin-top: 0px;
-}
-.option3 {
-  position: relative;
-  margin-top: 0px;
-  height: 120px;
 }
 .item-img2 {
   width: 50px;

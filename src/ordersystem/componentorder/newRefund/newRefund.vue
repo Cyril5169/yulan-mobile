@@ -14,27 +14,27 @@
         </li>
       </ul>
       <ul class="ulhead2" id="ulhead2">
-        <li >
-          <div style="height:31px;margin-top:7px" >
+        <li>
+          <div style="height:31px;margin-top:7px">
             <van-cell-group style="height:31px;">
-               <input  class="searchInput" type="text" v-model="selectCreator" placeholder="请输入客户名称" />
+              <input class="searchInput" type="text" v-model="selectCreator" placeholder="请输入客户名称" />
             </van-cell-group>
           </div>
         </li>
-        <li >
-          <div style="height:31px;margin-top:7px" >
+        <li>
+          <div style="height:31px;margin-top:7px">
             <van-cell-group style="height:31px;">
-               <input  class="searchInput" type="text" v-model="selectItemNo" placeholder="请输入产品型号" />
+              <input class="searchInput" type="text" v-model="selectItemNo" placeholder="请输入产品型号" />
             </van-cell-group>
           </div>
         </li>
       </ul>
       <ul class="ulhead3" id="ulhead3">
         <li>
-          <span class="search-buttonNew"  @click="clear() ">重置</span>
+          <span class="search-buttonNew" @click="clear() ">重置</span>
         </li>
         <li>
-          <span class="search-button"  @click="getList()">查询</span>
+          <span class="search-button" @click="getList()">查询</span>
         </li>
       </ul>
     </div>
@@ -52,19 +52,19 @@
         </div>
         <table>
           <tr>
-            <td>客户名称</td>
+            <td style="width:90px;">客户名称:</td>
             <td>{{item.ERP_CREATORNAME}}</td>
           </tr>
           <tr>
-            <td>产品型号</td>
+            <td>产品型号:</td>
             <td>{{item.ITEM_NO}}</td>
           </tr>
           <tr>
-            <td>产品名称</td>
+            <td>产品名称:</td>
             <td>{{item.PRODUCTION_VERSION}}</td>
           </tr>
           <tr>
-            <td>货品数</td>
+            <td>货品数:</td>
             <td>{{item.ITEM_COUNT}}</td>
           </tr>
         </table>
@@ -88,12 +88,18 @@
         type="date"
         :title="'选择时间'"
         @confirm="confirmTimejs"
-         @cancel="cancelTimejs"
+        @cancel="cancelTimejs"
       />
     </van-popup>
     <!--状态选择-->
     <van-popup v-model="showType" position="bottom">
-      <van-picker show-toolbar title="单据状态" :columns="statusArray" @confirm="onConfirmType"  @cancel="onCancelType"/>
+      <van-picker
+        show-toolbar
+        title="单据状态"
+        :columns="statusArray"
+        @confirm="onConfirmType"
+        @cancel="onCancelType"
+      />
     </van-popup>
     <!--底部分页-->
     <div class="fy-contain">
@@ -144,7 +150,15 @@ export default {
       myType: "全部状态", //当前状态
       myTypeCode: null,
       showType: false, //状态选择显示
-      statusArray: ["全部状态", "已提交", "已接收", "客户确认中","客户同意"],
+      statusArray: [
+        "全部状态",
+        "待处理",
+        "已提交",
+        "退回修改",
+        "已接收",
+        "客户确认中",
+        "客户同意"
+      ],
       //当前页数
       currentPage: 1,
       //总记录数
@@ -155,8 +169,8 @@ export default {
       totalPage: 0,
       allLists: [],
       loading: false,
-      selectCreator:"",
-      selectItemNo:"",
+      selectCreator: "",
+      selectItemNo: ""
     };
   },
   components: {
@@ -170,13 +184,19 @@ export default {
     [CellGroup.name]: CellGroup
   },
   filters: {
-    statusTrans(value){
+    statusTrans(value) {
       switch (value) {
         case null:
           return "";
           break;
         case "SUBMITTED":
           return "已提交";
+          break;
+        case "NEEDPROCESSING":
+          return "待处理";
+          break;
+        case "SENDBACK":
+          return "退回修改";
           break;
         case "RECEIVE":
           return "已接收";
@@ -188,7 +208,7 @@ export default {
           return "客户同意";
           break;
       }
-    },
+    }
   },
   methods: {
     //开始时间选择
@@ -235,14 +255,19 @@ export default {
         this.myTypeCode = null;
       } else if (this.myType == "已提交") {
         this.myTypeCode = "SUBMITTED";
+      } else if (this.myType == "待处理") {
+        this.myTypeCode = "NEEDPROCESSING";
+      } else if (this.myType == "退回修改") {
+        this.myTypeCode = "SENDBACK";
       } else if (this.myType == "已接收") {
         this.myTypeCode = "RECEIVE";
       } else if (this.myType == "客户确认中") {
         this.myTypeCode = "CUSTOMERAFFIRM";
-      }else if (this.myType == "客户同意") {
+      } else if (this.myType == "客户同意") {
         this.myTypeCode = "APPROVED";
       }
       this.showType = false;
+      this.getList();
     },
     onCancelType() {
       this.showType = false;
@@ -266,7 +291,7 @@ export default {
       let data = {
         CID: this.$store.getters.getCId,
         page: this.currentPage, //第几页
-        number: 10,//一页有多少数据
+        number: 10, //一页有多少数据
         startDate: ksTime, //开始日期
         endDate: jsTime, //结束日期
         state: this.myTypeCode, //状态
@@ -296,13 +321,13 @@ export default {
     },
     //查看详情
     checkDetails(index) {
-        this.$router.push({
-           name: "newRefundDetail",
-           params: {
-              ID: this.allLists[index].ID, //单据号
-              STATE: this.allLists[index].STATE, //状态
-           }
-        });
+      this.$router.push({
+        name: "newRefundDetail",
+        params: {
+          ID: this.allLists[index].ID, //单据号
+          STATE: this.allLists[index].STATE //状态
+        }
+      });
     },
     //重置
     clear() {
@@ -345,10 +370,10 @@ export default {
   background: #89cb81;
   font-size: 40px;
 }
-.searchInput{
-  height:25px;
-  font-size:13px;
-  padding:5px;
+.searchInput {
+  height: 25px;
+  font-size: 13px;
+  padding: 5px;
   position: relative;
   top: -3px;
 }
@@ -357,22 +382,22 @@ export default {
   font-size: 13px;
   padding: 5px 20px;
   border-radius: 15px;
-  background: white; 
+  background: white;
   z-index: 99;
   position: relative;
   top: 3px;
-  right:-50px;
+  right: -50px;
 }
 .search-buttonNew {
   color: #a0cb8d;
   font-size: 13px;
   padding: 5px 20px;
   border-radius: 15px;
-  background: white; 
+  background: white;
   z-index: 99;
   position: relative;
   top: 3px;
-  right:-160px;
+  right: -160px;
 }
 .search_1 {
   position: relative;
