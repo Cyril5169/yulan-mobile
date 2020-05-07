@@ -40,12 +40,6 @@
           </label>
         </div>
       </div>
-      <!-- <div class="taskall">
-        <p id="first">销售总任务</p>
-        <p>
-          <input type="text" v-model="add" readonly="true" id="taskall" />&nbsp;&nbsp;万元
-        </p>
-      </div>-->
       <div class="brand">
         <div class="left">
           <span id="second">销售总任务</span>
@@ -170,11 +164,6 @@
     </div>
     <div class="save" @click="showIt" ref="save">创建协议书</div>
     <calendar v-model="calendarShow" @change="handelChage" :selectDate="selectDate"></calendar>
-    <!-- <calendar
-            v-model="calendarShow"
-            @change="handelChage"
-            :selectDate="selectDate">
-    </calendar>-->
   </div>
 </template>
 
@@ -194,9 +183,7 @@ export default {
       percent: "",
       rewordpercent2: "",
       goods: "10",
-      // sum:"",
       calendarShow: false,
-      // defaultDate:new Date('2019-01-01'),
       selectDate: "",
       selectDate1: new Date().getFullYear() + "-01-01",
       selectDate2: new Date().getFullYear() + "-12-31",
@@ -214,26 +201,17 @@ export default {
   watch: {
     boxcheck1(curVal, oldVal) {
       if (curVal) {
-        // this.yulan = "";
-        //this.$refs.yulan.classList.remove("getGrey");
         if (this.boxcheck2) {
-          //this.$refs.yulansj.classList.remove("getGrey");
-          // this.yulansj = "";
           this.preferedbrand = "√玉兰（墙纸类产品）√兰居尚品（布艺类产品）";
         } else {
-          //this.$refs.yulansj.classList.add("getGrey");
           this.yulansj = "0";
           this.preferedbrand = "√玉兰（墙纸类产品）";
         }
       } else {
-        //this.$refs.yulan.classList.add("getGrey");
         this.yulan = "0";
         if (this.boxcheck2) {
-          // this.yulansj = "";
-          //this.$refs.yulansj.classList.remove("getGrey");
           this.preferedbrand = "√兰居尚品（布艺类产品）";
         } else {
-          //this.$refs.yulansj.classList.add("getGrey");
           this.yulansj = "0";
           this.preferedbrand = "";
         }
@@ -242,25 +220,17 @@ export default {
     boxcheck2(curVal, oldVal) {
       if (curVal) {
         this.yulansj = "";
-        //this.$refs.yulansj.classList.remove("getGrey");
         if (this.boxcheck1) {
-          // this.yulan = "";
-          //this.$refs.yulan.classList.remove("getGrey");
           this.preferedbrand = "√玉兰（墙纸类产品）√兰居尚品（布艺类产品）";
         } else {
-          //this.$refs.yulan.classList.add("getGrey");
           this.yulan = "0";
           this.preferedbrand = "√兰居尚品（布艺类产品）";
         }
       } else {
         this.yulansj = "0";
-        //this.$refs.yulansj.classList.add("getGrey");
         if (this.boxcheck1) {
-          // this.yulan = "";
-          //this.$refs.yulan.classList.remove("getGrey");
           this.preferedbrand = "√玉兰（墙纸类产品）";
         } else {
-          //this.$refs.yulan.classList.add("getGrey");
           this.yulan = "0";
           this.preferedbrand = "";
         }
@@ -279,10 +249,10 @@ export default {
       return "" + (Number(this.yulan) + Number(this.yulansj)).toFixed(2);
     },
     average() {
-      return "" + Math.floor(Number(this.add) * 0.05 * 100) / 100;
+      return "" + Math.round(Number(this.add) * 0.05 * 100) / 100;
     },
     average2() {
-      return "" + Math.floor(Number(this.add) * 0.09 * 100) / 100;
+      return "" + Math.round(Number(this.add) * 0.09 * 100) / 100;
     },
     Dec() {
       return (
@@ -848,7 +818,4 @@ calendar {
 .rewordpercent2 .reword {
   margin-top: 5px;
 }
-</style>
-
-<style>
 </style>

@@ -28,10 +28,14 @@
           <van-button class="choose" @click="toggleAll" round>反选</van-button>
           <van-button class="button" @click="clear" round>重置</van-button>
         </div>
-         <div>
+        <div>
           <span>
-            <van-checkbox  v-model="checked" style="margin-left:75%;margin-top:5px;font-size: 14px;">有效客户</van-checkbox >
-            </span></div>
+            <van-checkbox
+              v-model="checked"
+              style="margin-left:75%;margin-top:5px;font-size: 14px;"
+            >有效客户</van-checkbox>
+          </span>
+        </div>
         <hr />
         <div>
           <span class="licenter" @click="showType_4 = true">
@@ -60,15 +64,33 @@
     </div>
     <!--市场-->
     <van-popup v-model="showType_1" position="bottom">
-      <van-picker show-toolbar title="请选择市场" :columns="areaCode_name" @confirm="onAreaCode" @cancel="cancelArea"/>
+      <van-picker
+        show-toolbar
+        title="请选择市场"
+        :columns="areaCode_name"
+        @confirm="onAreaCode"
+        @cancel="cancelArea"
+      />
     </van-popup>
     <!--片区-->
     <van-popup v-model="showType_2" position="bottom">
-      <van-picker show-toolbar title="请选择片区" :columns="district_name" @confirm="onDISTRICT_ID" @cancel="cancelDistrict"/>
+      <van-picker
+        show-toolbar
+        title="请选择片区"
+        :columns="district_name"
+        @confirm="onDISTRICT_ID"
+        @cancel="cancelDistrict"
+      />
     </van-popup>
     <!--客户类型-->
     <van-popup v-model="showType_3" position="bottom">
-      <van-picker show-toolbar title="请选择客户类型" :columns="CUSTOMER_TYPE" @confirm="onCUSTOMER_TYPE" @cancel="cancelCustomer"/>
+      <van-picker
+        show-toolbar
+        title="请选择客户类型"
+        :columns="CUSTOMER_TYPE"
+        @confirm="onCUSTOMER_TYPE"
+        @cancel="cancelCustomer"
+      />
     </van-popup>
     <!--日期选择-->
     <van-popup v-model="showType_4" position="bottom">
@@ -93,45 +115,57 @@
     </van-popup>
     <!--状态搜索-->
     <van-popup v-model="showType_6" position="bottom">
-      <van-picker show-toolbar title="请选择状态" :columns="STATUS" @confirm="onStatus" @cancel="cancelStatus"/>
+      <van-picker
+        show-toolbar
+        title="请选择状态"
+        :columns="STATUS"
+        @confirm="onStatus"
+        @cancel="cancelStatus"
+      />
     </van-popup>
     <!-- 查看客户总金额 -->
     <van-popup v-model="showMoney" position="bottom" :style="{ height: '75%' }" closeable>
       <div style="width:90%;margin:0 auto">
         <div style="font-size:15px;color:blue;margin-top:30px">提货单金额汇总：{{(moneySum).toFixed(2)}}元</div>
-        <div class="single-bank" style="width:100%" v-for="singleBank in CUSTOMERED">
+        <div
+          class="single-bank"
+          style="width:100%"
+          v-for="(singleBank,index) in CUSTOMERED"
+          :key="index"
+        >
           <van-panel style="margin-top:10px">
-          <table style="font-size:14px;width:90%">
-            <tr>
-              <td style="text-align:left;width:35%">客户代码：</td>
-              <td>
-                <a
-                      href="javascript:void(0);"
-                      @click="showDetail(singleBank)"
-                    >{{singleBank.CUSTOMER_CODE}}</a></td>
-            </tr>
-            <tr>
-              <td style="text-align:left">客户名称：</td>
-              <td>{{singleBank.CUSTOMER_NAME}}</td>
-            </tr>
-            <tr>
-              <td style="text-align:left">目标任务:</td>
-              <td>{{singleBank.TASK}}</td>
-            </tr>
-            <tr>
-              <td style="text-align:left">订单总额:</td>
-              <td>{{singleBank.ORDER_MONEY}}</td>
-            </tr>
-            <tr>
-              <td style="text-align:left">任务差额:</td>
-              <td>{{singleBank.TASK_MONEY_DF}}</td>
-            </tr>
-            <tr>
-              <td style="text-align:left">任务完成标记:</td>
-              <td>{{singleBank.flag}}</td>
-            </tr>
-          </table>
-          <hr>
+            <table style="font-size:14px;width:90%">
+              <tr>
+                <td style="text-align:left;width:35%">客户代码：</td>
+                <td>
+                  <a
+                    href="javascript:void(0);"
+                    @click="showDetail(singleBank)"
+                  >{{singleBank.CUSTOMER_CODE}}</a>
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align:left">客户名称：</td>
+                <td>{{singleBank.CUSTOMER_NAME}}</td>
+              </tr>
+              <tr>
+                <td style="text-align:left">目标任务:</td>
+                <td>{{singleBank.TASK}}</td>
+              </tr>
+              <tr>
+                <td style="text-align:left">订单总额:</td>
+                <td>{{singleBank.ORDER_MONEY}}</td>
+              </tr>
+              <tr>
+                <td style="text-align:left">任务差额:</td>
+                <td>{{singleBank.TASK_MONEY_DF}}</td>
+              </tr>
+              <tr>
+                <td style="text-align:left">任务完成标记:</td>
+                <td>{{singleBank.flag}}</td>
+              </tr>
+            </table>
+            <hr />
           </van-panel>
         </div>
       </div>
@@ -167,33 +201,34 @@ import {
   getPackDetailsBySaleNo,
   getCustomerName
 } from "@/api/areaInfoASP";
-import { getOrderByAreaCustomer,getOrderInfoByCustomer } from "@/api/orderInfoASP";
+import {
+  getOrderByAreaCustomer,
+  getOrderInfoByCustomer
+} from "@/api/orderInfoASP";
 export default {
   name: "areaQuery",
   data() {
     return {
-      first:"",
-      second:"",
-      third:"",
-      flag:0,
-      get_CUSTOMER_NAME:"",
-      date1:"",
-      date2:"",
+      first: "",
+      second: "",
+      third: "",
+      flag: 0,
+      get_CUSTOMER_NAME: "",
       assignments: "",
       assignmentsTarget: "",
       assignmentsReduce: "",
       tableHead1: "",
       tableHead2: "",
       tableHead3: "",
-      moneySum:0,
-      CUSTOMERED : [],
-      CUSTOMERED_1 : [],
-      getSomeData:[],
-      get_customer_code:"",
-      getMoney:"",
-      get_CUSTOMER_NAME:"",
-      showMoney:false,
-      checked:true,
+      moneySum: 0,
+      CUSTOMERED: [],
+      CUSTOMERED_1: [],
+      getSomeData: [],
+      get_customer_code: "",
+      getMoney: "",
+      get_CUSTOMER_NAME: "",
+      showMoney: false,
+      checked: true,
       myStatus: "全部状态",
       myStatusCode: "",
       ksData: "",
@@ -345,39 +380,39 @@ export default {
     this.jsSet(time);
     this.ksSet(time);
   },
-  activated(){
-    this._queryQuYu_1()
+  activated() {
+    this._queryQuYu_1();
   },
   methods: {
-    cancelArea(){
-      this.showType_1 = false
+    cancelArea() {
+      this.showType_1 = false;
     },
-    cancelDistrict(){
-      this.showType_2 = false
+    cancelDistrict() {
+      this.showType_2 = false;
     },
-    cancelCustomer(){
-      this.showType_3 = false
+    cancelCustomer() {
+      this.showType_3 = false;
     },
-    cancelTimeks(){
-      this.showType_4 = false
+    cancelTimeks() {
+      this.showType_4 = false;
     },
-    cancelTimejs(){
-      this.showType_5 = false
+    cancelTimejs() {
+      this.showType_5 = false;
     },
-    cancelStatus(){
-      this.showType_6 = false
+    cancelStatus() {
+      this.showType_6 = false;
     },
     //开始时间选择
     confirmTimeks(value) {
       this.ksSet2(this.ksData);
       this.showType_4 = false;
-      this.getCustomerChangTime()
+      this.getCustomerChangTime();
     },
     //结束时间选择
     confirmTimejs(value) {
       this.jsSet(this.jsData);
       this.showType_5 = false;
-      this.getCustomerChangTime()
+      this.getCustomerChangTime();
     },
     //开始时间设置
     ksSet2(time) {
@@ -401,7 +436,7 @@ export default {
       let current_year = time.getFullYear();
       let current_month = time.getMonth() + 1;
       this.ksDataSet = current_year + "-" + current_month + "-" + "01";
-      this.ksData = new Date(this.ksDataSet) ;
+      this.ksData = new Date(this.ksDataSet);
     },
     //客户筛选
     customerFilter(val) {
@@ -545,7 +580,7 @@ export default {
     },
     //通过区域查询可选用户
     _getCustomerByAreaCode_1(val) {
-      this.loading = true
+      this.loading = true;
       this.tableData = [];
       this.customerData = [];
       this.customerDataAll = [];
@@ -566,7 +601,7 @@ export default {
       var data = {
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
-        isall:this.checked,
+        isall: this.checked,
         areaCode: this.AREACODE[val].AREA_CODE, //市场
         district: this.AREA_DISTRICT, //片区
         customerType: this.customer_type //客户类型
@@ -574,7 +609,7 @@ export default {
       getCustomerByAreaCode(data).then(res => {
         this.customerData = res.data;
         this.customerDataAll = res.data;
-        this.loading = false
+        this.loading = false;
       });
     },
     _getCustomerByAreaCode_2(val) {
@@ -597,7 +632,7 @@ export default {
       var data = {
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
-        isall:this.checked,
+        isall: this.checked,
         areaCode: val.areaCode, //市场
         district: val.AREA_DISTRICT, //片区
         customerType: this.customer_type //客户类型
@@ -627,7 +662,7 @@ export default {
       var data = {
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
-        isall:this.checked,
+        isall: this.checked,
         areaCode: val.areaCode, //市场
         district: val.district, //片区
         customerType: val.customerType //客户类型
@@ -638,7 +673,7 @@ export default {
       });
     },
     //改变时间查可选用户
-    getCustomerChangTime(){
+    getCustomerChangTime() {
       this.customerData = [];
       this.tableData = [];
       this.value_4 = [];
@@ -655,201 +690,184 @@ export default {
       } else {
         jsTime = this.jsDataSet;
       }
-      if(this.first == ""){
+      if (this.first == "") {
         Toast({
           duration: 2000,
           message: "未选择市场区域"
         });
-      }else{
-      var data = {
-        beginTime: ksTime, //起始时间
-        finishTime: jsTime, //结束时间
-        isall:this.checked,
-        areaCode: this.first, //市场
-        district: this.second, //片区
-        customerType: this.third //客户类型
-      };
-      getCustomerByAreaCode(data).then(res => {
-        this.customerData = res.data;
-        this.customerDataAll = res.data;
-        this.loading = false
-      });
+      } else {
+        var data = {
+          beginTime: ksTime, //起始时间
+          finishTime: jsTime, //结束时间
+          isall: this.checked,
+          areaCode: this.first, //市场
+          district: this.second, //片区
+          customerType: this.third //客户类型
+        };
+        getCustomerByAreaCode(data).then(res => {
+          this.customerData = res.data;
+          this.customerDataAll = res.data;
+          this.loading = false;
+        });
       }
     },
     //订单查询
     _queryQuYu_1() {
       if (this.customer.length == 0) {
-        return
-      }else{
-      this.queryQuYu_1();
+        return;
+      } else {
+        this.queryQuYu_1();
       }
     },
     async queryQuYu_1() {
       this.currentPage = 1;
-      //this.typeFilter=[],
       this.tableData = [];
       this.CUSTOMERED = [];
       this.CUSTOMERED_1 = [];
-      this.date1="",
-      this.date2="",
-      this.assignments= "",
-      this.assignmentsTarget= "",
-      this.assignmentsReduce= "",
-      this.tableHead1= "",
-      this.tableHead2= "",
-      this.tableHead3= "",
-      this.moneySum=0,
-      this.flag = 0,
-      this. date1 = this.ksDataSet.slice(0, 4) + "-" + (this.ksDataSet.slice(5, 7))
-      this. date2 = this.jsDataSet.slice(0, 4) + "-" + (this.jsDataSet.slice(5, 7))
-      
-      let year = this.date1.slice(0, 4);
-      let endYear = this.date2.slice(0, 4);
-      let month = this.date1.slice(5, 7);
-      let endMonth = this.date2.slice(5, 7);
+      this.assignments = "";
+      this.assignmentsTarget = "";
+      this.assignmentsReduce = "";
+      this.tableHead1 = "";
+      this.tableHead2 = "";
+      this.tableHead3 = "";
+      this.moneySum = 0;
+      this.flag = 0;
+
+      let year = new Date(this.ksDataSet).getFullYear();
+      let endYear = new Date(this.jsDataSet).getFullYear();
+      let month = new Date(this.ksDataSet).getMonth() + 1;
+      month = month < 10 ? "0" + month : month;
+      let endMonth = new Date(this.jsDataSet).getMonth() + 1;
+      endMonth = endMonth < 10 ? "0" + endMonth : endMonth;
       if (this.customer.length == 0) {
-          Toast({
-            duration: 2000,
-            message: "未选择用户"
-          });
+        Toast({
+          duration: 2000,
+          message: "未选择用户"
+        });
       } else {
-        this.loading = true
+        this.loading = true;
         for (var i = 0; i < this.customer.length; i++) {
-      this.date1=""
-      this.date2=""
-      this.assignments= ""
-      this.assignmentsTarget= ""
-      this.assignmentsReduce= ""
-      this.tableHead1= ""
-      this.tableHead2= ""
-      this.tableHead3= ""
-          var res = await  GetTaskProgress({
-            companyId:this.customer[i],
-            year:year,
-            endYear:endYear,
-            month:month,
-            endMonth:endMonth,
-            cid: this.$store.state.info.data.loginName,
-          },{ loading: false })
+          this.assignments = "";
+          this.assignmentsTarget = "";
+          this.assignmentsReduce = "";
+          this.tableHead1 = "";
+          this.tableHead2 = "";
+          this.tableHead3 = "";
+          var res = await GetTaskProgress(
+            {
+              companyId: this.customer[i],
+              year: year,
+              endYear: endYear,
+              month: month,
+              endMonth: endMonth,
+              cid: this.$store.getters.getCId
+            },
+            { loading: false }
+          );
+
           let zoom = res.data[0].orders;
-          
-        let reduce = 0;
-        for (let i = 0; i < zoom.length; i++) {
-          zoom[i].sumMoney =
-            zoom[i].ALL_SPEND + zoom[i].ALLBACK_Y + zoom[i].ALLBACK_M;
-          reduce += zoom[i].ALL_SPEND;
-        }
-        //this.tableData = zoom;
-        if (res.data[0].assignments) {
-          this.assignments = res.data[0].assignments.ASSIGNMENTS;
-          this.assignmentsTarget = res.data[0].assignments.ASSIGNMENTS_TARGET;
-          this.assignmentsReduce = (this.assignmentsTarget - reduce).toFixed(2);
-          // var selectMonth = "";
-      // if (this.date1 == this.date2) {
-      //   selectMonth = this.date1.slice(5, 7) + "月";
-      // } else if (this.date1.slice(0, 4) == this.date2.slice(0, 4)) {
-      //   selectMonth =
-      //     this.date1.slice(5, 7) + "-" + this.date2.slice(5, 7) + "月总";
-      // } else {
-      //   selectMonth =
-      //     this.date1.slice(0, 4) +
-      //     "." +
-      //     this.date1.slice(5, 7) +
-      //     "-" +
-      //     this.date2.slice(0, 4) +
-      //     "." +
-      //     this.date2.slice(5, 7) +
-      //     "月总";
-      // }
-      // this.date1 == this.date2
-      //   ? this.date1.slice(5, 7) + "月"
-      //   : this.date1.slice(5, 7) + "-" + this.date2.slice(5, 7) + "月总";
-           // this.tableHead1 = `${selectMonth}协议月任务：${this.assignments}`;
-            this.tableHead2 = (this.assignmentsTarget).toFixed(2);
+
+          let reduce = 0;
+          for (let i = 0; i < zoom.length; i++) {
+            zoom[i].sumMoney =
+              zoom[i].ALL_SPEND + zoom[i].ALLBACK_Y + zoom[i].ALLBACK_M;
+            reduce += zoom[i].ALL_SPEND;
+          }
+          if (res.data[0].assignments) {
+            this.assignments = res.data[0].assignments.ASSIGNMENTS;
+            this.assignmentsTarget = res.data[0].assignments.ASSIGNMENTS_TARGET;
+            this.assignmentsReduce = (this.assignmentsTarget - reduce).toFixed(
+              2
+            );
+            this.tableHead2 = this.assignmentsTarget.toFixed(2);
             this.tableHead3 = this.assignmentsReduce;
-        } else {
-          this.tableHead1 = "所选月无任务";
-        }
-        if(this.tableHead2>0 && this.tableHead3<=0){
-          this.flag = "完成"
-        }else{
-          this.flag = ""
-          
-        }
-        if(!this.tableHead2){
-          this.tableHead2 = "无任务"
-        }
-        var res1 = await  getCustomerName({customer:this.customer[i]},{ loading: false })
-          this.get_CUSTOMER_NAME = res1.data[0]
-        var res2 = await getOrderInfoByCustomer({customer: this.customer[i]},{ loading: false })
-        
-        if(res2.data.length == 0){
-          this.index = i
-          continue
-        }
-        this.getSomeData = res2.data[0]
-        var sum = this.moneySum + reduce
-        this.moneySum = sum
+          } else {
+            this.tableHead1 = "所选月无任务";
+          }
+          if (this.tableHead2 > 0 && this.tableHead3 <= 0) {
+            this.flag = "完成";
+          } else {
+            this.flag = "";
+          }
+          if (!this.tableHead2) {
+            this.tableHead2 = "无任务";
+          }
+          var res1 = await getCustomerName(
+            { customer: this.customer[i] },
+            { loading: false }
+          );
+          this.get_CUSTOMER_NAME = res1.data[0];
+          var res2 = await getOrderInfoByCustomer(
+            { customer: this.customer[i] },
+            { loading: false }
+          );
+
+          if (res2.data.length == 0) {
+            this.index = i;
+            continue;
+          }
+          this.getSomeData = res2.data[0];
+          var sum = this.moneySum + reduce;
+          this.moneySum = sum;
           this.CUSTOMERED_1[i] = await {
             CUSTOMER_CODE: this.customer[i],
             CUSTOMER_NAME: this.get_CUSTOMER_NAME.CUSTOMER_NAME,
-            TASK:this.tableHead2,
-            ORDER_MONEY:(reduce).toFixed(2),
-            TASK_MONEY_DF:this.tableHead3,
-            flag:this.flag,
-            LINKPERSON:this.getSomeData.LINKPERSON,
-            TELEPHONE:this.getSomeData.TELEPHONE,
-            POST_ADDRESS:this.getSomeData.POST_ADDRESS,
-            //MONEYSUM:this.moneySum.MONEYSUM
-          }
-
+            TASK: this.tableHead2,
+            ORDER_MONEY: reduce.toFixed(2),
+            TASK_MONEY_DF: this.tableHead3,
+            flag: this.flag,
+            LINKPERSON: this.getSomeData.LINKPERSON,
+            TELEPHONE: this.getSomeData.TELEPHONE,
+            POST_ADDRESS: this.getSomeData.POST_ADDRESS
+          };
         }
-        
-        this.CUSTOMERED = this.CUSTOMERED_1.filter(item =>
-          item != "" && item != undefined 
-        ) 
-        if(this.CUSTOMERED.length == 0){
-          this.loading = false
+
+        this.CUSTOMERED = this.CUSTOMERED_1.filter(
+          item => item != "" && item != undefined
+        );
+        if (this.CUSTOMERED.length == 0) {
+          this.loading = false;
           Toast({
             duration: 2000,
             message: "选择的客户无订单"
           });
-          return this.showMoney = false
-        }else{
-        this.showMoney = true;
-        this.loading = false}
+          return (this.showMoney = false);
+        } else {
+          this.showMoney = true;
+          this.loading = false;
+        }
       }
     },
-    showDetail(val){
-           var data = {
-              MONEYSUM:val.ORDER_MONEY,//订单总额
-              CUSTOMER_NAME:val.CUSTOMER_NAME,//用户名称
-              customer: val.CUSTOMER_CODE, //已选用户
-              beginTime: this.ksDataSet, //起始时间
-              finishTime: this.jsDataSet, //结束时间
-              limit: this.limit, //限制数
-              page: this.currentPage, //页数
-              status: this.myStatusCode //状态
-            }
-            sessionStorage.setItem("customerData", JSON.stringify(data));
+    showDetail(val) {
+      var data = {
+        MONEYSUM: val.ORDER_MONEY, //订单总额
+        CUSTOMER_NAME: val.CUSTOMER_NAME, //用户名称
+        customer: val.CUSTOMER_CODE, //已选用户
+        beginTime: this.ksDataSet, //起始时间
+        finishTime: this.jsDataSet, //结束时间
+        limit: this.limit, //限制数
+        page: this.currentPage, //页数
+        status: this.myStatusCode //状态
+      };
+      sessionStorage.setItem("customerData", JSON.stringify(data));
       this.$router.push({
-          name: "orderDetailsQuery",
-          // params: {
-          //   data: {
-          //     customer: this.customer, //已选用户
-          //     beginTime: ksTime, //起始时间
-          //     finishTime: jsTime, //结束时间
-          //     MONEYSUM:val.MONEYSUM,//提货总额
-          //     CUSTOMER_NAME:val.CUSTOMER_NAME,//用户名称
-          //     customer: val.CUSTOMER_CODE, //已选用户
-          //     beginTime: this.ksDataSet, //起始时间
-          //     finishTime: this.jsDataSet, //结束时间
-          //     limit: this.limit, //限制数
-          //     page: this.currentPage, //页数
-          //     status: this.myStatusCode //状态
-          //   }
-          // }
-        });
+        name: "orderDetailsQuery"
+        // params: {
+        //   data: {
+        //     customer: this.customer, //已选用户
+        //     beginTime: ksTime, //起始时间
+        //     finishTime: jsTime, //结束时间
+        //     MONEYSUM:val.MONEYSUM,//提货总额
+        //     CUSTOMER_NAME:val.CUSTOMER_NAME,//用户名称
+        //     customer: val.CUSTOMER_CODE, //已选用户
+        //     beginTime: this.ksDataSet, //起始时间
+        //     finishTime: this.jsDataSet, //结束时间
+        //     limit: this.limit, //限制数
+        //     page: this.currentPage, //页数
+        //     status: this.myStatusCode //状态
+        //   }
+        // }
+      });
     },
     //     var data = {
     //       customer: this.customer, //已选用户
@@ -903,20 +921,18 @@ export default {
     },
     //重置
     clear() {
-      this.loading = false
-      this.checked = true
-      this.CUSTOMERED=[]
-      this.CUSTOMERED_1 = []
-      this.moneySum=[]
-      this.customer = []
+      this.loading = false;
+      this.checked = true;
+      this.CUSTOMERED = [];
+      this.CUSTOMERED_1 = [];
+      this.moneySum = [];
+      this.customer = [];
       this.myStatus = "全部状态";
-      (this.myStatusCode = ""),
-        (this.ksData = ""),
-        (this.jsData = "")
-        let time = new Date()
-        this.jsSet(time);
-        this.ksSet(time);
-        (this.customer_filter = ""),
+      (this.myStatusCode = ""), (this.ksData = ""), (this.jsData = "");
+      let time = new Date();
+      this.jsSet(time);
+      this.ksSet(time);
+      (this.customer_filter = ""),
         (this.customer = []),
         (this.myCustomerType = "客户类型"),
         (this.myCustomerTypeCode = ""),

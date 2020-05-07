@@ -91,7 +91,7 @@ export default {
           if (page_customer) {
             Vue.set(
               page_customer,
-              "MAIN_COUNT",
+              "CUSTOMER_BALANCE_PERIOD_COUNT",
               res.data.CUSTOMER_BALANCE_PERIOD
             );
           }

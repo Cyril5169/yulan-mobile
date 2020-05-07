@@ -30,8 +30,12 @@
         </div>
         <div>
           <span>
-            <van-checkbox  v-model="checked" style="margin-left:75%;margin-top:5px;font-size: 14px;">有效客户</van-checkbox >
-            </span></div>
+            <van-checkbox
+              v-model="checked"
+              style="margin-left:75%;margin-top:5px;font-size: 14px;"
+            >有效客户</van-checkbox>
+          </span>
+        </div>
         <hr />
         <div>
           <span class="licenter" @click="showType_4 = true">
@@ -40,12 +44,10 @@
           <span class="licenter" @click="showType_5 = true">
             <input type="text" v-model="jsDataSet" class="time_1" disabled />
           </span>
-          <span class="licenter" @click="showType_6 = true" style="">
+          <span class="licenter" @click="showType_6 = true" style>
             <input type="text" v-model="myStatus" class="time_1" disabled />
           </span>
-          
         </div>
-        
       </ul>
     </div>
     <div class="queryData" style="margin: 20px 10px 80px;">
@@ -62,15 +64,33 @@
     </div>
     <!--市场-->
     <van-popup v-model="showType_1" position="bottom">
-      <van-picker show-toolbar title="请选择市场" :columns="areaCode_name" @confirm="onAreaCode" @cancel="cancelArea"/>
+      <van-picker
+        show-toolbar
+        title="请选择市场"
+        :columns="areaCode_name"
+        @confirm="onAreaCode"
+        @cancel="cancelArea"
+      />
     </van-popup>
     <!--片区-->
     <van-popup v-model="showType_2" position="bottom">
-      <van-picker show-toolbar title="请选择片区" :columns="district_name" @confirm="onDISTRICT_ID" @cancel="cancelDistrict"/>
+      <van-picker
+        show-toolbar
+        title="请选择片区"
+        :columns="district_name"
+        @confirm="onDISTRICT_ID"
+        @cancel="cancelDistrict"
+      />
     </van-popup>
     <!--客户类型-->
     <van-popup v-model="showType_3" position="bottom">
-      <van-picker show-toolbar title="请选择客户类型" :columns="CUSTOMER_TYPE" @confirm="onCUSTOMER_TYPE" @cancel="cancelCustomer"/>
+      <van-picker
+        show-toolbar
+        title="请选择客户类型"
+        :columns="CUSTOMER_TYPE"
+        @confirm="onCUSTOMER_TYPE"
+        @cancel="cancelCustomer"
+      />
     </van-popup>
     <!--日期选择-->
     <van-popup v-model="showType_4" position="bottom">
@@ -95,34 +115,51 @@
     </van-popup>
     <!--状态搜索-->
     <van-popup v-model="showType_6" position="bottom">
-      <van-picker show-toolbar title="请选择状态" :columns="STATUS" @confirm="onStatus" @cancel="cancelStatus"/>
+      <van-picker
+        show-toolbar
+        title="请选择状态"
+        :columns="STATUS"
+        @confirm="onStatus"
+        @cancel="cancelStatus"
+      />
     </van-popup>
     <!-- 查看客户总金额 -->
-    <van-popup v-model="showMoney" position="bottom" :style="{ height: '75%' }" closeable
-  close-icon="close">
+    <van-popup
+      v-model="showMoney"
+      position="bottom"
+      :style="{ height: '75%' }"
+      closeable
+      close-icon="close"
+    >
       <div style="width:90%;margin:0 auto">
         <div style="font-size:15px;color:blue;margin-top:30px">提货单金额汇总：{{moneySum.MONEYSUM}}元</div>
-        <div class="single-bank" style="width:100%" v-for="singleBank in CUSTOMERED">
+        <div
+          class="single-bank"
+          style="width:100%"
+          v-for="(singleBank,index) in CUSTOMERED"
+          :key="index"
+        >
           <van-panel style="margin-top:10px">
-          <table style="font-size:14px;width:90%">
-            <tr>
-              <td style="text-align:left">客户代码：</td>
-              <td>
-                <a
-                      href="javascript:void(0);"
-                      @click="showDetail(singleBank)"
-                    >{{singleBank.CUSTOMER_CODE}}</a></td>
-            </tr>
-            <tr>
-              <td style="text-align:left">客户名称：</td>
-              <td>{{singleBank.CUSTOMER_NAME}}</td>
-            </tr>
-            <tr>
-              <td style="text-align:left">时间段内订单提货总额：</td>
-              <td>{{singleBank.MONEYSUM}}元</td>
-            </tr>
-          </table>
-          <hr>
+            <table style="font-size:14px;width:90%">
+              <tr>
+                <td style="text-align:left">客户代码：</td>
+                <td>
+                  <a
+                    href="javascript:void(0);"
+                    @click="showDetail(singleBank)"
+                  >{{singleBank.CUSTOMER_CODE}}</a>
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align:left">客户名称：</td>
+                <td>{{singleBank.CUSTOMER_NAME}}</td>
+              </tr>
+              <tr>
+                <td style="text-align:left;width:160px;">时间段内订单提货总额：</td>
+                <td>{{singleBank.MONEYSUM}}元</td>
+              </tr>
+            </table>
+            <hr />
           </van-panel>
         </div>
       </div>
@@ -148,7 +185,7 @@ import {
   Checkbox,
   CheckboxGroup,
   Search,
-  Radio,
+  Radio
 } from "vant";
 import {
   getAreaCode,
@@ -164,19 +201,19 @@ export default {
   name: "areaQuery",
   data() {
     return {
-      first:"",
-      second:"",
-      third:"",
-      get_customer_code:"",
-      getMoney:"",
-      get_CUSTOMER_NAME:"",
-      CUSTOMERED:[],//查询的已选用户
-      CUSTOMERED_1:[],
-      moneySum:[],
-      typeNameFilter:[],
-      typeIdFilter:[],
-      typeFilter:[],
-      checked:true,
+      first: "",
+      second: "",
+      third: "",
+      get_customer_code: "",
+      getMoney: "",
+      get_CUSTOMER_NAME: "",
+      CUSTOMERED: [], //查询的已选用户
+      CUSTOMERED_1: [],
+      moneySum: [],
+      typeNameFilter: [],
+      typeIdFilter: [],
+      typeFilter: [],
+      checked: true,
       myStatus: "全部状态",
       myStatusCode: "",
       ksData: "",
@@ -200,7 +237,7 @@ export default {
       showType_4: false,
       showType_5: false,
       showType_6: false,
-      showMoney:false,
+      showMoney: false,
       set: 91,
       loading: false,
       detailVisible: false,
@@ -252,7 +289,7 @@ export default {
     [CheckboxGroup.name]: CheckboxGroup,
     [Search.name]: Search,
     [DatetimePicker.name]: DatetimePicker,
-    [Radio.name]:Radio,
+    [Radio.name]: Radio
   },
   filters: {
     transStatus(value) {
@@ -306,39 +343,39 @@ export default {
     this.jsSet(time);
     this.ksSet(time);
   },
-  activated(){
-    this._queryQuYu_1()
+  activated() {
+    this._queryQuYu_1();
   },
   methods: {
-    cancelArea(){
-      this.showType_1 = false
+    cancelArea() {
+      this.showType_1 = false;
     },
-    cancelDistrict(){
-      this.showType_2 = false
+    cancelDistrict() {
+      this.showType_2 = false;
     },
-    cancelCustomer(){
-      this.showType_3 = false
+    cancelCustomer() {
+      this.showType_3 = false;
     },
-    cancelTimeks(){
-      this.showType_4 = false
+    cancelTimeks() {
+      this.showType_4 = false;
     },
-    cancelTimejs(){
-      this.showType_5 = false
+    cancelTimejs() {
+      this.showType_5 = false;
     },
-    cancelStatus(){
-      this.showType_6 = false
+    cancelStatus() {
+      this.showType_6 = false;
     },
     //开始时间选择
     confirmTimeks(value) {
       this.ksSet2(this.ksData);
       this.showType_4 = false;
-      this.getCustomerChangTime()
+      this.getCustomerChangTime();
     },
     //结束时间选择
     confirmTimejs(value) {
       this.jsSet(this.jsData);
       this.showType_5 = false;
-      this.getCustomerChangTime()
+      this.getCustomerChangTime();
     },
     //开始时间设置
     ksSet2(time) {
@@ -362,7 +399,7 @@ export default {
       let current_year = time.getFullYear();
       let current_month = time.getMonth() + 1;
       this.ksDataSet = current_year + "-" + current_month + "-" + "01";
-      this.ksData = new Date(this.ksDataSet) ;
+      this.ksData = new Date(this.ksDataSet);
     },
     //客户筛选
     customerFilter(val) {
@@ -433,13 +470,12 @@ export default {
       var data = {
         userid: this.$store.state.info.data.loginName
       };
-      getAreaCode(data)
-        .then(res => {
-          this.AREACODE = res.data;
-          for (var i = 0; i < this.AREACODE.length; i++) {
-            this.areaCode_name.push(this.AREACODE[i].AREA_NAME);
-          }
-        })
+      getAreaCode(data).then(res => {
+        this.AREACODE = res.data;
+        for (var i = 0; i < this.AREACODE.length; i++) {
+          this.areaCode_name.push(this.AREACODE[i].AREA_NAME);
+        }
+      });
     },
     //根据市场区域查片区
     areaCode(val) {
@@ -492,7 +528,7 @@ export default {
     },
     //通过区域查询可选用户
     _getCustomerByAreaCode_1(val) {
-      this.loading = true
+      this.loading = true;
       this.tableData = [];
       this.customerData = [];
       this.customerDataAll = [];
@@ -510,11 +546,11 @@ export default {
       } else {
         jsTime = this.jsDataSet;
       }
-      this.first = this.AREACODE[val].AREA_CODE
+      this.first = this.AREACODE[val].AREA_CODE;
       var data = {
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
-        isall:this.checked,
+        isall: this.checked,
         areaCode: this.AREACODE[val].AREA_CODE, //市场
         district: this.AREA_DISTRICT, //片区
         customerType: this.customer_type //客户类型
@@ -522,7 +558,7 @@ export default {
       getCustomerByAreaCode(data).then(res => {
         this.customerData = res.data;
         this.customerDataAll = res.data;
-        this.loading = false
+        this.loading = false;
       });
     },
     _getCustomerByAreaCode_2(val) {
@@ -542,11 +578,11 @@ export default {
         jsTime = this.jsDataSet;
       }
       this.value_4 = [];
-      this.second = val.AREA_DISTRICT
+      this.second = val.AREA_DISTRICT;
       var data = {
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
-        isall:this.checked,
+        isall: this.checked,
         areaCode: val.areaCode, //市场
         district: val.AREA_DISTRICT, //片区
         customerType: this.customer_type //客户类型
@@ -554,7 +590,7 @@ export default {
       getCustomerByAreaCode(data).then(res => {
         this.customerData = res.data;
         this.customerDataAll = res.data;
-        this.loading = false
+        this.loading = false;
       });
     },
     _getCustomerByAreaCode_3(val) {
@@ -574,11 +610,11 @@ export default {
       } else {
         jsTime = this.jsDataSet;
       }
-      this.third = val.customerType
+      this.third = val.customerType;
       var data = {
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
-        isall:this.checked,
+        isall: this.checked,
         areaCode: val.areaCode, //市场
         district: val.district, //片区
         customerType: val.customerType //客户类型
@@ -586,11 +622,11 @@ export default {
       getCustomerByAreaCode(data).then(res => {
         this.customerData = res.data;
         this.customerDataAll = res.data;
-        this.loading = false
+        this.loading = false;
       });
     },
     //改变时间查可选用户
-    getCustomerChangTime(){
+    getCustomerChangTime() {
       this.customerData = [];
       this.tableData = [];
       this.value_4 = [];
@@ -607,39 +643,38 @@ export default {
       } else {
         jsTime = this.jsDataSet;
       }
-      if(this.first == ""){
+      if (this.first == "") {
         Toast({
           duration: 2000,
           message: "未选择市场区域"
         });
-      }else{
-      var data = {
-        beginTime: ksTime, //起始时间
-        finishTime: jsTime, //结束时间
-        isall:this.checked,
-        areaCode: this.first, //市场
-        district: this.second, //片区
-        customerType: this.third //客户类型
-      };
-      getCustomerByAreaCode(data).then(res => {
-        this.customerData = res.data;
-        this.customerDataAll = res.data;
-        this.loading = false
-      });
+      } else {
+        var data = {
+          beginTime: ksTime, //起始时间
+          finishTime: jsTime, //结束时间
+          isall: this.checked,
+          areaCode: this.first, //市场
+          district: this.second, //片区
+          customerType: this.third //客户类型
+        };
+        getCustomerByAreaCode(data).then(res => {
+          this.customerData = res.data;
+          this.customerDataAll = res.data;
+          this.loading = false;
+        });
       }
     },
     //提货单查询
     _queryQuYu_1() {
-       if (this.customer.length == 0) {
-        return
-      }else{
-      this.queryQuYu_1();
+      if (this.customer.length == 0) {
+        return;
+      } else {
+        this.queryQuYu_1();
       }
     },
     async queryQuYu_1() {
       this.currentPage = 1;
-      this.moneySum=[],
-      this.CUSTOMERED = [];
+      (this.moneySum = []), (this.CUSTOMERED = []);
       this.CUSTOMERED_1 = [];
       this.tableData = [];
       let ksTime;
@@ -659,46 +694,49 @@ export default {
           duration: 2000,
           message: "未选择用户"
         });
-      } else{
-        this.loading = true
+      } else {
+        this.loading = true;
         for (var i = 0; i < this.customer.length; i++) {
-          var res = await  getCustomerName({customer:this.customer[i]},{ loading: false })
-          this.get_CUSTOMER_NAME = res.data[0]
-            
+          var res = await getCustomerName(
+            { customer: this.customer[i] },
+            { loading: false }
+          );
+          this.get_CUSTOMER_NAME = res.data[0];
+
           var data_2 = await {
             beginTime: ksTime, //起始时间
             finishTime: jsTime + " 23:59:59", //结束时间
-            status: this.myStatusCode , //状态
-            customers:[this.customer[i]]
-          }
-          var res1= await getTotalMoneySum(data_2 ,{ loading: false })
+            status: this.myStatusCode, //状态
+            customers: [this.customer[i]]
+          };
+          var res1 = await getTotalMoneySum(data_2, { loading: false });
           this.moneySum = res1.data[0];
-          if(this.moneySum.MONEYSUM == 0){
-            continue
+          if (this.moneySum.MONEYSUM == 0) {
+            continue;
           }
-          this.CUSTOMERED_1[i] =  {
+          this.CUSTOMERED_1[i] = {
             CUSTOMER_CODE: this.customer[i],
             CUSTOMER_NAME: this.get_CUSTOMER_NAME.CUSTOMER_NAME,
-            MONEYSUM:this.moneySum.MONEYSUM
-          }
+            MONEYSUM: this.moneySum.MONEYSUM
+          };
         }
-        this.CUSTOMERED = this.CUSTOMERED_1.filter(item =>
-          item != "" && item != undefined 
-        )  
-        if(this.CUSTOMERED.length == 0){
-          this.loading = false
+        this.CUSTOMERED = this.CUSTOMERED_1.filter(
+          item => item != "" && item != undefined
+        );
+        if (this.CUSTOMERED.length == 0) {
+          this.loading = false;
           Toast({
-          duration: 2000,
-          message: "所选客户无提货单信息"
-        });
-          return this.showMoney = false
+            duration: 2000,
+            message: "所选客户无提货单信息"
+          });
+          return (this.showMoney = false);
         }
         //this.showMoney = true;
         var data = {
-          type:this.typeFilter,//类型筛选
+          type: this.typeFilter, //类型筛选
           costomerCodes: this.customer, //已选用户
           beginTime: ksTime, //起始时间
-          finishTime:  jsTime, //结束时间
+          finishTime: jsTime, //结束时间
           limit: this.limit, //限制数
           page: this.currentPage, //页数
           status: this.myStatusCode //状态
@@ -711,38 +749,38 @@ export default {
         } else {
           data.finishTime = data.finishTime + " 23:59:59";
         }
-        this._getTotalMoneySum(data)
+        this._getTotalMoneySum(data);
       }
     },
-    showDetail(val){
+    showDetail(val) {
       this.$router.push({
-          name: "billDetailsQuery",
-          params: {
-            data: {
-              MONEYSUM:val.MONEYSUM,//提货总额
-              CUSTOMER_NAME:val.CUSTOMER_NAME,//用户名称
-              customer: val.CUSTOMER_CODE, //已选用户
-              beginTime: this.ksDataSet, //起始时间
-              finishTime: this.jsDataSet, //结束时间
-              limit: this.limit, //限制数
-              page: this.currentPage, //页数
-              status: this.myStatusCode //状态
-            }
+        name: "billDetailsQuery",
+        params: {
+          data: {
+            MONEYSUM: val.MONEYSUM, //提货总额
+            CUSTOMER_NAME: val.CUSTOMER_NAME, //用户名称
+            customer: val.CUSTOMER_CODE, //已选用户
+            beginTime: this.ksDataSet, //起始时间
+            finishTime: this.jsDataSet, //结束时间
+            limit: this.limit, //限制数
+            page: this.currentPage, //页数
+            status: this.myStatusCode //状态
           }
-        });
+        }
+      });
     },
     //客户总金额
-    _getTotalMoneySum(val){
-      this.moneySum = []
+    _getTotalMoneySum(val) {
+      this.moneySum = [];
       var data = {
         beginTime: val.beginTime, //起始时间
         finishTime: val.finishTime, //结束时间
         status: val.status, //状态
-        customers:val.costomerCodes
-      }
+        customers: val.costomerCodes
+      };
       getTotalMoneySum(data).then(res => {
         this.moneySum = res.data[0];
-        this.loading = false
+        this.loading = false;
         this.showMoney = true;
       });
     },
@@ -784,18 +822,16 @@ export default {
     },
     //重置
     clear() {
-      this.checked = true
-      this.CUSTOMERED=[]
-      this.moneySum=[]
-      this.customer = []
+      this.checked = true;
+      this.CUSTOMERED = [];
+      this.moneySum = [];
+      this.customer = [];
       this.myStatus = "全部状态";
-      (this.myStatusCode = ""),
-        (this.ksData = ""),
-        (this.jsData = "")
-        let time = new Date()
-        this.jsSet(time);
-        this.ksSet(time);
-        (this.customer_filter = ""),
+      (this.myStatusCode = ""), (this.ksData = ""), (this.jsData = "");
+      let time = new Date();
+      this.jsSet(time);
+      this.ksSet(time);
+      (this.customer_filter = ""),
         (this.customer = []),
         (this.myCustomerType = "客户类型"),
         (this.myCustomerTypeCode = ""),
@@ -825,8 +861,7 @@ export default {
       this.count = 0;
       this.currentPage = 1;
       this._getAreaCode();
-    },
-
+    }
   }
 };
 </script>

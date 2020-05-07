@@ -4,16 +4,19 @@
     <span class="search-button" @click="query()">查询</span>
     <div class="search">
       <ul class="ulhead" id="ulhead">
-        <div >客户名称：{{baseData.CUSTOMER_NAME}} </div>
-        <div >汇总金额：{{baseData.MONEYSUM}}元<li class="licenter" style="margin-left:20px" @click="showType_1 = true">
-          <input class="time" type="text" v-model="myStatus" disabled />
-        </li></div>
+        <div>客户名称：{{baseData.CUSTOMER_NAME}}</div>
+        <div>
+          汇总金额：{{baseData.MONEYSUM}}元
+          <li class="licenter" style="margin-left:20px" @click="showType_1 = true">
+            <input class="time" type="text" v-model="myStatus" disabled />
+          </li>
+        </div>
       </ul>
     </div>
 
     <div class="all-bank">
       <!-- 订单列表 -->
-      <div class="single-bank" v-for="singleBank in tableData">
+      <div class="single-bank" v-for="(singleBank,index) in tableData" :key="index">
         <div class="single-title">
           <span class="single-title-left">订单号：{{singleBank.ORDER_NO}}</span>
           <span class="single-title-right">{{singleBank.STATUS_ID|transType}}</span>
@@ -34,7 +37,7 @@
           <tr>
             <td>联系电话:</td>
             <td>{{singleBank.TELEPHONE}}</td>
-          </tr> -->
+          </tr>-->
           <tr>
             <td>订单金额:</td>
             <td>{{singleBank.ALL_SPEND}}元</td>
@@ -80,7 +83,13 @@
     </van-popup>
     <!--状态搜索-->
     <van-popup v-model="showType_1" position="bottom">
-      <van-picker show-toolbar title="请选择状态" :columns="STATUS" @confirm="onStatus" @cancel="cancelStatus"/>
+      <van-picker
+        show-toolbar
+        title="请选择状态"
+        :columns="STATUS"
+        @confirm="onStatus"
+        @cancel="cancelStatus"
+      />
     </van-popup>
     <!--底部分页-->
     <div class="fy-contain">
@@ -216,8 +225,8 @@ export default {
     }
   },
   methods: {
-    cancelStatus(){
-      this.showType_1 = false
+    cancelStatus() {
+      this.showType_1 = false;
     },
     //客户详情
     async customer_info(val) {
@@ -229,7 +238,7 @@ export default {
         companyId: this.customerInfo.COMPANY_ID
       };
       await axios.post(mlUrl_1, data).then(res1 => {
-        this.moneySituation = "当前余额 " + res1.data.data ;
+        this.moneySituation = "当前余额 " + res1.data.data;
       });
       await axios.post(mlUrl_2, data).then(res2 => {
         this.couponData = res2.data.data;
@@ -372,7 +381,7 @@ export default {
 ul {
   margin: 0;
   padding: 0;
-  
+
   justify-content: space-around;
 }
 
