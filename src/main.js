@@ -137,8 +137,7 @@ if (!window.plus) {
 }
 //从后台切换到前台,检查更新
 document.addEventListener("resume", function () {
-  if (plus.os.name == "Android")
-    vm.UpdateVersion();
+  vm.UpdateVersion();
 });
 //从前台切换到后台
 document.addEventListener("pause", function () {
