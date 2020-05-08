@@ -279,12 +279,12 @@
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
-                    <span style="float:left;margin-left:10px;color:red;">{{getRemark(liantou)}}</span>
+                    <span class="remarkText">{{getRemark(liantou)}}</span>
                     <span class="title-right">
                       <input
                         type="text"
                         class="curtain-beizhu"
-                        :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
+                        :style="{width:getRemark(liantou) ==''?'180px':'120px'}"
                         placeholder="填写备注"
                         v-model="liantou.remark"
                       />
@@ -403,12 +403,12 @@
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
-                    <span style="float:left;margin-left:10px;color:red;">{{getRemark(liantou)}}</span>
+                    <span class="remarkText">{{getRemark(liantou)}}</span>
                     <span class="title-right">
                       <input
                         type="text"
                         class="curtain-beizhu"
-                        :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
+                        :style="{width:getRemark(liantou) ==''?'180px':'120px'}"
                         placeholder="填写备注"
                         v-model="liantou.remark"
                       />
@@ -588,12 +588,12 @@
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
-                    <span style="float:left;margin-left:10px;color:red;">{{getRemark(liantou)}}</span>
+                    <span class="remarkText">{{getRemark(liantou)}}</span>
                     <span class="title-right">
                       <input
                         type="text"
                         class="curtain-beizhu"
-                        :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
+                        :style="{width:getRemark(liantou) ==''?'180px':'120px'}"
                         placeholder="填写备注"
                         v-model="liantou.remark"
                       />
@@ -2047,18 +2047,21 @@ export default {
 
 .use-num {
   width: 50px;
-  height: 13px;
+  height: 15px;
   text-align: center;
   border: 1px solid #666;
 }
 
 .curtain-beizhu {
-  width: 200px;
-  height: 13px;
+  width: 180px;
+  height: 17px;
   border: none;
   text-align: right;
 }
-
+.remarkText {
+  color: red;
+  font-size: 11px;
+}
 .item-icon {
   position: absolute;
   width: 15px;

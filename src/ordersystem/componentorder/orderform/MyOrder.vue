@@ -489,7 +489,7 @@ export default {
           break;
       }
       current_month = current_month < 10 ? "0" + current_month : current_month;
-      this.ksDataSet = current_year + "-" + current_month + "-" + current_date;
+      this.ksDataSet = current_year + "/" + current_month + "/" + current_date;
       this.ksData = new Date(this.ksDataSet);
       current_date = this.ksData.getDate();
       current_month = this.ksData.getMonth() + 1;
