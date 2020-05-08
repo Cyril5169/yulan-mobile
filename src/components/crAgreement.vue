@@ -249,10 +249,10 @@ export default {
       return "" + (Number(this.yulan) + Number(this.yulansj)).toFixed(2);
     },
     average() {
-      return "" + Math.round(Number(this.add) * 0.05 * 100) / 100;
+      return "" + Math.round(Number(this.add) * 0.05 * 10000) / 10000;
     },
     average2() {
-      return "" + Math.round(Number(this.add) * 0.09 * 100) / 100;
+      return "" + Math.round(Number(this.add) * 0.09 * 10000) / 10000;
     },
     Dec() {
       return (
@@ -261,7 +261,7 @@ export default {
           Number(this.add) -
           Number(this.average) * 2 -
           Number(this.average2) * 9
-        ).toFixed(2)
+        ).toFixed(4)
       );
     },
     sum() {
