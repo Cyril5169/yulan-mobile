@@ -1529,7 +1529,7 @@ export default {
 .single-curtain {
   height: 100vh;
   width: 375px;
-  overflow: scroll;
+  overflow: hidden;
   background-color: #f8f8f8;
   font-size: 13px;
 }
@@ -1542,6 +1542,8 @@ export default {
 .contain {
   margin-top: 50px;
   margin-bottom: 60px;
+  height: calc(100%- 110px);
+  overflow: scroll;
 }
 
 .select-this {
