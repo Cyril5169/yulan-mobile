@@ -318,11 +318,18 @@
                             <van-radio name="对开" checked-color="#89cb81" />
                           </van-cell>
                           <van-cell
-                            title="单开"
+                            title="左单开"
                             clickable
-                            @click="liantou.manufacturingInstructions = '单开'"
+                            @click="liantou.manufacturingInstructions = '左单开'"
                           >
-                            <van-radio name="单开" checked-color="#89cb81" />
+                            <van-radio name="左单开" checked-color="#89cb81" />
+                          </van-cell>
+                          <van-cell
+                            title="右单开"
+                            clickable
+                            @click="liantou.manufacturingInstructions = '右单开'"
+                          >
+                            <van-radio name="右单开" checked-color="#89cb81" />
                           </van-cell>
                           <van-cell
                             title="特殊开备注"
@@ -635,11 +642,18 @@
                             <van-radio name="对开" checked-color="#89cb81" />
                           </van-cell>
                           <van-cell
-                            title="单开"
+                            title="左单开"
                             clickable
-                            @click="liantou.manufacturingInstructions = '单开'"
+                            @click="liantou.manufacturingInstructions = '左单开'"
                           >
-                            <van-radio name="单开" checked-color="#89cb81" />
+                            <van-radio name="左单开" checked-color="#89cb81" />
+                          </van-cell>
+                          <van-cell
+                            title="右单开"
+                            clickable
+                            @click="liantou.manufacturingInstructions = '右单开'"
+                          >
+                            <van-radio name="右单开" checked-color="#89cb81" />
                           </van-cell>
                           <van-cell
                             title="特殊开备注"
@@ -1605,7 +1619,7 @@ export default {
               specification:
                 _curtainData[j].fixGrade === null
                   ? null
-                  : Math.round(_curtainData[j].fixGrade / 1000 * 100) / 100,
+                  : Math.round((_curtainData[j].fixGrade / 1000) * 100) / 100,
               illustrate: _curtainData[j].illustrate,
               deleteFlag: _curtainData[j].itemMLGY.deleteFlag,
               modifyFlag: _curtainData[j].itemMLGY.modifyFlag,
@@ -1640,7 +1654,7 @@ export default {
               specification:
                 _curtainData[j].fixGrade === null
                   ? null
-                  : Math.round(_curtainData[j].fixGrade / 1000 * 100) / 100,
+                  : Math.round((_curtainData[j].fixGrade / 1000) * 100) / 100,
               illustrate: _curtainData[j].illustrate,
               deleteFlag: _curtainData[j].itemMLGY.deleteFlag,
               modifyFlag: _curtainData[j].itemMLGY.modifyFlag,
@@ -1958,7 +1972,8 @@ export default {
             ? this.salPromotion.TYPE == 1
               ? this.salPromotion.DISCOUNT * row.price
               : this.salPromotion.PRICE
-            : row.price).mul(100)
+            : row.price
+          ).mul(100)
         ) / 100
       ).mul(row.dosage);
     }
