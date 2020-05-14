@@ -489,7 +489,7 @@ export default {
                   ? this.checkBoxModel[i].salPromotion.discount * sub
                   : this.checkBoxModel[i].salPromotion.price *
                     this.checkBoxModel[i].quantity
-                : sub) * 100
+                : sub).mul(100)
             ) / 100;
         } else {
           let sub =
@@ -504,7 +504,7 @@ export default {
                     this.checkBoxModel[i].width.mul(
                       this.checkBoxModel[i].height
                     )
-                : sub) * 100
+                : sub).mul(100)
             ) / 100;
         }
       }

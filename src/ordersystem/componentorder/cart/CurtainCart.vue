@@ -402,7 +402,7 @@ export default {
                 ? this.checkBoxModel[i].salPromotion.discount * sub
                 : this.checkBoxModel[i].salPromotion.price *
                   this.checkBoxModel[i].count
-              : sub) * 100
+              : sub).mul(100)
           ) / 100;
       }
       return this.total;

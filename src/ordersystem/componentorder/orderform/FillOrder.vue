@@ -756,7 +756,7 @@ export default {
       axios.post(priceUrl, this.huodprice).then(data => {
         for (var i = 0; i < this.allProduct.length; i++) {
           this.allProduct[i].activityPrice =
-            Math.round(data.data.data[i].promotion_cost * 100) / 100;
+            Math.round(data.data.data[i].promotion_cost.mul(100)) / 100;
           this.totalHdPrice += parseFloat(this.allProduct[i].activityPrice);
         }
         this.orderPrice = this.totalHdPrice;
@@ -783,7 +783,7 @@ export default {
         companyId: this.$store.getters.getCMId
       };
       axios.post(monUrl, mondata).then(val => {
-        if (val.data.data > Math.round(this.orderPrice * 100) / 100) {
+        if (val.data.data > Math.round(this.orderPrice.mul(100)) / 100) {
           this.onSubmitOrder();
         } else {
           Dialog.confirm({

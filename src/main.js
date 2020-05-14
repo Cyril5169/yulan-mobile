@@ -231,5 +231,5 @@ function operation(a, b, opType) {
 }
 Vue.filter('dosageFilter', data => {
   if (typeof (data) !== 'number') return '';
-  return Math.round(data * 100) / 100;
+  return Math.round(data.mul(100)) / 100;
 })
