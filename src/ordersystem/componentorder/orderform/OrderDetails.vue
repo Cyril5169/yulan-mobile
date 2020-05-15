@@ -150,7 +150,7 @@
           <span style="color:red;">修改后的价格以实际提交时为准</span>
         </div>
         <!-- 判断是否有出货详情 -->
-        <div class="good-item2" v-if="good.packDetailId!=0">
+        <div class="good-item2" v-if="good.packDetailId!=0 && (btnShow == undefined || btnShow == true)">
           <span class="edit-bank-xg" style="float:right;" @click="addRefundRecord(good)">售 后</span>
           <span class="edit-bank-ts" style="float:right;" @click="complaints_1(good)">投 诉</span>
         </div>
@@ -188,7 +188,7 @@
                 oneOrder.STATUS_ID == 0 ||
                 (oneOrder.STATUS_ID == 1 &&
                   oneOrder.CURTAIN_STATUS_ID !== '' &&
-                  oneOrder.CURTAIN_STATUS_ID == 0)"
+                  oneOrder.CURTAIN_STATUS_ID == 0) && (btnShow == undefined || btnShow == true)"
       >作废订单</span>
       <span
         @click="tjOrder"
@@ -216,7 +216,7 @@
     >
       <detailCurtain
         :curtainData="curtainData"
-        :tableStatus="tableStatus"
+        :tableStatus="btnShow == undefined? tableStatus : 0"
         @backclick="backclick"
         @getChangeData="getChangeData"
       ></detailCurtain>
@@ -299,7 +299,8 @@ export default {
       activeName: [],
       operationRecords: [],
       ORDER_NO: "",
-      getNo: []
+      getNo: [],
+      btnShow: this.$route.params.btnShow
     };
   },
   computed: {

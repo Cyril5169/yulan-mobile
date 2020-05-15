@@ -23,7 +23,7 @@
         </div>
         <table>
           <tr>
-            <td style="width:25%">创建时间:</td>
+            <td style="width:80px;">创建时间:</td>
             <td>{{singleBank.DATE_CRE|datatrans}}</td>
           </tr>
           <!-- <tr>
@@ -54,23 +54,23 @@
           <hr />
           <table style="width:100%;height:180px" class="table_2">
             <tr>
-              <td style="width:30%;text-align:left">客户名称:</td>
+              <td style="text-align:left">客户名称:</td>
               <td>{{customerInfo.CUSTOMER_NAME}}</td>
             </tr>
             <tr>
-              <td style="width:30%;text-align:left">联系人：</td>
+              <td style="text-align:left">联系人：</td>
               <td>{{customerInfo.LINKPERSON}}</td>
             </tr>
             <tr>
-              <td style="width:30%;text-align:left">电话：</td>
+              <td style="text-align:left">电话：</td>
               <td>{{customerInfo.TELEPHONE}}</td>
             </tr>
             <tr>
-              <td style="width:30%;text-align:left">地址：</td>
+              <td style="text-align:left">地址：</td>
               <td>{{customerInfo.POST_ADDRESS}}</td>
             </tr>
             <tr>
-              <td style="width:30%;text-align:left">优惠券余额：</td>
+              <td style="width:100px;text-align:left">优惠券余额：</td>
               <td v-if="couponData.length">
                 <span v-for="item of couponData" :key="item.index">
                   {{item.id}}: ￥{{item.rebateMoneyOver}}
@@ -82,7 +82,7 @@
               </td>
             </tr>
             <tr>
-              <td style="width:30%;text-align:left">客户余额：</td>
+              <td style="text-align:left">客户余额：</td>
               <td>￥{{moneySituation}}</td>
             </tr>
           </table>
@@ -264,7 +264,8 @@ export default {
         params: {
           state_id: val.STATUS_ID, //订单状态（（可传空串，空串表示全部状态） --1提交、12-接收、2--受理、3--作废、--5欠款待提交、--6欠款可提交、--7已完成）
           find: val.ORDER_NO, //查找订单号，可模糊查找（可传空串，获取全部）
-          from: "orderDetailsQuery"
+          from: "orderDetailsQuery",
+          btnShow: false
         }
       });
     },

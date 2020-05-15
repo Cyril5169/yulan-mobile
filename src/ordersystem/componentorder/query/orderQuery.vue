@@ -21,12 +21,11 @@
             placeholder="搜索客户"
             v-model="customer_filter"
             @input="customerFilter"
-            style="width:45%;height:37px;margin-left:5px"
             class="search_1"
           />
-          <van-button class="choose" @click="checkAll" style="margin-left:178px" round>全选</van-button>
+          <van-button class="choose" @click="checkAll" style="margin-left:150px" round>全选</van-button>
           <van-button class="choose" @click="toggleAll" round>反选</van-button>
-          <van-button class="button" @click="clear" round>重置</van-button>
+          <van-button class="choose" @click="clear" round>重置</van-button>
         </div>
         <div>
           <span>
@@ -435,7 +434,7 @@ export default {
     ksSet(time) {
       let current_year = time.getFullYear();
       let current_month = time.getMonth() + 1;
-      this.ksDataSet = current_year + "-" + current_month + "-" + "01";
+      this.ksDataSet = current_year + "/" + current_month + "/" + "01";
       this.ksData = new Date(this.ksDataSet);
     },
     //客户筛选
@@ -732,12 +731,12 @@ export default {
       this.tableHead3 = "";
       this.moneySum = 0;
       this.flag = 0;
-
-      let year = new Date(this.ksDataSet).getFullYear();
-      let endYear = new Date(this.jsDataSet).getFullYear();
-      let month = new Date(this.ksDataSet).getMonth() + 1;
+      
+      let year = new Date(this.ksDataSet.replace('-','/')).getFullYear();
+      let endYear = new Date(this.jsDataSet.replace('-','/')).getFullYear();
+      let month = new Date(this.ksDataSet.replace('-','/')).getMonth() + 1;
       month = month < 10 ? "0" + month : month;
-      let endMonth = new Date(this.jsDataSet).getMonth() + 1;
+      let endMonth = new Date(this.jsDataSet.replace('-','/')).getMonth() + 1;
       endMonth = endMonth < 10 ? "0" + endMonth : endMonth;
       if (this.customer.length == 0) {
         Toast({
@@ -1001,31 +1000,34 @@ export default {
 .search_1 {
   position: relative;
   top: 35px;
+  width:40%;
+  height:37px;
+  margin-left:5px;
 }
 .time {
   font-size: 14px;
   margin-top: 50px;
-  width: 25%;
+  width: 22%;
   height: 25px;
   margin-left: 5px;
   text-align: left;
   padding-left: 17px;
   background-image: url("../../assetsorder/time-zk.png");
   background-repeat: no-repeat;
-  background-position-x: 90px;
+  background-position-x: 80px;
   background-position-y: 2vw;
   background-size: 14px;
 }
 .time_1 {
   font-size: 14px;
-  width: 25%;
+  width: 22%;
   height: 25px;
   margin-left: 5px;
   text-align: left;
   padding-left: 20px;
   background-image: url("../../assetsorder/time-zk.png");
   background-repeat: no-repeat;
-  background-position-x: 95px;
+  background-position-x: 85px;
   background-position-y: 2vw;
   background-size: 14px;
 }
@@ -1034,14 +1036,6 @@ export default {
   background: #8bc34a;
   height: 30px;
   line-height: 5px;
-  color: rgb(255, 255, 255);
-}
-.button {
-  font-size: 14px;
-  background: #8bc34a;
-  height: 31px;
-  text-align: center;
-  line-height: 4px;
   color: rgb(255, 255, 255);
 }
 .item_1 {

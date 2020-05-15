@@ -78,10 +78,10 @@
         </div>
         <div>
           <span class="left">问题描述：</span>
-          <span v-if="checkTable.NOTES.length<=35" class="right">{{checkTable.NOTES}}</span>
+          <span v-if="checkTable.NOTES && checkTable.NOTES.length<=35" class="right">{{checkTable.NOTES}}</span>
           <!-- <span v-if="getRealStrLength(checkTable.NOTES)<=35" class="right">{{checkTable.NOTES}}</span> -->
         </div>
-        <div v-if="checkTable.NOTES.length>35">
+        <div v-if="checkTable.NOTES && checkTable.NOTES.length>35">
         <!-- <div v-if="getRealStrLength(checkTable.NOTES)>35"> -->
           <span class="rightSpan">{{checkTable.NOTES}}</span>
         </div>
@@ -101,13 +101,13 @@
         </div>
         <div>
           <span class="left">初审意见：</span>
-          <span v-if="checkTable.FIRST_AUDITION.length<=35"  class="right">{{checkTable.FIRST_AUDITION}}</span>  
+          <span v-if="checkTable.FIRST_AUDITION && checkTable.FIRST_AUDITION.length<=35"  class="right">{{checkTable.FIRST_AUDITION}}</span>  
           <!-- <span
             v-if="getRealStrLength(checkTable.FIRST_AUDITION)<=35"
             class="right"
           >{{checkTable.FIRST_AUDITION}}</span> -->
         </div>
-        <div v-if="checkTable.FIRST_AUDITION.length>35">
+        <div v-if="checkTable.FIRST_AUDITION && checkTable.FIRST_AUDITION.length>35">
         <!-- <div v-if="getRealStrLength(checkTable.FIRST_AUDITION)>35"> -->
           <span class="rightSpan">{{checkTable.FIRST_AUDITION}}</span>
         </div>
@@ -134,7 +134,7 @@
             class="right"
           >{{checkTable.RETURN_ADDRESS}}</span> -->
         </div>
-        <div v-if="checkTable.RETURN_TYPE=='客户邮寄'&&checkTable.RETURN_ADDRESS.length>35">
+        <div v-if="checkTable.RETURN_TYPE=='客户邮寄'&&checkTable.RETURN_ADDRESS && checkTable.RETURN_ADDRESS.length>35">
         <!-- <div v-if="checkTable.RETURN_TYPE=='客户邮寄'&&getRealStrLength(checkTable.RETURN_ADDRESS)>35"> -->
           <span class="rightSpan">{{checkTable.RETURN_ADDRESS}}</span>
         </div>
@@ -178,10 +178,10 @@
           </div>
           <div>
             <span class="left">质量问题：</span>
-            <span v-if="item.P_NOTES.length<=35" class="right">{{item.P_NOTES}}</span>
+            <span v-if="item.P_NOTES && item.P_NOTES.length<=35" class="right">{{item.P_NOTES}}</span>
             <!-- <span v-if="getRealStrLength(item.P_NOTES)<=35" class="right">{{item.P_NOTES}}</span> -->
           </div>
-          <div v-if="item.P_NOTES.length>35">
+          <div v-if="item.P_NOTES && item.P_NOTES.length>35">
           <!-- <div v-if="getRealStrLength(item.P_NOTES)>35"> -->
             <span class="rightSpan">{{item.P_NOTES}}</span>
           </div>
@@ -441,6 +441,7 @@ export default {
 }
 .left {
   float: left;
+  font-weight: bold;
 }
 .right {
   float: right;

@@ -615,8 +615,7 @@ export default {
         name: "orderdetails",
         params: {
           state_id: this.statusExchange(this.orderLists[index].STATUS_ID), //订单状态（（可传空串，空串表示全部状态） --1提交、12-接收、2--受理、3--作废、--5欠款待提交、--6欠款可提交、--7已完成）
-          find: this.orderLists[index].ORDER_NO, //查找订单号，可模糊查找（可传空串，获取全部）
-          orderType: this.myTypeCode,
+          find: this.orderLists[index].ORDER_NO, //查找订单号，可模糊查找（可传空串，获取全部
           from: "myorder"
         }
       });
