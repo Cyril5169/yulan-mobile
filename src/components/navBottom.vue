@@ -122,6 +122,9 @@ export default {
   },
   mounted() {
     this.getTip();
+    this.$root.$on("refreshTip",()=>{
+      this.getTip();
+    })
   },
   activated() {
     this.getTip();

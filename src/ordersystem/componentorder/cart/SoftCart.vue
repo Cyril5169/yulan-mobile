@@ -375,6 +375,7 @@ export default {
           allData.soft = data;
           //添加到购物车列表全局变量
           this.$store.commit("setcart", allData);
+          this.$root.$emit("refreshTip");
           return data;
         })
         .then(cartdata => {
@@ -429,6 +430,8 @@ export default {
             this.checkGroupModel = [];
             this.checkBoxModel = [];
             this.thisGroup = "";
+            this.manageCompleted();
+            this.$root.$emit("refreshTip");
           }
         });
       }

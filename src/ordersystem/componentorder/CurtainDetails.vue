@@ -1706,6 +1706,10 @@ export default {
                 activeName: "/mycart/curtaincart"
               }
             });
+          } else {
+            Dialog.alert({
+              message: res.data.msg
+            });
           }
         });
       } else {
@@ -1731,6 +1735,10 @@ export default {
                   activeName: "/mycart/curtaincart"
                 }
               });
+            });
+          } else {
+            Dialog.alert({
+              message: res.data.msg
             });
           }
         });

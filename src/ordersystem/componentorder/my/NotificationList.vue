@@ -10,8 +10,14 @@
         :finished="finished"
         finished-text="没有更多了"
       >
-        <van-cell @click="onClick(item,index)" v-for="(item,index) in list" :key="item.ID" is-link center>
-          <van-icon slot="icon" name="volume-o" size="18px" :dot ="item.readFlag == 0" color="gray" />
+        <van-cell
+          @click="onClick(item,index)"
+          v-for="(item,index) in list"
+          :key="item.ID"
+          is-link
+          center
+        >
+          <van-icon slot="icon" name="volume-o" size="18px" :dot="item.readFlag == 0" color="gray" />
           <div slot="title" class="nt-cell">
             <span>{{item.TITLE}}</span>
           </div>
@@ -28,7 +34,7 @@
 <script>
 import top from "../../../components/Top";
 import { Popup, Toast, List, Cell, Icon } from "vant";
-import { getPageDataTable, GetById,InserFlag } from "@/api/notificationASP";
+import { getPageDataTable, GetById, InserFlag } from "@/api/notificationASP";
 
 export default {
   components: {
@@ -53,13 +59,22 @@ export default {
       TITLE: "",
       ID: null,
       showId: null,
-      selIndex:null
+      selIndex: null
     };
   },
   computed: {
     detail() {
-      if(this.CONTENT) this.CONTENT = this.CONTENT.replace(/\[ReplaceMark\]/g, this.fileCenterUrl)
-      return "<p style='font-weight:bold;font-size:17px;text-align:center;'>" + this.TITLE + "</p>" + this.CONTENT;
+      if (this.CONTENT)
+        this.CONTENT = this.CONTENT.replace(
+          /\[ReplaceMark\]/g,
+          this.fileCenterUrl
+        );
+      return (
+        "<p style='font-weight:bold;font-size:17px;text-align:center;'>" +
+        this.TITLE +
+        "</p>" +
+        this.CONTENT
+      );
     }
   },
   methods: {
@@ -84,8 +99,9 @@ export default {
             if (this.list.length >= res.count) {
               this.finished = true;
             }
+            this.$root.$emit("refreshTip");
           })
-          .catch(err => { });
+          .catch(err => {});
       }, 500);
     },
     onClick(e, index) {
@@ -101,7 +117,7 @@ export default {
     },
     notifyClose() {
       window.vTop = this.$refs.top;
-    },
+    }
   },
   created() {
     notificationlist = this;
@@ -118,28 +134,35 @@ export default {
       this.showId = this.$route.params.showId;
     }
   },
-  destroyed(){
+  destroyed() {
     notificationlist = null;
   },
-  watch:{
-    ID: function(val){
+  watch: {
+    ID: function(val) {
       var me = this;
-      GetById(val).then((res) => {
-        me.TITLE = res.data.TITLE;
-        me.CONTENT = res.data.CONTENT;
-        me.showNotification = true;
-      }).catch(err => {
-        me.TITLE = error;
-      })
+      GetById(val)
+        .then(res => {
+          me.TITLE = res.data.TITLE;
+          me.CONTENT = res.data.CONTENT;
+          me.showNotification = true;
+        })
+        .catch(err => {
+          me.TITLE = error;
+        });
     },
-    showNotification:function(val){
-        if(val){
-          //显示就标记为已读
-          InserFlag({ nid: this.showId, cid: this.$store.getters.getCId,accept:2 });
-          if(this.selIndex){
-            this.$set(this.list[this.selIndex],"readFlag", 1)
-          }
+    showNotification: function(val) {
+      if (val) {
+        //显示就标记为已读
+        InserFlag({
+          nid: this.showId,
+          cid: this.$store.getters.getCId,
+          accept: 2
+        });
+        this.$root.$emit("refreshTip");
+        if (this.selIndex) {
+          this.$set(this.list[this.selIndex], "readFlag", 1);
         }
+      }
     }
   }
 };
