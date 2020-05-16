@@ -757,7 +757,7 @@ export default {
         for (var i = 0; i < this.allProduct.length; i++) {
           this.allProduct[i].activityPrice =
             Math.round(data.data.data[i].promotion_cost.mul(100)) / 100;
-          this.totalHdPrice += parseFloat(this.allProduct[i].activityPrice);
+          this.totalHdPrice.add(parseFloat(this.allProduct[i].activityPrice));
         }
         this.orderPrice = this.totalHdPrice;
       });
