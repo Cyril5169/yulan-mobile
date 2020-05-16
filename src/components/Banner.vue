@@ -118,6 +118,15 @@ p {
   left: 17px;
   top: 18px;
 }
+/* 通过伪元素扩大可点击范围 */
+.left-arrow::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+}
 .option-img {
   background-image: url("../assets/option.png");
   width: 30px;

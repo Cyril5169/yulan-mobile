@@ -606,6 +606,15 @@ export default {
   background-repeat: no-repeat;
   background-size: contain;
 }
+/* 通过伪元素扩大可点击范围 */
+.img::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+}
 .searchtop {
   height: 50px;
 }
