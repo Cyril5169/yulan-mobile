@@ -395,6 +395,7 @@ export default {
 
 .coupon-more span {
   margin: 0 10px;
+  color:#1989fa;
 }
 .youhuiquan {
   width: 100%;

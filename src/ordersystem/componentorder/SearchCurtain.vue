@@ -17,11 +17,11 @@
       <div class="single-wall" v-for="(singleCurtain,index) in allCurtain" :key="index">
         <table width="100%">
           <tr>
-            <th width="35%">窗帘款式：</th>
+            <th>窗帘款式：</th>
             <td>{{singleCurtain.itemNo}}</td>
           </tr>
           <tr>
-            <th>成品宽*成品高：</th>
+            <th width="70px">成品宽*高：</th>
             <td>
               <input
                 v-model="singleCurtain.width"
@@ -55,6 +55,7 @@
                 type="number"
                 class="curtain-width"
                 placeholder="0.00"
+                @change="checkNeed($event,index)"
                 oninput="value=value.replace(/[^\d.]/g,'')
                                 .replace(/^\./g, '').replace(/\.{2,}/g, '.')
                                 .replace('.', '$#$').replace(/\./g, '')
@@ -62,7 +63,7 @@
                                 .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
               />
             </td>
-            <td class="need-head">
+            <td width="60px;" class="need-head">
               <van-checkbox v-model="singleCurtain.isNeed" checked-color="#89cb81">需要</van-checkbox>
             </td>
           </tr>
@@ -526,6 +527,13 @@ export default {
     },
     noShowMul(index) {
       this.allCurtain[index].showMultiple = false;
+    },
+    checkNeed(e, index) {
+      if (this.allCurtain[index].lwbWidth) {
+        this.$set(this.$data.allCurtain[index], "isNeed", true);
+      } else {
+        this.$set(this.$data.allCurtain[index], "isNeed", false);
+      }
     }
   },
   created() {
@@ -614,7 +622,6 @@ export default {
   line-height: 35px;
   border-bottom: 1px solid rgb(250, 255, 248);
 }
-
 .single-wall {
   position: relative;
   font-size: 13px;
@@ -624,12 +631,15 @@ export default {
   box-shadow: 0 4px 8px 0 rgba(19, 19, 19, 0.2),
     0 6px 20px 0 rgba(12, 12, 12, 0.19);
 }
+.single-wall tr {
+  height: 25px;
+}
 .single-wall th,
 .single-wall td {
   text-align: left;
 }
 .curtain-width {
-  width: 50px;
+  width: 40px;
   border: 1px solid #666;
 }
 .select-multiple {
