@@ -3,31 +3,28 @@
     <top :top="set" :from="from"></top>
     <div class="single-msg">
       <ul class="lists">
-        <!-- <li>
-          <span>类别： {{wallMegs.productType}}</span>
-        </li>-->
-        <li>型号： {{wallMegs.itemNo}}</li>
-        <li>名称： {{wallMegs.note}}</li>
-        <template v-if="wallMegs.fixType">
-          <li>风格： {{wallMegs.fixType | fixTypeFilter}}</li>
+        <li>型号： {{wallMegs.ITEM_NO}}</li>
+        <li>名称： {{wallMegs.NOTE}}</li>
+        <template v-if="wallMegs.FIX_TYPE">
+          <li>风格： {{wallMegs.FIX_TYPE | fixTypeFilter}}</li>
         </template>
         <li
-          v-if="wallMegs.fixType =='01' || wallMegs.fixType =='02'"
-        >尺寸： {{wallMegs.fixGrade/1000 + (wallMegs.unit?wallMegs.unit:'米')}}</li>
-        <li v-else-if="wallMegs.rzGrade">尺寸： {{wallMegs.rzGrade}}</li>
+          v-if="wallMegs.FIX_TYPE =='01' || wallMegs.FIX_TYPE =='02'"
+        >尺寸： {{wallMegs.FIX_GRADE/1000 + (wallMegs.UNIT_NAME?wallMegs.UNIT_NAME:'米')}}</li>
+        <li v-else-if="wallMegs.RZ_GRADE">尺寸： {{wallMegs.RZ_GRADE}}</li>
         <li v-else>尺寸：--</li>
-        <li>品牌： {{wallMegs.productBrand}}</li>
-        <li v-if="wallMegs.minimumPurchase>0">起购数量： {{wallMegs.minimumPurchase}}</li>
+        <li>品牌： {{wallMegs.BRAND_NAME}}</li>
+        <li v-if="wallMegs.MINIMUM_PURCHASE>0">起购数量： {{wallMegs.MINIMUM_PURCHASE}}</li>
         <li class="order-num">
           订购数量：
           <div class="input-num-right" v-if="dwType">
             <input class="input-num" v-model.number="sum" type="number" @input="oninput" />
-            <span>({{wallMegs.unit}})</span>
+            <span>({{wallMegs.UNIT_NAME}})</span>
           </div>
           <div class="input-num-right" v-if="!dwType">
             <input class="input-num" type="number" placeholder="宽" />╳
             <input class="input-num" type="number" placeholder="高" />
-            <span>({{wallMegs.unit}})</span>
+            <span>({{wallMegs.UNIT_NAME}})</span>
           </div>
         </li>
         <li class="activit" @click="selectHd">
@@ -81,25 +78,14 @@
         <span @click="fh">返回</span>
       </div>
     </van-popup>
-    <!--库存判断提示2-->
-    <!--<van-popup-->
-    <!--v-model="showKcNext2"-->
-    <!--class="kc-next-content"-->
-    <!--:close-on-click-overlay="false"-->
-    <!--&gt;-->
-    <!--<div class="kc-next-title">此型号库存不满足需求量</div>-->
-    <!--<div class="kc-next-btm2">-->
-    <!--<span @click="dsc">等生产</span>-->
-    <!--<span @click="fh">返回</span>-->
-    <!--</div>-->
-    <!--</van-popup>-->
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import top from "../../components/Top";
-import { getItemById, GetPromotionByItem } from "@/api/orderListASP";
+import { GetPromotionByItem } from "@/api/orderListASP";
+import { GetItemDetailById } from "@/api/itemInfoASP";
 import {
   Switch,
   Stepper,
@@ -190,7 +176,7 @@ export default {
   },
   methods: {
     toCart() {
-      if (this.wallMegs.unit == "平方米") {
+      if (this.wallMegs.UNIT_NAME == "平方米") {
         if (
           this.heightVal == "" ||
           this.widthVal == "" ||
@@ -203,13 +189,13 @@ export default {
           });
           return;
         }
-        if (this.heightVal * this.widthVal < this.wallMegs.minimumPurchase) {
+        if (this.heightVal * this.widthVal < this.wallMegs.MINIMUM_PURCHASE) {
           Toast({
             duration: 2000,
             message:
               "本产品最小起购数量为" +
-              this.wallMegs.minimumPurchase +
-              this.wallMegs.unit
+              this.wallMegs.MINIMUM_PURCHASE +
+              this.wallMegs.UNIT_NAME
           });
           return;
         }
@@ -221,13 +207,13 @@ export default {
           });
           return;
         }
-        if (this.sum < this.wallMegs.minimumPurchase) {
+        if (this.sum < this.wallMegs.MINIMUM_PURCHASE) {
           Toast({
             duration: 2000,
             message:
               "本产品最小起购数量为" +
-              this.wallMegs.minimumPurchase +
-              this.wallMegs.unit
+              this.wallMegs.MINIMUM_PURCHASE +
+              this.wallMegs.UNIT_NAME
           });
           return;
         }
@@ -299,7 +285,7 @@ export default {
           customer_type: this.$store.getters.getCtype, //客户类型
           CID: this.$store.getters.getCId, //客户ID
           // "CID": "C01613",           //客户ID
-          itemNO: this.wallMegs.itemNo, //商品编号
+          itemNO: this.wallMegs.ITEM_NO, //商品编号
           commodityType: "soft", //商品类型：curtain/wallpaper/soft
           activityID: this.hdid, //活动ID，对应salPromotion中的orderType字段的值
           quantity: this.sum, //数量
@@ -342,18 +328,18 @@ export default {
       if (this.myActivity == "未选择活动" && this.allHd.length == 0) {
         this.myActivity = "此产品不参与活动";
       }
-      this.showMoreHd = true;//有过期的还可以选择
+      this.showMoreHd = true; //有过期的还可以选择
     },
     //加入购物车时的库存判断
     kuCunjudge() {
       let url = this.orderBaseUrl + "/item/judgeStockShow.do";
-      if (this.wallMegs.unit == "平方米") {
+      if (this.wallMegs.UNIT_NAME == "平方米") {
         this.needNum = (this.heightVal * this.widthVal).toString();
       } else {
         this.needNum = this.sum;
       }
       let data2 = {
-        itemNo: this.wallMegs.itemNo, //产品型号
+        itemNo: this.wallMegs.ITEM_NO, //产品型号
         stockShowNum: this.needNum //需要的库存
       };
       axios.post(url, data2).then(data => {
@@ -422,32 +408,22 @@ export default {
       }
     },
     //获取活动
-    getHd(value) {
-      // let hdUrl =
-      //   this.orderBaseUrl +
-      //   "/salPromotion/selectSalPromotion.do?" +
-      //   "CID=" +
-      //   this.$store.getters.getCId +
-      //   "&customerType=" +
-      //   this.$store.getters.getCtype +
-      //   "&itemNo=" +
-      //   value.itemNo +
-      //   "&itemVersion=" +
-      //   value.itemVersion +
-      //   "&productType=" +
-      //   value.productType +
-      //   "&productBrand=" +
-      //   value.productBrand;
-      // axios.get(hdUrl).then(data => {
-      getItemById({ itemNo: value.itemNo }).then(res => {
-        this.wallMegs.minimumPurchase = res.data.MINIMUM_PURCHASE;
+    getHd(itemNo) {
+      GetItemDetailById({ itemNo: itemNo }).then(res => {
+        console.log(res);
+        this.wallMegs = res.data[0];
+        if (this.wallMegs.UNIT_NAME == "平方米") {
+          this.dwType = false;
+        } else {
+          this.dwType = true;
+        }
         GetPromotionByItem({
           cid: this.$store.getters.getCId,
           customerType: this.$store.getters.getCtype,
-          itemNo: value.itemNo,
-          itemVersion: res.data.ITEM_VERSION,
-          productType: res.data.PRODUCT_TYPE,
-          productBrand: res.data.PRODUCT_BRAND
+          itemNo: itemNo,
+          itemVersion: this.wallMegs.ITEM_VERSION,
+          productType: this.wallMegs.PRODUCT_TYPE,
+          productBrand: this.wallMegs.PRODUCT_BRAND
         }).then(data => {
           this.allHd = data.data;
           if (this.allHd.length == 0) {
@@ -495,34 +471,6 @@ export default {
     comfirmMakeDetails() {
       this.showSelect = false;
     },
-    //获取产品信息
-    getProduct() {
-      let wallUrl = this.orderBaseUrl + "/item/getSoftInfoSingle.do";
-      let data = {
-        itemType: this.$route.params.itemType,
-        cid: this.$store.getters.getCId,
-        // "cid":"C01613",
-        itemNo: this.$route.params.itemNo, //模糊查询内容
-        limit: 1, //一页限制条数
-        page: 1 //第几页
-      };
-      axios
-        .post(wallUrl, data)
-        .then(data => {
-          this.wallMegs = data.data.data[0];
-          //单位
-          if (this.wallMegs.unit == "平方米") {
-            this.dwType = false;
-          } else {
-            this.dwType = true;
-          }
-          //这里面axios的this不指向vue,所以在使用axios是最好使用es6箭头函数
-          return this.wallMegs;
-        })
-        .then(value => {
-          this.getHd(value);
-        });
-    },
     hdname(orderName, orderType) {
       return orderName + "(" + orderType + ")";
     },
@@ -541,7 +489,7 @@ export default {
   },
   created() {
     this.from = this.$route.params.from;
-    this.getProduct();
+    this.getHd(this.$route.params.itemNo);
   },
   mounted() {
     // window.onresize监听页面高度的变化

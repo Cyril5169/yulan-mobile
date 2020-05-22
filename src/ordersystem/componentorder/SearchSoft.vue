@@ -31,44 +31,40 @@
         <div
           class="single-wall"
           v-for="(mliao,index) in mliaos"
-          @click="mliaoDetails(mliao.itemNo)"
+          @click="mliaoDetails(mliao.ITEM_NO)"
           :key="index"
         >
-          <div class="wall-title">{{mliao.note}}</div>
+          <div class="wall-title">{{mliao.NOTE}}</div>
           <table>
             <tr>
               <th>型号：</th>
-              <td>{{mliao.itemNo}}</td>
+              <td>{{mliao.ITEM_NO}}</td>
             </tr>
             <tr>
               <th>名称：</th>
-              <td>{{mliao.note}}</td>
+              <td>{{mliao.NOTE}}</td>
             </tr>
-            <tr v-if="mliao.fixType">
+            <tr v-if="mliao.FIX_TYPE">
               <th>风格：</th>
-              <td>{{mliao.fixType | fixTypeFilter}}</td>
+              <td>{{mliao.FIX_TYPE | fixTypeFilter}}</td>
             </tr>
             <tr>
               <th>尺寸：</th>
-              <td v-if="mliao.fixType =='01' || mliao.fixType =='02'">{{mliao.fixGrade/1000 + (mliao.unit?mliao.unit:'米')}}</td>
-              <td v-else-if="mliao.rzGrade">{{mliao.rzGrade}}</td>
+              <td
+                v-if="mliao.FIX_TYPE =='01' || mliao.FIX_TYPE =='02'"
+              >{{mliao.FIX_GRADE/1000 + (mliao.UNIT_NAME?mliao.UNIT_NAME:'米')}}</td>
+              <td v-else-if="mliao.RZ_GRADE">{{mliao.RZ_GRADE}}</td>
               <td v-else>--</td>
             </tr>
             <tr>
               <th>单位：</th>
-              <td>{{mliao.unit}}</td>
+              <td>{{mliao.UNIT_NAME}}</td>
             </tr>
-            <!--后台在显示列表的时候这个字段值为null，但是在商品详情页面这个字段有值-->
-            <!--<tr>-->
-            <!--<th>品牌：</th>-->
-            <!--<td>{{mliao.productBrand}}</td>-->
-            <!--<td class="show-kucun"><span @click.stop="checkKucun">查看库存</span></td>-->
-            <!--</tr>-->
           </table>
-          <span class="show-kucun" @click.stop="checkKucun(mliao.itemNo)">查看库存</span>
+          <span class="show-kucun" @click.stop="checkKucun(mliao.ITEM_NO)">查看库存</span>
           <iframe
-            :src="storeUrl(mliao.itemNo)"
-            v-if="mliao.itemNo == currentItemNo"
+            :src="storeUrl(mliao.ITEM_NO)"
+            v-if="mliao.ITEM_NO == currentItemNo"
             style="display: none"
             frameborder="0"
           ></iframe>
@@ -102,21 +98,67 @@
 import axios from "axios";
 import { Search, Toast, ActionSheet, List, Popup } from "vant";
 import "../assetsorder/actionsheet.css";
+import { GetSoftByProductType } from "@/api/itemInfoASP";
 
 export default {
   name: "",
   data() {
     return {
-      types:[
-        {text: "面料", itemType: "ML", searchText: "请输入面料型号", isActive:false},
-        {text: "花边", itemType: "XHB", searchText: "请输入花边型号", isActive:true},
-        {text: "挂袋/配件包", itemType: "PJB", searchText: "请输入挂袋/配件包型号", isActive:false},
-        {text: "抱枕", itemType: "BZ", searchText: "请输入抱枕型号", isActive:false},
-        {text: "装饰画", itemType: "GH", searchText: "请输入装饰画型号", isActive:false},
-        {text: "成品帘", itemType: "TC", searchText: "请输入成品帘型号", isActive:false},
-        {text: "其他", itemType: "other", searchText: "请输入其他软装型号", isActive:false},
+      types: [
+        {
+          text: "面料",
+          itemType: "ML",
+          searchText: "请输入面料型号",
+          isActive: false
+        },
+        {
+          text: "花边",
+          itemType: "XHB",
+          searchText: "请输入花边型号",
+          isActive: true
+        },
+        {
+          text: "挂袋/配件包",
+          itemType: "PJB",
+          searchText: "请输入挂袋/配件包型号",
+          isActive: false
+        },
+        {
+          text: "抱枕",
+          itemType: "BZ",
+          searchText: "请输入抱枕型号",
+          isActive: false
+        },
+        {
+          text: "装饰画",
+          itemType: "GH",
+          searchText: "请输入装饰画型号",
+          isActive: false
+        },
+        {
+          text: "成品帘",
+          itemType: "TC",
+          searchText: "请输入成品帘型号",
+          isActive: false
+        },
+        {
+          text: "床品",
+          itemType: "CP",
+          searchText: "请输入床品型号",
+          isActive: false
+        },
+        {
+          text: "其他",
+          itemType: "OTHER",
+          searchText: "请输入其他软装型号",
+          isActive: false
+        }
       ],
-      activeType: {text: "花边", itemType: "XHB", searchText: "请输入花边型号"},
+      activeType: {
+        text: "花边",
+        itemType: "XHB",
+        searchText: "请输入花边型号"
+      },
       inputValue: "",
       //底部导航栏样式切换
       myRoute: "customer",
@@ -126,7 +168,7 @@ export default {
       finished: false,
       finishedText: "加载完毕",
       loadingText: "加载中...",
-      currentItemNo: '',
+      currentItemNo: "",
       //搜索框输入值
       searchvalue: "",
       //显示库存
@@ -156,9 +198,9 @@ export default {
     [List.name]: List,
     [Popup.name]: Popup
   },
-  filters:{
-    fixTypeFilter(value){
-      switch(value){
+  filters: {
+    fixTypeFilter(value) {
+      switch (value) {
         case "01":
           return "定宽";
         case "02":
@@ -167,12 +209,12 @@ export default {
     }
   },
   methods: {
-    typeClick(type,e){
-      this.activeType=type;
+    typeClick(type, e) {
+      this.activeType = type;
       this.types.forEach(item => {
-        item.isActive=false;
+        item.isActive = false;
       });
-      this.activeType.isActive=true;
+      this.activeType.isActive = true;
       this.searchvalue = "";
       this.onSearch();
     },
@@ -183,7 +225,7 @@ export default {
       var distance = this.scrollTop;
       var dParams = 30;
       var time = 1;
-      me.interval = setInterval(function () {
+      me.interval = setInterval(function() {
         dParams += 30 * time;
         time++;
         distance = distance > 0 ? distance : 0;
@@ -202,50 +244,39 @@ export default {
     },
     onLoad() {
       setTimeout(() => {
-        let url = this.orderBaseUrl + "/item/getSoftInfoSingle.do";
         this.currentPage = this.currentPage + 1;
-        let data = {
-          itemType: this.activeType.itemType,
-          cid: this.$store.getters.getCId,
-          itemNo: this.searchvalue.toUpperCase(), //模糊查询内容
-          limit: 10, //一页限制条数
-          page: this.currentPage //第几页
-        };
         if (this.mliaos.length > 0) {
           this.loadingText =
             "加载中，共" +
-            this.mliaos[0].total +
+            this.totalLists +
             "项，已加载" +
             this.mliaos.length +
             "项";
         }
-        axios.post(url, data).then(data => {
-          if (data.data.code == 1) {
-            this.mliaos = [];
-            this.totalPage = 1;
-            Toast({
-              duration: 2000,
-              message: "暂无查询结果"
-            });
-            this.finished = true;
-          } else {
-            data.data.data.forEach(item => {
-              this.mliaos.push(item);
-            });
-            //总页数
-            if (this.mliaos.length) {
-              this.totalPage = Math.ceil(this.mliaos[0].total / 10);
-              // 数据全部加载完成
-              if (this.currentPage >= this.totalPage) {
-                this.finished = true;
-                this.finishedText = "加载完毕，总记录数" + this.mliaos[0].total;
-              } else {
-                this.finished = false;
-              }
+        GetSoftByProductType({
+          productType: this.activeType.itemType,
+          keywords: this.searchvalue.toUpperCase(),
+          cid: this.$store.getters.getCId,
+          page: this.currentPage,
+          limit: 10
+        }).then(res => {
+          res.data.forEach(item => {
+            this.mliaos.push(item);
+          });
+          //总页数
+          if (this.mliaos.length) {
+            this.totalPage = Math.ceil(res.count / 10);
+            this.totalLists = res.count;
+            // 数据全部加载完成
+            if (this.currentPage >= this.totalPage) {
+              this.finished = true;
+              this.finishedText = "加载完毕，总记录数" + res.count;
+            } else {
+              this.finished = false;
             }
-            // 加载状态结束
-            this.loading = false;
           }
+          // 加载状态结束
+          this.loading = false;
         });
       }, 500);
     },
@@ -273,21 +304,7 @@ export default {
       this.$router.push({
         path: "/shopstore"
       });
-    },
-    // 操作指定name的路由的元信息
-    // changeKeepAlive(parentName, name, keepAlive) {
-    //   this.$router.options.routes.map((item) => {
-    //     if (item.name === parentName) {
-    //       item.children.map((a) => {
-    //         if (a.name === name) {
-    //           if (!a.meta)
-    //             a.meta = {};
-    //           a.meta.keepAlive = keepAlive;
-    //         }
-    //       })
-    //     }
-    //   })
-    // },
+    }
   },
   mounted() {
     window.vTop = this;
@@ -300,9 +317,8 @@ export default {
     const self = this;
     window.addEventListener(
       "message",
-      function (e) {
-        if (e.origin && e.origin != "http://www.luxlano.com")
-          return;
+      function(e) {
+        if (e.origin && e.origin != "http://www.luxlano.com") return;
         self.showKucun = true;
         self.singleKuCun = [];
         if (e.data.indexOf("，") != -1) {
@@ -316,7 +332,7 @@ export default {
     //监控滚动条
     window.addEventListener(
       "scroll",
-      function (e) {
+      function(e) {
         self.scrollTop = e.target.scrollTop;
         self.scrollTarget = e.target;
         if (e.target.scrollTop > 100) {
@@ -328,10 +344,10 @@ export default {
       true
     );
   },
-  activated(){
+  activated() {
     window.vTop = this;
     //恢复滚动条位置
-    if(this.scrollTop>0){
+    if (this.scrollTop > 0) {
       this.scrollTarget.scrollTop = this.scrollTop;
     }
   },
@@ -339,13 +355,12 @@ export default {
     if (window.vTop == this) window.vTop = null;
   },
   beforeRouteLeave(to, from, next) {
-    this.scrollTop
-    next()
+    this.scrollTop;
+    next();
   },
   watch: {
-    $route(val, oldVal) {
-    },
-    showHeight: function () {
+    $route(val, oldVal) {},
+    showHeight: function() {
       if (this.docmHeight > this.showHeight) {
         this.hidshow = false;
       } else {
