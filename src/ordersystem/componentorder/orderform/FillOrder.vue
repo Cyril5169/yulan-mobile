@@ -757,7 +757,9 @@ export default {
         for (var i = 0; i < this.allProduct.length; i++) {
           this.allProduct[i].activityPrice =
             Math.round(data.data.data[i].promotion_cost.mul(100)) / 100;
-          this.totalHdPrice.add(parseFloat(this.allProduct[i].activityPrice));
+          this.totalHdPrice = this.totalHdPrice.add(
+            parseFloat(this.allProduct[i].activityPrice)
+          );
         }
         this.orderPrice = this.totalHdPrice;
       });
@@ -988,7 +990,7 @@ export default {
         },
         ctm_orders: this.productList,
         cartItemIDs: deleteArray,
-        device: window.plus? window.plus.os.name : "app"
+        device: window.plus ? window.plus.os.name : "app"
       };
       if (this.isX) {
         //窗帘提交
