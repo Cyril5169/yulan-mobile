@@ -21,7 +21,7 @@ function UpdateVersion(ischeck) {
   var showLoading;
   plus.runtime.getProperty(plus.runtime.appid, function(inf) {
     console.log("当前版本号为:" + inf.version);
-    if (plus.os.name == "iOS") {
+    if (plus.os.name.toLowerCase() == "ios") {
       mui.ajax(
         "http://itunes.apple.com/cn/lookup?id=1500678970&v=" +
           Date.parse(new Date()),
@@ -38,7 +38,7 @@ function UpdateVersion(ischeck) {
                 "检查更新",
                 ["确定"],
                 function(e) {
-                  https: appUrl =
+                  let appUrl =
                     "itms-apps://itunes.apple.com/cn/app/id1500678970?mt=8";
                   plus.runtime.openURL(appUrl);
                   plus.runtime.quit(); //退出应用
