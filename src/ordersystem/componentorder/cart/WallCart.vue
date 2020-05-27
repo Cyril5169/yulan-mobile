@@ -42,6 +42,10 @@
                   <td>{{ product.item.itemNo }}</td>
                 </tr>
                 <tr>
+                  <th>版本：</th>
+                  <td>{{ product.item.productversionName }}</td>
+                </tr>
+                <tr>
                   <th>活动：</th>
                   <td>
                     <span style="color: red;" v-if="product.activityEffective === false">(过期活动)</span>
@@ -188,7 +192,6 @@ export default {
     wallDetails(index, inndex) {
       //获取版本号
       let olditemNo = this.cartlist[index].commodities[inndex].item.oldItemNo;
-      console.log(this.cartlist[index].commodities[inndex]);
       this.$router.push({
         name: "walldetails",
         params: {

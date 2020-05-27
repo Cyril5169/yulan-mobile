@@ -41,10 +41,10 @@
                   <th nowrap="nowrap">型号：</th>
                   <td>{{ product.item.itemNo }}</td>
                 </tr>
-                <!--<tr>-->
-                <!--<th>名称：</th>-->
-                <!--<td>{{product.item.itemVersion }}</td>-->
-                <!--</tr>-->
+                <tr>
+                  <th>版本：</th>
+                  <td>{{ product.item.productversionName }}</td>
+                </tr>
                 <tr>
                   <th>活动：</th>
                   <td>

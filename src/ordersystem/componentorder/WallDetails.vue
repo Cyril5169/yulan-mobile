@@ -6,7 +6,7 @@
         <li>型号： {{wallMegs.itemNo}}</li>
         <li>版本： {{wallMegs.itemVersion}}</li>
         <li>
-          <span>名称： {{wallMegs.version}}</span>
+          <span>类别： {{wallMegs.version}}</span>
         </li>
         <li>品牌： {{wallMegs.productBrand}}</li>
         <li v-if="!AddOrNot&&customerType =='10'" class="order-num">
