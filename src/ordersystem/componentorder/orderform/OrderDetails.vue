@@ -150,9 +150,20 @@
           <span style="color:red;">修改后的价格以实际提交时为准</span>
         </div>
         <!-- 判断是否有出货详情 -->
-        <div class="good-item2" v-if="good.packDetailId!=0 && (btnShow == undefined || btnShow == true)">
-          <span class="edit-bank-xg" style="float:right;" @click="addRefundRecord(good)">售 后</span>
-          <span class="edit-bank-ts" style="float:right;" @click="complaints_1(good)">投 诉</span>
+        <div class="good-item2" v-if="good.packDetailId!=0">
+          <span
+            class="edit-bank-xg"
+            style="float:right;"
+            @click="addRefundRecord(good)"
+            v-if="btnShow == undefined || btnShow == true"
+          >售 后</span>
+          <span
+            class="edit-bank-ts"
+            style="float:right;"
+            @click="complaints_1(good)"
+            v-if="btnShow == undefined || btnShow == true"
+          >投 诉</span>
+          <span class="edit-bank-ch" style="float:right;" @click="shipmentDetail(good)">出货详情</span>
         </div>
         <!-- <div >
           <div>
@@ -222,6 +233,69 @@
       ></detailCurtain>
     </van-popup>
     <van-image-preview v-model="showPic" :images="imgSrc"></van-image-preview>
+
+    <van-popup v-model="showShipment" closeable style="width:80%">
+      <div class="shipment-title">
+        <span>出货详情</span>
+      </div>
+      <div style="width:95%;height:100%;margin:35px 5px 10px 5px;">
+        <table
+          style="width:100%;"
+          border="1"
+          cellspacing="0"
+          v-for="(item,index) in shipData"
+          :key="index"
+        >
+          <tr>
+            <td width="40%">提货单号：</td>
+            <td>{{item.SALE_NO}}</td>
+          </tr>
+          <tr>
+            <td>数量：</td>
+            <td>{{item.QTY_DELIVER}}</td>
+          </tr>
+          <tr>
+            <td>批号：</td>
+            <td>{{item.BATCH_NO}}</td>
+          </tr>
+          <tr>
+            <td>出货情况：</td>
+            <td v-if="item.DATE_OUT_STOCK==''||item.DATE_OUT_STOCK=='9999/12/31 00:00:00'">代发货</td>
+            <td v-else>已发货</td>
+          </tr>
+          <tr>
+            <td>发货日期：</td>
+            <td>{{item.DATE_OUT_STOCK}}</td>
+          </tr>
+          <tr>
+            <td>加收物流费：</td>
+            <td>{{item.FREIGHT}}</td>
+          </tr>
+          <tr>
+            <td>物流公司：</td>
+            <td>{{item.TRANSCOMPANY}}</td>
+          </tr>
+          <tr>
+            <td>物流单号：</td>
+            <td>
+              <a href="javascript:void(0);" @click="transDetail(item.TRANS_ID)">{{item.TRANS_ID}}</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </van-popup>
+    <van-popup v-model="showTrans" closeable style="width:90%;height:85%;overflow:hidden;">
+      <div
+        style="position: absolute;top:0;left:0;right:18px;height:30px;line-height:30px;vertical-align:center;z-index:10000;background:#3481ed;color:#fff"
+      >
+        <span>物流详情</span>
+      </div>
+      <iframe
+        :src="transUrl"
+        style="position: absolute;top:0;left:0;width:100%;height:100%;z-index:9999;"
+        frameborder="0"
+      ></iframe>
+    </van-popup>
   </div>
 </template>
 
@@ -300,7 +374,11 @@ export default {
       operationRecords: [],
       ORDER_NO: "",
       getNo: [],
-      btnShow: this.$route.params.btnShow
+      btnShow: this.$route.params.btnShow,
+      showShipment: false,
+      shipData: [],
+      showTrans: false,
+      transUrl: "https://m.kuaidi100.com/result.jsp?nu=038464072671"
     };
   },
   computed: {
@@ -754,6 +832,22 @@ export default {
         if (this.oneOrder.CURTAIN_STATUS_ID == 1) this.tableStatus = 1;
         else this.tableStatus = 0;
       }
+    },
+    //出货详情
+    shipmentDetail(item) {
+      getPackDetailInfo({
+        orderNo: item.ORDER_NO,
+        lineNo: item.LINE_NO,
+        itemNo: item.ITEM_NO
+      }).then(res => {
+        this.shipData = res.data[0].packDetails;
+        this.showShipment = true;
+      });
+    },
+    //物流详情
+    transDetail(trans_id) {
+      this.transUrl = "https://m.kuaidi100.com/result.jsp?nu=" + trans_id;
+      this.showTrans = true;
     }
   },
   created() {
@@ -1026,9 +1120,6 @@ export default {
   text-align: center;
   background: #f05454;
   color: white;
-  position: relative;
-  top: 0px;
-  right: 0px;
 }
 .edit-bank-ts {
   width: 45px;
@@ -1038,8 +1129,16 @@ export default {
   text-align: center;
   background: #278be9;
   color: white;
-  position: relative;
-  top: 0px;
-  right: 12px;
+  margin-right: 12px;
+}
+.edit-bank-ch {
+  border-radius: 3px;
+  height: 22px;
+  line-height: 22px;
+  text-align: center;
+  background: #278be9;
+  color: white;
+  margin-right: 12px;
+  padding: 0 5px;
 }
 </style>

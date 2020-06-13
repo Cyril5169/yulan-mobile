@@ -19,7 +19,7 @@
     </div>
     <div class="all-bank">
       <!-- 列表 -->
-      <div class="single-bank" v-for="imageStoreList in imageStoreData">
+      <div class="single-bank" v-for="(imageStoreList,index) in imageStoreData" :key="index">
         <div class="single-title">
           <span class="single-title-left">申请单号：{{imageStoreList.ID}}</span>
           <span class="single-title-right">{{imageStoreList.STATUS|transStatus}}</span>
@@ -30,7 +30,7 @@
             <td>{{imageStoreList.CREATER}}</td>
           </tr>
           <tr>
-            <td >申请时间:</td>
+            <td>申请时间:</td>
             <td>{{imageStoreList.DATE_CRE|datatrans}}</td>
           </tr>
           <tr>
@@ -51,8 +51,10 @@
           </tr>
           <tr>
             <td>上门测量:</td>
-            <td><span v-if="imageStoreList.MEASURE == 1">是</span>
-            <span v-else>否</span></td>
+            <td>
+              <span v-if="imageStoreList.MEASURE == 1">是</span>
+              <span v-else>否</span>
+            </td>
           </tr>
           <tr>
             <td>付款凭证:</td>
@@ -62,233 +64,196 @@
         <span class="order-state" @click="checkDetail(imageStoreList)">查看详情</span>
       </div>
     </div>
-        <!--形象店详情-->
+    <!--形象店详情-->
     <van-popup v-model="showDetail" position="bottom" closeable :style="{ height: '75%' }">
       <van-panel>
         <!-- 编辑区 -->
-      <div class="table-c">
-        <h2 style="text-align:center;margin-bottom:10px;">
-          形象店建设申请表
-        </h2>
-        <h3>
-          提交时间：{{ tableData.DATE_CRE | datatrans }}
-        </h3>
-        <h3
-          v-if="
+        <div class="table-c">
+          <h2 style="text-align:center;margin-bottom:10px;">形象店建设申请表</h2>
+          <h3>提交时间：{{ tableData.DATE_CRE | datatrans }}</h3>
+          <h3
+            v-if="
               (tableData.STATUS == 2 ||
                 tableData.STATUS == 3 ||
                 tableData.STATUS == 5)
           "
-        >
-          市场部确认时间：{{
-            tableData.DATE_ENTER | datatrans
-          }}&nbsp;&nbsp;&nbsp;&nbsp;<span v-if="tableData.ENTER_SUG"
-            >审核意见：{{ tableData.ENTER_SUG }}</span
           >
-        </h3>
-        <h3 v-if="tableData.STATUS == 3">
-          广美确认时间：{{
-            tableData.DATE_PASS | datatrans
-          }}&nbsp;&nbsp;&nbsp;&nbsp;<span v-if="tableData.PASS_SUG"
-            >审核意见：{{ tableData.PASS_SUG }}</span
-          >
-        </h3>
-        <h3 v-if="tableData.STATUS == 4">
-          市场部退回时间：{{
+            市场部确认时间：{{
             tableData.DATE_ENTER | datatrans
-          }}&nbsp;&nbsp;&nbsp;&nbsp;退回原因：{{ tableData.ENTER_SUG }}
-        </h3>
-        <h3 v-if="tableData.STATUS == 5">
-          广美退回时间：{{
+            }}&nbsp;&nbsp;&nbsp;&nbsp;
+            <span v-if="tableData.ENTER_SUG">审核意见：{{ tableData.ENTER_SUG }}</span>
+          </h3>
+          <h3 v-if="tableData.STATUS == 3">
+            广美确认时间：{{
             tableData.DATE_PASS | datatrans
-          }}&nbsp;&nbsp;&nbsp;&nbsp;退回原因：{{ tableData.PASS_SUG }}
-        </h3>
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-          <tr>
-            <td width="25%" class="grayTD" colspan="1" rowspan="5" border="0px">
-              基本信息
-            </td>
-            <td width="15%" class="grayTD" colspan="1"  style="height:28px;width:30%">
-              客户名称
-            </td>
-            <td style="height:28px;width:50%">{{ tableData.CUSTOMER_NAME }}</td>
-          </tr>
-            
-          
-           <tr> 
-             <td class="grayTD" colspan="1" style="height:28px">年销售任务</td>
-            <td style="height:28px;">
-              <van-field
-                :disabled="EDITorCHECK"
-                placeholder="（客户填写）"
-                clearable
-                class="inputStyle"
-                size="mini"
-                
-                v-model="tableData.SALE_TARGET"
-              ></van-field>
-            </td>
-          </tr>
-          <tr>
-            <td class="grayTD" colspan="1" style="height:28px;">
-              店面地址<span style="color:red;">*</span>
-            </td>
-            <td style="height:28px;">
-              <van-field
-                :disabled="EDITorCHECK"
-                placeholder="（客户必填）"
-                clearable
-                class="inputStyle"
-                size="mini"
-                v-model="tableData.STORE_ADDRESS"
-              ></van-field>
-            </td>
-          </tr>
-
-          <tr>
-            <td class="grayTD" colspan="1" style="width:17%;height:28px;">
-              联系人
-            </td>
-            <td style="width:27%;height:28px;">
-              {{ tableData.CUSTOMER_AGENT }}
-            </td>
-          </tr>
-          <tr><td class="grayTD" colspan="1" style="width:17%;height:28px;">
-              联系电话
-            </td>
-            <td style="width:27%;height:28px;">
-              {{ tableData.OFFICE_TEL }}
-            </td>
-          </tr>
-
-          <tr>
-            <td
-              class="grayTD"
-              colspan="1"
-              rowspan="3"
-              border="0px"
-              style="height:28px;"
-            >
-              店面信息
-            </td>
-            <td class="grayTD" colspan="1" style="height:28px;">
-              店面形式<span style="color:red;">*</span>
-            </td>
-            <td colspan="3" style="text-align:center;height:28px;">
-                {{tableData.STORE_FORM|formTrans}}
-            </td>
+            }}&nbsp;&nbsp;&nbsp;&nbsp;
+            <span v-if="tableData.PASS_SUG">审核意见：{{ tableData.PASS_SUG }}</span>
+          </h3>
+          <h3 v-if="tableData.STATUS == 4">
+            市场部退回时间：{{
+            tableData.DATE_ENTER | datatrans
+            }}&nbsp;&nbsp;&nbsp;&nbsp;退回原因：{{ tableData.ENTER_SUG }}
+          </h3>
+          <h3 v-if="tableData.STATUS == 5">
+            广美退回时间：{{
+            tableData.DATE_PASS | datatrans
+            }}&nbsp;&nbsp;&nbsp;&nbsp;退回原因：{{ tableData.PASS_SUG }}
+          </h3>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td width="25%" class="grayTD" colspan="1" rowspan="5" border="0px">基本信息</td>
+              <td width="15%" class="grayTD" colspan="1" style="height:28px;width:30%">客户名称</td>
+              <td style="height:28px;width:50%">{{ tableData.CUSTOMER_NAME }}</td>
             </tr>
 
-          <tr>
-            <td class="grayTD" colspan="1" style="height:28px;">
-              店面面积(㎡)<span style="color:red;">*</span>
-            </td>
-            <td colspan="1" style="height:28px;">
-              <van-field
-                :disabled="EDITorCHECK"
-                style="width:65%"
-                placeholder="（客户必填）"
-                clearable
-                class="inputStyle"
-                size="mini"
-                oninput="value=value.replace(/[^\d.]/g,'')
+            <tr>
+              <td class="grayTD" colspan="1" style="height:28px">年销售任务</td>
+              <td style="height:28px;">
+                <van-field
+                  :disabled="EDITorCHECK"
+                  placeholder="（客户填写）"
+                  clearable
+                  class="inputStyle"
+                  size="mini"
+                  v-model="tableData.SALE_TARGET"
+                ></van-field>
+              </td>
+            </tr>
+            <tr>
+              <td class="grayTD" colspan="1" style="height:28px;">
+                店面地址
+                <span style="color:red;">*</span>
+              </td>
+              <td style="height:28px;">
+                <van-field
+                  :disabled="EDITorCHECK"
+                  placeholder="（客户必填）"
+                  clearable
+                  class="inputStyle"
+                  size="mini"
+                  v-model="tableData.STORE_ADDRESS"
+                ></van-field>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="grayTD" colspan="1" style="width:17%;height:28px;">联系人</td>
+              <td style="width:27%;height:28px;">{{ tableData.CUSTOMER_AGENT }}</td>
+            </tr>
+            <tr>
+              <td class="grayTD" colspan="1" style="width:17%;height:28px;">联系电话</td>
+              <td style="width:27%;height:28px;">{{ tableData.OFFICE_TEL }}</td>
+            </tr>
+
+            <tr>
+              <td class="grayTD" colspan="1" rowspan="3" border="0px" style="height:28px;">店面信息</td>
+              <td class="grayTD" colspan="1" style="height:28px;">
+                店面形式
+                <span style="color:red;">*</span>
+              </td>
+              <td
+                colspan="3"
+                style="text-align:center;height:28px;"
+              >{{tableData.STORE_FORM|formTrans}}</td>
+            </tr>
+
+            <tr>
+              <td class="grayTD" colspan="1" style="height:28px;">
+                店面面积(㎡)
+                <span style="color:red;">*</span>
+              </td>
+              <td colspan="1" style="height:28px;">
+                <van-field
+                  :disabled="EDITorCHECK"
+                  style="width:65%"
+                  placeholder="（客户必填）"
+                  clearable
+                  class="inputStyle"
+                  size="mini"
+                  oninput="value=value.replace(/[^\d.]/g,'')
                                 .replace(/^\./g, '').replace(/\.{2,}/g, '.')
                                 .replace('.', '$#$').replace(/\./g, '')
                                 .replace('$#$', '.')
                                 .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
-                v-model="tableData.STORE_AREA"
-              ></van-field>
-              
-            </td></tr> 
+                  v-model="tableData.STORE_AREA"
+                ></van-field>
+              </td>
+            </tr>
 
-           <tr><td class="grayTD" colspan="1" style="height:28px;">
-              层数<span style="color:red;">*</span>
-            </td>
-            <td colspan="1" style="height:28px;">
-              <van-field
-                :disabled="EDITorCHECK"
-                placeholder="（客户必填）"
-                clearable
-                class="inputStyle"
-                size="mini"
-                oninput="value=value.replace(/[^\d.]/g,'')
+            <tr>
+              <td class="grayTD" colspan="1" style="height:28px;">
+                层数
+                <span style="color:red;">*</span>
+              </td>
+              <td colspan="1" style="height:28px;">
+                <van-field
+                  :disabled="EDITorCHECK"
+                  placeholder="（客户必填）"
+                  clearable
+                  class="inputStyle"
+                  size="mini"
+                  oninput="value=value.replace(/[^\d.]/g,'')
                                 .replace(/^\./g, '').replace(/\.{2,}/g, '.')
                                 .replace('.', '$#$').replace(/\./g, '')
                                 .replace('$#$', '.')
                                 .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
-                v-model="tableData.STORE_PLIE"
-              ></van-field>
-            </td>
-          </tr>
+                  v-model="tableData.STORE_PLIE"
+                ></van-field>
+              </td>
+            </tr>
 
-          <tr>
-            <td
-              class="grayTD"
-              colspan="1"
-              rowspan="5"
-              border="0px"
-              style="height:28px;"
-            >
-              设计需求
-            </td>
-            <td class="grayTD" colspan="1" style="height:28px;">
-              计划动工时间<span style="color:red;">*</span>
-            </td>
-            <td style="text-align:center;height:28px;">
-                {{tableData.PLAN_DATE|datatrans}}
-            </td>
-          </tr>
+            <tr>
+              <td class="grayTD" colspan="1" rowspan="5" border="0px" style="height:28px;">设计需求</td>
+              <td class="grayTD" colspan="1" style="height:28px;">
+                计划动工时间
+                <span style="color:red;">*</span>
+              </td>
+              <td style="text-align:center;height:28px;">{{tableData.PLAN_DATE|datatrans}}</td>
+            </tr>
 
-          <tr>
-            <td class="grayTD" colspan="1" style="height:30px;">
-              实施形式<span style="color:red;">*</span>
-            </td>
-            <td  style="text-align:center;height:45px;">
+            <tr>
+              <td class="grayTD" colspan="1" style="height:30px;">
+                实施形式
+                <span style="color:red;">*</span>
+              </td>
+              <td
+                style="text-align:center;height:45px;"
+              >{{tableData.IMPLEMENTTATION_FORM|formTrans2}}</td>
+            </tr>
 
-                {{tableData.IMPLEMENTTATION_FORM|formTrans2}}
-             
-            </td>
-          </tr>
+            <tr>
+              <td class="grayTD" colspan="1">是否需要上门测量</td>
+              <td colspan="1">
+                <span v-if="tableData.MEASURE == 1">是</span>
+                <span v-else>否</span>
+                <div style="font-size:12px;color:gray">
+                  (*仅100%按公司设计方案落地客户可预约上门测量，并需承担上门人员食宿费用，
+                  如后期未100%按效果图实施，需承担上门人员交通费用。)
+                </div>
+              </td>
+            </tr>
 
-          <tr>
-            <td class="grayTD" colspan="1" >
-              是否需要上门测量
-            </td>
-            <td colspan="1" >
-             <span v-if="tableData.MEASURE == 1">是</span>
-            <span v-else>否</span>
-              <div style="font-size:12px;color:gray">
-              (*仅100%按公司设计方案落地客户可预约上门测量，并需承担上门人员食宿费用，
-              如后期未100%按效果图实施，需承担上门人员交通费用。)
-            </div>
-            </td> 
-           
-          </tr>
+            <tr>
+              <td class="grayTD" colspan="1" style="height:50px">其他需求说明</td>
+              <td style="height:50px"></td>
+            </tr>
 
-          <tr>
-            <td class="grayTD" colspan="1" style="height:50px">其他需求说明</td>
-            <td  style="height:50px">
-              
-            </td>
-          </tr>
+            <tr>
+              <td class="grayTD" style="height:14px;">
+                附件
+                <span style="color:red;">*</span>
+              </td>
+              <td style="height:14px;"></td>
+            </tr>
 
-          <tr>
-            <td class="grayTD" style="height:14px;">
-              附件<span style="color:red;">*</span>
-            </td>
-            <td style="height:14px;"></td>
-          
-          </tr>
-
-          <tr>
-            <td class="grayTD" colspan="1" border="0px" style="height:28px;">
-              付款信息
-            </td>
-            <td class="grayTD" colspan="1" style="height:28px;">
-              付款凭证<span style="color:red;">*</span>
-            </td>
-            <td style="height:28px;">{{tableData.PAYMENT}}</td>
-            <!-- <td colspan="3" style="text-align:left;height:28px;">
+            <tr>
+              <td class="grayTD" colspan="1" border="0px" style="height:28px;">付款信息</td>
+              <td class="grayTD" colspan="1" style="height:28px;">
+                付款凭证
+                <span style="color:red;">*</span>
+              </td>
+              <td style="height:28px;">{{tableData.PAYMENT}}</td>
+              <!-- <td colspan="3" style="text-align:left;height:28px;">
               <el-select
                 v-if="!EDITorCHECK"
                 style="width:500px;"
@@ -307,42 +272,37 @@
               <span v-else style="margin-left:20px;">{{
                 tableData.PAYMENT
               }}</span>
-            </td> -->
-          </tr>
-
-          <tr>
-            <td border="0px" colspan="2" style="text-align:left;height:28px;">
-              <span style="margin-left:10px;">责任人签字：</span>
-            </td>
-            <td ></td>
-
+              </td>-->
             </tr>
-            <tr><td colspan="2" style="text-align:left;height:28px;">
-              <span v-if="!EDITorCHECK" style="margin-left:10px;"
-                >日期：{{ new Date().getTime() | datatrans }}</span
-              >
-              <span v-else style="margin-left:10px;"
-                >日期：{{ tableData.DATE_CRE | datatrans }}</span
-              >
-            </td>
-            <td colspan="2"></td>
-          </tr>
-          <tr style="height:60px">
-            <td
-              colspan="5"
-              border="0px"
-              style="font-size:13px;color:gray;text-align:left"
-            >
-              1.请提前15个工作日提交设计需求申请。<br />
-              2.请附上店面平面图（清晰标注尺寸以及消防位等障碍位置）。<br />
-              3.硬装部分由客户自行落地。<br />
-              4.公司物料配置包含标识、展具、上样、情景四大模块，根据成本清单提供40%建店支持（不包含硬装）。以实用面积为100平店面测算出软装包成本约2700元/m²，店面面积越大，每平方价格相应降低。<br />
-              5.申请2.0形象店设计需交10000元设计落地保证金，落地后抵扣软装包款项，如未100%按设计落地，保证金不予返还。<br />
-            </td>
-          </tr>
-        </table>
 
-      </div>
+            <tr>
+              <td border="0px" colspan="2" style="text-align:left;height:28px;">
+                <span style="margin-left:10px;">责任人签字：</span>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td colspan="2" style="text-align:left;height:28px;">
+                <span
+                  v-if="!EDITorCHECK"
+                  style="margin-left:10px;"
+                >日期：{{ new Date().getTime() | datatrans }}</span>
+                <span v-else style="margin-left:10px;">日期：{{ tableData.DATE_CRE | datatrans }}</span>
+              </td>
+              <td colspan="2"></td>
+            </tr>
+            <tr style="height:60px">
+              <td colspan="5" border="0px" style="font-size:13px;color:gray;text-align:left">
+                1.请提前15个工作日提交设计需求申请。
+                <br />2.请附上店面平面图（清晰标注尺寸以及消防位等障碍位置）。
+                <br />3.硬装部分由客户自行落地。
+                <br />4.公司物料配置包含标识、展具、上样、情景四大模块，根据成本清单提供30%建店支持（不包含硬装）。以实用面积为100平店面测算出软装包成本约2700元/m²，店面面积越大，每平方价格相应降低。
+                <br />5.申请2.0形象店设计需交30000元设计落地保证金，落地后抵扣软装包款项，如未100%按设计落地，保证金不予返还。
+                <br />
+              </td>
+            </tr>
+          </table>
+        </div>
       </van-panel>
     </van-popup>
     <!--日期选择-->
@@ -411,17 +371,17 @@ import {
   CheckboxGroup,
   Search,
   Radio,
-  RadioGroup,
+  RadioGroup
 } from "vant";
 export default {
   name: "areaQuery",
   data() {
     return {
       bankData: [],
-      EDITorCHECK:false,
-      fileList : [],
-      fileListGM : [],
-      showDetail:false,
+      EDITorCHECK: false,
+      fileList: [],
+      fileListGM: [],
+      showDetail: false,
       imageStoreData: [],
       myStatus: "全部状态",
       myStatusCode: "",
@@ -451,7 +411,7 @@ export default {
         "市场部确认",
         "广美确认",
         "市场部退回",
-        "广美退回",
+        "广美退回"
       ],
       status_info: "",
       //当前页数
@@ -461,7 +421,7 @@ export default {
       //每页记录数
       itemsPerPage: 8,
       //总页数
-      totalPage: 0,
+      totalPage: 0
     };
   },
   components: {
@@ -478,8 +438,8 @@ export default {
     [CheckboxGroup.name]: CheckboxGroup,
     [Search.name]: Search,
     [DatetimePicker.name]: DatetimePicker,
-    [Radio.name]:Radio,
-    [RadioGroup.name]:RadioGroup,
+    [Radio.name]: Radio,
+    [RadioGroup.name]: RadioGroup
   },
   filters: {
     transStatus(value) {
@@ -553,7 +513,7 @@ export default {
           return "自行落地";
           break;
       }
-    },
+    }
   },
   //生命周期
   created() {
@@ -588,7 +548,7 @@ export default {
       }
       this.showDetail = true;
     },
-        //开始时间选择
+    //开始时间选择
     confirmTimeks(value) {
       this.ksSet2(this.ksData);
       this.showType_4 = false;
@@ -640,7 +600,7 @@ export default {
         this.myStatusCode = "4";
       } else if (this.myStatus == "广美退回") {
         this.myStatusCode = "5";
-      } 
+      }
       this.showType_6 = false;
     },
     //状态搜索
@@ -676,10 +636,10 @@ export default {
         page: this.currentPage //页数
       };
       if (!data.beginTime) {
-          data.beginTime = "0001/1/1";
-        }
+        data.beginTime = "0001/1/1";
+      }
       if (!data.finishTime) {
-          data.finishTime = "9999/12/31";
+        data.finishTime = "9999/12/31";
       }
       GetImageCustomer(data).then(res => {
         this.totalLists = res.count;
@@ -689,7 +649,7 @@ export default {
             message: "暂无形象店信息",
             duration: 2000
           });
-        } 
+        }
       });
     },
     // _getBankList() {
@@ -769,7 +729,7 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.queryQuYu_1();
-    },
+    }
   }
 };
 </script>

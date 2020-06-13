@@ -218,7 +218,7 @@ export default {
         let editData = {
           commodityID: this.$route.params.commodityID, //商品条ID
           activityID: this.hdid, //新活动ID
-          quantity: this.sum, //数量
+          quantity: this.sum==0?'':this.sum, //数量
           width: this.widthVal, //宽度
           height: this.heightVal, //高度
           note: this.beizhu, //备注
