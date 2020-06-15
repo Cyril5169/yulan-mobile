@@ -409,7 +409,7 @@
     >
       <div class="coupon-title">
         <img class="backCoupon" @click="showAddress=false" src="../../assetsorder/back.png" alt />
-        <span>我的收获地址</span>
+        <span>我的收货地址</span>
       </div>
       <div class="all-address">
         <van-address-list
@@ -1400,6 +1400,11 @@ export default {
     },
     listenselect(data) {
       this.selLocation = data;
+      var reg = /.+?(省|市|自治区|自治州|县|区)/g;
+      var addsressAry = this.selLocation.match(reg);
+      this.buyUserArea1 = addsressAry[0];
+      this.buyUserArea2 = addsressAry[1];
+      this.buyUserArea3 = addsressAry[2];
     },
     iosselect() {
       this.showLocation = true;
