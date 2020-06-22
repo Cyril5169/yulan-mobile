@@ -785,7 +785,7 @@ export default {
         companyId: this.$store.getters.getCMId
       };
       axios.post(monUrl, mondata).then(val => {
-        if (val.data.data > Math.round(this.orderPrice.mul(100)) / 100) {
+        if (val.data.data >= Math.round(this.orderPrice.mul(100)) / 100) {
           this.onSubmitOrder();
         } else {
           Dialog.confirm({
@@ -880,10 +880,6 @@ export default {
       //订单商品详情，为多个集合（数组）
       this.productList = [];
       for (let i = 0; i < this.allProduct.length; i++) {
-        // if (!this.allProduct[i].salPromotion) {
-        //   this.allProduct[i].salPromotion = {};
-        //   this.$set(this.allProduct[i].salPromotion, "orderType", null);
-        // }
         let singleProduct = {};
         singleProduct.curtainWidth = this.allProduct[i].width;
         singleProduct.curtainHeight = this.allProduct[i].height;
@@ -896,8 +892,8 @@ export default {
         singleProduct.curtainWbhSize = this.allProduct[i].outsourcingBoxWidth
           ? this.allProduct[i].outsourcingBoxWidth
           : 0;
-        singleProduct.curtainRoomName = this.allProduct[i].selLocation
-          ? this.allProduct[i].selLocation
+        singleProduct.curtainRoomName = this.allProduct[i].location
+          ? this.allProduct[i].location
           : "";
         singleProduct.orderNo = this.allProduct[i].orderNumber;
         singleProduct.lineNo = this.allProduct[i].lineNo;

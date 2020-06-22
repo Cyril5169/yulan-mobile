@@ -541,7 +541,7 @@ export default {
         companyId: this.$store.getters.getCMId //登录客户号
       };
       axios.post(monUrl, mondata).then(async val => {
-        if (val.data.data > this.oneOrder.ALL_SPEND) {
+        if (val.data.data >= this.oneOrder.ALL_SPEND) {
           if (this.oneOrder.STATUS_ID == 5 || this.oneOrder.STATUS_ID == 6) {
             for (var i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
               if (this.oneOrder.ORDERBODY[i].PROMOTION_TYPE) {

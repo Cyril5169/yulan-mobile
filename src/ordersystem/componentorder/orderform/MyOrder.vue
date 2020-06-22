@@ -739,7 +739,7 @@ export default {
         companyId: this.$store.getters.getCMId //登录客户号
       };
       axios.post(monUrl, mondata).then(async val => {
-        if (val.data.data > item.ALL_SPEND) {
+        if (val.data.data >= item.ALL_SPEND) {
           if (item.STATUS_ID == 5 || item.STATUS_ID == 6) {
             for (var i = 0; i < item.ORDERBODY.length; i++) {
               if (item.ORDERBODY[i].PROMOTION_TYPE) {
