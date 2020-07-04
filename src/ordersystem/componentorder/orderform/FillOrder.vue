@@ -1001,6 +1001,11 @@ export default {
               refresh: true
             }
           });
+        }).catch(res=>{
+          Toast({
+            duration: 2000,
+            message: res.msg
+          });
         });
       } else {
         normalOrderSettlement(data).then(data => {
@@ -1013,6 +1018,11 @@ export default {
             params: {
               refresh: true
             }
+          });
+        }).catch(res=>{
+          Toast({
+            duration: 2000,
+            message: res.msg
           });
         });
       }

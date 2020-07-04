@@ -6,8 +6,8 @@
     </keep-alive>
     <router-view v-if="!$route.meta.keepAlive"></router-view>
     <!--遮罩层-->
-    <div v-if="LOADING" class="loadingMask">
-      <van-loading v-if="LOADING" class="loading" type="spinner" color="black" />
+    <div v-show="LOADING" class="loadingMask">
+      <van-loading v-show="LOADING" class="loading" type="spinner" color="black" />
     </div>
     <van-popup v-model="showProgress" class="progress-ct">
       <div class="progress-title">玉兰B2B正在下载更新</div>
@@ -61,12 +61,12 @@ export default {
 
 <style scope>
 .loadingMask {
-  height: 100vh;
-  width: 100vw;
+  height: 200vh;
+  width: 200vw;
   position: absolute;
   left: 0;
   top: 0;
-  z-index: 9999;
+  z-index: 99999;
   /* background: rgba(0, 0, 0, 0.2); */
 }
 .progress-ct {

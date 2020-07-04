@@ -127,7 +127,7 @@
         <span class="delete-cart" @click="deleteCart">删除</span>
       </div>
     </div>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <!-- <van-loading class="loading" type="spinner" v-if="loading" color="black" /> -->
   </div>
 </template>
 

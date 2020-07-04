@@ -14,6 +14,7 @@ import mui from "./assets/mui/js/mui";
 import IScroll from "./assets/iscroll/iscroll";
 //import * as baseUrlASP from "./api/httpASP.js";
 import { UpdatePushResponseTime } from "./api/webUserASP";
+import { showFullScreenLoading, tryHideFullScreenLoading } from './api/loading'
 
 axios.defaults.baseURL = "http://14.29.221.109:10250/yulan";
 //全局loading
@@ -21,23 +22,26 @@ axios.interceptors.request.use(
   config => {
     if (config.loading != undefined && config.loading == false) {
     } else {
-      store.commit("showLoading");
+      showFullScreenLoading();
     }
     return config;
   },
   error => {
-    store.commit("hideLoading");
+    tryHideFullScreenLoading();
     return Promise.resolve(error);
   }
 );
 axios.interceptors.response.use(
   response => {
-    store.commit("hideLoading");
+    if (response.config.loading != undefined && response.config.loading == false) {
+    } else {
+      tryHideFullScreenLoading();
+    }
     return Promise.resolve(response);
   },
 
   error => {
-    store.commit("hideLoading");
+    tryHideFullScreenLoading();
     return Promise.reject(error);
   }
 );

@@ -29,7 +29,7 @@
       <curtaincart v-if="activeName == '/mycart/curtaincart'"></curtaincart>
     </keep-alive>
     <navBottom :tab-stage="myRoute"></navBottom>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <!-- <van-loading class="loading" type="spinner" v-if="loading" color="black" /> -->
   </div>
 </template>
 
