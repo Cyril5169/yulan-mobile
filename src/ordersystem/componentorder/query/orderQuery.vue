@@ -16,7 +16,7 @@
           </span>
         </div>
         <div style="margin:-24px 0 0 10px;">
-          <van-search placeholder="客户筛选" v-model="customer_filter" class="search_1" />
+          <van-search placeholder="客户筛选" v-model="customer_filter" @search="getCustomerDataList" class="search_1" />
           <van-button
             class="choose"
             style="margin-left:30px;"

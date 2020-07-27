@@ -17,7 +17,12 @@
         </div>
 
         <div style="margin:-24px 0 0 10px;">
-          <van-search placeholder="客户筛选" v-model="customer_filter" class="search_1" />
+          <van-search
+            placeholder="客户筛选"
+            v-model="customer_filter"
+            @search="getCustomerDataList"
+            class="search_1"
+          />
           <van-button
             class="choose"
             style="margin-left:30px;"
@@ -283,17 +288,8 @@ export default {
       selectAreaCode: "",
       selectAreaDistinct: "",
       selectCustomerType: "",
-      get_customer_code: "",
-      getMoney: "",
-      get_CUSTOMER_NAME: "",
       customerOrderData: [],
       customerOrderTaskData: [],
-      CUSTOMERED_1: [],
-      moneySum: [],
-      typeNameFilter: [],
-      typeIdFilter: [],
-      typeFilter: [],
-      checked: true,
       myStatus: "全部状态",
       selectOrderType: "",
       ksData: "",
@@ -310,7 +306,6 @@ export default {
       myArea: "市场", //市场状态
       myAreaCode: "",
       areaCode_name: [],
-      activeIndex: 0,
       showType_1: false,
       showType_2: false,
       showType_3: false,
@@ -323,28 +318,17 @@ export default {
       tableDetail: [],
       selectAreaCode: "",
       selectAreaDistinct: "",
-      activeName: "selectAreaCode",
-      query_2: false,
-      value_3: "", //客户类型初始值
       customerData: [],
       limit: 8,
       count: 0,
       currentPage: 1,
-      value_4: [], //已选用户初始值
-      value1: "",
-      value2: "",
-      beginTime_1: "", //区域提货单查询
-      finishTime_1: "",
-      AREA_DISTRICT: [],
       AREA_DISTRICT_1: {
         DISTRICT_ID: "",
         DISTRICT_NAME: "全部",
       },
       CUSTOMER_TYPE: ["全部", "非专业市场客户", "专业市场客户"],
       areaCodeList: [],
-      tableData: [],
       STATUS: ["全部", "待提", "已提货", "作废", "已月结"],
-      status_info: "",
     };
   },
   components: {
