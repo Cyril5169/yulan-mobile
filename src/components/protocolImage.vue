@@ -113,9 +113,9 @@ export default {
                 ctx.fillText(time, 775, 2105);
                 th.imgLoading = false;
               };
-              //img.src = "http://14.29.221.109:10250/upload/assets/proimage.jpg";
+              //img.src = "http://14.29.221.4:10250/upload/assets/proimage.jpg";
               img.src =
-                "http://14.29.221.109:10250/upload/images/newcertificate.jpg";
+                "http://14.29.221.4:10250/upload/images/newcertificate.jpg";
             });
           });
         } else {

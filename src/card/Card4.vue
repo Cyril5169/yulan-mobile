@@ -349,7 +349,7 @@ export default {
       this.$emit("spouse", this.spouse);
     },
     download() {
-      location.href = "http://14.29.221.109:10250/yulan/file/down.do";
+      location.href = "http://14.29.221.4:10250/yulan/file/down.do";
     },
     sendData() {
       let url = "/customerInfo/updateCustomerInfo.do";

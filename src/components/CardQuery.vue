@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <!-- <link rel="stylesheet" href="http://14.29.221.109:10250/upload/assets/swiper.css"> -->
+    <!-- <link rel="stylesheet" href="http://14.29.221.4:10250/upload/assets/swiper.css"> -->
     <top :top="set"></top>
     <!-- <file :file='num'></file> -->
     <file-msg :file="bannerIndex" :statusNum="numIndex"></file-msg>
@@ -79,7 +79,7 @@ import card2 from "../card/Card2";
 import card3 from "../card/Card3";
 import card4 from "../card/Card4";
 import card5 from "../card/Card5";
-// import 'http://14.29.221.109:10250/upload/assets/swiper.css'
+// import 'http://14.29.221.4:10250/upload/assets/swiper.css'
 
 export default {
   data() {

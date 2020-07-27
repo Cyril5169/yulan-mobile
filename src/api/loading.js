@@ -7,7 +7,6 @@ export function showFullScreenLoading() {
         store.commit("showLoading");
     }
     needLoadingRequestCount++;
-    console.log(needLoadingRequestCount)
 };
 export function tryHideFullScreenLoading() {
     if (needLoadingRequestCount <= 0) return;
@@ -15,5 +14,4 @@ export function tryHideFullScreenLoading() {
     if (needLoadingRequestCount === 0) {
         store.commit("hideLoading");
     }
-    console.log(needLoadingRequestCount)
 };

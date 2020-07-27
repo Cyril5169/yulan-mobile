@@ -14,7 +14,7 @@
     },
     methods:{
       checkAllOrder(){
-        let allOderURL = "http://14.29.221.109:10250/yulan-order/order/getOrders.do";
+        let allOderURL = "http://14.29.221.4:10250/yulan-order/order/getOrders.do";
         let data = {
           "limit":"10",//每页限制条数（必须）
           "page":"1",//页数，第几页（必须）

@@ -155,7 +155,7 @@ export default {
       display: inline-block;
   }
   .arrow-img{
-      background: url('http://14.29.221.109:10250/upload/assets/arrow.png');
+      background: url('http://14.29.221.4:10250/upload/assets/arrow.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;

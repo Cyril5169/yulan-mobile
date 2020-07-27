@@ -23,6 +23,7 @@ export default {
     back() {
       window.vTop = null;
       this.$emit("backclick"); //自定义事件，提供外部使用
+      if(this.isPopup) return;
       if (this.from) {
         this.$router.push({
           path: "/" + this.from

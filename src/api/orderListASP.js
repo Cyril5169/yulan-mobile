@@ -212,3 +212,11 @@ export function DeleteBuyUser(data, config = {}) {
         return Promise.reject(err);
     })
 }
+
+export function GetOrderAndTaskByCustomer(data, config = {}) {
+    return post('/CTM_ORDER/GetOrderAndTaskByCustomer', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}

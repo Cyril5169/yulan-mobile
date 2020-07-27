@@ -16,7 +16,7 @@ import IScroll from "./assets/iscroll/iscroll";
 import { UpdatePushResponseTime } from "./api/webUserASP";
 import { showFullScreenLoading, tryHideFullScreenLoading } from './api/loading'
 
-axios.defaults.baseURL = "http://14.29.221.109:10250/yulan";
+axios.defaults.baseURL = "http://14.29.221.4:10250/yulan";
 //全局loading
 axios.interceptors.request.use(
   config => {

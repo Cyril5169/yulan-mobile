@@ -15,7 +15,7 @@
     </div>
 
     <div class="all-bank">
-      <div class="single-bank" v-for="singleBank in tableData">
+      <div class="single-bank" v-for="(singleBank,index) in tableData" :key="index">
         <div class="single-title">
           <span class="single-title-left">提货单号：{{singleBank.SALE_NO}}</span>
           <span class="single-title-right">{{singleBank.STATUS_ID|transStatus}}</span>
@@ -25,14 +25,6 @@
             <td>订单号:</td>
             <td>{{singleBank.CONTRACT_NO}}</td>
           </tr>
-          <!-- <tr>
-            <td>合同号:</td>
-            <td>{{singleBank.HTBM}}</td>
-          </tr>-->
-          <!-- <tr>
-            <td>开单日期:</td>
-            <td>{{singleBank.BILL_DATE|datatrans}}</td>
-          </tr>-->
           <tr>
             <td style="width:90px;">提货日期:</td>
             <td>{{singleBank.DATE_OUT_STOCK|datatrans}}</td>
@@ -45,14 +37,6 @@
             <td>金额:</td>
             <td>{{singleBank.MONEY_SUM}}元</td>
           </tr>
-          <!-- <tr>
-            <td>物流管理员:</td>
-            <td>{{singleBank.NAME}}</td>
-          </tr>-->
-          <!-- <tr>
-            <td>客户名称:</td>
-            <td>{{singleBank.CUSTOMER_NAME}}/联系人:{{singleBank.LINKMAN}}</td>
-          </tr>-->
         </table>
         <span class="order-state" @click="toBillDetails(singleBank)">查看详情</span>
       </div>
@@ -74,10 +58,6 @@
               <td>状态:</td>
               <td>{{tableDetail_1.STATUS_ID|transStatus}}</td>
             </tr>
-            <!-- <tr>
-              <td>业务员:</td>
-              <td>{{tableDetail_1.SALE_NAME}}</td>
-            </tr>-->
             <tr>
               <td>合同号:</td>
               <td>{{tableDetail_1.HTBM}}</td>
@@ -90,24 +70,16 @@
               <td style="width:90px;">提货日期:</td>
               <td>{{tableDetail_1.DATE_OUT_STOCK|datatrans}}</td>
             </tr>
-            <!-- <tr>
-              <td>部门:</td>
-              <td></td>
-            </tr>-->
             <tr>
               <td>客户:</td>
               <td>{{tableDetail_1.CUSTOMER_NAME}}/联系人:{{tableDetail_1.LINKMAN}}</td>
             </tr>
-            <!-- <tr>
-              <td>物流:</td>
-              <td></td>
-            </tr>-->
             <tr>
               <td>备注:</td>
               <td>{{tableDetail_1.NOTES}}</td>
             </tr>
           </table>
-          <div class="single-bank" v-for="detail in tableDetail">
+          <div class="single-bank" v-for="(detail,index) in tableDetail" :key="index">
             <table>
               <tr>
                 <td style="width:90px;text-align:left">状态:</td>
@@ -191,14 +163,14 @@ import {
   Pagination,
   Toast,
   Loading,
-  Panel
+  Panel,
 } from "vant";
 import {
   getAreaCode,
   getDistrictByAreaCode,
   getCustomerByAreaCode,
   getPackDetails,
-  getPackDetailsBySaleNo
+  getPackDetailsBySaleNo,
 } from "@/api/areaInfoASP";
 export default {
   name: "bank",
@@ -223,7 +195,7 @@ export default {
       itemsPerPage: 8,
       //总页数
       totalPage: 0,
-      loading: false
+      loading: false,
     };
   },
   components: {
@@ -233,7 +205,7 @@ export default {
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
     [Loading.name]: Loading,
-    [Panel.name]: Panel
+    [Panel.name]: Panel,
   },
   filters: {
     transStatus(value) {
@@ -278,7 +250,7 @@ export default {
       let s = date.getSeconds();
       s = s < 10 ? "0" + s : s;
       return y + "-" + MM + "-" + d + " "; /* + h + ':' + m + ':' + s; */
-    }
+    },
   },
   methods: {
     cancelStatus() {
@@ -300,16 +272,16 @@ export default {
         DATE_OUT_STOCK: val.DATE_OUT_STOCK, //提货日期
         CUSTOMER_NAME: val.CUSTOMER_NAME, //客户名称
         LINKMAN: val.LINKMAN,
-        NOTES: val.NOTES //备注
+        NOTES: val.NOTES, //备注
       };
       this.tableDetail_1 = data_1;
     },
     _getPackDetailsBySaleNo(val) {
       this.tableDetail = [];
       var data_2 = {
-        saleNo: val.SALE_NO //所选提货单
+        saleNo: val.SALE_NO, //所选提货单
       };
-      getPackDetailsBySaleNo(data_2).then(res => {
+      getPackDetailsBySaleNo(data_2).then((res) => {
         this.tableDetail = res.data;
       });
     },
@@ -342,7 +314,7 @@ export default {
         finishTime: this.baseData.finishTime, //结束时间
         limit: this.baseData.limit, //限制数
         page: this.currentPage, //页数
-        status: this.myStatusCode //状态
+        status: this.myStatusCode, //状态
       };
       if (!data.beginTime) {
         data.beginTime = "0001/1/1";
@@ -352,13 +324,13 @@ export default {
       } else {
         data.finishTime = data.finishTime + " 23:59:59";
       }
-      getPackDetails(data).then(res => {
+      getPackDetails(data).then((res) => {
         this.totalLists = res.count;
         this.tableData = res.data;
         if (this.tableData.length == 0) {
           Toast({
             message: "暂无提货单信息",
-            duration: 2000
+            duration: 2000,
           });
         }
       });
@@ -367,11 +339,11 @@ export default {
     changePage(val) {
       this.currentPage = val;
       this.query();
-    }
+    },
   },
   created() {
     this._query();
-  }
+  },
 };
 </script>
 

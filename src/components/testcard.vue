@@ -1011,7 +1011,7 @@
 </template>
 
 <script>
-var remoteImageURL = "http://14.29.221.109:10250/upload";
+var remoteImageURL = "http://14.29.221.4:10250/upload";
 import top from "./Top";
 import Review from "@/components/review";
 import { UpdateState, GetCardByCustomer } from "@/api/card";
@@ -2630,7 +2630,7 @@ input[type="file"] + label {
   display: block;
   width: 100%;
   height: 100%;
-  /* background: url("http://14.29.221.109:10250/upload/assets/add.png");
+  /* background: url("http://14.29.221.4:10250/upload/assets/add.png");
   background-size: 100% 100%; */
 }
 .show5 p {

@@ -767,7 +767,7 @@ calendar {
   background-color: #fff;
 }
 /* .warn {
-  background: url("http://14.29.221.109:10250/upload/assets/warn.png");
+  background: url("http://14.29.221.4:10250/upload/assets/warn.png");
   height: 65px;
   width: 65px;
   background-size: 100% 100%;

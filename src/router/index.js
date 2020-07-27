@@ -520,10 +520,7 @@ var router = new Router({
     {
       path: '/areaQuery',
       name: 'areaQuery',
-      component: AreaQuery,
-      meta: {
-        keepAlive: true
-      }
+      component: AreaQuery
     },
     {
       path: '/billDetailsQuery',
@@ -534,10 +531,7 @@ var router = new Router({
     {
       path: '/orderQuery',
       name: 'orderQuery',
-      component: OrderQuery,
-      meta: {
-        keepAlive: true
-      }
+      component: OrderQuery
     },
     {
       path: '/orderDetailsQuery',

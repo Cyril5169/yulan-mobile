@@ -1,7 +1,7 @@
 <template>
-  <div class="bank">
-    <top :top="set"></top>
-    <span class="search-button" @click="query()">查询</span>
+  <div class="orderDetailQUery">
+    <top msgtitle="订单列表" :greenBackground="true" :isPopup="true" @backclick="backclick"></top>
+    <!-- <span class="search-button" @click="query()">查询</span> -->
     <div class="search">
       <ul class="ulhead" id="ulhead">
         <div>客户名称：{{baseData.CUSTOMER_NAME}}</div>
@@ -26,18 +26,6 @@
             <td style="width:80px;">创建时间:</td>
             <td>{{singleBank.DATE_CRE|datatrans}}</td>
           </tr>
-          <!-- <tr>
-            <td>客户:</td>
-            <td>{{singleBank.CUSTOMER_NAME}}</td>
-          </tr>
-          <tr>
-            <td>联系人:</td>
-            <td>{{singleBank.LINKPERSON}}</td>
-          </tr>
-          <tr>
-            <td>联系电话:</td>
-            <td>{{singleBank.TELEPHONE}}</td>
-          </tr>-->
           <tr>
             <td>订单金额:</td>
             <td>{{singleBank.ALL_SPEND}}元</td>
@@ -59,11 +47,11 @@
             </tr>
             <tr>
               <td style="text-align:left">联系人：</td>
-              <td>{{customerInfo.LINKPERSON}}</td>
+              <td>{{customerInfo.CUSTOMER_AGENT}}</td>
             </tr>
             <tr>
               <td style="text-align:left">电话：</td>
-              <td>{{customerInfo.TELEPHONE}}</td>
+              <td>{{customerInfo.OFFICE_TEL}}</td>
             </tr>
             <tr>
               <td style="text-align:left">地址：</td>
@@ -111,7 +99,16 @@
         @change="changePage"
       />
     </div>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+
+    <van-popup
+      style="width:100%;height:100%;"
+      v-model="showOrderDetail"
+      v-if="showOrderDetail"
+      transition="slide"
+      position="right"
+    >
+      <OrderDetails :inputOrderNo="selectOrderNo" :inputBtnShow="false" @backclick="backclick2"></OrderDetails>
+    </van-popup>
   </div>
 </template>
 
@@ -125,27 +122,27 @@ import {
   Pagination,
   Toast,
   Loading,
-  Panel
+  Panel,
 } from "vant";
 import {
   getAreaCode,
   getDistrictByAreaCode,
   getCustomerByAreaCode,
   getPackDetails,
-  getPackDetailsBySaleNo
+  getPackDetailsBySaleNo,
 } from "@/api/areaInfoASP";
 import { getOrderByAreaCustomer } from "@/api/orderInfoASP";
+import { getCustomerInfo } from "@/api/orderListASP";
+import OrderDetails from "../orderform/OrderDetails";
 
 export default {
-  name: "bank",
+  name: "orderDetailQUery",
   data() {
     return {
       couponData: [],
       moneySituation: "",
       cid: "",
       customerInfo: [],
-      tableDetail: [],
-      tableDetail_1: [],
       showDetail: false,
       showType_1: false,
       STATUS: [
@@ -158,9 +155,8 @@ export default {
         "余额不足待提交",
         "余额不足可提交",
         "已完成",
-        "已接收"
+        "已接收",
       ],
-      status_info: "",
       myStatus: "全部状态",
       myStatusCode: "",
       baseData: [],
@@ -174,17 +170,19 @@ export default {
       itemsPerPage: 8,
       //总页数
       totalPage: 0,
-      loading: false
+      showOrderDetail: false,
+      selectOrderNo: "",
     };
   },
   components: {
     top,
+    OrderDetails,
     [DatetimePicker.name]: DatetimePicker,
     [Popup.name]: Popup,
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
     [Loading.name]: Loading,
-    [Panel.name]: Panel
+    [Panel.name]: Panel,
   },
   filters: {
     transType(value) {
@@ -230,44 +228,42 @@ export default {
       let s = date.getSeconds();
       s = s < 10 ? "0" + s : s;
       return y + "-" + MM + "-" + d + " "; /* + h + ':' + m + ':' + s; */
-    }
+    },
   },
   methods: {
+    backclick() {
+      this.$emit("backclick");
+    },
+    backclick2() {
+      this.showOrderDetail = false;
+    },
     cancelStatus() {
       this.showType_1 = false;
     },
     //客户详情
     async customer_info(val) {
-      this.customerInfo = val;
       let mlUrl_1 = this.orderBaseUrl + "/order/getResidemoney.do";
       let mlUrl_2 = this.orderBaseUrl + "/order/findRebate.do";
       var data = {
-        cid: this.$store.getters.getCId,
-        companyId: this.customerInfo.COMPANY_ID
+        cid: "",
+        companyId: val.COMPANY_ID,
       };
-      await axios.post(mlUrl_1, data).then(res1 => {
-        this.moneySituation = res1.data.data;
-      });
-      await axios.post(mlUrl_2, data).then(res2 => {
-        this.couponData = res2.data.data;
-        this.couponData = this.couponData.filter(
-          item =>
-            item.dateId == 1 && item.rebateMoneyOver > 0 && item.status == 1
-        );
-        this.showDetail = true;
-      });
+      var res1 = await axios.post(mlUrl_1, data);
+      this.moneySituation = res1.data.data;
+      var res2 = await axios.post(mlUrl_2, data);
+      this.couponData = res2.data.data;
+      this.couponData = this.couponData.filter(
+        (item) =>
+          item.dateId == 1 && item.rebateMoneyOver > 0 && item.status == 1
+      );
+      var res3 = await getCustomerInfo(data);
+      this.customerInfo = res3.data;
+      this.showDetail = true;
     },
     //  订单详情
     toOrderDetails(val) {
-      this.$router.push({
-        name: "orderdetails",
-        params: {
-          state_id: val.STATUS_ID, //订单状态（（可传空串，空串表示全部状态） --1提交、12-接收、2--受理、3--作废、--5欠款待提交、--6欠款可提交、--7已完成）
-          find: val.ORDER_NO, //查找订单号，可模糊查找（可传空串，获取全部）
-          from: "orderDetailsQuery",
-          btnShow: false
-        }
-      });
+      this.selectOrderNo = val.ORDER_NO;
+      this.showOrderDetail = true;
     },
     //状态
     onStatus(value, index) {
@@ -308,7 +304,7 @@ export default {
         finishTime: this.baseData.finishTime, //结束时间
         limit: this.baseData.limit, //限制数
         page: this.currentPage, //页数
-        status: this.myStatusCode //状态
+        status: this.myStatusCode, //状态
       };
       if (!data.beginTime) {
         data.beginTime = "0001/1/1";
@@ -318,21 +314,24 @@ export default {
       } else {
         data.finishTime = data.finishTime + " 23:59:59";
       }
-      getOrderByAreaCustomer(data).then(res => {
+      getOrderByAreaCustomer(data).then((res) => {
         this.totalLists = res.count;
         this.tableData = res.data;
       });
     },
-
     changePage(val) {
       this.currentPage = val;
       this.query();
-    }
+    },
   },
   activated() {
     this.baseData = JSON.parse(sessionStorage.getItem("customerData"));
     this._query();
-  }
+  },
+  created() {
+    this.baseData = JSON.parse(sessionStorage.getItem("customerData"));
+    this._query();
+  },
 };
 </script>
 
@@ -360,7 +359,7 @@ export default {
   color: white;
   font-size: 12px;
 }
-.bank {
+.orderDetailQUery {
   background-color: rgb(239, 239, 239);
   height: 100vh;
   position: relative;
@@ -428,7 +427,7 @@ input {
   background-size: 15px;
 }
 .all-bank {
-  margin: 140px 10px 80px;
+  margin: 130px 10px 80px;
 }
 .all-bank td,
 .all-bank th {

@@ -1,10 +1,7 @@
 <template>
   <div class="order-details">
-    <top :top="set" :from="from"></top>
+    <top :top="set" :from="from" @backclick="backclick2" :isPopup="btnShow!=undefined && !btnShow"></top>
     <div class="banner">
-      <!-- <div class="wait-time" ref="statusIcon"></div>
-      <span class="status-title">{{statusTitle}}</span>-->
-      <!-- <span class="wait-pay-time" v-if="timeRemain">剩余 小时 分钟</span> -->
       <div class="address">
         <img class="address-icon" src="../../assetsorder/address.png" alt />
         <div class="address-contain">
@@ -15,10 +12,6 @@
           <div class="address-text">{{oneOrder.ALL_ADDRESS}}</div>
         </div>
       </div>
-      <!-- <div class="completed-msg" v-show="!orderStatus">
-        <img class="completed-car" src="../../assetsorder/car.png" alt />
-        <span>感谢您在玉兰购物，欢迎再次光临</span>
-      </div>-->
     </div>
     <div class="order-msg order-msg-item1">
       <table>
@@ -165,11 +158,6 @@
           >投 诉</span>
           <span class="edit-bank-ch" style="float:right;" @click="shipmentDetail(good)">出货详情</span>
         </div>
-        <!-- <div >
-          <div>
-            <van-button v-if="good.packDetailId!= 0"  @click="complaints_1(good)">投 诉</van-button>
-          </div>
-        </div>-->
       </div>
     </div>
     <div class="order-msg order-msg-item2">
@@ -215,9 +203,6 @@
       <span @click="_pass" class="success-btn" v-if="oneOrder.CURTAIN_STATUS_ID == 2">确认兰居修改</span>
       <span @click="LjExamine" class="success-btn" v-if="oneOrder.CURTAIN_STATUS_ID == 1">确认修改</span>
     </div>
-    <!-- <div class="bottom-nav" v-show="completeBottom">
-      <span>我要投诉</span>
-    </div>-->
     <van-popup
       style="width:100%;height:100%;"
       v-model="showCurtainDetail"
@@ -309,13 +294,13 @@ import {
   Collapse,
   CollapseItem,
   Icon,
-  Button
+  Button,
 } from "vant";
 import { QueryNoById } from "@/api/complaintASP";
 import {
   getPackDetailInfo,
   getReturnInfo,
-  getCompanyInfo
+  getCompanyInfo,
 } from "@/api/orderListASP";
 import {
   updateCurtainOrder,
@@ -325,7 +310,7 @@ import {
   copyCartItem,
   GetCtmOrder,
   GetPromotionByType,
-  GetOrderUseRebate
+  GetOrderUseRebate,
 } from "@/api/orderListASP";
 import { async } from "q";
 import detailCurtain from "./detailCurtain";
@@ -341,15 +326,16 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     [Icon.name]: Icon,
-    [Button.name]: Button
+    [Button.name]: Button,
   },
+  props: ["inputOrderNo", "inputBtnShow"],
   data() {
     return {
       url: "http://106.13.32.172:8080/yulan-order",
       set: 15,
       realName: this.$store.getters.getrealName,
       orderNo: this.$route.params.find,
-      isX: this.$route.params.find.slice(0, 1) == "X",
+      isX: false,
       //判断订单是什么状态
       orderStatus: false,
       //未付款状态下的剩余时间
@@ -378,15 +364,18 @@ export default {
       showShipment: false,
       shipData: [],
       showTrans: false,
-      transUrl: "https://m.kuaidi100.com/result.jsp?nu=038464072671"
+      transUrl: "https://m.kuaidi100.com/result.jsp?nu=038464072671",
     };
   },
   computed: {
     showPrice() {
       return this.$store.getters.getIsManage != "0";
-    }
+    },
   },
   methods: {
+    backclick2() {
+      this.$emit("backclick");
+    },
     //新增售后赔偿单
     addRefundRecord(good) {
       console.log(good);
@@ -395,8 +384,8 @@ export default {
         params: {
           partInfo: good, //获取订单详情中的部分数据
           STATE: "SUBMITTED", //新增后的状态：已提交
-          from: "orderdetails/" + this.orderNo
-        }
+          from: "orderdetails/" + this.orderNo,
+        },
       });
     },
     //投诉
@@ -405,8 +394,8 @@ export default {
       getPackDetailInfo({
         orderNo: val.ORDER_NO,
         lineNo: val.LINE_NO,
-        itemNo: val.ITEM_NO
-      }).then(res => {
+        itemNo: val.ITEM_NO,
+      }).then((res) => {
         this.getNo = res.data[0].packDetails[0];
         this.complaints(this.getNo);
         //this.showComplaints = true;
@@ -421,8 +410,8 @@ export default {
           SALE_NO: val.SALE_NO,
           TRANS_ID: val.TRANS_ID,
           STATUS: 1,
-          from: "orderdetails/" + this.ORDER_NO
-        }
+          from: "orderdetails/" + this.ORDER_NO,
+        },
       });
     },
     backclick() {
@@ -433,8 +422,8 @@ export default {
         name: "thmsg",
         params: {
           itemNo: itemNo,
-          orderId: this.orderNo
-        }
+          orderId: this.orderNo,
+        },
       });
     },
     //该订单查找
@@ -442,10 +431,10 @@ export default {
       let orderUrl = this.orderBaseUrl + "/order/getOrderContent.do";
       let data = {
         order_no: this.orderNo, //订单号
-        cid: this.$store.getters.getCId //客户号
+        cid: this.$store.getters.getCId, //客户号
       };
-      axios.post(orderUrl, data).then(data => {
-        GetCtmOrder({ orderNo: this.orderNo }).then(res => {
+      axios.post(orderUrl, data).then((data) => {
+        GetCtmOrder({ orderNo: this.orderNo }).then((res) => {
           this.oneOrder = data.data.data.data[0];
           this.oneOrder.PACKING_NOTE = res.data.PACKING_NOTE; //先这样处理，后台换了后台就不需要了
           this.oneOrder.BUYUSER_ADDRESS = res.data.BUYUSER_ADDRESS;
@@ -485,7 +474,7 @@ export default {
           ) {
             this.notpayBottom = true;
           }
-          getOperationRecord({ orderNo: this.orderNo }).then(res2 => {
+          getOperationRecord({ orderNo: this.orderNo }).then((res2) => {
             this.operationRecords = res2.data;
           });
         });
@@ -494,38 +483,38 @@ export default {
     //取消订单
     cancelOrder() {
       Dialog.confirm({
-        message: "是否确认作废订单"
+        message: "是否确认作废订单",
       })
         .then(() => {
           cancelOrderNew({
             cid: this.$store.getters.getCId,
-            orderNo: this.orderNo
-          }).then(res => {
+            orderNo: this.orderNo,
+          }).then((res) => {
             Dialog.confirm({
-              message: "作废成功，是否退回数据到购物车"
+              message: "作废成功，是否退回数据到购物车",
             })
               .then(() => {
                 copyCartItem({
-                  orderNo: this.orderNo
-                }).then(res => {
+                  orderNo: this.orderNo,
+                }).then((res) => {
                   Toast({
                     duration: 1000,
-                    message: "复制成功，请到购物车中查看"
+                    message: "复制成功，请到购物车中查看",
                   });
                 });
                 this.$router.push({
                   name: "myorder",
                   params: {
-                    refresh: true
-                  }
+                    refresh: true,
+                  },
                 });
               })
               .catch(() => {
                 this.$router.push({
                   name: "myorder",
                   params: {
-                    refresh: true
-                  }
+                    refresh: true,
+                  },
                 });
               });
           });
@@ -538,20 +527,20 @@ export default {
       let monUrl = this.orderBaseUrl + "/order/getResidemoney.do";
       let mondata = {
         cid: this.$store.getters.getCId,
-        companyId: this.$store.getters.getCMId //登录客户号
+        companyId: this.$store.getters.getCMId, //登录客户号
       };
-      axios.post(monUrl, mondata).then(async val => {
+      axios.post(monUrl, mondata).then(async (val) => {
         if (val.data.data >= this.oneOrder.ALL_SPEND) {
           if (this.oneOrder.STATUS_ID == 5 || this.oneOrder.STATUS_ID == 6) {
             for (var i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
               if (this.oneOrder.ORDERBODY[i].PROMOTION_TYPE) {
                 var res = await GetPromotionByType({
                   proType: this.oneOrder.ORDERBODY[i].PROMOTION_TYPE,
-                  cid: this.$store.getters.getCId
+                  cid: this.$store.getters.getCId,
                 });
                 if (!res.data) {
                   Dialog.alert({
-                    message: `活动‘&${this.oneOrder.ORDERBODY[i].PROMOTION}’不存在`
+                    message: `活动‘&${this.oneOrder.ORDERBODY[i].PROMOTION}’不存在`,
                   }).then(() => {});
                   return;
                 }
@@ -560,7 +549,7 @@ export default {
                   res.data.USE_ID == "0"
                 ) {
                   Dialog.alert({
-                    message: `活动‘&${this.oneOrder.ORDERBODY[i].PROMOTION}’已过期，请删除订单后重新下单`
+                    message: `活动‘&${this.oneOrder.ORDERBODY[i].PROMOTION}’已过期，请删除订单后重新下单`,
                   }).then(() => {});
                   return;
                 }
@@ -571,18 +560,18 @@ export default {
               ) {
                 var res = await GetOrderUseRebate({
                   orderNo: this.oneOrder.ORDERBODY[i].ORDER_NO,
-                  lineNo: this.oneOrder.ORDERBODY[i].LINE_NO
+                  lineNo: this.oneOrder.ORDERBODY[i].LINE_NO,
                 });
                 if (res.data.length == 0) {
                   Dialog.alert({
-                    message: "优惠券不存在"
+                    message: "优惠券不存在",
                   }).then(() => {});
                   return;
                 }
                 for (var j = 0; j < res.data.length; j++) {
                   if (new Date(res.data[j].DATE_END) < new Date()) {
                     Dialog.alert({
-                      message: "优惠券已过期，请删除订单后重新下单"
+                      message: "优惠券已过期，请删除订单后重新下单",
                     }).then(() => {});
                     return;
                   }
@@ -593,14 +582,14 @@ export default {
           }
         } else {
           Dialog.alert({
-            message: "余额不足,提交失败"
+            message: "余额不足,提交失败",
           }).then(() => {
             // on close
             this.$router.push({
               name: "myorder",
               params: {
-                refresh: true
-              }
+                refresh: true,
+              },
             });
           });
         }
@@ -611,25 +600,25 @@ export default {
       let orderURL = this.orderBaseUrl + "/order/putAgainOrder.do";
       let orderData = {
         cid: this.$store.getters.getCId, //登录客户号
-        orderNo: this.orderNo //订单号
+        orderNo: this.orderNo, //订单号
       };
-      axios.post(orderURL, orderData).then(res => {
+      axios.post(orderURL, orderData).then((res) => {
         if (res.data.code == 0) {
           Toast({
             duration: 1000,
-            message: "订单提交成功"
+            message: "订单提交成功",
           });
           var recordData = {
             ORDER_NO: this.orderNo,
             OPERATION_PERSON: this.$store.getters.getCId,
-            OPERATION_NAME: "重新提交"
+            OPERATION_NAME: "重新提交",
           };
           InsertOperationRecord(recordData); //插入操作记录
           this.$router.push({
             name: "myorder",
             params: {
-              refresh: true
-            }
+              refresh: true,
+            },
           });
         }
       });
@@ -670,8 +659,8 @@ export default {
         name: "fillorder",
         params: {
           isX: true,
-          from: "orderdetails/" + this.orderNo
-        }
+          from: "orderdetails/" + this.orderNo,
+        },
       });
     },
     //确认兰居修改，通过订单审核变为可提交状态
@@ -679,39 +668,39 @@ export default {
       var url = this.orderBaseUrl + "/order/updateCurOrderStatus.do";
       var data = {
         orderNo: this.orderNo,
-        curtainStatusId: "4"
+        curtainStatusId: "4",
       };
       Dialog.confirm({
-        message: "确认同意兰居修改？"
+        message: "确认同意兰居修改？",
       })
         .then(() => {
           axios
             .post(url, data)
-            .then(res => {
+            .then((res) => {
               if (res.data.code == 0) {
                 var recordData = {
                   ORDER_NO: this.orderNo,
                   OPERATION_PERSON: this.$store.getters.getCId,
-                  OPERATION_NAME: "确认兰居修改"
+                  OPERATION_NAME: "确认兰居修改",
                 };
                 InsertOperationRecord(recordData); //插入操作记录
                 Toast({
                   duration: 1000,
-                  message: "操作成功,该订单已经确认,可再次提交"
+                  message: "操作成功,该订单已经确认,可再次提交",
                 });
                 this.$root.$emit("refreshOrder");
                 this.oneOrder.CURTAIN_STATUS_ID = 4;
               } else {
                 Toast({
                   duration: 1000,
-                  message: "操作失败，请稍后重试"
+                  message: "操作失败，请稍后重试",
                 });
               }
             })
-            .catch(res => {
+            .catch((res) => {
               Toast({
                 duration: 1000,
-                message: "操作失败，请稍后重试"
+                message: "操作失败，请稍后重试",
               });
             });
         })
@@ -722,43 +711,43 @@ export default {
       var url = this.orderBaseUrl + "/order/updateCurOrderStatus.do";
       var data = {
         orderNo: this.orderNo,
-        curtainStatusId: "3"
+        curtainStatusId: "3",
       };
       Dialog.confirm({
-        message: "确定将订单退回兰居重新修改？"
+        message: "确定将订单退回兰居重新修改？",
       })
         .then(() => {
           axios
             .post(url, data)
-            .then(res => {
+            .then((res) => {
               if (res.data.code == 0) {
                 var recordData = {
                   ORDER_NO: this.orderNo,
                   OPERATION_PERSON: this.$store.getters.getCId,
-                  OPERATION_NAME: "退回兰居修改"
+                  OPERATION_NAME: "退回兰居修改",
                 };
                 InsertOperationRecord(recordData); //插入操作记录
                 Toast({
                   duration: 1000,
-                  message: "操作成功,该订单已退回兰居修改"
+                  message: "操作成功,该订单已退回兰居修改",
                 });
                 this.$router.push({
                   name: "myorder",
                   params: {
-                    refresh: true
-                  }
+                    refresh: true,
+                  },
                 });
               } else {
                 Toast({
                   duration: 1000,
-                  message: "操作失败，请稍后重试"
+                  message: "操作失败，请稍后重试",
                 });
               }
             })
-            .catch(res => {
+            .catch((res) => {
               Toast({
                 duration: 1000,
-                message: "操作失败，请稍后重试"
+                message: "操作失败，请稍后重试",
               });
             });
         })
@@ -783,25 +772,25 @@ export default {
           orderNo: this.orderNo,
           curtainStatusId: "0",
           allCurtains: allCurtains,
-          deleteIds: deleteIds
+          deleteIds: deleteIds,
         };
         Dialog.confirm({
-          message: "确定修改？"
+          message: "确定修改？",
         })
           .then(() => {
             updateCurtainOrder(data)
-              .then(res => {
+              .then((res) => {
                 Toast({
                   duration: 1000,
-                  message: "操作成功,请提交结算再次审核"
+                  message: "操作成功,请提交结算再次审核",
                 });
                 this.$root.$emit("refreshOrder");
                 this.oneOrder.CURTAIN_STATUS_ID = 0;
               })
-              .catch(res => {
+              .catch((res) => {
                 Toast({
                   duration: 1000,
-                  message: "操作失败，请稍后重试"
+                  message: "操作失败，请稍后重试",
                 });
               });
           })
@@ -809,7 +798,7 @@ export default {
       } else {
         Toast({
           duration: 1000,
-          message: "未修改任何窗帘"
+          message: "未修改任何窗帘",
         });
       }
     },
@@ -838,8 +827,8 @@ export default {
       getPackDetailInfo({
         orderNo: item.ORDER_NO,
         lineNo: item.LINE_NO,
-        itemNo: item.ITEM_NO
-      }).then(res => {
+        itemNo: item.ITEM_NO,
+      }).then((res) => {
         this.shipData = res.data[0].packDetails;
         this.showShipment = true;
       });
@@ -848,13 +837,19 @@ export default {
     transDetail(trans_id) {
       this.transUrl = "https://m.kuaidi100.com/result.jsp?nu=" + trans_id;
       this.showTrans = true;
-    }
+    },
   },
   created() {
     this.from = this.$route.params.from;
+    if (this.inputOrderNo != undefined && this.inputOrderNo) {
+      this.orderNo = this.inputOrderNo;
+    }
+    if (this.inputBtnShow != undefined) {
+      this.btnShow = this.inputBtnShow;
+    }
+    this.isX = this.orderNo.slice(0, 1) == "X";
     this.thisOrder();
   },
-  mounted() {}
 };
 </script>
 

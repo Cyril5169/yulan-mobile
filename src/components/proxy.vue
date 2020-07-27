@@ -175,7 +175,7 @@
 </template>
 
 <script>
-var remoteImageURL = "http://14.29.221.109:10250/upload";
+var remoteImageURL = "http://14.29.221.4:10250/upload";
 import Exif from "exif-js";
 import top from "./Top";
 import iosselect from "@/components/Iosselect4";

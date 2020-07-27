@@ -96,3 +96,24 @@ export function getSumMoneyBySales(data,config = {}) {
         return Promise.reject(err);
     })
 }
+export function getPackByCustomer(data,config = {}) {
+    return post('/PACK_DETAIL/getPackByCustomer',data,config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+export function getCustomerDataForOrder(data,config = {}) {
+    return post('/CUSTOMER/getCustomerDataForOrder',data,config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+export function getCustomerDataForPack(data,config = {}) {
+    return post('/CUSTOMER/getCustomerDataForPack',data,config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
