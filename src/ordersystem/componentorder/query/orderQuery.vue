@@ -467,7 +467,7 @@ export default {
       var data = {
         areaCode: this.selectAreaCode, //市场
         district: this.areaDistinctList, //片区
-        customerType: this.customer_type, //客户类型
+        customerType: this.myCustomerTypeCode, //客户类型
         condition: this.customer_filter,
       };
       getCustomerDataForOrder(data).then((res) => {

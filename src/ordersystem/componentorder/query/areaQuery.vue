@@ -90,7 +90,7 @@
       <van-picker
         show-toolbar
         title="请选择客户类型"
-        :columns="CUSTOMER_TYPE"
+        :columns="customerTypeData"
         @confirm="onCUSTOMER_TYPE"
         @cancel="cancelCustomer"
       />
@@ -326,7 +326,7 @@ export default {
         DISTRICT_ID: "",
         DISTRICT_NAME: "全部",
       },
-      CUSTOMER_TYPE: ["全部", "非专业市场客户", "专业市场客户"],
+      customerTypeData: ["全部", "非专业市场客户", "专业市场客户"],
       areaCodeList: [],
       STATUS: ["全部", "待提", "已提货", "作废", "已月结"],
     };
@@ -563,7 +563,7 @@ export default {
       var data = {
         areaCode: this.selectAreaCode, //市场
         district: this.areaDistinctList, //片区
-        customerType: this.customer_type, //客户类型
+        customerType: this.myCustomerTypeCode, //客户类型
         condition: this.customer_filter,
       };
       getCustomerDataForPack(data).then((res) => {
