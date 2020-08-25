@@ -292,20 +292,6 @@ export default {
         });
       } else {
         for (var i = 0; i < this.checkBoxModel.length; i++) {
-          let _index = this.checkBoxModel[i].unNullNum;
-          let _data = this.checkBoxModel[i].curtainLists[_index]
-            .curtainCommodities[0];
-          this.checkBoxModel[i].item = new Object();
-          this.checkBoxModel[i].item.itemNo = this.checkBoxModel[i].modelNumber;
-          this.checkBoxModel[i].item.itemNoSample = !_itemNoSample
-            ? this.checkBoxModel[i].modelNumber
-            : _itemNoSample;
-          this.checkBoxModel[i].item.itemVersion = _data.item.itemVersion;
-          this.checkBoxModel[i].item.groupType = "E";
-          this.checkBoxModel[i].id = _data.id;
-          let _itemNoSample = _data.item.oldItemNo;
-          this.checkBoxModel[i].unit = "米";
-          this.checkBoxModel[i].quantity = 1;
           this.checkBoxModel[i].newactivityId = this.checkBoxModel[i].activity;
         }
         this.$store.commit("setOrderProduct", this.checkBoxModel);

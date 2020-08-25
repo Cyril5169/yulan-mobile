@@ -9,8 +9,8 @@ export function getCustomerMustWriteStudy(cid) {
     })
 }
 
-export function getGroupContextOption(sfid) {
-    return post('/SF_GROUP/GetGroupContextOption', {sfid: sfid}).then((res) => {
+export function GetGroupContextOption(data) {
+    return post('/SF_GROUP/GetGroupContextOption', data).then((res) => {
         return Promise.resolve(res);
     }).catch((err) => {
         return Promise.reject(err);

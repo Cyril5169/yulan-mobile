@@ -114,9 +114,9 @@
               style="color:red;"
             >({{good.checkStatus}})</span>
           </span>
-          <span class="good-num">数量：{{good.QTY_REQUIRED}}</span>
-          <span v-if="showPrice" style="float:right;margin-right:70px;">单价：￥{{good.UNIT_PRICE}}</span>
-          <span v-else style="float:right;margin-right:70px;">***</span>
+          <span style="float:right;">数量：{{good.QTY_REQUIRED}}{{good.UNIT}}</span>
+          <span v-if="showPrice" style="float:right;margin-right:5px;">单价：￥{{good.UNIT_PRICE}}</span>
+          <span v-else style="float:right;margin-right:5px;">***</span>
         </div>
         <div class="good-item2">
           <span>活动类型</span>
@@ -306,6 +306,7 @@ import {
   updateCurtainOrder,
   InsertOperationRecord,
   getOperationRecord,
+  getOrderDetails,
   cancelOrderNew,
   copyCartItem,
   GetCtmOrder,
@@ -433,50 +434,42 @@ export default {
         order_no: this.orderNo, //订单号
         cid: this.$store.getters.getCId, //客户号
       };
-      axios.post(orderUrl, data).then((data) => {
-        GetCtmOrder({ orderNo: this.orderNo }).then((res) => {
-          this.oneOrder = data.data.data.data[0];
-          this.oneOrder.PACKING_NOTE = res.data.PACKING_NOTE; //先这样处理，后台换了后台就不需要了
-          this.oneOrder.BUYUSER_ADDRESS = res.data.BUYUSER_ADDRESS;
-          this.oneOrder.BUYUSER_PICTURE = res.data.BUYUSER_PICTURE;
-          this.oneOrder.BUYUSER_AREA1 = res.data.BUYUSER_AREA1;
-          this.oneOrder.BUYUSER_AREA2 = res.data.BUYUSER_AREA2;
-          this.oneOrder.BUYUSER_AREA3 = res.data.BUYUSER_AREA3;
-          this.oneOrder.BUYUSER_POST_ADDRESS = res.data.BUYUSER_POST_ADDRESS;
-          if (this.oneOrder.BUYUSER_PICTURE) {
-            var list = this.oneOrder.BUYUSER_PICTURE.split(";");
-            for (var i = 0; i < list.length - 1; i++) {
-              var index = list[i].lastIndexOf("/");
-              if (index == -1) index = list[i].lastIndexOf("\\");
-              var fileName = list[i].substr(index + 1);
-              this.imgSrc.push(this.baseUrlASP + list[i]);
-            }
+      //axios.post(orderUrl, data).then((data) => {
+      getOrderDetails({ orderNo: this.orderNo }).then((res) => {
+        this.oneOrder = res.data[0];
+        if (this.oneOrder.BUYUSER_PICTURE) {
+          var list = this.oneOrder.BUYUSER_PICTURE.split(";");
+          for (var i = 0; i < list.length - 1; i++) {
+            var index = list[i].lastIndexOf("/");
+            if (index == -1) index = list[i].lastIndexOf("\\");
+            var fileName = list[i].substr(index + 1);
+            this.imgSrc.push(this.baseUrlASP + list[i]);
           }
-          for (let i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
-            if (this.oneOrder.ORDERBODY[i].PART_SEND_ID == "0") {
-              this.oneOrder.ORDERBODY[i].productTip = "等生产";
-            } else if (this.oneOrder.ORDERBODY[i].PART_SEND_ID == "1") {
-              this.oneOrder.ORDERBODY[i].productTip = "分批发货";
-            } else {
-              this.oneOrder.ORDERBODY[i].productTip = "--";
-            }
-            this.oneOrder.ORDERBODY[i].checkStatus = "";
+        }
+        for (let i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
+          if (this.oneOrder.ORDERBODY[i].PART_SEND_ID == "0") {
+            this.oneOrder.ORDERBODY[i].productTip = "等生产";
+          } else if (this.oneOrder.ORDERBODY[i].PART_SEND_ID == "1") {
+            this.oneOrder.ORDERBODY[i].productTip = "分批发货";
+          } else {
+            this.oneOrder.ORDERBODY[i].productTip = "--";
           }
-          this.notpayBottom = false;
-          if (
-            this.oneOrder.STATUS_ID == 5 ||
-            this.oneOrder.STATUS_ID == 6 ||
-            this.oneOrder.STATUS_ID == 0 ||
-            (this.oneOrder.STATUS_ID == 1 &&
-              this.oneOrder.CURTAIN_STATUS_ID !== "" &&
-              this.oneOrder.CURTAIN_STATUS_ID !== " " &&
-              this.oneOrder.CURTAIN_STATUS_ID == 0)
-          ) {
-            this.notpayBottom = true;
-          }
-          getOperationRecord({ orderNo: this.orderNo }).then((res2) => {
-            this.operationRecords = res2.data;
-          });
+          this.oneOrder.ORDERBODY[i].checkStatus = "";
+        }
+        this.notpayBottom = false;
+        if (
+          this.oneOrder.STATUS_ID == 5 ||
+          this.oneOrder.STATUS_ID == 6 ||
+          this.oneOrder.STATUS_ID == 0 ||
+          (this.oneOrder.STATUS_ID == 1 &&
+            this.oneOrder.CURTAIN_STATUS_ID !== "" &&
+            this.oneOrder.CURTAIN_STATUS_ID !== " " &&
+            this.oneOrder.CURTAIN_STATUS_ID == 0)
+        ) {
+          this.notpayBottom = true;
+        }
+        getOperationRecord({ orderNo: this.orderNo }).then((res2) => {
+          this.operationRecords = res2.data;
         });
       });
     },
@@ -642,12 +635,8 @@ export default {
         transCookies[i].price = price;
         transCookies[i].splitShipment = orderBody[i].PART_SEND_ID;
         transCookies[i].newactivityId = orderBody[i].PROMOTION;
-        transCookies[i].unit = "米";
-        transCookies[i].item = new Object();
-        transCookies[i].item.itemNo = orderBody[i].ITEM_NO;
-        transCookies[i].item.note = orderBody[i].NOTES;
-        transCookies[i].item.itemVersion = orderBody[i].PRODUCTION_VERSION;
-        transCookies[i].item.groupType = "E";
+        transCookies[i].unit = item.ORDERBODY[i].UNIT;
+        transCookies[i].item = item.ORDERBODY[i].item;
         transCookies[i].salPromotion = new Object();
         transCookies[i].salPromotion.orderType = orderBody[i].PROMOTION_TYPE;
         transCookies[i].salPromotion.arrearsFlag = orderHead.ARREARSFLAG;

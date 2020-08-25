@@ -14,6 +14,7 @@
           <van-icon slot="icon" name="records" size="18px" color="gray" />
           <div slot="title" class="cell">
             <span>{{item.TITLE}}</span>
+            <span v-if="item.STATE == 'COMPLED'" style="color:grey">(已过期)</span>
           </div>
           <van-icon
             v-if="item.completeStatus==2"
@@ -33,6 +34,7 @@
           @refresh="refreshStudy"
           :showClose="true"
           :selectData="studySelectData"
+          :checkType ="checkType"
         ></StudyForm>
       </keep-alive>
     </van-popup>
@@ -42,7 +44,7 @@
 <script>
 import top from "../../../components/Top";
 import { Popup, Toast, List, Cell, Icon } from "vant";
-import { getCustomerStudy, getGroupContextOption } from "@/api/studyASP";
+import { getCustomerStudy } from "@/api/studyASP";
 import StudyForm from "@/components/StudyForm";
 
 export default {
@@ -53,7 +55,7 @@ export default {
     [Toast.name]: Toast,
     [List.name]: List,
     [Cell.name]: Cell,
-    [Icon.name]: Icon
+    [Icon.name]: Icon,
   },
   data() {
     return {
@@ -65,7 +67,8 @@ export default {
       finished: false,
       page: 1,
       showStudyForm: false,
-      studySelectData: []
+      studySelectData: [],
+      checkType: false
     };
   },
   computed: {},
@@ -75,20 +78,21 @@ export default {
       // 异步更新数据
       setTimeout(() => {
         getCustomerStudy(this.$store.getters.getCId)
-          .then(res => {
+          .then((res) => {
             this.list = res.data;
             // 加载状态结束
             this.loading = false;
             // 数据全部加载完成
             this.finished = true;
           })
-          .catch(err => {});
+          .catch((err) => {});
       }, 500);
     },
     onClick(data) {
-      if (data.completeStatus == 2) {
-        Toast("该调查表已填写完成");
-        return;
+      if (data.completeStatus != 2 && data.STATE == 'PUBLISH') {
+        this.checkType = false;
+      }else{
+        this.checkType = true;
       }
       this.studySelectData = data;
       this.showStudyForm = true;
@@ -99,11 +103,11 @@ export default {
     },
     closePop() {
       this.showStudyForm = false;
-    }
+    },
   },
   created() {
     this.from = this.$route.params.from;
-  }
+  },
 };
 </script>
 

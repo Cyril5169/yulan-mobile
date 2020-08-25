@@ -837,12 +837,8 @@ export default {
         transCookies[i].price = price;
         transCookies[i].splitShipment = orderBody[i].PART_SEND_ID;
         transCookies[i].newactivityId = orderBody[i].PROMOTION;
-        transCookies[i].unit = "米";
-        transCookies[i].item = new Object();
-        transCookies[i].item.itemNo = orderBody[i].ITEM_NO;
-        transCookies[i].item.note = orderBody[i].NOTES;
-        transCookies[i].item.itemVersion = orderBody[i].PRODUCTION_VERSION;
-        transCookies[i].item.groupType = "E";
+        transCookies[i].unit = item.ORDERBODY[i].UNIT;
+        transCookies[i].item = item.ORDERBODY[i].item;
         transCookies[i].salPromotion = new Object();
         transCookies[i].salPromotion.orderType = orderBody[i].PROMOTION_TYPE;
         transCookies[i].salPromotion.arrearsFlag = orderHead.ARREARSFLAG;

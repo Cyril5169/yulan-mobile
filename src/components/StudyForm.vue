@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="syudyForm">
     <div class="top">
       <img
         v-if="showClose"
@@ -37,6 +37,7 @@
                     :name="index+1"
                     v-for="(option, index) in context.optionList"
                     :key="index"
+                    :disabled="checkType"
                   >{{ option.OPTIONTEXT }}</van-radio>
                 </van-radio-group>
               </div>
@@ -53,6 +54,7 @@
                     v-model="context.optionResultValue"
                     :count="6"
                     color="#FF9900"
+                    :disabled="checkType"
                   />
                 </span>
                 <span style="display:inline-block;margin-left:8px;">
@@ -71,6 +73,7 @@
                     @click="radioChange(context)"
                     v-for="(option, index) in context.optionList"
                     :key="index"
+                    :disabled="checkType"
                   >
                     <template
                       v-if="
@@ -84,6 +87,7 @@
                         :label=" option.OPTIONTEXT"
                         v-model="context.optionExtraValue"
                         clickable
+                        :disabled="checkType"
                       />
                     </template>
                     <span v-else>{{ option.OPTIONTEXT }}</span>
@@ -92,7 +96,10 @@
               </div>
               <!-- 自定义多选 -->
               <div class="optionClass" v-else-if="context.TYPE == 'CUSTM_MULTIP'">
-                <van-checkbox-group v-model="context.optionResultValue" @change="radioChange2(context)">
+                <van-checkbox-group
+                  v-model="context.optionResultValue"
+                  @change="radioChange2(context)"
+                >
                   <van-checkbox
                     class="optionSingle"
                     icon-size="14px"
@@ -100,6 +107,7 @@
                     :name="index+1"
                     v-for="(option, index) in context.optionList"
                     :key="index"
+                    :disabled="checkType"
                   >
                     <template
                       v-if="
@@ -112,7 +120,7 @@
                         class="fieldCls"
                         style="height:35px;"
                         :label=" option.OPTIONTEXT"
-                        :disabled="context.optionResultValue.indexOf(index + 1) == -1"
+                        :disabled="context.optionResultValue.indexOf(index + 1) == -1 || checkType"
                         v-model="context.optionExtraValue"
                         :clickable="context.optionResultValue.indexOf(index + 1) != -1"
                       />
@@ -129,6 +137,7 @@
                   v-model="context.optionResultValue"
                   placeholder="在此输入答案"
                   clickable
+                  :disabled="checkType"
                 />
               </div>
               <!-- 长填空 -->
@@ -140,6 +149,7 @@
                   v-model="context.optionResultValue"
                   placeholder="在此输入答案"
                   clickable
+                  :disabled="checkType"
                 />
               </div>
             </div>
@@ -147,8 +157,8 @@
         </div>
       </div>
     </div>
-    <div class="studyBottom" @click="submitStudy">
-      <span>提交调查表</span>
+    <div class="studyBottom">
+      <span @click="submitStudy" v-if="!checkType">提交调查表</span>
     </div>
   </div>
 </template>
@@ -161,16 +171,33 @@ import {
   Field,
   CheckboxGroup,
   Checkbox,
-  Toast
+  Toast,
 } from "vant";
 import {
-  getGroupContextOption,
+  GetGroupContextOption,
   BeginEditStudy,
-  SubmitStudy
+  SubmitStudy,
 } from "@/api/studyASP";
 
 export default {
-  props: ["showClose", "title", "selectData"],
+  props: {
+    showClose: {
+      type: Boolean,
+      default: false,
+    },
+    title: {
+      type: String,
+      default: "",
+    },
+    selectData: {
+      type: Object,
+      default: null,
+    },
+    checkType: {
+      type: Boolean,
+      default: false,
+    },
+  },
   components: {
     [RadioGroup.name]: RadioGroup,
     [Radio.name]: Radio,
@@ -178,12 +205,12 @@ export default {
     [Field.name]: Field,
     [CheckboxGroup.name]: CheckboxGroup,
     [Checkbox.name]: Checkbox,
-    [Toast.name]: Toast
+    [Toast.name]: Toast,
   },
   data() {
     return {
       showStydyForm: false,
-      studyContextData: []
+      studyContextData: [],
     };
   },
   methods: {
@@ -209,9 +236,12 @@ export default {
       this.studyContextData = [];
       BeginEditStudy({
         cid: this.$store.getters.getCId,
-        sfid: this.selectData.SID
+        sfid: this.selectData.SID,
       });
-      getGroupContextOption(this.selectData.SID).then(res => {
+      GetGroupContextOption({
+        sfid: this.selectData.SID,
+        cid: this.$store.getters.getCId,
+      }).then((res) => {
         this.studyContextData = res.data;
         for (var i = 0; i < this.studyContextData.length; i++) {
           for (
@@ -219,12 +249,54 @@ export default {
             j < this.studyContextData[i].contextList.length;
             j++
           ) {
+            //赋值答案
             if (
-              this.studyContextData[i].contextList[j].TYPE == "STAND_6_SINGLE"
+              this.studyContextData[i].contextList[j].optionResultValue &&
+              this.studyContextData[i].contextList[j].TYPE != "SHORT_INPUT" &&
+              this.studyContextData[i].contextList[j].TYPE != "LONG_INPUT"
+            ) {
+              if (
+                this.studyContextData[i].contextList[
+                  j
+                ].optionResultValue.indexOf(",") > -1
+              ) {
+                //多选
+                var temp = [];
+                this.studyContextData[i].contextList[
+                  j
+                ].optionResultValue = this.studyContextData[i].contextList[
+                  j
+                ].optionResultValue.split(",");
+                for (
+                  var s = 0;
+                  s <
+                  this.studyContextData[i].contextList[j].optionResultValue
+                    .length;
+                  s++
+                ) {
+                  this.studyContextData[i].contextList[j].optionResultValue[
+                    s
+                  ] = Number(
+                    this.studyContextData[i].contextList[j].optionResultValue[s]
+                  );
+                }
+              } else {
+                this.studyContextData[i].contextList[
+                  j
+                ].optionResultValue = Number(
+                  this.studyContextData[i].contextList[j].optionResultValue
+                );
+              }
+            }
+            if (
+              this.studyContextData[i].contextList[j].TYPE ==
+                "STAND_6_SINGLE" &&
+              !this.studyContextData[i].contextList[j].optionResultValue
             )
               this.studyContextData[i].contextList[j].optionResultValue = 0;
             else if (
-              this.studyContextData[i].contextList[j].TYPE == "CUSTM_MULTIP"
+              this.studyContextData[i].contextList[j].TYPE == "CUSTM_MULTIP" &&
+              !this.studyContextData[i].contextList[j].optionResultValue
             )
               this.studyContextData[i].contextList[j].optionResultValue = [];
           }
@@ -236,6 +308,7 @@ export default {
       for (var i = 0; i < this.studyContextData.length; i++) {
         for (var j = 0; j < this.studyContextData[i].contextList.length; j++) {
           var context = this.studyContextData[i].contextList[j];
+          //判断完整性
           if (
             !context.optionResultValue ||
             context.optionResultValue.length == 0
@@ -262,6 +335,7 @@ export default {
               return;
             }
           }
+          //拼接答案
           var option = "";
           if (context.TYPE === "CUSTM_MULTIP") {
             option =
@@ -278,27 +352,27 @@ export default {
           }
           finalResult.push({
             sid: context.SID,
-            option: option
+            option: option,
           });
         }
       }
       SubmitStudy({
         resultValue: finalResult,
         cid: this.$store.getters.getCId,
-        sfid: this.selectData.SID
-      }).then(res => {
+        sfid: this.selectData.SID,
+      }).then((res) => {
         Toast("提交成功");
         this.$emit("refresh"); //触发父组件刷新
       });
     },
     closePop() {
       this.$emit("closePop");
-    }
+    },
   },
   mounted() {},
   activated() {
     this.editStudy();
-  }
+  },
 };
 </script>
 
@@ -407,5 +481,15 @@ export default {
 <style>
 .fieldCls .van-field__label {
   width: 50px;
+}
+.syudyForm .van-radio__icon--disabled.van-radio__icon--checked .van-icon {
+  color: #fff;
+  background-color: #1989fa;
+  border-color: #1989fa;
+}
+.syudyForm .van-checkbox__icon--disabled.van-checkbox__icon--checked .van-icon {
+  color: #fff;
+  background-color: #1989fa;
+  border-color: #1989fa;
 }
 </style>>

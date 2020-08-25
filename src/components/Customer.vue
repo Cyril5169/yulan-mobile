@@ -67,7 +67,6 @@
         <StudyForm
           v-if="showStudyForm"
           @refresh="refreshStudy"
-          :showClose="false"
           :title="studyFormTitle"
           :selectData="studySelectData"
         ></StudyForm>
@@ -83,8 +82,7 @@ import navBottom from "@/components/navBottom";
 import { Toast, Popup } from "vant";
 import { QueryAppMenuByUserId } from "@/api/webMenuASP";
 import {
-  getCustomerMustWriteStudy,
-  getGroupContextOption
+  getCustomerMustWriteStudy
 } from "@/api/studyASP";
 import StudyForm from "./StudyForm";
 
@@ -95,7 +93,7 @@ export default {
       style: "customer",
       myRoute: "customer",
       showStudyForm: false,
-      studyFormTitle: "填写完此调查表，才能继续操作",
+      studyFormTitle: "填写完此调查表，才能继续操作!",
       CUSTOMER_BALANCE_PERIOD_COUNT: this.$store.state.tipsInfo
         ? this.$store.state.tipsInfo.CUSTOMER_BALANCE_PERIOD
         : 0,
