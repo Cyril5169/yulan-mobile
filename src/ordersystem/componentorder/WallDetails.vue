@@ -119,7 +119,7 @@ import {
   Radio,
   Cell,
   CellGroup,
-  ActionSheet
+  ActionSheet,
 } from "vant";
 import "../assetsorder/actionsheet.css";
 
@@ -137,7 +137,7 @@ export default {
     [Radio.name]: Radio,
     [Cell.name]: Cell,
     [CellGroup.name]: CellGroup,
-    [ActionSheet.name]: ActionSheet
+    [ActionSheet.name]: ActionSheet,
   },
   data() {
     return {
@@ -184,7 +184,7 @@ export default {
       AddOrNot: true,
       from: "",
       //价格隐藏字段
-      showPrice: null
+      showPrice: null,
     };
   },
   methods: {
@@ -218,16 +218,16 @@ export default {
         let editData = {
           commodityID: this.$route.params.commodityID, //商品条ID
           activityID: this.hdid, //新活动ID
-          quantity: this.sum==0?'':this.sum, //数量
+          quantity: this.sum == 0 ? "" : this.sum, //数量
           width: this.widthVal, //宽度
           height: this.heightVal, //高度
           note: this.beizhu, //备注
-          splitShipment: this.fpfh
+          splitShipment: this.fpfh,
         };
         let obj = {
           commodityID: this.$route.params.commodityID,
           customerType: this.$store.getters.getCtype,
-          price: this.price.toString()
+          price: this.price.toString(),
         };
         let changeArr = [];
         changeArr.push(axios.post(editurl, editData));
@@ -235,28 +235,28 @@ export default {
           if (this.price === "") {
             Toast({
               duration: 2000,
-              message: "请输入价格"
+              message: "请输入价格",
             });
             return;
           }
           changeArr.push(axios.post(editurl2, obj));
         }
-        Promise.all(changeArr).then(data => {
+        Promise.all(changeArr).then((data) => {
           if (data[0].data.code == 0) {
             Toast({
               duration: 2000,
-              message: "修改购物车成功"
+              message: "修改购物车成功",
             });
             this.$router.push({
               name: "shoppingcart",
               params: {
-                activeName: "/mycart/wallcart"
-              }
+                activeName: "/mycart/wallcart",
+              },
             });
           } else if (data.data.code == 2) {
             Toast({
               duration: 2000,
-              message: data.data.msg
+              message: data.data.msg,
             });
           }
         });
@@ -273,25 +273,24 @@ export default {
           width: this.widthVal, //宽度
           height: this.heightVal,
           note: this.beizhu, //备注
-          splitShipment: this.fpfh //是否分批，是写1，不是传0，是字符串类型
+          splitShipment: this.fpfh, //是否分批，是写1，不是传0，是字符串类型
         };
-        axios.post(wallUrl, data).then(data => {
+        axios.post(wallUrl, data).then((data) => {
           if (data.data.code == 2) {
             Toast({
               duration: 2000,
-              message: data.data.msg
+              message: data.data.msg,
             });
           }
           if (data.data.code == 0) {
             Toast({
               duration: 2000,
-              message: "加入购物车成功"
+              message: "加入购物车成功",
             });
             this.$router.push({
-              path: "/searchwall"
+              path: "/searchwall",
             });
           }
-          //这里面axios的this不指向vue,所以在使用axios是最好使用es6箭头函数
         });
       }
       this.show = true;
@@ -307,30 +306,14 @@ export default {
     },
     //获取活动
     getHd(value) {
-      // let hdUrl =
-      //   this.orderBaseUrl +
-      //   "/salPromotion/selectSalPromotion.do?" +
-      //   "CID=" +
-      //   this.$store.getters.getCId +
-      //   "&customerType=" +
-      //   this.$store.getters.getCtype +
-      //   "&itemNo=" +
-      //   value.itemNo +
-      //   "&itemVersion=" +
-      //   value.itemVersion +
-      //   "&productType=" +
-      //   value.productType +
-      //   "&productBrand=" +
-      //   value.productBrand;
-      // axios.get(hdUrl).then(data => {
       GetPromotionByItem({
         cid: this.$store.getters.getCId,
         customerType: this.$store.getters.getCtype,
         itemNo: value.itemNo,
         itemVersion: value.ITEM_VERSION,
         productType: value.PRODUCT_TYPE,
-        productBrand: value.PRODUCT_BRAND
-      }).then(data => {
+        productBrand: value.PRODUCT_BRAND,
+      }).then((data) => {
         this.allHd = data.data;
         if (this.allHd.length == 0) {
           this.myActivity = "此产品不参与活动";
@@ -341,7 +324,7 @@ export default {
         }
         var defaultSel = {
           pri: 0,
-          index: 0
+          index: 0,
         };
         //修改购物车前的初始化数据
         if (this.$route.params.commodityID) {
@@ -391,7 +374,7 @@ export default {
       if (this.myActivity == "未选择活动" && this.allHd.length == 0) {
         this.myActivity = "此产品不参与活动";
       }
-      this.showMoreHd = true;//有过期的还可以选择
+      this.showMoreHd = true; //有过期的还可以选择
     },
     //加入购物车时的库存判断
     kuCunjudge() {
@@ -405,7 +388,7 @@ export default {
         ) {
           Toast({
             duration: 2000,
-            message: "请填写购买数量"
+            message: "请填写购买数量",
           });
           return;
         }
@@ -414,7 +397,7 @@ export default {
         if (this.sum == "" || this.sum <= 0) {
           Toast({
             duration: 2000,
-            message: "请填写购买数量"
+            message: "请填写购买数量",
           });
           return;
         }
@@ -426,22 +409,22 @@ export default {
           message:
             "本产品最小起购数量为" +
             this.wallMegs.minimumPurchase +
-            this.wallMegs.unit
+            this.wallMegs.unit,
         });
         return;
       }
       if (this.myActivity == "请选择活动") {
         Toast({
           duration: 2000,
-          message: "请选择活动"
+          message: "请选择活动",
         });
         return;
       }
       let data2 = {
         itemNo: this.wallMegs.itemNo, //产品型号
-        stockShowNum: this.needNum.toString() //需要的库存
+        stockShowNum: this.needNum.toString(), //需要的库存
       };
-      axios.post(url, data2).then(data => {
+      axios.post(url, data2).then((data) => {
         this.kcRes = data.data.msg;
         if (data.data.msg == "SUCCESS") {
           this.toCart();
@@ -471,7 +454,7 @@ export default {
     fh() {
       this.fpfh = "";
       this.$router.push({
-        path: "/searchwall"
+        path: "/searchwall",
       });
     },
     hdname(orderName, orderType) {
@@ -510,7 +493,7 @@ export default {
       // 通过正则过滤小数点后两位
       e.target.value = e.target.value.match(/^\d*(\.?\d{0,2})/g)[0] || null;
       that.price = e.target.value;
-    }
+    },
   },
   created() {
     this.isShowPrice();
@@ -518,11 +501,11 @@ export default {
     let wallUrl = this.orderBaseUrl + "/item/getWallpaperInfo.do";
     let data = {
       paperType: this.$route.params.papertype,
-      cid: this.$store.getters.getCId
+      cid: this.$store.getters.getCId,
     };
-    axios.post(wallUrl, data).then(data => {
+    axios.post(wallUrl, data).then((data) => {
       this.wallMegs = data.data.data;
-      getItemById({ itemNo: this.wallMegs.itemNo }).then(res => {
+      getItemById({ itemNo: this.wallMegs.itemNo }).then((res) => {
         res.data.DECIMAL_PLACES == "1"
           ? (this.decimalNum = 1)
           : (this.decimalNum = 2);
@@ -560,17 +543,17 @@ export default {
         this.myActivity = "不参与活动";
       }
       return this.myActivity + "-" + this.hdcode;
-    }
+    },
   },
   watch: {
-    showHeight: function() {
+    showHeight: function () {
       if (this.docmHeight > this.showHeight) {
         this.hidshow = false;
       } else {
         this.hidshow = true;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

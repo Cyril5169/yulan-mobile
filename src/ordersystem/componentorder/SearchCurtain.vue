@@ -9,7 +9,7 @@
         show-action
         @search="onSearchWall"
       >
-        <div slot="action" @click="onSearchWall(inputValue)" style="color: white">搜索</div>
+        <div slot="action" @click="onSearchWall" style="color: white">搜索</div>
       </van-search>
       <div class="img" @click="back"></div>
     </div>
@@ -21,7 +21,7 @@
             <td>{{singleCurtain.itemNo}}</td>
           </tr>
           <tr>
-            <th width="70px">成品宽*高：</th>
+            <th width="90px">成品宽*高：</th>
             <td>
               <input
                 v-model="singleCurtain.width"
@@ -33,7 +33,7 @@
                                 .replace('.', '$#$').replace(/\./g, '')
                                 .replace('$#$', '.')
                                 .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
-              />╳
+              /> ╳
               <input
                 v-model="singleCurtain.height"
                 type="number"
@@ -48,7 +48,7 @@
             </td>
           </tr>
           <tr v-show="singleCurtain.wbhFlag == '1'">
-            <th>帘外包宽度：</th>
+            <th width="90px">帘外包宽度：</th>
             <td>
               <input
                 v-model="singleCurtain.lwbWidth"
@@ -67,7 +67,7 @@
               <van-checkbox v-model="singleCurtain.isNeed" checked-color="#89cb81">需要</van-checkbox>
             </td>
           </tr>
-          <tr @click="selectzzbs(index)">
+          <tr @click="singleCurtain.showMultiple = true">
             <th>褶皱倍数：</th>
             <td>
               <input class="select-multiple" disabled v-model="singleCurtain.multiple" />
@@ -89,9 +89,9 @@
             <th>位置：</th>
             <td>
               <input
-                class="myposition"
+                class="location"
                 placeholder="选填"
-                v-model="singleCurtain.myposition"
+                v-model="singleCurtain.location"
                 @input="oninput($event,index)"
               />
             </td>
@@ -99,7 +99,7 @@
         </table>
         <span class="show-kucun" @click.stop="selectThis(index)">选择此款</span>
         <!--选择褶皱倍数-->
-        <div class="show-multiple" @click="noShowMul(index)">
+        <div class="show-multiple" @click="singleCurtain.showMultiple = false">
           <van-popup v-model="singleCurtain.showMultiple">
             <van-radio-group v-model="singleCurtain.multiple">
               <van-cell-group>
@@ -144,9 +144,6 @@
                 </van-cell>
               </van-cell-group>
             </van-radio-group>
-            <!--<div class="comfirm-bottom" @click="comfirmMultiple">-->
-            <!--<span>确定</span>-->
-            <!--</div>-->
           </van-popup>
         </div>
         <van-popup v-model="singleCurtain.showActivity">
@@ -207,10 +204,11 @@ import {
   Collapse,
   CollapseItem,
   Pagination,
-  Dialog
+  Dialog,
 } from "vant";
 import "../assetsorder/actionsheet.css";
-import { getItemById, GetPromotionByItem } from "@/api/orderListASP";
+import { GetCurtainByCondition } from "@/api/itemInfoASP";
+import { GetPromotionByItem } from "@/api/orderListASP";
 
 export default {
   name: "",
@@ -218,7 +216,6 @@ export default {
     return {
       //搜索框输入值
       inputValue: "",
-      showSearch: true, //是否显示历史搜索结果
       // historySearch:localStorage.historyItems.split("|"),//历史搜索内容
       //是否有查询结果
       resY: false,
@@ -228,7 +225,7 @@ export default {
       // showMultiple: false, //选择褶皱倍数
       multiple: 2.0, //褶皱倍数
       myhd: "请选择活动",
-      myposition: "",
+      location: "",
       //当前页数
       currentPage: 1,
       //总页数
@@ -239,12 +236,10 @@ export default {
       itemsPerPage: 10,
       //通过页数来判断change是执行哪个函数
       pageMark: 0,
-      docmHeight: document.documentElement.clientHeight, //默认屏幕高度
-      showHeight: document.documentElement.clientHeight, //实时屏幕高度
       hidshow: true, //显示或者隐藏footer
       activityGroup: [],
       activityOptions: [],
-      isActivity: []
+      isActivity: [],
     };
   },
   components: {
@@ -261,7 +256,7 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     [Pagination.name]: Pagination,
-    [Dialog.name]: Dialog
+    [Dialog.name]: Dialog,
   },
   filters: {
     calLength(str) {
@@ -276,12 +271,12 @@ export default {
         }
       }
       return len;
-    }
+    },
   },
   methods: {
     oninput(e, index) {
       e.target.value = this.splitStr(e.target.value, 20);
-      this.allCurtain[index].myposition = e.target.value;
+      this.allCurtain[index].location = e.target.value;
     },
     splitStr(str, length) {
       var len = 0;
@@ -300,100 +295,57 @@ export default {
     },
     back() {
       this.$router.push({
-        path: "/shopstore"
+        path: "/shopstore",
       });
     },
     //窗帘模糊查询
-    onSearchWall(inputValue) {
+    onSearchWall() {
       this.allCurtain = [];
-      this.inputValue = inputValue;
-      let wallUrl = this.orderBaseUrl + "/item/getCurtainBySearch.do";
-      let data = {
-        itemNo: inputValue,
-        limit: 10, //限制条数
-        page: this.currentPage //页数
-      };
-      axios.post(wallUrl, data).then(data => {
-        if (data.data.code == 1) {
-        } else if (data.data.code == 0) {
-          this.allCurtain = data.data.data;
-          if (this.allCurtain.length == 0) {
-            this.allCurtain = [];
-            this.currentPage = 1;
-            this.totalPage = 1;
-            Toast({
-              duration: 2000,
-              message: "暂无查询结果"
-            });
-          } else {
-            //总页数
-            // this.currentPage = 1
-            this.allCurtain = data.data.data;
-            this.getActivity();
-            this.totalPage = Math.ceil(this.allCurtain[0].total / 10);
-            for (let i = 0; i < this.allCurtain.length; i++) {
-              this.allCurtain[i].multiple = "2.2";
-              this.allCurtain[i].width = "";
-              this.allCurtain[i].height = "";
-              this.allCurtain[i].lwbWidth = "";
-              this.$set(this.$data.allCurtain[i], "isNeed", false);
-              this.$set(this.$data.allCurtain[i], "showMultiple", false);
-              this.$set(this.$data.allCurtain[i], "showActivity", false);
-              this.allCurtain[i].activityId = "";
-              this.allCurtain[i].myposition = "";
-            }
-          }
-        }
-      });
-      this.showSearch = false;
-    },
-    getCurtainXh() {
-      this.allCurtain = [];
-      let url = this.orderBaseUrl + "/item/getCurtainType.do";
-      let data = {
-        limit: 10, //限制条数
-        page: this.currentPage //页数
-      };
-      axios.post(url, data).then(res => {
-        this.allCurtain = res.data.data;
-        this.getActivity();
-        this.totalLists = res.data.data[0].total;
-        this.pageMark = Math.ceil(this.allCurtain[0].total / 10);
-        //获取总页数
-        this.totalPage = Math.ceil(this.totalLists / 10);
-        for (let i = 0; i < this.allCurtain.length; i++) {
-          this.allCurtain[i].multiple = "2.2";
-          this.allCurtain[i].width = "";
-          this.allCurtain[i].height = "";
-          this.allCurtain[i].lwbWidth = "";
-          this.$set(this.$data.allCurtain[i], "isNeed", false);
-          this.$set(this.$data.allCurtain[i], "showMultiple", false);
-          this.$set(this.$data.allCurtain[i], "showActivity", false);
-          this.allCurtain[i].activityId = "";
-          this.allCurtain[i].myposition = "";
+      GetCurtainByCondition({
+        keywords: this.inputValue.toUpperCase(),
+        limit: 10,
+        page: this.currentPage,
+      }).then((res) => {
+        this.allCurtain = res.data;
+        if (this.allCurtain.length == 0) {
+          this.allCurtain = [];
+          this.currentPage = 1;
+          this.totalPage = 1;
+          Toast({
+            duration: 2000,
+            message: "暂无查询结果",
+          });
+        } else {
+          //总页数
+          this.totalPage = Math.ceil(res.count / 10);
+          this.getActivity();
         }
       });
     },
     async getActivity() {
       this.activityOptions = [];
       this.isActivity = [];
-      for (let i = 0; i < this.allCurtain.length; i++) {
-        var defaultSel = {
-          pri: 0,
-          id: 0
-        };
-        let itemRes = await getItemById(
-          { itemNo: this.allCurtain[i].itemNo },
-          { loading: false }
-        );
+      for (var i = 0; i < this.allCurtain.length; i++) {
+        this.allCurtain[i].itemNo = this.allCurtain[i].ITEM_NO;
+        this.allCurtain[i].wbhFlag = this.allCurtain[i].WBH_FLAG;
+        this.allCurtain[i].multiple = "2.2";
+        this.allCurtain[i].width = "";
+        this.allCurtain[i].height = "";
+        this.allCurtain[i].lwbWidth = "";
+        this.$set(this.allCurtain[i], "isNeed", false);
+        this.$set(this.allCurtain[i], "showMultiple", false);
+        this.$set(this.allCurtain[i], "showActivity", false);
+        this.allCurtain[i].activityId = "";
+        this.allCurtain[i].location = "";
+
         let res = await GetPromotionByItem(
           {
             cid: this.$store.getters.getCId,
             customerType: this.$store.getters.getCtype,
-            itemNo: itemRes.data.ITEM_NO,
-            itemVersion: itemRes.data.ITEM_VERSION,
-            productType: itemRes.data.PRODUCT_TYPE,
-            productBrand: itemRes.data.PRODUCT_BRAND
+            itemNo: this.allCurtain[i].ITEM_NO,
+            itemVersion: this.allCurtain[i].ITEM_VERSION,
+            productType: this.allCurtain[i].PRODUCT_TYPE,
+            productBrand: this.allCurtain[i].PRODUCT_BRAND,
           },
           { loading: false }
         );
@@ -401,14 +353,18 @@ export default {
         else this.isActivity.push(false);
         let _obj = [];
 
+        var defaultSel = {
+          pri: 0,
+          id: 0,
+        };
         for (var j = 0; j < res.data.length; j++) {
           var obj = {
             label: res.data[j].ORDER_TYPE + " -- " + res.data[j].ORDER_NAME,
-            value: res.data[j].P_ID
+            value: res.data[j].P_ID,
           };
           var obj1 = {
             pId: res.data[j].P_ID,
-            groupType: res.data[j].GROUP_TYPE
+            groupType: res.data[j].GROUP_TYPE,
           };
           if (res.data[j].PRIORITY != 0 && defaultSel.pri == 0) {
             defaultSel.pri = res.data[j].PRIORITY;
@@ -420,13 +376,13 @@ export default {
             defaultSel.pri = res.data[j].PRIORITY;
             defaultSel.id = res.data[j].P_ID;
           }
-          let re = this.activityGroup.some(i => i.pId === obj1.pId);
+          let re = this.activityGroup.some((i) => i.pId === obj1.pId);
           if (re === false) this.activityGroup.push(obj1);
           _obj.push(obj);
         }
         _obj.push({
           label: "不参与活动",
-          value: ""
+          value: "",
         });
         this.activityOptions.push(_obj);
 
@@ -438,18 +394,7 @@ export default {
     },
     //改变页数
     changePage() {
-      if (this.pageMark == this.totalPage) {
-        this.getCurtainXh();
-      } else {
-        this.onSearchWall(this.inputValue);
-      }
-    },
-    comfirmMultiple() {
-      this.showMultiple = false;
-    },
-    //选择褶皱倍数
-    selectzzbs(index) {
-      this.allCurtain[index].showMultiple = true;
+      this.onSearchWall();
     },
     selecthd(index) {
       if (!this.isActivity[index]) {
@@ -478,7 +423,7 @@ export default {
       if (arr.length !== 0) {
         str = arr.join("、");
         Dialog.alert({
-          message: `请确保产品${this.allCurtain[index].itemNo}的${str}已经输入!!`
+          message: `请确保产品${this.allCurtain[index].itemNo}的${str}已经输入!!`,
         });
         return;
       }
@@ -488,7 +433,7 @@ export default {
         this.allCurtain[index].lwbWidth !== ""
       ) {
         Dialog.alert({
-          message: "在填写了帘外包宽度的情况下，请勾选前面的按钮!!"
+          message: "在填写了帘外包宽度的情况下，请勾选前面的按钮!!",
         });
         return;
       }
@@ -498,12 +443,12 @@ export default {
         this.allCurtain[index].lwbWidth === ""
       ) {
         Dialog.alert({
-          message: "在勾选了帘外包的情况下，帘外包宽度不能为空!!"
+          message: "在勾选了帘外包的情况下，帘外包宽度不能为空!!",
         });
         return;
       }
       var groupType;
-      this.activityGroup.forEach(item => {
+      this.activityGroup.forEach((item) => {
         if (item.pId === this.allCurtain[index].activityId) {
           groupType = item.groupType;
         }
@@ -517,43 +462,36 @@ export default {
           WBH: this.allCurtain[index].lwbWidth, //帘头外包盒宽度
           isWBH: this.allCurtain[index].isNeed,
           multiple: this.allCurtain[index].multiple, //褶皱倍数
-          location: this.allCurtain[index].myposition,
+          location: this.allCurtain[index].location,
           activityId: this.allCurtain[index].activityId,
           groupType: groupType,
           from: "searchcurtain",
-          AddOrNot: true
-        }
+          AddOrNot: true,
+        },
       });
-    },
-    noShowMul(index) {
-      this.allCurtain[index].showMultiple = false;
     },
     checkNeed(e, index) {
       if (this.allCurtain[index].lwbWidth) {
-        this.$set(this.$data.allCurtain[index], "isNeed", true);
+        this.$set(this.allCurtain[index], "isNeed", true);
       } else {
-        this.$set(this.$data.allCurtain[index], "isNeed", false);
+        this.$set(this.allCurtain[index], "isNeed", false);
       }
-    }
+    },
   },
   created() {
-    this.getCurtainXh();
+    this.onSearchWall();
   },
   computed: {
-    filteredProduct() {
-      return this.products.filter(product => {
-        return product.type.match(this.inputValue);
-      });
-    },
     //获取用户cid
     CID() {
       return this.$store.state.info.data.loginName;
     },
     changeActivi() {
-      return function(id, index) {
+      return function (id, index) {
         if (id) {
-          return this.activityOptions[index].filter(item => item.value == id)[0]
-            .label;
+          return this.activityOptions[index].filter(
+            (item) => item.value == id
+          )[0].label;
         } else {
           if (this.isActivity[index]) {
             return "此产品不参与活动";
@@ -562,29 +500,14 @@ export default {
           }
         }
       };
-    }
+    },
   },
   mounted() {
     window.vTop = this;
-    // window.onresize监听页面高度的变化
-    window.onresize = () => {
-      return (() => {
-        this.showHeight = document.body.clientHeight;
-      })();
-    };
   },
   destroyed() {
     if (window.vTop == this) window.vTop = null;
   },
-  watch: {
-    showHeight: function() {
-      if (this.docmHeight > this.showHeight) {
-        this.hidshow = false;
-      } else {
-        this.hidshow = true;
-      }
-    }
-  }
 };
 </script>
 
@@ -634,7 +557,7 @@ export default {
 .single-wall {
   position: relative;
   font-size: 13px;
-  margin: 20px 20px;
+  margin: 10px 20px;
   border-radius: 5px;
   padding: 8px 10px;
   box-shadow: 0 4px 8px 0 rgba(19, 19, 19, 0.2),
@@ -656,19 +579,14 @@ export default {
   width: 80px;
   height: 15px;
   line-height: 15px;
-  /*background: url("../assetsorder/zk.png") no-repeat center;*/
-  /*background-position-x: 50px;*/
-  /*background-position-y: 2px;*/
-  /*background-size: 15PX;*/
   background-color: #ebebeb;
   border-radius: 2px;
   outline: none;
   border: none;
-  /*color: white;*/
   text-decoration: none;
   padding: 3px 10px;
 }
-.myposition {
+.location {
   display: inline-block;
   width: 80px;
   height: 15px;
@@ -721,16 +639,6 @@ export default {
   border-radius: 15px;
   margin: 10px;
   font-size: 13px;
-  /* float: left; */
-}
-.clear-search {
-  width: 150px;
-  height: 50px;
-  line-height: 50px;
-  margin: 80px auto;
-  border-radius: 30px;
-  border: 1px solid #8b8b7a;
-  clear: both;
 }
 .comfirm-bottom {
   width: 100%;
