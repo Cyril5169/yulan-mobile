@@ -909,6 +909,7 @@ export default {
           ? this.allProduct[i].newactivityId
           : "无";
         if (this.allProduct[i].salPromotion) {
+          singleProduct.pId = this.allProduct[i].salPromotion.pId;
           singleProduct.promotionType = this.allProduct[
             i
           ].salPromotion.orderType;

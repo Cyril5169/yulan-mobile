@@ -311,6 +311,7 @@ import {
   copyCartItem,
   GetCtmOrder,
   GetPromotionByType,
+  GetPromotionByTypeAndId,
   GetOrderUseRebate,
 } from "@/api/orderListASP";
 import { async } from "q";
@@ -527,8 +528,9 @@ export default {
           if (this.oneOrder.STATUS_ID == 5 || this.oneOrder.STATUS_ID == 6) {
             for (var i = 0; i < this.oneOrder.ORDERBODY.length; i++) {
               if (this.oneOrder.ORDERBODY[i].PROMOTION_TYPE) {
-                var res = await GetPromotionByType({
+                var res = await GetPromotionByTypeAndId({
                   proType: this.oneOrder.ORDERBODY[i].PROMOTION_TYPE,
+                  pId: this.oneOrder.ORDERBODY[i].P_ID,
                   cid: this.$store.getters.getCId,
                 });
                 if (!res.data) {

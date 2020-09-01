@@ -261,6 +261,7 @@ import {
   copyCartItem,
   getPackDetailInfo,
   GetPromotionByType,
+  GetPromotionByTypeAndId,
   GetOrderUseRebate
 } from "@/api/orderListASP";
 import top from "../../../components/Top";
@@ -743,8 +744,9 @@ export default {
           if (item.STATUS_ID == 5 || item.STATUS_ID == 6) {
             for (var i = 0; i < item.ORDERBODY.length; i++) {
               if (item.ORDERBODY[i].PROMOTION_TYPE) {
-                var res = await GetPromotionByType({
+                var res = await GetPromotionByTypeAndId({
                   proType: item.ORDERBODY[i].PROMOTION_TYPE,
+                  pId: item.ORDERBODY[i].P_ID,
                   cid: this.$store.getters.getCId
                 });
                 if (!res.data) {
