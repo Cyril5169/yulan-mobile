@@ -35,7 +35,7 @@
               @change.stop="pickOne(product, index, inndex)"
               :disabled="checkActiviyEffect2(product) && !showManage"
             />
-            <div style="width:100%;height:100%" @click="wallDetails(index, inndex)">
+            <div style="width:100%;height:100%" @click="wallDetails(product)">
               <table>
                 <tr>
                   <th nowrap="nowrap">型号：</th>
@@ -63,32 +63,12 @@
                 </tr>
                 <tr>
                   <th>小计：</th>
-                  <td
-                    class="price"
-                    v-if="showPrice && product.quantity"
-                  >￥{{ product.quantity * product.price | dosageFilter }}</td>
-                  <td
-                    class="price"
-                    v-else-if="showPrice && !product.quantity"
-                  >￥{{ product.width.mul(product.height) * product.price | dosageFilter }}</td>
+                  <td class="price" v-if="showPrice">￥{{subtotal(product)}}</td>
                   <td class="price" v-else-if="!showPrice">***</td>
                 </tr>
                 <tr v-if="product.activityName">
                   <th>折后：</th>
-                  <td class="price" v-if="showPrice && product.quantity">
-                    ￥{{ product.salPromotion?
-                    (product.salPromotion.type == 1?
-                    product.salPromotion.discount * product.quantity * product.price
-                    : product.salPromotion.price * product.quantity)
-                    : product.quantity * product.price | dosageFilter}}
-                  </td>
-                  <td class="price" v-else-if="showPrice && !product.quantity">
-                    ￥{{ product.salPromotion?
-                    (product.salPromotion.type == 1?
-                    product.salPromotion.discount * product.width.mul(product.height) * product.price
-                    : product.salPromotion.price * product.width.mul(product.height))
-                    : product.width.mul(product.height) * product.price | dosageFilter}}
-                  </td>
+                  <td class="price" v-if="showPrice">￥{{ calculatePromotionPrice(product) }}</td>
                   <td class="price" v-else-if="!showPrice">***</td>
                 </tr>
               </table>
@@ -147,7 +127,7 @@ export default {
     [Dialog.name]: Dialog,
     [Toast.name]: Toast,
     [Loading.name]: Loading,
-    [PullRefresh.name]: PullRefresh
+    [PullRefresh.name]: PullRefresh,
   },
   data() {
     return {
@@ -184,31 +164,36 @@ export default {
       //价格隐藏字段
       showPrice: null,
       loading: false,
-      isLoading: false
+      isLoading: false,
     };
   },
   methods: {
-    wallDetails(index, inndex) {
-      //获取版本号
-      let olditemNo = this.cartlist[index].commodities[inndex].item.oldItemNo;
+    wallDetails(product) {
+      if (product.salPromotion && product.salPromotion.modifyFlag == "N") {
+        Toast({
+          duration: 2000,
+          message: "该活动无法修改详情",
+        });
+        return;
+      }
       this.$router.push({
         name: "softdetails",
         params: {
           //墙纸类型,获取墙纸信息
-          itemType: this.cartlist[index].commodities[inndex].softType
-            ? this.cartlist[index].commodities[inndex].softType
-            : this.cartlist[index].commodities[inndex].item.productType,
-          itemNo: this.cartlist[index].commodities[inndex].item.itemNo, //模糊查询内容
-          commodityID: this.cartlist[index].commodities[inndex].id, //商品条ID
-          activityID: this.cartlist[index].commodities[inndex].activityId, //新活动ID
-          newactivityID: this.cartlist[index].commodities[inndex].activityName, //新活动ID
-          quantity: this.cartlist[index].commodities[inndex].quantity, //数量
-          width: this.cartlist[index].commodities[inndex].width, //宽度
-          height: this.cartlist[index].commodities[inndex].height, //高度
-          note: this.cartlist[index].commodities[inndex].note,
-          tip: this.cartlist[index].commodities[inndex].newsplitShipment,
-          from: "shoppingcart"
-        }
+          itemType: product.softType
+            ? product.softType
+            : product.item.productType,
+          itemNo: product.item.itemNo, //模糊查询内容
+          commodityID: product.id, //商品条ID
+          activityID: product.activityId, //新活动ID
+          newactivityID: product.activityName, //新活动ID
+          quantity: product.quantity, //数量
+          width: product.width, //宽度
+          height: product.height, //高度
+          note: product.note,
+          tip: product.newsplitShipment,
+          from: "shoppingcart",
+        },
       });
     },
     //购物车选中一个
@@ -231,7 +216,7 @@ export default {
       } else if (this.cartlist[index].cartItemId != this.thisGroup) {
         //不同组别
         Dialog.alert({
-          message: "不同组别的商品不能一起选择，请重新选择"
+          message: "不同组别的商品不能一起选择，请重新选择",
         }).then(() => {
           this.checkBoxModel = this.checkBoxModel.slice(0, -1);
           this.cartlist[index].commodities[inndex].checked = false;
@@ -265,7 +250,7 @@ export default {
             this.thisGroup = this.cartlist[index].cartItemId;
           } else if (this.thisGroup != this.cartlist[index].cartItemId) {
             Dialog.alert({
-              message: "不同组别的商品不能一起选择，请重新选择"
+              message: "不同组别的商品不能一起选择，请重新选择",
             }).then(() => {
               this.checkGroupModel = this.checkGroupModel.slice(0, -1);
               for (let i = 0; i < group.commodities.length; i++) {
@@ -282,7 +267,7 @@ export default {
           group.checked = true;
         } else if (this.thisGroup != this.cartlist[index].cartItemId) {
           Dialog.alert({
-            message: "不同组别的商品不能一起选择，请重新选择"
+            message: "不同组别的商品不能一起选择，请重新选择",
           }).then(() => {
             this.checkGroupModel = this.checkGroupModel.slice(0, -1);
             for (let i = 0; i < group.commodities.length; i++) {
@@ -295,15 +280,13 @@ export default {
     },
     checkActiviyEffect(group) {
       for (let i = 0; i < group.commodities.length; i++) {
+        var product = group.commodities[i];
         if (group.commodities[i].activityEffective == false) {
           return true;
         } else {
-          let val;
-          if (group.commodities[i].unit === "平方米") {
-            val = group.commodities[i].width * group.commodities[i].height;
-          } else {
-            val = group.commodities[i].quantity;
-          }
+          let val = product.quantity
+            ? product.quantity
+            : product.width.mul(product.height);
           if (val < group.commodities[i].item.minimumPurchase) {
             return true;
           }
@@ -315,12 +298,9 @@ export default {
       if (product.activityEffective == false) {
         return true;
       } else {
-        let val;
-        if (product.unit === "平方米") {
-          val = product.width * product.height;
-        } else {
-          val = product.quantity;
-        }
+        let val = product.quantity
+            ? product.quantity
+            : product.width.mul(product.height);
         if (val < product.item.minimumPurchase) {
           return true;
         } else {
@@ -333,12 +313,12 @@ export default {
       if (this.checkBoxModel.length == 0) {
         Toast({
           duration: 2000,
-          message: "请选择商品"
+          message: "请选择商品",
         });
       } else {
         this.$store.commit("setOrderProduct", this.checkBoxModel);
         this.$router.push({
-          path: "/fillorder"
+          path: "/fillorder",
         });
       }
     },
@@ -357,9 +337,9 @@ export default {
       this.loading = true;
       GetCartItem({
         cid: this.$store.getters.getCId,
-        commodityType: "soft"
+        commodityType: "soft",
       })
-        .then(res => {
+        .then((res) => {
           this.checkBoxModel = [];
           this.checkGroupModel = [];
           this.thisGroup = "";
@@ -378,7 +358,7 @@ export default {
           this.$root.$emit("refreshTip");
           return data;
         })
-        .then(cartdata => {
+        .then((cartdata) => {
           for (let i = 0; i < cartdata.length; i++) {
             for (let j = 0; j < cartdata[i].commodities.length; j++) {
               if (!cartdata[i].commodities[j].activityId) {
@@ -409,7 +389,7 @@ export default {
       if (this.checkBoxModel.length == 0) {
         Toast({
           duration: 2000,
-          message: "无选择产品"
+          message: "无选择产品",
         });
       } else {
         let deleteUrl = this.orderBaseUrl + "/cart/deleteCommodities.do";
@@ -418,14 +398,14 @@ export default {
           this.deleteList.push(this.checkBoxModel[i].id);
         }
         let data = this.checkBoxModel;
-        axios.post(deleteUrl, this.deleteList).then(data => {
+        axios.post(deleteUrl, this.deleteList).then((data) => {
           if (data.data.code == 0) {
             //重新请求一次购物车列表
             this.cartlist = [];
             this.searchCartList();
             Toast({
               duration: 1000,
-              message: "删除成功"
+              message: "删除成功",
             });
             this.checkGroupModel = [];
             this.checkBoxModel = [];
@@ -443,50 +423,60 @@ export default {
       } else {
         this.showPrice = true;
       }
-    }
+    },
+    calculatePromotionPrice(data) {
+      var price = 0;
+      var quantity =
+        data.quantity != 0
+          ? data.quantity
+          : this.dosageFilter(data.width.mul(data.height));
+      //首先判断TYPE,1折扣，2定价。然后判断priority
+      if (data.salPromotion) {
+        //一口价
+        if (data.salPromotion.priority == 99) {
+          if (quantity < 1) quantity = 1;
+          price = quantity.mul(data.salPromotion.price);
+        } else {
+          switch (data.salPromotion.type) {
+            case "1":
+              //折扣
+              price = quantity.mul(data.price).mul(data.salPromotion.discount);
+              break;
+            case "2":
+              //定价
+              price = quantity.mul(data.salPromotion.price);
+          }
+        }
+      } else {
+        price = quantity.mul(data.price);
+      }
+      return this.dosageFilter(price);
+    },
+    subtotal(data) {
+      var price = 0;
+      var quantity =
+        data.quantity != 0
+          ? data.quantity
+          : this.dosageFilter(data.width.mul(data.height));
+      price = quantity.mul(data.price);
+      return this.dosageFilter(price);
+    },
   },
   computed: {
     //计算总价
-    totalPrice: function() {
+    totalPrice: function () {
       this.total = 0;
       for (var i = 0; i < this.checkBoxModel.length; i++) {
-        if (this.checkBoxModel[i].quantity) {
-          let sub =
-            this.checkBoxModel[i].price * this.checkBoxModel[i].quantity;
-          this.total +=
-            Math.round(
-              (this.checkBoxModel[i].salPromotion
-                ? this.checkBoxModel[i].salPromotion.type == 1
-                  ? this.checkBoxModel[i].salPromotion.discount * sub
-                  : this.checkBoxModel[i].salPromotion.price *
-                    this.checkBoxModel[i].quantity
-                : sub).mul(100)
-            ) / 100;
-        } else {
-          let sub =
-            this.checkBoxModel[i].price *
-            this.checkBoxModel[i].width.mul(this.checkBoxModel[i].height);
-          this.total +=
-            Math.round(
-              (this.checkBoxModel[i].salPromotion
-                ? this.checkBoxModel[i].salPromotion.type == 1
-                  ? this.checkBoxModel[i].salPromotion.discount * sub
-                  : this.checkBoxModel[i].salPromotion.price *
-                    this.checkBoxModel[i].width.mul(
-                      this.checkBoxModel[i].height
-                    )
-                : sub).mul(100)
-            ) / 100;
-        }
+        this.total += this.calculatePromotionPrice(this.checkBoxModel[i]);
       }
       return this.total;
-    }
+    },
   },
   activated() {
     this.isShowPrice();
     this.cartlist = [];
     this.searchCartList();
-  }
+  },
 };
 </script>
 

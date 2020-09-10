@@ -80,11 +80,7 @@
                   </div>
                   <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
                     <span class="title-left">折后</span>
-                    <span class="title-right title-right2">
-                      {{salPromotion.TYPE == 1?
-                      salPromotion.DISCOUNT * liantou.price
-                      : salPromotion.PRICE | dosageFilter}}元
-                    </span>
+                    <span class="title-right title-right2">{{calculatePromotionPrice(liantou)}}元</span>
                   </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
@@ -226,11 +222,7 @@
                   </div>
                   <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
                     <span class="title-left">折后</span>
-                    <span class="title-right title-right2">
-                      {{salPromotion.TYPE == 1?
-                      salPromotion.DISCOUNT * liantou.price
-                      : salPromotion.PRICE | dosageFilter}}元
-                    </span>
+                    <span class="title-right title-right2">{{calculatePromotionPrice(liantou)}}元</span>
                   </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
@@ -398,11 +390,7 @@
                   </div>
                   <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
                     <span class="title-left">折后</span>
-                    <span class="title-right title-right2">
-                      {{salPromotion.TYPE == 1?
-                      salPromotion.DISCOUNT * liantou.price
-                      : salPromotion.PRICE | dosageFilter}}元
-                    </span>
+                    <span class="title-right title-right2">{{calculatePromotionPrice(liantou)}}元</span>
                   </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
@@ -552,11 +540,7 @@
                   </div>
                   <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
                     <span class="title-left">折后</span>
-                    <span class="title-right title-right2">
-                      {{salPromotion.TYPE == 1?
-                      salPromotion.DISCOUNT * liantou.price
-                      : salPromotion.PRICE | dosageFilter}}元
-                    </span>
+                    <span class="title-right title-right2">{{calculatePromotionPrice(liantou)}}元</span>
                   </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
@@ -711,11 +695,7 @@
                   </div>
                   <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
                     <span class="title-left">折后</span>
-                    <span class="title-right title-right2">
-                      {{salPromotion.TYPE == 1?
-                      salPromotion.DISCOUNT * liantou.price
-                      : salPromotion.PRICE | dosageFilter}}元
-                    </span>
+                    <span class="title-right title-right2">{{calculatePromotionPrice(liantou)}}元</span>
                   </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
@@ -838,7 +818,7 @@ import {
   Icon,
   Pagination,
   Toast,
-  Dialog
+  Dialog,
 } from "vant";
 
 export default {
@@ -858,7 +838,7 @@ export default {
     [Search.name]: Search,
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
-    [Dialog.name]: Dialog
+    [Dialog.name]: Dialog,
   },
   props: ["curtainData", "tableStatus"], //tableStatus 0查看 1
   data() {
@@ -910,7 +890,7 @@ export default {
       dosage: "", //用量
       allData: [],
       showPrice: this.$store.getters.getIsManage != "0",
-      activityOptions: []
+      activityOptions: [],
     };
   },
   filters: {
@@ -922,12 +902,12 @@ export default {
           return "定宽";
       }
       return "--";
-    }
+    },
   },
   computed: {
     salPromotion() {
       var selectActivity = this.activityOptions.filter(
-        item => item.P_ID == this.curtainData.curtains[0].activityId
+        (item) => item.P_ID == this.curtainData.curtains[0].activityId
       );
       if (selectActivity.length) {
         return selectActivity[0];
@@ -965,12 +945,12 @@ export default {
       let totalMoney = 0;
       for (let i = 0; i < _curtainData.length; i++) {
         if (_curtainData[i].choose != false) {
-          totalMoney =  totalMoney.add(this.oneTotal(_curtainData[i]));
+          totalMoney = totalMoney.add(this.oneTotal(_curtainData[i]));
         }
       }
 
       return totalMoney;
-    }
+    },
   },
   methods: {
     backclick() {
@@ -1022,7 +1002,7 @@ export default {
        * 即取消双向绑定，帘头固定
        */
       if (_index >= 1 && _index <= 4) {
-        _arr.forEach(item => {
+        _arr.forEach((item) => {
           if (item.deleteFlag !== "Y" || item.choose === true) {
             flag = false;
           }
@@ -1066,23 +1046,23 @@ export default {
           let data = {
             limit: this.limit,
             page: this.currentPage,
-            itemNO: productType
+            itemNO: productType,
           };
           axios
             .post(url, data)
-            .then(res => {
+            .then((res) => {
               this.itemNolists = res.data.data;
               this.totalPage = Math.ceil(
                 this.itemNolists[0].total / this.limit
               );
               this.pageMark = this.totalPage;
               if (itemType == "pjb") {
-                this.itemNolists.sort(function(a, b) {
+                this.itemNolists.sort(function (a, b) {
                   return a.itemNo > b.itemNo ? 1 : -1; //升序
                 });
               }
             })
-            .catch(err => {
+            .catch((err) => {
               this.itemNolists = [];
               this.totalPage = 0;
               this.pageMark = this.totalPage;
@@ -1090,9 +1070,9 @@ export default {
         } else {
           let url = this.orderBaseUrl + "/item/getGYList.do";
           let data = {
-            itemNO: this.itemNo //所属型号
+            itemNO: this.itemNo, //所属型号
           };
-          axios.post(url, data).then(res => {
+          axios.post(url, data).then((res) => {
             this.itemNolists = res.data.itemList;
             this.totalPage = 1;
             this.pageMark = this.totalPage;
@@ -1115,10 +1095,10 @@ export default {
         parentItemNo: this.itemNo,
         itemNO: liantou.item.itemNo,
         itemType: itemType,
-        fixType: _fixType
+        fixType: _fixType,
       };
       //axios.post(url, data).then(res => {
-      GetDosageByNo(obj).then(res => {
+      GetDosageByNo(obj).then((res) => {
         var keys;
         if (itemType == "lt") keys = Math.round(res.data[0].dosage * 100) / 100;
         else keys = Math.round(res.data[0].dosage * 10) / 10;
@@ -1147,9 +1127,9 @@ export default {
         limit: this.limit,
         page: this.currentPage,
         itemType: this.productType,
-        itemNO: this.inputValue //模糊查询的内容
+        itemNO: this.inputValue, //模糊查询的内容
       };
-      axios.post(url, data).then(res => {
+      axios.post(url, data).then((res) => {
         this.itemNolists = res.data.data;
         if (this.itemNolists.length == 0) {
           this.itemNolists = [];
@@ -1157,7 +1137,7 @@ export default {
           this.totalPage = 1;
           Toast({
             duration: 2000,
-            message: "暂无查询结果"
+            message: "暂无查询结果",
           });
         } else {
           this.totalPage = Math.ceil(this.itemNolists[0].total / this.limit);
@@ -1213,9 +1193,9 @@ export default {
           parentItemNo: this.itemNo,
           itemNO: item.itemNo,
           itemType: this.itemType,
-          fixType: item.fixType //01--定宽，02--定高，如果客户没有修改也要传入默认值，不能为空
+          fixType: item.fixType, //01--定宽，02--定高，如果客户没有修改也要传入默认值，不能为空
         };
-        GetDosageByNo(obj).then(res => {
+        GetDosageByNo(obj).then((res) => {
           var keys;
           if (this.itemType == "lt")
             keys = Math.round(res.data[0].dosage * 100) / 100;
@@ -1233,7 +1213,7 @@ export default {
         if (data[this.index].item.itemNo == "GY-003") {
           data[this.index].dosage = this.allData.GY;
         } else {
-          var mlData = data.filter(item => item.productType == "ML")[0];
+          var mlData = data.filter((item) => item.productType == "ML")[0];
           if (mlData) data[this.index].dosage = mlData.dosage;
         }
       }
@@ -1347,7 +1327,7 @@ export default {
           return "lspb";
       }
     },
-    bigToSmall: function(data) {
+    bigToSmall: function (data) {
       let index = -1;
       switch (data.itemType) {
         case "lt":
@@ -1456,9 +1436,9 @@ export default {
         WBH:
           this.isWBH === false || this.WBH === "" ? "0" : this.WBH.toString(), //帘头外包盒宽度
         multiple: this.multiple.toString(), //褶皱倍数
-        location: this.location
+        location: this.location,
       };
-      axios.post(URL, data).then(async res => {
+      axios.post(URL, data).then(async (res) => {
         let itemLists = res.data.itemList;
         for (let i = 0; i < itemLists.length; i++) {
           var oriData = this.getOrignalArray(itemLists[i].itemType);
@@ -1472,7 +1452,7 @@ export default {
                   itemType: oriData[j].productType,
                   itemNO: oriData[j].item.itemNo,
                   limit: 1,
-                  page: 1
+                  page: 1,
                 };
                 let itemurl =
                   this.orderBaseUrl + "/item/searchCurtainItemTypeAll.do";
@@ -1514,29 +1494,39 @@ export default {
     getActivity() {
       this.activityOptions = [];
       GetPromotionsById({ PID: this.curtainData.curtains[0].activityId }).then(
-        res => {
+        (res) => {
           this.activityOptions = res.data;
         }
       );
     },
     oneTotal(row) {
-      return (
-        Math.round(
-          (this.salPromotion.P_ID
-            ? this.salPromotion.TYPE == 1
-              ? this.salPromotion.DISCOUNT * row.price
-              : this.salPromotion.PRICE
-            : row.price
-          ).mul(100)
-        ) / 100
-      ).mul(row.dosage);
-    }
+      var price = this.dosageFilter(this.calculatePromotionPrice(row));
+      return price.mul(row.dosage);
+    },
+    calculatePromotionPrice(data) {
+      var price = 0;
+      //首先判断TYPE,1折扣，2定价
+      if (this.salPromotion && this.salPromotion.P_ID) {
+        switch (this.salPromotion.TYPE) {
+          case "1":
+            //折扣
+            price = data.price.mul(this.salPromotion.DISCOUNT);
+            break;
+          case "2":
+            //定价
+            price = this.salPromotion.PRICE;
+        }
+      } else {
+        price = data.price;
+      }
+      return this.dosageFilter(price);
+    },
   },
   created() {
     this.getNowData();
     //this.getOldData();
     this.getActivity();
-  }
+  },
 };
 </script>
 

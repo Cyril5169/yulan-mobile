@@ -153,7 +153,7 @@
             </div>
             <div class="good-item3">
               <span>折后金额</span>
-              <span v-if="showPrice" class="hd-after">{{product.activityPrice}}</span>
+              <span v-if="showPrice" class="hd-after">{{product.promotionCost}}</span>
               <span v-else class="hd-after">-***</span>
             </div>
             <div class="good-item3">
@@ -171,7 +171,7 @@
               <span
                 v-if="showPrice"
                 class="hd-after"
-              >{{product.activityPrice - product.mCoupon - product.yCoupon}}</span>
+              >{{product.promotionCost - product.mCoupon - product.yCoupon}}</span>
               <span v-else class="hd-after">***</span>
             </div>
           </div>
@@ -189,14 +189,14 @@
           <tr class="delivery">
             <td class="left">折后总金额</td>
             <td class="right">
-              <span v-if="showPrice">￥{{totalHdPrice}}</span>
+              <span v-if="showPrice">￥{{totalPrice}}</span>
               <span v-else>***</span>
             </td>
           </tr>
           <tr class="delivery">
             <td class="left">总返利</td>
             <td class="right">
-              <span v-if="showPrice">￥{{couponPrice}}</span>
+              <span v-if="showPrice">￥{{backPrice}}</span>
               <span v-else>***</span>
             </td>
           </tr>
@@ -206,7 +206,7 @@
     <div class="bottom-nav" v-show="hidshow">
       <van-submit-bar
         v-if="showPrice"
-        :price="orderPrice * 100"
+        :price="allSpend * 100"
         button-text="提交订单"
         label="应付总金额："
         @submit="wantoSubmit"
@@ -272,7 +272,7 @@
         <span>我的优惠券</span>
       </div>
       <div v-for="(coupon,index) in couponLists" class="allCouponItem" :key="index">
-        <div class="coupon-item" v-if="coupon.canUse">
+        <div class="coupon-item" v-if="canUseConpon(coupon)">
           <div class="coupon-top">
             <div class="coupon-notes">{{coupon.notes}}</div>
             <div class="coupon-allmoney">总面值{{coupon.rebateMoney}}元</div>
@@ -312,7 +312,7 @@
             <span @click="couponRecord(coupon.id)">查看返利记录>></span>
           </div>
 
-          <div style="margin-top:50px;">由于活动："{{ activityArray.ORDER_NAME }}"，该优惠券无法使用</div>
+          <div style="margin-top:50px;">由于活动："{{ salPromotion.ORDER_NAME }}"，该优惠券无法使用</div>
         </div>
       </div>
       <div class="confirmCoupon" @click="backCoupon">确认</div>
@@ -511,7 +511,7 @@ import {
   CellGroup,
   AddressList,
   Loading,
-  Uploader
+  Uploader,
 } from "vant";
 import {
   orderSettlement,
@@ -521,7 +521,8 @@ import {
   getTotalRecordSum,
   GetPromotionsById,
   UploadBuyUserFiles,
-  GetBuyUserInfo
+  GetBuyUserInfo,
+  GetPromotionByTypeAndId,
 } from "@/api/orderListASP";
 import newAddress from "./NewAddress";
 import buyserNewAddress from "./buyserNewAddress";
@@ -540,8 +541,8 @@ const coupon = [
     value: 150,
     name: "优惠券名称",
     startAt: 1489104000,
-    endAt: 1514592000
-  }
+    endAt: 1514592000,
+  },
 ];
 export default {
   name: "fillOrder",
@@ -564,7 +565,7 @@ export default {
     [Dialog.name]: Dialog,
     [AddressList.name]: AddressList,
     [Loading.name]: Loading,
-    [Uploader.name]: Uploader
+    [Uploader.name]: Uploader,
   },
   data() {
     return {
@@ -604,8 +605,6 @@ export default {
       huodprice: [],
       //所有商品活动后总价(数组)
       allHdPrice: [],
-      //所有商品的活动后总价相加
-      totalHdPrice: 0,
       // 产品明细(数组)
       allProduct: this.$store.getters.getOrderProduct,
       //运输备注
@@ -646,25 +645,36 @@ export default {
       couponBox: [], //选择的优惠券
       Ycoupon: "", //年返利券
       Mcoupon: "", //月返利券
-      needNum: "",
-      orderPrice: 0, //订单总价
       hdAllPrice: null, //活动后所有商品总价
-      couponPrice: 0, //返利券总价
+      backPrice: 0, //返利券总价
       docmHeight: document.documentElement.clientHeight, //默认屏幕高度
       showHeight: document.documentElement.clientHeight, //实时屏幕高度
       hidshow: true, //显示或者隐藏footer
       loading: false,
       accMoney: 0,
-      activityArray: [], //活动集合
       isX: false, //是否窗帘订单
       orderNo: "",
-      fileList: []
+      fileList: [],
+      salPromotion: {
+        P_ID: "",
+      },
+      arrearsFlag: "",
     };
   },
   computed: {
     showPrice() {
       return this.$store.getters.getIsManage != "0";
-    }
+    },
+    totalPrice() {
+      var allcost = 0;
+      for (var i = 0; i < this.allProduct.length; i++) {
+        allcost = allcost.add(this.allProduct[i].promotionCost);
+      }
+      return allcost;
+    },
+    allSpend: function () {
+      return this.totalPrice - this.backPrice;
+    },
   },
   filters: {
     datatrans(value) {
@@ -682,12 +692,12 @@ export default {
       let s = date.getSeconds();
       s = s < 10 ? "0" + s : s;
       return y + "-" + MM + "-" + d + " " + h + ":" + m + ":" + s;
-    }
+    },
   },
   methods: {
     toAddList() {
       this.$router.push({
-        path: "/addresslist"
+        path: "/addresslist",
       });
     },
     onChange(index) {
@@ -719,57 +729,14 @@ export default {
           "/activityGroupType/getActivityGroupTypeByName.do?" +
           "name=" +
           hd;
-        axios.post(hdUrl).then(data => {
+        axios.post(hdUrl).then((data) => {
           return data.data.value;
         });
       }
     },
-    //获取活动后总价
-    activityPrice() {
-      let priceUrl = this.orderBaseUrl + "/order/getPromotion.do";
-      this.huodprice = [];
-      for (var i = 0; i < this.allProduct.length; i++) {
-        if (this.allProduct[i].activityId == null) {
-          this.allProduct[i].activityId = "";
-        } else {
-          if (
-            this.activityArray.indexOf(this.allProduct[i].activityId) == -1 &&
-            this.allProduct[i].activityId
-          )
-            //活动集合
-            this.activityArray.push(this.allProduct[i].activityId);
-        }
-        if (this.allProduct[i].quantity) {
-          this.allProduct[i].needNum = this.allProduct[i].quantity;
-        } else {
-          this.allProduct[i].needNum =
-            this.allProduct[i].width * this.allProduct[i].height;
-        }
-        let hdprice = {
-          pId: this.allProduct[i].activityId, //活动编号
-          order_no: this.allProduct[i].item.itemNo, //产品型号
-          prime_cost: this.allProduct[i].price * this.allProduct[i].needNum, //原总价
-          num: this.allProduct[i].needNum //商品总数
-        };
-        this.huodprice.push(hdprice);
-      }
-      axios.post(priceUrl, this.huodprice).then(data => {
-        for (var i = 0; i < this.allProduct.length; i++) {
-          this.allProduct[i].activityPrice =
-            Math.round(data.data.data[i].promotion_cost.mul(100)) / 100;
-          this.totalHdPrice = this.totalHdPrice.add(
-            parseFloat(this.allProduct[i].activityPrice)
-          );
-        }
-        this.orderPrice = this.totalHdPrice;
-      });
-    },
     wantoSubmit() {
-      if (this.allProduct[0].salPromotion) {
-        if (
-          this.allProduct[0].salPromotion.arrearsFlag == "N" ||
-          this.orderPrice == 0
-        ) {
+      if (this.salPromotion.P_ID) {
+        if (this.arrearsFlag == "N" || this.allSpend == 0) {
           this.onSubmitOrder();
         } else {
           this.enoughMony();
@@ -782,17 +749,17 @@ export default {
     enoughMony() {
       let monUrl = this.orderBaseUrl + "/order/getResidemoney.do";
       let mondata = {
-        companyId: this.$store.getters.getCMId
+        companyId: this.$store.getters.getCMId,
       };
-      axios.post(monUrl, mondata).then(val => {
-        if (val.data.data >= Math.round(this.orderPrice.mul(100)) / 100) {
+      axios.post(monUrl, mondata).then((val) => {
+        if (val.data.data >= Math.round(this.allSpend.mul(100)) / 100) {
           this.onSubmitOrder();
         } else {
           Dialog.confirm({
             message: "余额不足，是否继续提交？",
             closeOnClickOverlay: true,
             confirmButtonText: "提交",
-            cancelButtonText: "返回"
+            cancelButtonText: "返回",
           })
             .then(() => {
               this.onSubmitOrder();
@@ -802,7 +769,7 @@ export default {
               // on cancel
               Toast({
                 duration: 1000,
-                message: "取消提交订单"
+                message: "取消提交订单",
               });
             });
         }
@@ -820,7 +787,7 @@ export default {
       if (this.delInput == false && this.deliveryBei == "") {
         Toast({
           duration: 2000,
-          message: "请填写物流公司"
+          message: "请填写物流公司",
         });
         return;
       }
@@ -853,7 +820,7 @@ export default {
           this.fileList[i].file.name +
           ";";
       }
-      if (this.activityArray.BUYER_FLAG == 1) {
+      if (this.salPromotion.BUYER_FLAG == 1) {
         //要填写购买人信息
         if (
           !this.buyUser ||
@@ -865,14 +832,14 @@ export default {
         ) {
           Toast({
             duration: 2000,
-            message: "请填写完整的购买用户信息"
+            message: "请填写完整的购买用户信息",
           });
           return;
         }
         if (!this.buyUserPicture) {
           Toast({
             duration: 2000,
-            message: "请上传购买凭证"
+            message: "请上传购买凭证",
           });
           return;
         }
@@ -901,13 +868,12 @@ export default {
         singleProduct.itemNoSample = this.allProduct[i].item.itemNo;
         singleProduct.partSendId = this.allProduct[i].splitShipment;
         singleProduct.productionVersion = this.allProduct[i].item.itemVersion;
-        singleProduct.qtyRequired = this.allProduct[i].needNum.toFixed(2);
+        singleProduct.qtyRequired = this.allProduct[i].qtyRequired;
         singleProduct.notes = this.allProduct[i].note;
         singleProduct.unitPrice = this.allProduct[i].price;
-        singleProduct.promotionCost = this.allProduct[i].activityPrice;
-        singleProduct.promotion = this.allProduct[i].newactivityId
-          ? this.allProduct[i].newactivityId
-          : "无";
+        singleProduct.promotionCost = this.allProduct[i].promotionCost;
+        singleProduct.finalPrice = this.allProduct[i].promotionCost;
+        singleProduct.promotion = this.allProduct[i].newactivityId;
         if (this.allProduct[i].salPromotion) {
           singleProduct.pId = this.allProduct[i].salPromotion.pId;
           singleProduct.promotionType = this.allProduct[
@@ -916,12 +882,7 @@ export default {
           singleProduct.flagFlType = this.allProduct[i].salPromotion.flagFl;
         }
         singleProduct.unit = this.allProduct[i].unit;
-        if (this.allProduct[i].onlineSalesAmount !== null) {
-          singleProduct.onlineSalesAmount = this.allProduct[
-            i
-          ].onlineSalesAmount;
-        }
-        singleProduct.finalPrice = this.allProduct[i].activityPrice;
+        singleProduct.onlineSalesAmount = this.allProduct[i].onlineSalesAmount;
         this.productList.push(singleProduct);
       }
       var reg = /.+?(省|市|自治区|自治州|县|区)/g;
@@ -933,9 +894,6 @@ export default {
         addsressAry = ["", "", ""];
       } else {
         addsressAry = this.address.address.match(reg);
-      }
-      if (this.allProduct[0].salPromotion) {
-        this.allProduct[0].salPromotion = this.allProduct[0].salPromotion.arrearsFlag;
       }
       //删除购物车数据
       var deleteArray = [];
@@ -951,13 +909,13 @@ export default {
       let orderUrl = this.orderBaseUrl + "/order/orderCount.do";
       let data = {
         product_group_tpye: this.allProduct[0].item.groupType,
-        promotion_cost: this.totalHdPrice,
+        promotion_cost: this.totalPrice,
         // "cid": "C01613",
         cid: this.$store.getters.getCId,
         companyId: this.$store.getters.getCMId,
         rebateY: this.Ycoupon,
         rebateM: this.Mcoupon,
-        arrearsFlag: this.allProduct[0].salPromotion, //活动字段(用来判断是否需要判断余额)，Y或N,无时传null
+        arrearsFlag: this.arrearsFlag, //活动字段(用来判断是否需要判断余额)，Y或N,无时传null
         ctm_order: {
           orderNo: this.orderNo,
           deliveryNotes: this.deliveryBei, //（可不传）
@@ -966,7 +924,7 @@ export default {
           notes: this.orderBei,
           wlContacts: this.address.name,
           wlTel: this.address.tel,
-          allSpend: this.totalHdPrice,
+          allSpend: this.totalPrice,
           deliveryFlag: "0",
           deliveryType: this.deliveryTypeCode,
           invoiceFlag: "0",
@@ -983,49 +941,53 @@ export default {
           buyUserArea2: this.buyUserArea2,
           buyUserArea3: this.buyUserArea3,
           buyUserPostAddress: this.buyUserPostAddress,
-          packingNote: this.packingNote
+          packingNote: this.packingNote,
         },
         ctm_orders: this.productList,
         cartItemIDs: deleteArray,
-        device: window.plus ? window.plus.os.name : "app"
+        device: window.plus ? window.plus.os.name : "app",
       };
       if (this.isX) {
         //窗帘提交
-        orderSettlement(data).then(data => {
-          Toast({
-            duration: 2000,
-            message: "提交订单成功"
+        orderSettlement(data)
+          .then((data) => {
+            Toast({
+              duration: 2000,
+              message: "提交订单成功",
+            });
+            this.$router.push({
+              name: "myorder",
+              params: {
+                refresh: true,
+              },
+            });
+          })
+          .catch((res) => {
+            Toast({
+              duration: 2000,
+              message: res.msg,
+            });
           });
-          this.$router.push({
-            name: "myorder",
-            params: {
-              refresh: true
-            }
-          });
-        }).catch(res=>{
-          Toast({
-            duration: 2000,
-            message: res.msg
-          });
-        });
       } else {
-        normalOrderSettlement(data).then(data => {
-          Toast({
-            duration: 2000,
-            message: "提交订单成功"
+        normalOrderSettlement(data)
+          .then((data) => {
+            Toast({
+              duration: 2000,
+              message: "提交订单成功",
+            });
+            this.$router.push({
+              name: "myorder",
+              params: {
+                refresh: true,
+              },
+            });
+          })
+          .catch((res) => {
+            Toast({
+              duration: 2000,
+              message: res.msg,
+            });
           });
-          this.$router.push({
-            name: "myorder",
-            params: {
-              refresh: true
-            }
-          });
-        }).catch(res=>{
-          Toast({
-            duration: 2000,
-            message: res.msg
-          });
-        });
       }
     },
     //生成订单后删除购物车的信息
@@ -1035,9 +997,9 @@ export default {
       for (let i = 0; i < this.allProduct.length; i++) {
         commodityID.push(this.allProduct[i].id);
       }
-      axios.post(url, commodityID).then(res => {
+      axios.post(url, commodityID).then((res) => {
         this.$router.push({
-          path: "/myorder"
+          path: "/myorder",
         });
       });
     },
@@ -1048,63 +1010,53 @@ export default {
         // "cid": "C01613",//登录客户号
         cid: this.$store.getters.getCId,
         companyId: this.$store.getters.getCMId,
-        typeId: this.allProduct[0].item.groupType //商品种类
+        typeId: this.allProduct[0].item.groupType, //商品种类
       };
-      axios.post(url, data).then(data => {
-        GetPromotionsById({ PID: this.activityArray }).then(ress => {
-          if (ress.data.length > 0) {
-            this.activityArray = ress.data[0]; //一般只有一个活动参与结算
+      axios.post(url, data).then((data) => {
+        //优惠券列表（数组）
+        for (let k = 0; k < data.data.data.length; k++) {
+          if (
+            data.data.data[k].dateId == null ||
+            data.data.data[k].dateId == "1"
+          ) {
+            this.couponLists.push(data.data.data[k]);
           }
-          //优惠券列表（数组）
-          for (let k = 0; k < data.data.data.length; k++) {
-            if (
-              data.data.data[k].dateId == null ||
-              data.data.data[k].dateId == "1"
-            ) {
-              this.couponLists.push(data.data.data[k]);
+        }
+        if (this.couponLists.length == 0) {
+          this.myCoupon = "暂无返利券";
+          this.haveCoupn = false;
+        } else {
+          this.myCoupon = "选择返利券";
+          this.haveCoupn = true;
+          for (let i = 0; i < this.couponLists.length; i++) {
+            if (this.couponLists[i].rebateType == "year") {
+              this.couponLists[i].rebateType = "年返利券";
+            } else {
+              this.couponLists[i].rebateType = "月返利券";
             }
+            this.couponLists[i].dateStart = this.dataExchange(
+              this.couponLists[i].dateStart
+            );
+            this.couponLists[i].dateEnd = this.dataExchange(
+              this.couponLists[i].dateEnd
+            );
           }
-          if (this.couponLists.length == 0) {
-            this.myCoupon = "暂无返利券";
-            this.haveCoupn = false;
-          } else {
-            this.myCoupon = "选择返利券";
-            this.haveCoupn = true;
-            for (let i = 0; i < this.couponLists.length; i++) {
-              this.couponLists[i].canUse = true;
-              if (this.couponLists[i].rebateType == "year") {
-                this.couponLists[i].rebateType = "年返利券";
-              } else {
-                this.couponLists[i].rebateType = "月返利券";
-              }
-              this.couponLists[i].dateStart = this.dataExchange(
-                this.couponLists[i].dateStart
-              );
-              this.couponLists[i].dateEnd = this.dataExchange(
-                this.couponLists[i].dateEnd
-              );
-            }
-            if (ress.data.length > 0) {
-              for (let i = 0; i < this.couponLists.length; i++) {
-                if (this.activityArray.REBATE_FLAG == "N") {
-                  //不能使用优惠券
-                  this.couponLists[i].canUse = false;
-                } else {
-                  if (
-                    this.couponLists[i].rebateType ==
-                      this.activityArray.REBATE_TYPE ||
-                    this.activityArray.REBATE_TYPE == "all"
-                  ) {
-                    this.couponLists[i].canUse = true;
-                  } else {
-                    this.couponLists[i].canUse = false;
-                  }
-                }
-              }
-            }
-          }
-        });
+        }
       });
+    },
+    canUseConpon(couponData) {
+      if (this.salPromotion.P_ID) {
+        if (this.salPromotion.REBATE_FLAG == "N") {
+          return false;
+        }
+        if (
+          couponData.rebateType != this.salPromotion.REBATE_TYPE &&
+          this.salPromotion.REBATE_TYPE != "all"
+        ) {
+          return false;
+        }
+      }
+      return true;
     },
     //是否有优惠券
     isshowCoupon() {
@@ -1134,10 +1086,10 @@ export default {
         singleProduct.itemNoSample = this.allProduct[i].item.itemNo;
         singleProduct.partSendId = this.allProduct[i].splitShipment;
         singleProduct.productionVersion = this.allProduct[i].item.itemVersion;
-        singleProduct.qtyRequired = this.allProduct[i].needNum.toFixed(2);
+        singleProduct.qtyRequired = this.allProduct[i].qtyRequired;
         singleProduct.notes = this.allProduct[i].note;
         singleProduct.unitPrice = this.allProduct[i].price;
-        singleProduct.promotionCost = this.allProduct[i].activityPrice;
+        singleProduct.promotionCost = this.allProduct[i].promotionCost;
         singleProduct.promotion = this.allProduct[i].newactivityId;
 
         this.productList.push(singleProduct);
@@ -1167,7 +1119,7 @@ export default {
       let orderUrl = this.orderBaseUrl + "/order/showRebate.do";
       let data = {
         product_group_tpye: this.allProduct[0].item.groupType,
-        promotion_cost: this.totalHdPrice,
+        promotion_cost: this.totalPrice,
         // "cid": "C01613",
         cid: this.$store.getters.getCId,
         rebateY: this.Ycoupon,
@@ -1179,7 +1131,7 @@ export default {
           notes: this.orderBei,
           wlContacts: this.address.name,
           wlTel: this.address.tel,
-          allSpend: this.totalHdPrice,
+          allSpend: this.totalPrice,
           deliveryFlag: "0",
           deliveryType: this.deliveryTypeCode,
           invoiceFlag: "0",
@@ -1195,11 +1147,11 @@ export default {
           buyUserArea1: this.buyUserArea1,
           buyUserArea2: this.buyUserArea2,
           buyUserArea3: this.buyUserArea3,
-          buyUserPostAddress: this.buyUserPostAddress
+          buyUserPostAddress: this.buyUserPostAddress,
         },
-        ctm_orders: this.productList
+        ctm_orders: this.productList,
       };
-      axios.post(orderUrl, data).then(val => {
+      axios.post(orderUrl, data).then((val) => {
         if (val.data.code == 0) {
           for (let i = 0; i < val.data.data.rebate.length; i++) {
             this.allProduct[i].mCoupon =
@@ -1222,14 +1174,8 @@ export default {
           } else {
             this.myCoupon = "选择返利券";
           }
-          this.couponPrice =
+          this.backPrice =
             val.data.data.allRebateMonth + val.data.data.allRebateYear;
-          if (this.myCoupon == "选择返利券") {
-            this.orderPrice = this.totalHdPrice;
-          } else {
-            // this.orderPrice = this.totalHdPrice - this.couponPrice
-            this.orderPrice = val.data.data.allspend;
-          }
           this.showCoupon = false;
         }
       });
@@ -1256,9 +1202,9 @@ export default {
       let url = this.orderBaseUrl + "/postAddress/getPostAddress.do";
       let data = {
         // "cid": "C01613"
-        cid: this.$store.getters.getCId
+        cid: this.$store.getters.getCId,
       };
-      axios.post(url, data).then(value => {
+      axios.post(url, data).then((value) => {
         this.allAddress = value.data.data;
         for (let i = 0; i < this.allAddress.length; i++) {
           this.allAddress[i].id = this.allAddress[i].addressId;
@@ -1335,8 +1281,8 @@ export default {
         cid: this.$store.getters.getCId,
         condition: "",
         page: 1,
-        limit: 99999
-      }).then(res => {
+        limit: 99999,
+      }).then((res) => {
         this.allBuyserAddress = res.data;
         for (let i = 0; i < this.allBuyserAddress.length; i++) {
           this.allBuyserAddress[i].id = this.allBuyserAddress[i].ADDRESS_ID;
@@ -1435,7 +1381,7 @@ export default {
     },
     //优惠券使用记录
     UseRecord(couponId) {
-      getTotalRecordSum({ couponId: couponId }).then(res => {
+      getTotalRecordSum({ couponId: couponId }).then((res) => {
         this.accMoney = res.data;
       });
       var data = {
@@ -1444,52 +1390,32 @@ export default {
         beginTime: "0001/1/1",
         finishTime: "9999/12/31",
         page: 1,
-        limit: 10000
+        limit: 10000,
       };
-      getUseRecord(data).then(res => {
+      getUseRecord(data).then((res) => {
         this.allCouponRecord = res.data;
         if (this.allCouponRecord.length == 0) {
           Toast({
             duration: 2000,
-            message: "暂无使用记录"
+            message: "暂无使用记录",
           });
           return;
         }
         this.showUseCouponRecord = true;
       });
-      // let idurl = this.orderBaseUrl + "/order/findRecrods.do";
-      // let data = {
-      //   id: couponId //优惠券id
-      // };
-      // axios.post(idurl, data).then(res => {
-      //   this.allCouponRecord = res.data.data;
-      //   if (this.allCouponRecord.length == 0) {
-      //     Toast({
-      //       duration: 2000,
-      //       message: "暂无使用记录"
-      //     });
-      //     return;
-      //   }
-      //   for (let i = 0; i < this.allCouponRecord.length; i++) {
-      //     this.allCouponRecord[i].dateUse = this.dataExchange(
-      //       this.allCouponRecord[i].dateUse
-      //     );
-      //   }
-      //   this.showUseCouponRecord = true;
-      // });
     },
     //优惠券返利记录
     couponRecord(couponId) {
       let idurl = this.orderBaseUrl + "/order/getReturnRecord.do";
       let data = {
-        id: couponId //优惠券id
+        id: couponId, //优惠券id
       };
-      axios.post(idurl, data).then(res => {
+      axios.post(idurl, data).then((res) => {
         this.allflRecord = res.data.data;
         if (this.allflRecord.length == 0) {
           Toast({
             duration: 2000,
-            message: "暂无返利记录"
+            message: "暂无返利记录",
           });
           return;
         }
@@ -1514,12 +1440,21 @@ export default {
     },
     //  初始化返利券
     initFl() {
-      this.allProduct.forEach(function(singleProduct) {
+      this.allProduct.forEach(function (singleProduct) {
         singleProduct.mCoupon = "0.00";
         singleProduct.yCoupon = "0.00";
       });
     },
-    getOrderHead() {
+    subtotal(data) {
+      var price = 0;
+      var quantity =
+        data.quantity != 0
+          ? data.quantity
+          : this.dosageFilter(data.width.mul(data.height));
+      price = quantity.mul(data.price);
+      return this.dosageFilter(price);
+    },
+    getOrderInfo() {
       var orderHead = this.$store.getters.getOrderHead;
       if (this.allProduct[0].orderNumber) {
         //窗帘重新提交本身有表头数据，加载默认数据
@@ -1552,11 +1487,62 @@ export default {
             var fileName = list[i].substr(index + 1);
             this.fileList.push({
               file: { name: fileName },
-              url: this.baseUrlASP + list[i]
+              url: this.baseUrlASP + list[i],
             });
           }
         }
       }
+      for (var i = 0; i < this.allProduct.length; i++) {
+        this.$set(this.allProduct[i], "qtyRequired", this.allProduct[i].quantity
+          ? this.allProduct[i].quantity
+          : this.dosageFilter(
+              this.allProduct[i].width.mul(this.allProduct[i].height)
+            ));
+        this.$set(this.allProduct[i], "promotionCost", this.subtotal(this.allProduct[i]));
+      }
+    },
+    //获取活动后总价
+    getActivityPrice() {
+      this.salPromotion.P_ID = this.allProduct[0].activityId;
+      if (this.salPromotion.P_ID) {
+        GetPromotionByTypeAndId({ pId: this.salPromotion.P_ID }).then((res) => {
+          this.salPromotion = res.data;
+          this.arrearsFlag = this.salPromotion.ARREARS_FLAG;
+          for (var i = 0; i < this.allProduct.length; i++) {
+            var price = this.calculatePromotionPrice(this.allProduct[i]);
+            this.allProduct[i].promotionCost = price;
+          }
+        });
+      } else {
+        this.arrearsFlag = null;
+      }
+    },
+    calculatePromotionPrice(data) {
+      var price = 0;
+      var quantity = data.qtyRequired;
+      //首先判断TYPE,1折扣，2定价。然后判断priority
+      if (this.salPromotion && this.salPromotion.P_ID) {
+        //一口价
+        if (this.salPromotion.PRIORITY == 99) {
+          if (quantity < 1) quantity = 1;
+          price = quantity.mul(this.salPromotion.PRICE);
+        } else {
+          switch (this.salPromotion.TYPE) {
+            case "1":
+              //折扣
+              price = quantity
+                .mul(data.price)
+                .mul(this.salPromotion.DISCOUNT);
+              break;
+            case "2":
+              //定价
+              price = quantity.mul(this.salPromotion.PRICE);
+          }
+        }
+      } else {
+        price = quantity.mul(data.price);
+      }
+      return this.dosageFilter(price);
     },
     onRead(file) {
       let content = file.file;
@@ -1564,13 +1550,8 @@ export default {
       data.append("file", content);
       data.append("cid", this.$store.getters.getCId);
       UploadBuyUserFiles(data);
-    }
+    },
   },
-  // beforeRouteEnter(to, from, next) {
-  //   next(vm => {
-  //     vm.getAddress(from.path);
-  //   });
-  // },
   created() {
     if (this.$route.params.isX) this.isX = this.$route.params.isX;
     if (
@@ -1579,9 +1560,9 @@ export default {
     )
       this.packingShow = true;
     else this.packingShow = false;
-    this.getOrderHead();
+    this.getOrderInfo();
+    this.getActivityPrice();
     this.getAddress();
-    this.activityPrice();
     this.initFl();
     //获取优惠券信息
     this.getCoupon();
@@ -1595,7 +1576,7 @@ export default {
     };
   },
   watch: {
-    showHeight: function() {
+    showHeight: function () {
       if (this.docmHeight > this.showHeight) {
         this.hidshow = false;
       } else {
@@ -1603,14 +1584,14 @@ export default {
       }
     },
     //物流备注
-    deliveryType: function() {
+    deliveryType: function () {
       if (this.deliveryType == "普通物流(运费由甲方支付)") {
         this.deliveryBei = "";
         this.delInput = true;
       } else {
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

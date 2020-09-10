@@ -751,7 +751,7 @@ export default {
                 });
                 if (!res.data) {
                   Dialog.alert({
-                    message: `活动‘&${item.ORDERBODY[i].PROMOTION}’不存在`
+                    message: `活动‘${item.ORDERBODY[i].PROMOTION}’不存在`
                   }).then(() => {});
                   return;
                 }
@@ -760,7 +760,7 @@ export default {
                   res.data.USE_ID == "0"
                 ) {
                   Dialog.alert({
-                    message: `活动‘&${item.ORDERBODY[i].PROMOTION}’已过期，请删除订单后重新下单`
+                    message: `活动‘${item.ORDERBODY[i].PROMOTION}’已过期，请删除订单后重新下单`
                   }).then(() => {});
                   return;
                 }
@@ -839,12 +839,8 @@ export default {
         transCookies[i].price = price;
         transCookies[i].splitShipment = orderBody[i].PART_SEND_ID;
         transCookies[i].newactivityId = orderBody[i].PROMOTION;
-        transCookies[i].unit = item.ORDERBODY[i].UNIT;
-        transCookies[i].item = item.ORDERBODY[i].item;
-        transCookies[i].salPromotion = new Object();
-        transCookies[i].salPromotion.orderType = orderBody[i].PROMOTION_TYPE;
-        transCookies[i].salPromotion.arrearsFlag = orderHead.ARREARSFLAG;
-        transCookies[i].salPromotion.flagFl = orderBody[i].FLAG_FL_TYPE;
+        transCookies[i].unit = orderBody[i].UNIT;
+        transCookies[i].item = orderBody[i].item;
       }
       this.$store.commit("setOrderProduct", transCookies);
       this.$store.commit("setOrderHead", orderHead);

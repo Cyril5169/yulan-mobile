@@ -237,3 +237,7 @@ Vue.filter('dosageFilter', data => {
   if (typeof (data) !== 'number') return '';
   return Math.round(data.mul(100)) / 100;
 })
+Vue.prototype.dosageFilter = data => {
+  if (typeof (data) !== 'number') return '';
+  return Math.round(data.mul(100)) / 100;
+}
