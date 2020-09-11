@@ -883,6 +883,9 @@ export default {
         }
         singleProduct.unit = this.allProduct[i].unit;
         singleProduct.onlineSalesAmount = this.allProduct[i].onlineSalesAmount;
+        //一口价
+        singleProduct.batchNo = this.allProduct[i].batchNo;
+        singleProduct.stockNo = this.allProduct[i].stockNo;
         this.productList.push(singleProduct);
       }
       var reg = /.+?(省|市|自治区|自治州|县|区)/g;
@@ -1438,13 +1441,6 @@ export default {
         this.showCouponRecord = true;
       });
     },
-    //  初始化返利券
-    initFl() {
-      this.allProduct.forEach(function (singleProduct) {
-        singleProduct.mCoupon = "0.00";
-        singleProduct.yCoupon = "0.00";
-      });
-    },
     subtotal(data) {
       var price = 0;
       var quantity =
@@ -1499,6 +1495,8 @@ export default {
               this.allProduct[i].width.mul(this.allProduct[i].height)
             ));
         this.$set(this.allProduct[i], "promotionCost", this.subtotal(this.allProduct[i]));
+        this.$set(this.allProduct[i], "mCoupon", "0.00");
+        this.$set(this.allProduct[i], "yCoupon", "0.00");
       }
     },
     //获取活动后总价
@@ -1563,7 +1561,6 @@ export default {
     this.getOrderInfo();
     this.getActivityPrice();
     this.getAddress();
-    this.initFl();
     //获取优惠券信息
     this.getCoupon();
   },
