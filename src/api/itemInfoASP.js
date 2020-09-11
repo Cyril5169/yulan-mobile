@@ -72,6 +72,21 @@ export function GetWallpaperInfo(CID, ITEM_NO, type) {
         return Promise.reject(err)
     })
 }
+//一口价
+export function GetFixPriceShopsByCondition(data, config = {}) {
+    return post('/SAL_PROMOTION_SPECIAL/GetFixPriceShopsByCondition', data, config).then(res => {
+        return Promise.resolve(res);
+    }).catch(err => {
+        return Promise.reject(err)
+    })
+}
+export function GetFixPriceShopsByItemNo(data, config = {}) {
+    return post('/SAL_PROMOTION_SPECIAL/GetFixPriceShopsByItemNo', data, config).then(res => {
+        return Promise.resolve(res);
+    }).catch(err => {
+        return Promise.reject(err)
+    })
+}
 //获得报备
 export function GetSalPutonRecord(data, config = {}) {
     return post('/ITEM/GetSalPutonRecord', data, config).then((res) => {
