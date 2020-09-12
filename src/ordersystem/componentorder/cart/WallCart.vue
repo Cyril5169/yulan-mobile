@@ -279,32 +279,20 @@ export default {
     checkActiviyEffect(group) {
       for (let i = 0; i < group.commodities.length; i++) {
         var product = group.commodities[i];
-        if (product.activityEffective == false) {
-          return true;
-        } else {
-          let val = product.quantity
-            ? product.quantity
-            : product.width.mul(product.height);
-          if (val < product.item.minimumPurchase) {
-            return true;
-          }
-        }
+        return this.checkActiviyEffect2(product);
       }
       return false;
     },
     checkActiviyEffect2(product) {
-      if (product.activityEffective == false) {
-        return true;
-      } else {
-        let val = product.quantity
-          ? product.quantity
-          : product.width.mul(product.height);
-        if (val < product.item.minimumPurchase) {
-          return true;
-        } else {
-          return false;
-        }
-      }
+      var activityShow = true;
+      var miniNumberShow = true;
+      var fixPriceShow = true;
+
+      activityShow = product.activityEffective;
+      var quantity = product.quantity ? product.quantity : product.width.mul(product.height);
+      miniNumberShow = quantity >= product.item.minimumPurchase;
+      fixPriceShow = product.fixPriceShopEffective;
+      return !(activityShow && miniNumberShow && fixPriceShow);
     },
     //订单填写
     fillOrder() {

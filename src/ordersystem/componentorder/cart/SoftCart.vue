@@ -281,16 +281,7 @@ export default {
     checkActiviyEffect(group) {
       for (let i = 0; i < group.commodities.length; i++) {
         var product = group.commodities[i];
-        if (group.commodities[i].activityEffective == false) {
-          return true;
-        } else {
-          let val = product.quantity
-            ? product.quantity
-            : product.width.mul(product.height);
-          if (val < group.commodities[i].item.minimumPurchase) {
-            return true;
-          }
-        }
+        return this.checkActiviyEffect2(product);
       }
       return false;
     },

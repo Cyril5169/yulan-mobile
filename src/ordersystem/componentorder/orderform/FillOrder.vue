@@ -874,13 +874,9 @@ export default {
         singleProduct.promotionCost = this.allProduct[i].promotionCost;
         singleProduct.finalPrice = this.allProduct[i].promotionCost;
         singleProduct.promotion = this.allProduct[i].newactivityId;
-        if (this.allProduct[i].salPromotion) {
-          singleProduct.pId = this.allProduct[i].salPromotion.pId;
-          singleProduct.promotionType = this.allProduct[
-            i
-          ].salPromotion.orderType;
-          singleProduct.flagFlType = this.allProduct[i].salPromotion.flagFl;
-        }
+        singleProduct.pId = this.allProduct[i].pId;
+        singleProduct.promotionType = this.allProduct[i].promotionType;
+        singleProduct.flagFlType = this.allProduct[i].flagFlType;
         singleProduct.unit = this.allProduct[i].unit;
         singleProduct.onlineSalesAmount = this.allProduct[i].onlineSalesAmount;
         //一口价
@@ -1489,12 +1485,20 @@ export default {
         }
       }
       for (var i = 0; i < this.allProduct.length; i++) {
-        this.$set(this.allProduct[i], "qtyRequired", this.allProduct[i].quantity
-          ? this.allProduct[i].quantity
-          : this.dosageFilter(
-              this.allProduct[i].width.mul(this.allProduct[i].height)
-            ));
-        this.$set(this.allProduct[i], "promotionCost", this.subtotal(this.allProduct[i]));
+        this.$set(
+          this.allProduct[i],
+          "qtyRequired",
+          this.allProduct[i].quantity
+            ? this.allProduct[i].quantity
+            : this.dosageFilter(
+                this.allProduct[i].width.mul(this.allProduct[i].height)
+              )
+        );
+        this.$set(
+          this.allProduct[i],
+          "promotionCost",
+          this.subtotal(this.allProduct[i])
+        );
         this.$set(this.allProduct[i], "mCoupon", "0.00");
         this.$set(this.allProduct[i], "yCoupon", "0.00");
       }
@@ -1507,6 +1511,10 @@ export default {
           this.salPromotion = res.data;
           this.arrearsFlag = this.salPromotion.ARREARS_FLAG;
           for (var i = 0; i < this.allProduct.length; i++) {
+            this.allProduct[i].pId = this.salPromotion.P_ID;
+            this.allProduct[i].promotionType = this.salPromotion.ORDER_TYPE;
+            this.allProduct[i].flagFlType = this.salPromotion.FLAG_FL_TYPE;
+
             var price = this.calculatePromotionPrice(this.allProduct[i]);
             this.allProduct[i].promotionCost = price;
           }
@@ -1528,9 +1536,7 @@ export default {
           switch (this.salPromotion.TYPE) {
             case "1":
               //折扣
-              price = quantity
-                .mul(data.price)
-                .mul(this.salPromotion.DISCOUNT);
+              price = quantity.mul(data.price).mul(this.salPromotion.DISCOUNT);
               break;
             case "2":
               //定价

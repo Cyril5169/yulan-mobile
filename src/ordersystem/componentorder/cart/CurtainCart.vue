@@ -22,7 +22,7 @@
               group.activityGroupType ? group.activityGroupType : "Z"
               }}组
             </span>
-            <span class="huodong">{{ group.curtainCartItems[0].cid }}</span>
+            <span class="huodong">{{ group.cid }}</span>
           </div>
           <div
             class="details-content"
