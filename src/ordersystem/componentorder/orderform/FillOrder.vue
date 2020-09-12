@@ -1513,7 +1513,7 @@ export default {
           for (var i = 0; i < this.allProduct.length; i++) {
             this.allProduct[i].pId = this.salPromotion.P_ID;
             this.allProduct[i].promotionType = this.salPromotion.ORDER_TYPE;
-            this.allProduct[i].flagFlType = this.salPromotion.FLAG_FL_TYPE;
+            this.allProduct[i].flagFlType = this.salPromotion.FLAG_FL;
 
             var price = this.calculatePromotionPrice(this.allProduct[i]);
             this.allProduct[i].promotionCost = price;
