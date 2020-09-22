@@ -1181,15 +1181,17 @@ export default {
     },
     getPrice(type, item) {
       var price = 0;
-      if (type == "02" || type == "08" || type == "10") {
-        //经销
-        price = item.priceSale;
-      } else if (type == "05") {
-        price = item.salePrice;
-      } else if (type == "06") {
-        price = item.priceFx;
-      } else if (type == "09") {
-        price = item.priceHome;
+      if (item) {
+        if (type == "02" || type == "08" || type == "10") {
+          //经销
+          price = item.priceSale;
+        } else if (type == "05") {
+          price = item.salePrice;
+        } else if (type == "06") {
+          price = item.priceFx;
+        } else if (type == "09") {
+          price = item.priceHome;
+        }
       }
       return price;
     },
