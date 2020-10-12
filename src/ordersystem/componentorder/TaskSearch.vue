@@ -3,16 +3,16 @@
     <top :top="set"></top>
     <!-- <div class="monthSel" @click="selTime">{{thisyear}}/{{thismonth}}</div> -->
     <ul class="ulhead">
-      <li class="licenter" @click="showks = true">
+      <li @click="showks = true">
         <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
       </li>
       <li>
         <span>至</span>
       </li>
-      <li class="liright" @click="showjs = true">
+      <li @click="showjs = true">
         <input class="time time-js" type="text" v-model="jsDataSet" disabled />
       </li>
-      <li class="liright">
+      <li>
         <span class="search-button" @click="taskSear()">查询</span>
       </li>
     </ul>

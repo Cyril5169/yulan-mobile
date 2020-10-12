@@ -871,7 +871,9 @@ export default {
         singleProduct.pId = this.allProduct[i].pId;
         singleProduct.promotionType = this.allProduct[i].promotionType;
         singleProduct.flagFlType = this.allProduct[i].flagFlType;
-        singleProduct.unit = this.allProduct[i].unit;
+        singleProduct.type = this.allProduct[i].type;
+        singleProduct.salePrice = this.allProduct[i].salePrice;
+        singleProduct.saleDiscount = this.allProduct[i].saleDiscount;
         singleProduct.onlineSalesAmount = this.allProduct[i].onlineSalesAmount;
         //一口价
         singleProduct.batchNo = this.allProduct[i].batchNo;
@@ -1564,6 +1566,9 @@ export default {
           this.allProduct[i].pId = onePro.P_ID;
           this.allProduct[i].promotionType = onePro.ORDER_TYPE;
           this.allProduct[i].flagFlType = onePro.FLAG_FL;
+          this.allProduct[i].type = onePro.TYPE;
+          this.allProduct[i].salePrice = onePro.PRICE;
+          this.allProduct[i].saleDiscount = onePro.DISCOUNT;
           //计算价格
           var price = this.calculatePromotionPrice(this.allProduct[i]);
           this.allProduct[i].promotionCost = price;

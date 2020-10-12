@@ -45,20 +45,6 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-//中断请求
-// axios.interceptors.request.use(
-//   config => {
-//     config.cancelToken = new axios.CancelToken(function (cancel) {
-//       store.commit('pushToken', {cancelToken: cancel})
-//     })
-//     return config
-//   }
-// )
-
-// router.beforeEach(function (to, from, next) {
-//   store.commit('clearToken') // 取消请求
-//   next()
-// })
 Vue.use(Calendar);
 Vue.use(Picker);
 Vue.use(VueAwesomeSwiper);

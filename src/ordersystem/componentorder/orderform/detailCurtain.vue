@@ -1,40 +1,49 @@
 <template>
   <div class="single-curtain">
-    <top msgtitle="窗帘详情" :greenBackground="true" :isPopup="true" @backclick="backclick"></top>
+    <top
+      msgtitle="窗帘详情"
+      :greenBackground="true"
+      :isPopup="true"
+      @backclick="backclick"
+    ></top>
     <div class="contain">
       <div class="select-this">
         <div class="title-item">
           <span class="title-left">款号</span>
-          <span class="title-right">{{itemNo}}</span>
+          <span class="title-right">{{ itemNo }}</span>
         </div>
         <div class="title-item">
           <span class="title-left">成品宽度*高度</span>
-          <span class="title-right">{{width}}*{{height}} (米)</span>
+          <span class="title-right">{{ width }}*{{ height }} (米)</span>
         </div>
         <div class="title-item">
           <span class="title-left">假帘高</span>
-          <span class="title-right">{{highJia}} (米)</span>
+          <span class="title-right">{{ highJia }} (米)</span>
         </div>
         <div class="title-item">
           <span class="title-left">褶皱倍数</span>
-          <span class="title-right">{{multiple}}</span>
+          <span class="title-right">{{ multiple }}</span>
         </div>
         <div class="title-item">
           <span class="title-left">帘头外包盒单边宽度</span>
-          <span class="title-right">{{WBH=== "" || WBH=== "0"? "无" :WBH}} (米)</span>
+          <span class="title-right"
+            >{{ WBH === "" || WBH === "0" ? "无" : WBH }} (米)</span
+          >
         </div>
         <div class="title-item">
           <span class="title-left">位置</span>
-          <span class="title-right">{{location === "" ? "无" :location}}</span>
+          <span class="title-right">{{
+            location === "" ? "无" : location
+          }}</span>
         </div>
         <div class="title-item">
           <span class="title-left">活动</span>
-          <span class="title-right">{{activityName}}</span>
+          <span class="title-right">{{ activityName }}</span>
         </div>
         <div class="title-item">
           <span class="title-left">总计</span>
           <span class="title-right">
-            <span style="color:red;">￥{{allTotal | dosageFilter}}</span>
+            <span style="color: red">￥{{ allTotal | dosageFilter }}</span>
           </span>
         </div>
       </div>
@@ -44,54 +53,83 @@
           <div style="position: relative" v-if="lt.length">
             <van-collapse-item title="帘头" name="1" class="curtain-item">
               <div class="curtain-head">
-                <div class="content" v-for="(liantou,index) in lt" :key="index">
+                <div
+                  class="content"
+                  v-for="(liantou, index) in lt"
+                  :key="index"
+                >
                   <div class="title-item2">
                     <span class="title-left">编码</span>
                     <span
-                      v-if="tableStatus!=0"
-                      @click="changeXh('lt',index,liantou.productType,liantou.changeFlag,liantou.itemMLGY,liantou.dosage)"
+                      v-if="tableStatus != 0"
+                      @click="
+                        changeXh(
+                          'lt',
+                          index,
+                          liantou.productType,
+                          liantou.changeFlag,
+                          liantou.itemMLGY,
+                          liantou.dosage
+                        )
+                      "
                       class="title-right title-right2"
-                      :class="{'title-right3':liantou.changeFlag =='Y'}"
-                    >{{liantou.item.itemNo}}</span>
-                    <span v-else class="title-right title-right2">{{liantou.item.itemNo}}</span>
-                    <span style="float:right;margin:4px 5px 0 0;" v-if="tableStatus!=0">
+                      :class="{ 'title-right3': liantou.changeFlag == 'Y' }"
+                      >{{ liantou.item.itemNo }}</span
+                    >
+                    <span v-else class="title-right title-right2">{{
+                      liantou.item.itemNo
+                    }}</span>
+                    <span
+                      style="float: right; margin: 4px 5px 0 0"
+                      v-if="tableStatus != 0"
+                    >
                       <van-checkbox
-                        v-if="liantou.deleteFlag =='Y'"
+                        v-if="liantou.deleteFlag == 'Y'"
                         v-model="liantou.choose"
                         @change="changeLinkReverse(liantou)"
                       ></van-checkbox>
                     </span>
-                    <span v-if="bigToSmall(liantou) == true" class="item-icon2"></span>
+                    <span
+                      v-if="bigToSmall(liantou) == true"
+                      class="item-icon2"
+                    ></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">名称</span>
                     <span
                       class="title-right title-right2"
                       v-if="liantou.curtainItemName != null"
-                    >{{liantou.curtainItemName}}</span>
-                    <span
-                      class="title-right title-right2"
-                      v-else
-                    >{{ getTypeName(liantou.itemType) }}</span>
+                      >{{ liantou.curtainItemName }}</span
+                    >
+                    <span class="title-right title-right2" v-else>{{
+                      getTypeName(liantou.itemType)
+                    }}</span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
-                    <span class="title-right title-right2">{{liantou.price}}元</span>
+                    <span class="title-right title-right2"
+                      >{{ liantou.price }}元</span
+                    >
                   </div>
-                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                  <div
+                    class="title-item2"
+                    v-if="showPrice && salPromotion.P_ID"
+                  >
                     <span class="title-left">折后</span>
-                    <span class="title-right title-right2">{{calculatePromotionPrice(liantou)}}元</span>
+                    <span class="title-right title-right2"
+                      >{{ calculatePromotionPrice(liantou) }}元</span
+                    >
                   </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.specification}}</span>
+                    <span class="title-right">{{ liantou.specification }}</span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">用量</span>
                     <span class="title-right">
                       <input
                         type="number"
-                        v-if="liantou.modifyFlag=='Y' && tableStatus!='0'"
+                        v-if="liantou.modifyFlag == 'Y' && tableStatus != '0'"
                         class="use-num"
                         placeholder="0.00"
                         v-model="liantou.dosage"
@@ -101,72 +139,103 @@
                                 .replace('$#$', '.')
                                 .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
                       />
-                      <span v-else>{{liantou.dosage}}</span>
-                      <span>{{liantou.unit}}</span>
+                      <span v-else>{{ liantou.dosage }}</span>
+                      <span>{{ liantou.unit }}</span>
                     </span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">总价</span>
-                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
+                    <span class="title-right title-right2"
+                      >{{ oneTotal(liantou) }}元</span
+                    >
                   </div>
                   <div
                     class="title-item2"
                     v-if="liantou.manufacturingInstructions"
-                    @click="liantou.showZZSM = tableStatus !='0'"
+                    @click="liantou.showZZSM = tableStatus != '0'"
                   >
                     <span class="title-left">制造说明</span>
-                    <span class="title-right title-right2">{{liantou.manufacturingInstructions}}</span>
-                    <span class="item-icon" v-if="tableStatus !='0'"></span>
+                    <span class="title-right title-right2">{{
+                      liantou.manufacturingInstructions
+                    }}</span>
+                    <span class="item-icon" v-if="tableStatus != '0'"></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">说明</span>
-                    <span class="title-right" style="color:red;">{{liantou.illustrate}}</span>
+                    <span class="title-right" style="color: red">{{
+                      liantou.illustrate
+                    }}</span>
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
                     <span class="title-right">
                       <input
-                        v-if="tableStatus!=0"
+                        v-if="tableStatus != 0"
                         type="text"
                         v-model="liantou.note"
                         class="curtain-beizhu"
                         placeholder="填写备注"
                       />
-                      <span v-else>{{liantou.note}}</span>
+                      <span v-else>{{ liantou.note }}</span>
                     </span>
                   </div>
                   <!--选择帘头制造说明-->
-                  <div class="head-make-details" @click="liantou.showZZSM = false">
+                  <div
+                    class="head-make-details"
+                    @click="liantou.showZZSM = false"
+                  >
                     <van-popup v-model="liantou.showZZSM" position="center">
-                      <van-radio-group v-model="liantou.manufacturingInstructions">
+                      <van-radio-group
+                        v-model="liantou.manufacturingInstructions"
+                      >
                         <van-cell-group>
                           <van-cell
                             title="么术贴正车"
                             clickable
-                            @click="liantou.manufacturingInstructions = '么术贴正车'"
+                            @click="
+                              liantou.manufacturingInstructions = '么术贴正车'
+                            "
                           >
-                            <van-radio name="么术贴正车" checked-color="#89cb81" />
+                            <van-radio
+                              name="么术贴正车"
+                              checked-color="#89cb81"
+                            />
                           </van-cell>
                           <van-cell
                             title="么术贴反车"
                             clickable
-                            @click="liantou.manufacturingInstructions = '么术贴反车'"
+                            @click="
+                              liantou.manufacturingInstructions = '么术贴反车'
+                            "
                           >
-                            <van-radio name="么术贴反车" checked-color="#89cb81" />
+                            <van-radio
+                              name="么术贴反车"
+                              checked-color="#89cb81"
+                            />
                           </van-cell>
                           <van-cell
                             title="穿/挂杆款"
                             clickable
-                            @click="liantou.manufacturingInstructions = '穿/挂杆款'"
+                            @click="
+                              liantou.manufacturingInstructions = '穿/挂杆款'
+                            "
                           >
-                            <van-radio name="穿/挂杆款" checked-color="#89cb81" />
+                            <van-radio
+                              name="穿/挂杆款"
+                              checked-color="#89cb81"
+                            />
                           </van-cell>
                           <van-cell
                             title="特殊见备注"
                             clickable
-                            @click="liantou.manufacturingInstructions = '特殊见备注'"
+                            @click="
+                              liantou.manufacturingInstructions = '特殊见备注'
+                            "
                           >
-                            <van-radio name="特殊见备注" checked-color="#89cb81" />
+                            <van-radio
+                              name="特殊见备注"
+                              checked-color="#89cb81"
+                            />
                           </van-cell>
                         </van-cell-group>
                       </van-radio-group>
@@ -180,69 +249,103 @@
           <div style="position: relative" v-if="ls.length">
             <van-checkbox
               class="change-this"
-              v-if="tableStatus!=0"
+              v-if="tableStatus != 0"
               v-model="chooseBig[1]"
-              @change="changeLink('ls',1)"
+              @change="changeLink('ls', 1)"
             ></van-checkbox>
             <van-collapse-item title="帘身" name="2" class="curtain-item">
               <div class="curtain-head">
-                <div class="content" v-for="(liantou,index) in ls" :key="index">
+                <div
+                  class="content"
+                  v-for="(liantou, index) in ls"
+                  :key="index"
+                >
                   <div class="title-item2">
                     <span class="title-left">编码</span>
                     <span
-                      v-if="tableStatus!=0"
-                      @click="changeXh('ls',index,liantou.productType,liantou.changeFlag,liantou.itemMLGY,liantou.dosage)"
+                      v-if="tableStatus != 0"
+                      @click="
+                        changeXh(
+                          'ls',
+                          index,
+                          liantou.productType,
+                          liantou.changeFlag,
+                          liantou.itemMLGY,
+                          liantou.dosage
+                        )
+                      "
                       class="title-right title-right2"
-                      :class="{'title-right3':liantou.changeFlag =='Y'}"
-                    >{{liantou.item.itemNo}}</span>
-                    <span v-else class="title-right title-right2">{{liantou.item.itemNo}}</span>
-                    <span style="float:right;margin:4px 5px 0 0;" v-if="tableStatus!=0">
+                      :class="{ 'title-right3': liantou.changeFlag == 'Y' }"
+                      >{{ liantou.item.itemNo }}</span
+                    >
+                    <span v-else class="title-right title-right2">{{
+                      liantou.item.itemNo
+                    }}</span>
+                    <span
+                      style="float: right; margin: 4px 5px 0 0"
+                      v-if="tableStatus != 0"
+                    >
                       <van-checkbox
-                        v-if="liantou.deleteFlag=='Y'"
+                        v-if="liantou.deleteFlag == 'Y'"
                         v-model="liantou.choose"
                         @change="changeLinkReverse(liantou)"
                       ></van-checkbox>
                     </span>
-                    <span v-if="bigToSmall(liantou) == true" class="item-icon2"></span>
+                    <span
+                      v-if="bigToSmall(liantou) == true"
+                      class="item-icon2"
+                    ></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">名称</span>
                     <span
                       class="title-right title-right2"
                       v-if="liantou.curtainItemName != null"
-                    >{{liantou.curtainItemName}}</span>
-                    <span
-                      class="title-right title-right2"
-                      v-else
-                    >{{ getTypeName(liantou.itemType) }}</span>
+                      >{{ liantou.curtainItemName }}</span
+                    >
+                    <span class="title-right title-right2" v-else>{{
+                      getTypeName(liantou.itemType)
+                    }}</span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
-                    <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>
-                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
-                    <span class="title-left">折后</span>
-                    <span class="title-right title-right2">{{calculatePromotionPrice(liantou)}}元</span>
-                  </div>
-                  <div class="title-item2" v-if="liantou.specification">
-                    <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.specification}}</span>
+                    <span class="title-right title-right2"
+                      >{{ liantou.price }}元</span
+                    >
                   </div>
                   <div
                     class="title-item2"
-                    @click="liantou.showFG = tableStatus!=0"
-                    v-if="liantou.certainHeightWidth !== null  && liantou.productType =='ML'"
+                    v-if="showPrice && salPromotion.P_ID"
+                  >
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2"
+                      >{{ calculatePromotionPrice(liantou) }}元</span
+                    >
+                  </div>
+                  <div class="title-item2" v-if="liantou.specification">
+                    <span class="title-left">规格（米/对）</span>
+                    <span class="title-right">{{ liantou.specification }}</span>
+                  </div>
+                  <div
+                    class="title-item2"
+                    @click="liantou.showFG = tableStatus != 0"
+                    v-if="
+                      liantou.certainHeightWidth !== null &&
+                      liantou.productType == 'ML'
+                    "
                   >
                     <span class="title-left">面料属性</span>
-                    <span class="title-right">{{liantou.certainHeightWidth | fixTypeFilter}}</span>
-                    <span class="item-icon" v-if="tableStatus!=0"></span>
+                    <span class="title-right">{{
+                      liantou.certainHeightWidth | fixTypeFilter
+                    }}</span>
+                    <span class="item-icon" v-if="tableStatus != 0"></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">用量</span>
                     <span class="title-right">
                       <input
                         type="number"
-                        v-if="liantou.modifyFlag=='Y' && tableStatus!='0'"
+                        v-if="liantou.modifyFlag == 'Y' && tableStatus != '0'"
                         class="use-num"
                         placeholder="0.00"
                         v-model="liantou.dosage"
@@ -252,40 +355,50 @@
                                 .replace('$#$', '.')
                                 .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 2)"
                       />
-                      <span v-else>{{liantou.dosage}}</span>
-                      <span>{{liantou.unit}}</span>
+                      <span v-else>{{ liantou.dosage }}</span>
+                      <span>{{ liantou.unit }}</span>
                     </span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">总价</span>
-                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
+                    <span class="title-right title-right2"
+                      >{{ oneTotal(liantou) }}元</span
+                    >
                   </div>
                   <div
                     class="title-item2"
                     v-if="liantou.manufacturingInstructions"
-                    @click="liantou.showZZSM = tableStatus !=0"
+                    @click="liantou.showZZSM = tableStatus != 0"
                   >
                     <span class="title-left">制造说明</span>
-                    <span class="title-right title-right2">{{liantou.manufacturingInstructions}}</span>
-                    <span class="item-icon" v-if="tableStatus!=0"></span>
+                    <span class="title-right title-right2">{{
+                      liantou.manufacturingInstructions
+                    }}</span>
+                    <span class="item-icon" v-if="tableStatus != 0"></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">说明</span>
-                    <span class="title-right" style="color:red;">{{liantou.illustrate}}</span>
+                    <span class="title-right" style="color: red">{{
+                      liantou.illustrate
+                    }}</span>
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
-                    <span style="float:left;margin-left:10px;color:red;">{{getRemark(liantou)}}</span>
+                    <span style="float: left; margin-left: 10px; color: red">{{
+                      getRemark(liantou)
+                    }}</span>
                     <span class="title-right">
                       <input
                         type="text"
-                        v-if="tableStatus!=0"
+                        v-if="tableStatus != 0"
                         class="curtain-beizhu"
-                        :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
+                        :style="{
+                          width: getRemark(liantou) == '' ? '200px' : '130px',
+                        }"
                         placeholder="填写备注"
                         v-model="liantou.note"
                       />
-                      <span v-else>{{liantou.note}}</span>
+                      <span v-else>{{ liantou.note }}</span>
                     </span>
                   </div>
                   <!--选择风格-->
@@ -293,10 +406,18 @@
                     <van-popup v-model="liantou.showFG" position="center">
                       <van-radio-group v-model="liantou.certainHeightWidth">
                         <van-cell-group>
-                          <van-cell title="定宽" clickable @click="changeFG(1,'ls',liantou,index)">
+                          <van-cell
+                            title="定宽"
+                            clickable
+                            @click="changeFG(1, 'ls', liantou, index)"
+                          >
                             <van-radio :name="1" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="定高" clickable @click="changeFG('02','ls',liantou,index)">
+                          <van-cell
+                            title="定高"
+                            clickable
+                            @click="changeFG('02', 'ls', liantou, index)"
+                          >
                             <van-radio :name="0" checked-color="#89cb81" />
                           </van-cell>
                         </van-cell-group>
@@ -304,9 +425,14 @@
                     </van-popup>
                   </div>
                   <!--选择帘身制造说明-->
-                  <div class="head-make-details" @click="liantou.showZZSM = false">
+                  <div
+                    class="head-make-details"
+                    @click="liantou.showZZSM = false"
+                  >
                     <van-popup v-model="liantou.showZZSM" position="center">
-                      <van-radio-group v-model="liantou.manufacturingInstructions">
+                      <van-radio-group
+                        v-model="liantou.manufacturingInstructions"
+                      >
                         <van-cell-group>
                           <van-cell
                             title="对开"
@@ -318,23 +444,32 @@
                           <van-cell
                             title="左单开"
                             clickable
-                            @click="liantou.manufacturingInstructions = '左单开'"
+                            @click="
+                              liantou.manufacturingInstructions = '左单开'
+                            "
                           >
                             <van-radio name="左单开" checked-color="#89cb81" />
                           </van-cell>
                           <van-cell
                             title="右单开"
                             clickable
-                            @click="liantou.manufacturingInstructions = '右单开'"
+                            @click="
+                              liantou.manufacturingInstructions = '右单开'
+                            "
                           >
                             <van-radio name="右单开" checked-color="#89cb81" />
                           </van-cell>
                           <van-cell
                             title="特殊开备注"
                             clickable
-                            @click="liantou.manufacturingInstructions = '特殊开备注'"
+                            @click="
+                              liantou.manufacturingInstructions = '特殊开备注'
+                            "
                           >
-                            <van-radio name="特殊开备注" checked-color="#89cb81" />
+                            <van-radio
+                              name="特殊开备注"
+                              checked-color="#89cb81"
+                            />
                           </van-cell>
                         </van-cell-group>
                       </van-radio-group>
@@ -348,80 +483,116 @@
           <div style="position: relative" v-if="lspb.length">
             <van-checkbox
               class="change-this"
-              v-if="tableStatus!=0"
-              v-model="chooseBig[3]"
-              @change="changeLink('sha',3)"
+              v-if="tableStatus != 0"
+              v-model="chooseBig[2]"
+              @change="changeLink('lspb', 2)"
             ></van-checkbox>
             <van-collapse-item title="帘身配布" name="3" class="curtain-item">
               <div class="gauze">
-                <div class="content" v-for="(liantou,index) in lspb" :key="index">
+                <div
+                  class="content"
+                  v-for="(liantou, index) in lspb"
+                  :key="index"
+                >
                   <div class="title-item2">
                     <span class="title-left">编码</span>
                     <span
-                      v-if="tableStatus!=0"
-                      @click="changeXh('lspb',index,liantou.productType,liantou.changeFlag,liantou.itemMLGY)"
+                      v-if="tableStatus != 0"
+                      @click="
+                        changeXh(
+                          'lspb',
+                          index,
+                          liantou.productType,
+                          liantou.changeFlag,
+                          liantou.itemMLGY
+                        )
+                      "
                       class="title-right title-right2"
-                      :class="{'title-right3':liantou.changeFlag=='Y'}"
-                    >{{liantou.item.itemNo}}</span>
-                    <span v-else class="title-right title-right2">{{liantou.item.itemNo}}</span>
-                    <span style="float:right;margin:4px 5px 0 0;" v-if="tableStatus!=0">
+                      :class="{ 'title-right3': liantou.changeFlag == 'Y' }"
+                      >{{ liantou.item.itemNo }}</span
+                    >
+                    <span v-else class="title-right title-right2">{{
+                      liantou.item.itemNo
+                    }}</span>
+                    <span
+                      style="float: right; margin: 4px 5px 0 0"
+                      v-if="tableStatus != 0"
+                    >
                       <van-checkbox
-                        v-if="liantou.deleteFlag=='Y'"
+                        v-if="liantou.deleteFlag == 'Y'"
                         v-model="liantou.choose"
                         @change="changeLinkReverse(liantou)"
                       ></van-checkbox>
                     </span>
-                    <span v-if="bigToSmall(liantou) == true" class="item-icon2"></span>
+                    <span
+                      v-if="bigToSmall(liantou) == true"
+                      class="item-icon2"
+                    ></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">名称</span>
                     <span
                       class="title-right title-right2"
                       v-if="liantou.curtainItemName != null"
-                    >{{liantou.curtainItemName}}</span>
-                    <span
-                      class="title-right title-right2"
-                      v-else
-                    >{{ getTypeName(liantou.itemType) }}</span>
+                      >{{ liantou.curtainItemName }}</span
+                    >
+                    <span class="title-right title-right2" v-else>{{
+                      getTypeName(liantou.itemType)
+                    }}</span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
-                    <span class="title-right title-right2">{{liantou.price}}元</span>
+                    <span class="title-right title-right2"
+                      >{{ liantou.price }}元</span
+                    >
                   </div>
-                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                  <div
+                    class="title-item2"
+                    v-if="showPrice && salPromotion.P_ID"
+                  >
                     <span class="title-left">折后</span>
-                    <span class="title-right title-right2">{{calculatePromotionPrice(liantou)}}元</span>
+                    <span class="title-right title-right2"
+                      >{{ calculatePromotionPrice(liantou) }}元</span
+                    >
                   </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.specification}}</span>
+                    <span class="title-right">{{ liantou.specification }}</span>
                   </div>
                   <div
                     class="title-item2"
                     v-if="liantou.manufacturingInstructions"
-                    @click="liantou.showZZSM = tableStatus !=0"
+                    @click="liantou.showZZSM = tableStatus != 0"
                   >
                     <span class="title-left">制造说明</span>
-                    <span class="title-right title-right2">{{liantou.manufacturingInstructions}}</span>
-                    <span class="item-icon" v-if="tableStatus !=0"></span>
+                    <span class="title-right title-right2">{{
+                      liantou.manufacturingInstructions
+                    }}</span>
+                    <span class="item-icon" v-if="tableStatus != 0"></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">说明</span>
-                    <span class="title-right" style="color:red;">{{liantou.illustrate}}</span>
+                    <span class="title-right" style="color: red">{{
+                      liantou.illustrate
+                    }}</span>
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
-                    <span style="float:left;margin-left:10px;color:red;">{{getRemark(liantou)}}</span>
+                    <span style="float: left; margin-left: 10px; color: red">{{
+                      getRemark(liantou)
+                    }}</span>
                     <span class="title-right">
                       <input
                         type="text"
-                        v-if="tableStatus!=0"
+                        v-if="tableStatus != 0"
                         class="curtain-beizhu"
-                        :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
+                        :style="{
+                          width: getRemark(liantou) == '' ? '200px' : '130px',
+                        }"
                         placeholder="填写备注"
                         v-model="liantou.note"
                       />
-                      <span v-else>{{liantou.note}}</span>
+                      <span v-else>{{ liantou.note }}</span>
                     </span>
                   </div>
                   <!--选择风格-->
@@ -429,10 +600,18 @@
                     <van-popup v-model="liantou.showFG" position="center">
                       <van-radio-group v-model="liantou.certainHeightWidth">
                         <van-cell-group>
-                          <van-cell title="定宽" clickable @click="changeFG(1,'lspb',liantou,index)">
+                          <van-cell
+                            title="定宽"
+                            clickable
+                            @click="changeFG(1, 'lspb', liantou, index)"
+                          >
                             <van-radio :name="1" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="定高" clickable @click="changeFG(0,'lspb',liantou,index)">
+                          <van-cell
+                            title="定高"
+                            clickable
+                            @click="changeFG(0, 'lspb', liantou, index)"
+                          >
                             <van-radio :name="0" checked-color="#89cb81" />
                           </van-cell>
                         </van-cell-group>
@@ -440,51 +619,77 @@
                     </van-popup>
                   </div>
                   <!--选择帘身配布制造说明-->
-                  <div class="head-make-details" @click="liantou.showZZSM = false">
+                  <div
+                    class="head-make-details"
+                    @click="liantou.showZZSM = false"
+                  >
                     <van-popup v-model="liantou.showZZSM" position="center">
-                      <van-radio-group v-model="liantou.manufacturingInstructions">
+                      <van-radio-group
+                        v-model="liantou.manufacturingInstructions"
+                      >
                         <van-cell-group>
                           <van-cell
                             title="一个褶"
                             clickable
-                            @click="liantou.manufacturingInstructions = '一个褶'"
+                            @click="
+                              liantou.manufacturingInstructions = '一个褶'
+                            "
                           >
                             <van-radio name="一个褶" checked-color="#89cb81" />
                           </van-cell>
                           <van-cell
                             title="一个半褶"
                             clickable
-                            @click="liantou.manufacturingInstructions = '一个半褶'"
+                            @click="
+                              liantou.manufacturingInstructions = '一个半褶'
+                            "
                           >
-                            <van-radio name="一个半褶" checked-color="#89cb81" />
+                            <van-radio
+                              name="一个半褶"
+                              checked-color="#89cb81"
+                            />
                           </van-cell>
                           <van-cell
                             title="两个褶"
                             clickable
-                            @click="liantou.manufacturingInstructions = '两个褶'"
+                            @click="
+                              liantou.manufacturingInstructions = '两个褶'
+                            "
                           >
                             <van-radio name="两个褶" checked-color="#89cb81" />
                           </van-cell>
                           <van-cell
                             title="两个半褶"
                             clickable
-                            @click="liantou.manufacturingInstructions = '两个半褶'"
+                            @click="
+                              liantou.manufacturingInstructions = '两个半褶'
+                            "
                           >
-                            <van-radio name="两个半褶" checked-color="#89cb81" />
+                            <van-radio
+                              name="两个半褶"
+                              checked-color="#89cb81"
+                            />
                           </van-cell>
                           <van-cell
                             title="三个褶"
                             clickable
-                            @click="liantou.manufacturingInstructions = '三个褶'"
+                            @click="
+                              liantou.manufacturingInstructions = '三个褶'
+                            "
                           >
                             <van-radio name="三个褶" checked-color="#89cb81" />
                           </van-cell>
                           <van-cell
                             title="三个半褶"
                             clickable
-                            @click="liantou.manufacturingInstructions = '三个半褶'"
+                            @click="
+                              liantou.manufacturingInstructions = '三个半褶'
+                            "
                           >
-                            <van-radio name="三个半褶" checked-color="#89cb81" />
+                            <van-radio
+                              name="三个半褶"
+                              checked-color="#89cb81"
+                            />
                           </van-cell>
                         </van-cell-group>
                       </van-radio-group>
@@ -498,69 +703,102 @@
           <div style="position: relative" v-if="sha.length">
             <van-checkbox
               class="change-this"
-              v-if="tableStatus!=0"
+              v-if="tableStatus != 0"
               v-model="chooseBig[3]"
-              @change="changeLink('sha',3)"
+              @change="changeLink('sha', 3)"
             ></van-checkbox>
             <van-collapse-item title="纱" name="4" class="curtain-item">
               <div class="gauze">
-                <div class="content" v-for="(liantou,index) in sha" :key="index">
+                <div
+                  class="content"
+                  v-for="(liantou, index) in sha"
+                  :key="index"
+                >
                   <div class="title-item2">
                     <span class="title-left">编码</span>
                     <span
-                      v-if="tableStatus!=0"
-                      @click="changeXh('sha',index,liantou.productType,liantou.changeFlag,liantou.itemMLGY)"
+                      v-if="tableStatus != 0"
+                      @click="
+                        changeXh(
+                          'sha',
+                          index,
+                          liantou.productType,
+                          liantou.changeFlag,
+                          liantou.itemMLGY
+                        )
+                      "
                       class="title-right title-right2"
-                      :class="{'title-right3':liantou.changeFlag=='Y'}"
-                    >{{liantou.item.itemNo}}</span>
-                    <span v-else class="title-right title-right2">{{liantou.item.itemNo}}</span>
-                    <span style="float:right;margin:4px 5px 0 0;" v-if="tableStatus!=0">
+                      :class="{ 'title-right3': liantou.changeFlag == 'Y' }"
+                      >{{ liantou.item.itemNo }}</span
+                    >
+                    <span v-else class="title-right title-right2">{{
+                      liantou.item.itemNo
+                    }}</span>
+                    <span
+                      style="float: right; margin: 4px 5px 0 0"
+                      v-if="tableStatus != 0"
+                    >
                       <van-checkbox
-                        v-if="liantou.deleteFlag=='Y'"
+                        v-if="liantou.deleteFlag == 'Y'"
                         v-model="liantou.choose"
                         @change="changeLinkReverse(liantou)"
                       ></van-checkbox>
                     </span>
-                    <span v-if="bigToSmall(liantou) == true" class="item-icon2"></span>
+                    <span
+                      v-if="bigToSmall(liantou) == true"
+                      class="item-icon2"
+                    ></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">名称</span>
                     <span
                       class="title-right title-right2"
                       v-if="liantou.curtainItemName != null"
-                    >{{liantou.curtainItemName}}</span>
-                    <span
-                      class="title-right title-right2"
-                      v-else
-                    >{{ getTypeName(liantou.itemType) }}</span>
+                      >{{ liantou.curtainItemName }}</span
+                    >
+                    <span class="title-right title-right2" v-else>{{
+                      getTypeName(liantou.itemType)
+                    }}</span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
-                    <span class="title-right title-right2">{{liantou.price}}元</span>
-                  </div>
-                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
-                    <span class="title-left">折后</span>
-                    <span class="title-right title-right2">{{calculatePromotionPrice(liantou)}}元</span>
-                  </div>
-                  <div class="title-item2" v-if="liantou.specification">
-                    <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.specification}}</span>
+                    <span class="title-right title-right2"
+                      >{{ liantou.price }}元</span
+                    >
                   </div>
                   <div
                     class="title-item2"
-                    @click="liantou.showFG = tableStatus!=0"
-                    v-if="liantou.certainHeightWidth !== null && liantou.productType =='ML'"
+                    v-if="showPrice && salPromotion.P_ID"
+                  >
+                    <span class="title-left">折后</span>
+                    <span class="title-right title-right2"
+                      >{{ calculatePromotionPrice(liantou) }}元</span
+                    >
+                  </div>
+                  <div class="title-item2" v-if="liantou.specification">
+                    <span class="title-left">规格（米/对）</span>
+                    <span class="title-right">{{ liantou.specification }}</span>
+                  </div>
+                  <div
+                    class="title-item2"
+                    @click="liantou.showFG = tableStatus != 0"
+                    v-if="
+                      liantou.certainHeightWidth !== null &&
+                      liantou.productType == 'ML'
+                    "
                   >
                     <span class="title-left">面料属性</span>
-                    <span class="title-right">{{liantou.certainHeightWidth | fixTypeFilter}}</span>
-                    <span class="item-icon" v-if="tableStatus!=0"></span>
+                    <span class="title-right">{{
+                      liantou.certainHeightWidth | fixTypeFilter
+                    }}</span>
+                    <span class="item-icon" v-if="tableStatus != 0"></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">用量</span>
                     <span class="title-right">
                       <input
                         type="number"
-                        v-if="liantou.modifyFlag=='Y' && tableStatus!=0"
+                        v-if="liantou.modifyFlag == 'Y' && tableStatus != 0"
                         class="use-num"
                         placeholder="0.00"
                         v-model="liantou.dosage"
@@ -570,40 +808,50 @@
                                 .replace('$#$', '.')
                                 .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 2)"
                       />
-                      <span v-else>{{liantou.dosage}}</span>
-                      <span>{{liantou.unit}}</span>
+                      <span v-else>{{ liantou.dosage }}</span>
+                      <span>{{ liantou.unit }}</span>
                     </span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">总价</span>
-                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
+                    <span class="title-right title-right2"
+                      >{{ oneTotal(liantou) }}元</span
+                    >
                   </div>
                   <div
                     class="title-item2"
                     v-if="liantou.manufacturingInstructions"
-                    @click="liantou.showZZSM = tableStatus !=0"
+                    @click="liantou.showZZSM = tableStatus != 0"
                   >
                     <span class="title-left">制造说明</span>
-                    <span class="title-right title-right2">{{liantou.manufacturingInstructions}}</span>
-                    <span class="item-icon" v-if="tableStatus !=0"></span>
+                    <span class="title-right title-right2">{{
+                      liantou.manufacturingInstructions
+                    }}</span>
+                    <span class="item-icon" v-if="tableStatus != 0"></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">说明</span>
-                    <span class="title-right" style="color:red;">{{liantou.illustrate}}</span>
+                    <span class="title-right" style="color: red">{{
+                      liantou.illustrate
+                    }}</span>
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
-                    <span style="float:left;margin-left:10px;color:red;">{{getRemark(liantou)}}</span>
+                    <span style="float: left; margin-left: 10px; color: red">{{
+                      getRemark(liantou)
+                    }}</span>
                     <span class="title-right">
                       <input
                         type="text"
-                        v-if="tableStatus !=0"
+                        v-if="tableStatus != 0"
                         class="curtain-beizhu"
-                        :style="{width:getRemark(liantou) ==''?'200px':'130px'}"
+                        :style="{
+                          width: getRemark(liantou) == '' ? '200px' : '130px',
+                        }"
                         placeholder="填写备注"
                         v-model="liantou.note"
                       />
-                      <span v-else>{{liantou.note}}</span>
+                      <span v-else>{{ liantou.note }}</span>
                     </span>
                   </div>
                   <!--选择风格-->
@@ -611,10 +859,18 @@
                     <van-popup v-model="liantou.showFG" position="center">
                       <van-radio-group v-model="liantou.certainHeightWidth">
                         <van-cell-group>
-                          <van-cell title="定宽" clickable @click="changeFG(1,'sha',liantou,index)">
+                          <van-cell
+                            title="定宽"
+                            clickable
+                            @click="changeFG(1, 'sha', liantou, index)"
+                          >
                             <van-radio :name="1" checked-color="#89cb81" />
                           </van-cell>
-                          <van-cell title="定高" clickable @click="changeFG(0,'sha',liantou,index)">
+                          <van-cell
+                            title="定高"
+                            clickable
+                            @click="changeFG(0, 'sha', liantou, index)"
+                          >
                             <van-radio :name="0" checked-color="#89cb81" />
                           </van-cell>
                         </van-cell-group>
@@ -622,9 +878,14 @@
                     </van-popup>
                   </div>
                   <!--选择纱面料制造说明-->
-                  <div class="head-make-details" @click="liantou.showZZSM = false">
+                  <div
+                    class="head-make-details"
+                    @click="liantou.showZZSM = false"
+                  >
                     <van-popup v-model="liantou.showZZSM" position="center">
-                      <van-radio-group v-model="liantou.manufacturingInstructions">
+                      <van-radio-group
+                        v-model="liantou.manufacturingInstructions"
+                      >
                         <van-cell-group>
                           <van-cell
                             title="对开"
@@ -636,23 +897,32 @@
                           <van-cell
                             title="左单开"
                             clickable
-                            @click="liantou.manufacturingInstructions = '左单开'"
+                            @click="
+                              liantou.manufacturingInstructions = '左单开'
+                            "
                           >
                             <van-radio name="左单开" checked-color="#89cb81" />
                           </van-cell>
                           <van-cell
                             title="右单开"
                             clickable
-                            @click="liantou.manufacturingInstructions = '右单开'"
+                            @click="
+                              liantou.manufacturingInstructions = '右单开'
+                            "
                           >
                             <van-radio name="右单开" checked-color="#89cb81" />
                           </van-cell>
                           <van-cell
                             title="特殊开备注"
                             clickable
-                            @click="liantou.manufacturingInstructions = '特殊开备注'"
+                            @click="
+                              liantou.manufacturingInstructions = '特殊开备注'
+                            "
                           >
-                            <van-radio name="特殊开备注" checked-color="#89cb81" />
+                            <van-radio
+                              name="特殊开备注"
+                              checked-color="#89cb81"
+                            />
                           </van-cell>
                         </van-cell-group>
                       </van-radio-group>
@@ -666,47 +936,72 @@
           <div style="position: relative" v-if="pjb.length">
             <van-collapse-item title="配件" name="5" class="curtain-item">
               <div class="gauze">
-                <div class="content" v-for="(liantou,index) in pjb" :key="index">
+                <div
+                  class="content"
+                  v-for="(liantou, index) in pjb"
+                  :key="index"
+                >
                   <div class="title-item2">
                     <span class="title-left">编码</span>
                     <span
-                      v-if="tableStatus!=0"
-                      @click="changeXh('pjb',index,liantou.productType,liantou.changeFlag,liantou.itemMLGY)"
+                      v-if="tableStatus != 0"
+                      @click="
+                        changeXh(
+                          'pjb',
+                          index,
+                          liantou.productType,
+                          liantou.changeFlag,
+                          liantou.itemMLGY
+                        )
+                      "
                       class="title-right title-right2"
-                      :class="{'title-right3':liantou.changeFlag=='Y'}"
-                    >{{liantou.item.itemNo}}</span>
-                    <span v-else class="title-right title-right2">{{liantou.item.itemNo}}</span>
-                    <span v-if="bigToSmall(liantou) == true" class="item-icon2"></span>
+                      :class="{ 'title-right3': liantou.changeFlag == 'Y' }"
+                      >{{ liantou.item.itemNo }}</span
+                    >
+                    <span v-else class="title-right title-right2">{{
+                      liantou.item.itemNo
+                    }}</span>
+                    <span
+                      v-if="bigToSmall(liantou) == true"
+                      class="item-icon2"
+                    ></span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">名称</span>
                     <span
                       class="title-right title-right2"
                       v-if="liantou.curtainItemName != null"
-                    >{{liantou.curtainItemName}}</span>
-                    <span
-                      class="title-right title-right2"
-                      v-else
-                    >{{ getTypeName(liantou.itemType) }}</span>
+                      >{{ liantou.curtainItemName }}</span
+                    >
+                    <span class="title-right title-right2" v-else>{{
+                      getTypeName(liantou.itemType)
+                    }}</span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">单价</span>
-                    <span class="title-right title-right2">{{liantou.price}}元</span>
+                    <span class="title-right title-right2"
+                      >{{ liantou.price }}元</span
+                    >
                   </div>
-                  <div class="title-item2" v-if="showPrice && salPromotion.P_ID">
+                  <div
+                    class="title-item2"
+                    v-if="showPrice && salPromotion.P_ID"
+                  >
                     <span class="title-left">折后</span>
-                    <span class="title-right title-right2">{{calculatePromotionPrice(liantou)}}元</span>
+                    <span class="title-right title-right2"
+                      >{{ calculatePromotionPrice(liantou) }}元</span
+                    >
                   </div>
                   <div class="title-item2" v-if="liantou.specification">
                     <span class="title-left">规格（米/对）</span>
-                    <span class="title-right">{{liantou.specification}}</span>
+                    <span class="title-right">{{ liantou.specification }}</span>
                   </div>
                   <div class="title-item2">
                     <span class="title-left">用量</span>
                     <span class="title-right">
                       <input
                         type="number"
-                        v-if="liantou.modifyFlag=='Y' && tableStatus!=0"
+                        v-if="liantou.modifyFlag == 'Y' && tableStatus != 0"
                         class="use-num"
                         placeholder="0.00"
                         v-model="liantou.dosage"
@@ -716,29 +1011,33 @@
                                 .replace('$#$', '.')
                                 .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 2)"
                       />
-                      <span v-else>{{liantou.dosage}}</span>
-                      <span>{{liantou.unit}}</span>
+                      <span v-else>{{ liantou.dosage }}</span>
+                      <span>{{ liantou.unit }}</span>
                     </span>
                   </div>
                   <div class="title-item2" v-if="showPrice">
                     <span class="title-left">总价</span>
-                    <span class="title-right title-right2">{{oneTotal(liantou)}}元</span>
+                    <span class="title-right title-right2"
+                      >{{ oneTotal(liantou) }}元</span
+                    >
                   </div>
                   <div class="title-item2">
                     <span class="title-left">说明</span>
-                    <span class="title-right" style="color:red;">{{liantou.illustrate}}</span>
+                    <span class="title-right" style="color: red">{{
+                      liantou.illustrate
+                    }}</span>
                   </div>
                   <div class="title-item3">
                     <span class="title-left">备注</span>
                     <span class="title-right">
                       <input
                         type="text"
-                        v-if="tableStatus!=0"
+                        v-if="tableStatus != 0"
                         class="curtain-beizhu"
                         placeholder="填写备注"
                         v-model="liantou.note"
                       />
-                      <span v-else>{{liantou.note}}</span>
+                      <span v-else>{{ liantou.note }}</span>
                     </span>
                   </div>
                 </div>
@@ -759,7 +1058,9 @@
           show-action
           @search="onSearchWall"
         >
-          <div slot="action" @click="onSearchWall" style="color: white">搜索</div>
+          <div slot="action" @click="onSearchWall" style="color: white">
+            搜索
+          </div>
         </van-search>
         <img class="img" src="../../assetsorder/back.png" @click="nolist" />
       </div>
@@ -767,19 +1068,23 @@
       <div class="all-itemlists">
         <ul v-if="productType != 'GY'">
           <li
-            v-for="(item,index) in itemNolists"
+            v-for="(item, index) in itemNolists"
             @click="selthisItemNo(item)"
             class="itemNolist"
             :key="index"
-          >{{item.itemNo}}</li>
+          >
+            {{ item.itemNo }}
+          </li>
         </ul>
         <ul v-else>
           <li
-            v-for="(item,index) in itemNolists"
+            v-for="(item, index) in itemNolists"
             @click="selthisItemNo(item)"
             class="itemNolist"
             :key="index"
-          >{{item.itemNo}}</li>
+          >
+            {{ item.itemNo }}
+          </li>
         </ul>
       </div>
       <!--底部分页-->
@@ -795,7 +1100,9 @@
         />
       </div>
     </van-popup>
-    <div class="shop-btn" @click="resolveModify" v-if="tableStatus!=0">确认修改</div>
+    <div class="shop-btn" @click="resolveModify" v-if="tableStatus != 0">
+      确认修改
+    </div>
   </div>
 </template>
 
@@ -961,12 +1268,18 @@ export default {
         for (var i = 0; i < this.ls.length; i++) {
           this.ls[i].choose = this.chooseBig[index];
         }
+        this.chooseBig[2] = this.chooseBig[index];
+        this.changeLink("lspb", 2);
       } else if (type == "sha") {
         for (var i = 0; i < this.sha.length; i++) {
           this.sha[i].choose = this.chooseBig[index];
         }
       } else if (type == "lspb") {
+        for (var i = 0; i < this.lspb.length; i++) {
+          this.lspb[i].choose = this.chooseBig[index];
+        }
       }
+      this.changeLinkTip(type, index);
     },
     changeLinkReverse(data) {
       let _index;
@@ -1010,6 +1323,23 @@ export default {
         if (data.choose || flag) {
           this.chooseBig[_index] = data.choose;
           this.$set(this.chooseBig, _index, data.choose);
+          this.changeLinkTip(data.itemMLGY.itemType, _index);
+        }
+      }
+    },
+    changeLinkTip(type, index) {
+      if (type == "lspb") {
+        //取消帘身配布如果帘身没有取消，需要在帘身工艺中备注
+        //如果帘身也取消了，就改回来
+        //找到工艺数据
+        var gyData = this.ls.filter((item) => item.productType == "GY");
+        if (gyData.length) {
+          gyData = gyData[0];
+          if (this.chooseBig[1] && !this.chooseBig[2]) {
+            gyData.remark = "已取消购买帘身配布;" + gyData.remark;
+          } else {
+            gyData.remark = gyData.remark.replace("已取消购买帘身配布;", "");
+          }
         }
       }
     },
@@ -1183,6 +1513,7 @@ export default {
       if (this.productType != "GY") {
         //非工艺用量修改
         if (this.itemType == "lspb") {
+          //帘身配布没有用量
           this.judgeTip(data[this.index], this.index);
           this.showGy = false;
           return;
@@ -1271,7 +1602,7 @@ export default {
         else status = 3;
       }
       if (
-        data.itemType === "pjb" ||
+        //data.itemType === "pjb" ||
         data.productType === "LCB" ||
         data.productType == "GY"
       ) {
@@ -1503,6 +1834,7 @@ export default {
     },
     oneTotal(row) {
       var price = this.dosageFilter(this.calculatePromotionPrice(row));
+      if (row.dosage == undefined) row.dosage = 0;
       return price.mul(row.dosage);
     },
     calculatePromotionPrice(data) {

@@ -3,15 +3,15 @@
     <top :top="set"></top>
     <span class="search-button" @click="searchData">查询</span>
     <div class="search">
-      <ul class="ulhead" id="ulhead">
+      <ul class="ulhead">
         <div>
-          <span class="licenter" @click="showType_1 = true">
+          <span @click="showType_1 = true">
             <input class="time_1" type="text" v-model="myArea" disabled />
           </span>
-          <span class="licenter" @click="showType_2 = true">
+          <span @click="showType_2 = true">
             <input class="time_1" type="text" v-model="myDistrict" disabled />
           </span>
-          <span class="licenter" @click="showType_3 = true">
+          <span @click="showType_3 = true">
             <input class="time_1" type="text" v-model="myCustomerType" disabled />
           </span>
         </div>
@@ -26,13 +26,13 @@
         </div>
         <hr />
         <div>
-          <span class="licenter" @click="showType_4 = true">
+          <span @click="showType_4 = true">
             <input type="text" v-model="ksDataSet" class="time_1" disabled />
           </span>
-          <span class="licenter" @click="showType_5 = true">
+          <span @click="showType_5 = true">
             <input type="text" v-model="jsDataSet" class="time_1" disabled />
           </span>
-          <span class="licenter" @click="showType_6 = true">
+          <span @click="showType_6 = true">
             <input type="text" v-model="myStatus" class="time_1" disabled />
           </span>
         </div>

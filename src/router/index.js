@@ -91,6 +91,7 @@ import BillDetailsQuery from '@/ordersystem/componentorder/query/billDetailsQuer
 import OrderQuery from '@/ordersystem/componentorder/query/orderQuery'
 import SalesQuery from '@/ordersystem/componentorder/query/salesQuery'
 import OrderDetailsQuery from '@/ordersystem/componentorder/query/orderDetailsQuery'
+import productQuery from '@/ordersystem/componentorder/query/productQuery'
 //兰居设计
 import lanjuDesign from '@/ordersystem/componentorder/lanju/lanjuDesign'
 import lanjuDetail from '@/ordersystem/componentorder/lanju/lanjuDetail'
@@ -521,6 +522,11 @@ var router = new Router({
       path: '/areaQuery',
       name: 'areaQuery',
       component: AreaQuery
+    },
+    {
+      path: '/productQuery',
+      name: 'productQuery',
+      component: productQuery
     },
     {
       path: '/billDetailsQuery',
