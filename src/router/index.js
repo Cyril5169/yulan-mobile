@@ -42,14 +42,6 @@ import SearchCurtain from '@/ordersystem/componentorder/SearchCurtain'
 import TaskSearch from '@/ordersystem/componentorder/TaskSearch'
 import BillManage from '@/ordersystem/componentorder/bill/BillManage'
 import BillDetails from '@/ordersystem/componentorder/bill/BillDetails'
-//软装类型
-import Bzhen from '@/ordersystem/componentorder/SoftType/Bzhen'
-import Ghua from '@/ordersystem/componentorder/SoftType/Ghua'
-import Guadai from '@/ordersystem/componentorder/SoftType/Guadai'
-import Hbian from '@/ordersystem/componentorder/SoftType/Hbian'
-import Mliao from '@/ordersystem/componentorder/SoftType/Mliao'
-import Qita from '@/ordersystem/componentorder/SoftType/Qita'
-import Taoci from '@/ordersystem/componentorder/SoftType/Taoci'
 //商品详情
 import WallDetails from '@/ordersystem/componentorder/WallDetails'
 import SoftDetails from '@/ordersystem/componentorder/SoftDetails'
@@ -303,15 +295,6 @@ var router = new Router({
       name: 'searchsoft',
       component: SearchSoft,
       redirect: '/searchsoft/hbian',
-      // children: [
-      //   { path: '/searchsoft/bzhen', name: 'bzhen', component: Bzhen },
-      //   { path: '/searchsoft/ghua', name: 'ghua', component: Ghua },
-      //   { path: '/searchsoft/guadai', name: 'guadai', component: Guadai },
-      //   { path: '/searchsoft/hbian', name: 'hbian', component: Hbian },
-      //   { path: '/searchsoft/mliao', name: 'mliao', component: Mliao },
-      //   { path: '/searchsoft/qita', name: 'qita', component: Qita },
-      //   { path: '/searchsoft/taoci', name: 'taoci', component: Taoci },
-      // ]
       children: [
         { path: '/searchsoft/bzhen', name: 'bzhen', component: SearchSoft, meta: {keepAlive: true} },
         { path: '/searchsoft/ghua', name: 'ghua', component: SearchSoft, meta: {keepAlive: true} },

@@ -234,7 +234,7 @@ export default {
   created() {
     this.jsSet(new Date());
     this.ksSet(new Date());
-    this.searchData();
+    //this.searchData();
   },
 };
 </script>
