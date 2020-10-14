@@ -210,6 +210,7 @@ export default {
   },
   methods: {
     typeClick(type, e) {
+      if(this.activeType == type) return;
       this.activeType = type;
       this.types.forEach(item => {
         item.isActive = false;
