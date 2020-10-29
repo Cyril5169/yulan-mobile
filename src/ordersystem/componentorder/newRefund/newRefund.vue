@@ -4,10 +4,20 @@
     <div class="search">
       <ul class="ulhead" id="ulhead">
         <li class="licenter" @click="showks = true">
-          <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
+          <input
+            class="time time-ks"
+            type="text"
+            v-model="ksDataSet"
+            disabled
+          />
         </li>
         <li class="liright" @click="showjs = true">
-          <input class="time time-js" type="text" v-model="jsDataSet" disabled />
+          <input
+            class="time time-js"
+            type="text"
+            v-model="jsDataSet"
+            disabled
+          />
         </li>
         <li class="licenter" @click="showType = true">
           <input class="statusBar" type="text" v-model="myType" disabled />
@@ -15,23 +25,33 @@
       </ul>
       <ul class="ulhead2" id="ulhead2">
         <li>
-          <div style="height:31px;margin-top:7px">
-            <van-cell-group style="height:31px;">
-              <input class="searchInput" type="text" v-model="selectCreator" placeholder="请输入客户名称" />
+          <div style="height: 31px; margin-top: 7px">
+            <van-cell-group style="height: 31px">
+              <input
+                class="searchInput"
+                type="text"
+                v-model="selectCreator"
+                placeholder="请输入客户名称"
+              />
             </van-cell-group>
           </div>
         </li>
         <li>
-          <div style="height:31px;margin-top:7px">
-            <van-cell-group style="height:31px;">
-              <input class="searchInput" type="text" v-model="selectItemNo" placeholder="请输入产品型号" />
+          <div style="height: 31px; margin-top: 7px">
+            <van-cell-group style="height: 31px">
+              <input
+                class="searchInput"
+                type="text"
+                v-model="selectItemNo"
+                placeholder="请输入产品型号"
+              />
             </van-cell-group>
           </div>
         </li>
       </ul>
       <ul class="ulhead3" id="ulhead3">
         <li>
-          <span class="search-buttonNew" @click="clear() ">重置</span>
+          <span class="search-buttonNew" @click="clear()">重置</span>
         </li>
         <li>
           <span class="search-button" @click="getList()">查询</span>
@@ -43,29 +63,29 @@
       <div
         class="singleData"
         @click="checkDetails(index)"
-        v-for="(item,index) in allLists"
+        v-for="(item, index) in allLists"
         :key="index"
       >
         <div class="single-title">
-          <span class="single-title-left">单据号：{{item.ID}}</span>
-          <span class="single-title-right">{{item.STATE|statusTrans}}</span>
+          <span class="single-title-left">单据号：{{ item.ID }}</span>
+          <span class="single-title-right">{{ item.STATE | statusTrans }}</span>
         </div>
         <table>
           <tr>
-            <td style="width:90px;">客户名称:</td>
-            <td>{{item.ERP_CREATORNAME}}</td>
+            <td style="width: 90px">客户名称:</td>
+            <td>{{ item.ERP_CREATORNAME }}</td>
           </tr>
           <tr>
             <td>产品型号:</td>
-            <td>{{item.ITEM_NO}}</td>
+            <td>{{ item.ITEM_NO }}</td>
           </tr>
           <tr>
             <td>产品名称:</td>
-            <td>{{item.PRODUCTION_VERSION}}</td>
+            <td>{{ item.PRODUCTION_VERSION }}</td>
           </tr>
           <tr>
             <td>货品数:</td>
-            <td>{{item.ITEM_COUNT}}</td>
+            <td>{{ item.ITEM_COUNT }}</td>
           </tr>
         </table>
       </div>
@@ -102,18 +122,15 @@
       />
     </van-popup>
     <!--底部分页-->
-    <div class="fy-contain">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        :items-per-page="itemsPerPage"
-        :total-items="totalLists"
-        mode="simple"
-        @change="changePage"
-      />
-    </div>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <van-pagination
+      class="fy-bottom"
+      v-model="currentPage"
+      :page-count="totalPage"
+      :items-per-page="itemsPerPage"
+      :total-items="totalLists"
+      mode="simple"
+      @change="changePage"
+    />
   </div>
 </template>
 
@@ -129,9 +146,8 @@ import {
   Picker,
   Pagination,
   Toast,
-  Loading,
   Field,
-  CellGroup
+  CellGroup,
 } from "vant";
 Vue.use(Field);
 
@@ -157,7 +173,7 @@ export default {
         "退回修改",
         "已接收",
         "客户确认中",
-        "客户同意"
+        "客户同意",
       ],
       //当前页数
       currentPage: 1,
@@ -168,9 +184,8 @@ export default {
       //总页数
       totalPage: 0,
       allLists: [],
-      loading: false,
       selectCreator: "",
-      selectItemNo: ""
+      selectItemNo: "",
     };
   },
   components: {
@@ -179,9 +194,8 @@ export default {
     [Popup.name]: Popup,
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
-    [Loading.name]: Loading,
     [Field.name]: Field,
-    [CellGroup.name]: CellGroup
+    [CellGroup.name]: CellGroup,
   },
   filters: {
     statusTrans(value) {
@@ -208,7 +222,7 @@ export default {
           return "客户同意";
           break;
       }
-    }
+    },
   },
   methods: {
     //开始时间选择
@@ -275,7 +289,6 @@ export default {
     //获取用户的退货赔偿信息
     getList() {
       this.allLists = [];
-      this.loading = true;
       let ksTime;
       let jsTime;
       if (this.ksDataSet === "起始时间") {
@@ -296,10 +309,9 @@ export default {
         endDate: jsTime, //结束日期
         state: this.myTypeCode, //状态
         cName: this.selectCreator, //创建者名称
-        itemNo: this.selectItemNo //产品号
+        itemNo: this.selectItemNo, //产品号
       };
-      GetUserCompensation(data).then(res => {
-        this.loading = false;
+      GetUserCompensation(data).then((res) => {
         if (res.count == 0) {
           return;
         }
@@ -310,7 +322,7 @@ export default {
         if (this.allLists.length == 0) {
           Toast({
             message: "暂无数据",
-            duration: 2000
+            duration: 2000,
           });
         } else {
         }
@@ -325,8 +337,8 @@ export default {
         name: "newRefundDetail",
         params: {
           ID: this.allLists[index].ID, //单据号
-          STATE: this.allLists[index].STATE //状态
-        }
+          STATE: this.allLists[index].STATE, //状态
+        },
       });
     },
     //重置
@@ -340,14 +352,14 @@ export default {
       this.jsSet(time); //结束时间
       this.selectCreator = "";
       this.selectItemNo = "";
-    }
+    },
   },
   created() {
     let time = new Date();
     this.jsSet(time);
     this.ksSet(time);
     this.getList();
-  }
+  },
 };
 </script>
 
@@ -550,26 +562,5 @@ input {
   color: white;
   padding: 5px 15px;
   border-radius: 15px;
-}
-.fy-contain {
-  width: 100%;
-  height: 50px;
-  background: white;
-  position: fixed;
-  bottom: 0px;
-  border-top: 1px solid #e8e8e8;
-}
-
-.fy-bottom {
-  background: #f8f8f8;
-  position: absolute;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
-}
-
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
 }
 </style>

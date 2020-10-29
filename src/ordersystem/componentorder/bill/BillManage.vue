@@ -2,49 +2,46 @@
   <div>
     <top :top="set" ref="top"></top>
     <div class="alllists">
-      <div class="singleItem" v-for="(bill,index) in billLists" :key="index">
+      <div class="singleItem" v-for="(bill, index) in billLists" :key="index">
         <table>
           <tr>
             <td>起始日期：</td>
-            <td>{{bill.dateStart}}</td>
+            <td>{{ bill.dateStart }}</td>
           </tr>
           <tr>
             <td>结束日期：</td>
-            <td>{{bill.dateEnd}}</td>
+            <td>{{ bill.dateEnd }}</td>
           </tr>
           <tr>
             <td>本期发货总额：</td>
-            <td>{{bill.fhjeMonth}}</td>
+            <td>{{ bill.fhjeMonth }}</td>
           </tr>
           <tr>
             <td>本期收款总额：</td>
-            <td>{{bill.czskMonth}}</td>
+            <td>{{ bill.czskMonth }}</td>
           </tr>
           <tr>
             <td>上期应收款/应收款(合计)：</td>
-            <td>{{bill.qcczysk}}/{{bill.czysk}}</td>
+            <td>{{ bill.qcczysk }}/{{ bill.czysk }}</td>
           </tr>
           <tr>
             <td>客户确认状态：</td>
-            <td>{{bill.customerCheckState}}</td>
+            <td>{{ bill.customerCheckState }}</td>
           </tr>
         </table>
         <span class="order-state" @click="toBillDetails(bill)">查看详情</span>
       </div>
     </div>
     <!--底部分页-->
-    <div class="fy-contain">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        mode="simple"
-        @change="changePage"
-      />
-    </div>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <van-pagination
+      class="fy-bottom"
+      v-model="currentPage"
+      :page-count="totalPage"
+      mode="simple"
+      @change="changePage"
+    />
     <van-popup
-      style="width:100%;height:100%;"
+      style="width: 100%; height: 100%"
       v-model="showDetail"
       v-if="showDetail"
       transition="slide"
@@ -62,7 +59,7 @@
 
 <script>
 import axios from "axios";
-import { Loading, Pagination, Popup } from "vant";
+import { Pagination, Popup } from "vant";
 import top from "../../../components/Top";
 import BillDetails from "./BillDetails";
 import { GetBalancePeriod } from "@/api/orderListASP";
@@ -72,20 +69,18 @@ export default {
   components: {
     top,
     BillDetails,
-    [Loading.name]: Loading,
     [Popup.name]: Popup,
-    [Pagination.name]: Pagination
+    [Pagination.name]: Pagination,
   },
   data() {
     return {
       set: 30,
       showDetail: false,
-      loading: false,
       billLists: {},
       customerInfo: {}, //对账单明细表头
       billitem: {},
       currentPage: 1, //当前页数
-      totalPage: 0 //总页数
+      totalPage: 0, //总页数
     };
   },
   methods: {
@@ -97,18 +92,16 @@ export default {
     },
     getBillLists() {
       this.billLists = {};
-      this.loading = true;
       let url =
         this.orderBaseUrl + "/customerBalance/getCustomerBalanceInfo.do";
       let data = {
         cid: this.$store.getters.getCId,
         limit: 8,
         page: this.currentPage,
-        status: ""
+        status: "",
       };
       //axios.post(url, data).then(res => {
-      GetBalancePeriod(data).then(res => {
-        this.loading = false;
+      GetBalancePeriod(data).then((res) => {
         this.billLists = res.data.customerBalancePeriodList;
         this.customerInfo = res.data.customerInfo;
         if (this.billLists) {
@@ -123,11 +116,11 @@ export default {
     toBillDetails(bill) {
       this.billitem = bill;
       this.showDetail = true;
-    }
+    },
   },
   created() {
     this.getBillLists();
-  }
+  },
 };
 </script>
 
@@ -160,14 +153,5 @@ export default {
   right: 10px;
   color: white;
   font-size: 12px;
-}
-.fy-bottom {
-  border-top: 1px solid #d8d8d8;
-  background: #f8f8f8;
-  position: fixed;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
 }
 </style>

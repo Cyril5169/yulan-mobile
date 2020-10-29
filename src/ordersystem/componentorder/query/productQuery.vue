@@ -30,7 +30,7 @@
         <table>
           <tr>
             <td>产品型号：</td>
-            <td>{{ item.ITEM_NO }}</td>
+            <td style="font-weight:bold;">{{ item.ITEM_NO }}</td>
             <td>旧型号：</td>
             <td>{{ item.OLD_ITEM_NO }}</td>
           </tr>
@@ -60,16 +60,14 @@
       </div>
     </div>
     <!--底部分页-->
-    <div class="fy-contain">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        :total-items="totalLists"
-        mode="simple"
-        @change="searchData"
-      />
-    </div>
+    <van-pagination
+      class="fy-bottom"
+      v-model="currentPage"
+      :page-count="totalPage"
+      :total-items="count"
+      mode="simple"
+      @change="searchData"
+    />
     <!--选择时间-->
     <van-popup v-model="showks" position="bottom">
       <van-datetime-picker
@@ -113,8 +111,8 @@ export default {
       productData: [],
       currentPage: 1,
       totalPage: 0,
-      pageSize: 15,
-      totalLists: 0,
+      limit: 15,
+      count: 0,
       condition: "",
       ksData: "",
       ksDataSet: "起始时间", //  开始时间
@@ -199,7 +197,7 @@ export default {
     cancelTimejs() {
       this.showjs = false;
     },
-    initSearch(){
+    initSearch() {
       this.currentPage = 1;
       this.searchData();
     },
@@ -209,7 +207,7 @@ export default {
         beginTime: this.ksDataSet,
         finishTime: this.jsDataSet,
         condition: this.condition,
-        limit: this.pageSize,
+        limit: this.limit,
         page: this.currentPage,
       };
       if (!data.beginTime) {
@@ -222,13 +220,9 @@ export default {
       }
       GetProductStatus(data).then((res) => {
         this.productData = res.data;
-        this.totalLists = res.count;
-        this.totalPage = Math.ceil(this.totalLists / this.pageSize);
+        this.count = res.count;
+        this.totalPage = Math.ceil(this.count / this.limit);
       });
-    },
-    //当前页改变时的操作
-    handleCurrentChange() {
-      this.searchData();
     },
   },
   created() {
@@ -259,15 +253,6 @@ export default {
 .singleItem td {
   text-align: left;
 }
-.fy-bottom {
-  border-top: 1px solid #d8d8d8;
-  background: #f8f8f8;
-  position: fixed;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
-}
 .ulhead {
   position: fixed;
   top: 50px;
@@ -276,7 +261,16 @@ export default {
   height: 37px;
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
   font-size: 15px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
 }
+
+li {
+  display: inline-block;
+}
+
 .ulheadNew {
   position: fixed;
   top: 87px;
@@ -286,16 +280,6 @@ export default {
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
   font-size: 15px;
-}
-ul {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: space-around;
-}
-
-li {
-  display: inline-block;
 }
 .time {
   width: 90px;

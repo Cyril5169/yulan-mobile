@@ -1,13 +1,22 @@
 <template>
   <div class="orderDetailQUery">
-    <top msgtitle="订单列表" :greenBackground="true" :isPopup="true" @backclick="backclick"></top>
+    <top
+      msgtitle="订单列表"
+      :greenBackground="true"
+      :isPopup="true"
+      @backclick="backclick"
+    ></top>
     <!-- <span class="search-button" @click="query()">查询</span> -->
     <div class="search">
       <ul class="ulhead" id="ulhead">
-        <div>客户名称：{{baseData.CUSTOMER_NAME}}</div>
+        <div>客户名称：{{ baseData.CUSTOMER_NAME }}</div>
         <div>
-          汇总金额：{{baseData.MONEYSUM}}元
-          <li class="licenter" style="margin-left:20px" @click="showType_1 = true">
+          汇总金额：{{ baseData.MONEYSUM }}元
+          <li
+            class="licenter"
+            style="margin-left: 20px"
+            @click="showType_1 = true"
+          >
             <input class="time" type="text" v-model="myStatus" disabled />
           </li>
         </div>
@@ -16,52 +25,69 @@
 
     <div class="all-bank">
       <!-- 订单列表 -->
-      <div class="single-bank" v-for="(singleBank,index) in tableData" :key="index">
+      <div
+        class="single-bank"
+        v-for="(singleBank, index) in tableData"
+        :key="index"
+      >
         <div class="single-title">
-          <span class="single-title-left">订单号：{{singleBank.ORDER_NO}}</span>
-          <span class="single-title-right">{{singleBank.STATUS_ID|transType}}</span>
+          <span class="single-title-left"
+            >订单号：{{ singleBank.ORDER_NO }}</span
+          >
+          <span class="single-title-right">{{
+            singleBank.STATUS_ID | transType
+          }}</span>
         </div>
         <table>
           <tr>
-            <td style="width:80px;">创建时间:</td>
-            <td>{{singleBank.DATE_CRE|datatrans}}</td>
+            <td style="width: 80px">创建时间:</td>
+            <td>{{ singleBank.DATE_CRE | datatrans }}</td>
           </tr>
           <tr>
             <td>订单金额:</td>
-            <td>{{singleBank.ALL_SPEND}}元</td>
+            <td>{{ singleBank.ALL_SPEND }}元</td>
           </tr>
         </table>
-        <span class="order-state" @click="toOrderDetails(singleBank)">查看订单详情</span>
-        <span class="order-state_1" @click="customer_info(singleBank)">查看客户详情</span>
+        <span class="order-state" @click="toOrderDetails(singleBank)"
+          >查看订单详情</span
+        >
+        <span class="order-state_1" @click="customer_info(singleBank)"
+          >查看客户详情</span
+        >
       </div>
     </div>
     <!--客户详情-->
-    <van-popup v-model="showDetail" position="bottom" closeable :style="{ height: '50%' }">
+    <van-popup
+      v-model="showDetail"
+      position="bottom"
+      closeable
+      :style="{ height: '50%' }"
+    >
       <van-panel title="客户详情">
-        <div style="width:90%;margin:0 auto">
+        <div style="width: 90%; margin: 0 auto">
           <hr />
-          <table style="width:100%;height:180px" class="table_2">
+          <table style="width: 100%; height: 180px" class="table_2">
             <tr>
-              <td style="text-align:left">客户名称:</td>
-              <td>{{customerInfo.CUSTOMER_NAME}}</td>
+              <td style="text-align: left">客户名称:</td>
+              <td>{{ customerInfo.CUSTOMER_NAME }}</td>
             </tr>
             <tr>
-              <td style="text-align:left">联系人：</td>
-              <td>{{customerInfo.CUSTOMER_AGENT}}</td>
+              <td style="text-align: left">联系人：</td>
+              <td>{{ customerInfo.CUSTOMER_AGENT }}</td>
             </tr>
             <tr>
-              <td style="text-align:left">电话：</td>
-              <td>{{customerInfo.OFFICE_TEL}}</td>
+              <td style="text-align: left">电话：</td>
+              <td>{{ customerInfo.OFFICE_TEL }}</td>
             </tr>
             <tr>
-              <td style="text-align:left">地址：</td>
-              <td>{{customerInfo.POST_ADDRESS}}</td>
+              <td style="text-align: left">地址：</td>
+              <td>{{ customerInfo.POST_ADDRESS }}</td>
             </tr>
             <tr>
-              <td style="width:100px;text-align:left">优惠券余额：</td>
+              <td style="width: 100px; text-align: left">优惠券余额：</td>
               <td v-if="couponData.length">
                 <span v-for="item of couponData" :key="item.index">
-                  {{item.id}}: ￥{{item.rebateMoneyOver}}
+                  {{ item.id }}: ￥{{ item.rebateMoneyOver }}
                   <br />
                 </span>
               </td>
@@ -70,8 +96,8 @@
               </td>
             </tr>
             <tr>
-              <td style="text-align:left">客户余额：</td>
-              <td>￥{{moneySituation}}</td>
+              <td style="text-align: left">客户余额：</td>
+              <td>￥{{ moneySituation }}</td>
             </tr>
           </table>
         </div>
@@ -88,26 +114,28 @@
       />
     </van-popup>
     <!--底部分页-->
-    <div class="fy-contain">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        :items-per-page="itemsPerPage"
-        :total-items="totalLists"
-        mode="simple"
-        @change="changePage"
-      />
-    </div>
+    <van-pagination
+      class="fy-bottom"
+      v-model="currentPage"
+      :page-count="totalPage"
+      :items-per-page="itemsPerPage"
+      :total-items="totalLists"
+      mode="simple"
+      @change="changePage"
+    />
 
     <van-popup
-      style="width:100%;height:100%;"
+      style="width: 100%; height: 100%"
       v-model="showOrderDetail"
       v-if="showOrderDetail"
       transition="slide"
       position="right"
     >
-      <OrderDetails :inputOrderNo="selectOrderNo" :inputBtnShow="false" @backclick="backclick2"></OrderDetails>
+      <OrderDetails
+        :inputOrderNo="selectOrderNo"
+        :inputBtnShow="false"
+        @backclick="backclick2"
+      ></OrderDetails>
     </van-popup>
   </div>
 </template>
@@ -115,15 +143,7 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import {
-  DatetimePicker,
-  Popup,
-  Picker,
-  Pagination,
-  Toast,
-  Loading,
-  Panel,
-} from "vant";
+import { DatetimePicker, Popup, Picker, Pagination, Toast, Panel } from "vant";
 import {
   getAreaCode,
   getDistrictByAreaCode,
@@ -181,7 +201,6 @@ export default {
     [Popup.name]: Popup,
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
-    [Loading.name]: Loading,
     [Panel.name]: Panel,
   },
   filters: {
@@ -474,26 +493,5 @@ input {
   color: white;
   padding: 5px 15px;
   border-radius: 15px;
-}
-.fy-contain {
-  width: 100%;
-  height: 50px;
-  background: white;
-  position: fixed;
-  bottom: 0px;
-  border-top: 1px solid #e8e8e8;
-}
-
-.fy-bottom {
-  background: #f8f8f8;
-  position: absolute;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
-}
-
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
 }
 </style>

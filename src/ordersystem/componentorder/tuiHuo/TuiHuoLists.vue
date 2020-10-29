@@ -5,13 +5,23 @@
     <div class="search">
       <ul class="ulhead" id="ulhead">
         <li class="licenter" @click="showks = true">
-          <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
+          <input
+            class="time time-ks"
+            type="text"
+            v-model="ksDataSet"
+            disabled
+          />
         </li>
         <li>
           <span>至</span>
         </li>
         <li class="liright" @click="showjs = true">
-          <input class="time time-js" type="text" v-model="jsDataSet" disabled />
+          <input
+            class="time time-js"
+            type="text"
+            v-model="jsDataSet"
+            disabled
+          />
         </li>
         <li class="licenter" @click="showType = true">
           <input class="time time-ks" type="text" v-model="myType" disabled />
@@ -19,23 +29,28 @@
       </ul>
     </div>
     <div class="all-bank">
-      <div class="single-bank" @click.stop="checkWt(index)" v-for="(singleBank,index) in allLists" :key="index">
+      <div
+        class="single-bank"
+        @click.stop="checkWt(index)"
+        v-for="(singleBank, index) in allLists"
+        :key="index"
+      >
         <div class="single-title">
-          <span class="single-title-left">编号：{{singleBank.ID}}</span>
-          <span class="single-title-right">{{singleBank.STATE}}</span>
+          <span class="single-title-left">编号：{{ singleBank.ID }}</span>
+          <span class="single-title-right">{{ singleBank.STATE }}</span>
         </div>
         <table>
           <tr>
             <td>创建时间：</td>
-            <td>{{singleBank.CREATE_TS}}</td>
+            <td>{{ singleBank.CREATE_TS }}</td>
           </tr>
           <tr>
             <td>玉兰业务员：</td>
-            <td>{{singleBank.ERP_CREATORNAME}}</td>
+            <td>{{ singleBank.ERP_CREATORNAME }}</td>
           </tr>
           <tr>
             <td>货品数：</td>
-            <td>{{singleBank.ITEM_COUNT}}</td>
+            <td>{{ singleBank.ITEM_COUNT }}</td>
           </tr>
         </table>
         <!-- <span class="single-details" @click.stop="checkWt(index)">查看详情</span> -->
@@ -73,33 +88,23 @@
       />
     </van-popup>
     <!--底部分页-->
-    <div class="fy-contain">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        :items-per-page="itemsPerPage"
-        :total-items="totalLists"
-        mode="simple"
-        @change="changePage"
-      />
-    </div>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <van-pagination
+      class="fy-bottom"
+      v-model="currentPage"
+      :page-count="totalPage"
+      :items-per-page="itemsPerPage"
+      :total-items="totalLists"
+      mode="simple"
+      @change="changePage"
+    />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import {
-  DatetimePicker,
-  Popup,
-  Picker,
-  Pagination,
-  Toast,
-  Loading
-} from "vant";
-import {GetAllCompensation} from "@/api/paymentASP";
+import { DatetimePicker, Popup, Picker, Pagination, Toast } from "vant";
+import { GetAllCompensation } from "@/api/paymentASP";
 
 export default {
   name: "bank",
@@ -125,7 +130,6 @@ export default {
       //总页数
       totalPage: 0,
       allLists: [],
-      loading: false
     };
   },
   components: {
@@ -134,7 +138,6 @@ export default {
     [Popup.name]: Popup,
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
-    [Loading.name]: Loading
   },
   methods: {
     //开始时间选择
@@ -198,7 +201,6 @@ export default {
     //  获取列表
     getList() {
       this.allLists = [];
-      //this.loading = true;
       if (this.myType == "客户同意") {
         this.myTypeCode = "APPROVED";
       } else if (this.myType == "客户不同意") {
@@ -218,8 +220,6 @@ export default {
       } else {
         jsTime = this.jsDataSet + " 23:59:59";
       }
-      // this.ksDataSet === "起始时间" ? '':this.ksDataSet + " 00:00:00";
-      // this.jsDataSet === "结束时间" ? '':this.jsDataSet + " 23:59:59";
       let obj = {
         CID: this.$store.getters.getCId, //客户ID
         page: this.currentPage, //第几页
@@ -227,67 +227,36 @@ export default {
         startDate: ksTime, //开始日期
         endDate: jsTime, //结束日期
         state: this.myTypeCode, //状态
-        createName: '', //创建者名称
-        cName: '', //客户名称
-        itemNo: '' //产品号
+        createName: "", //创建者名称
+        cName: "", //客户名称
+        itemNo: "", //产品号
       };
-      // let url =
-      //   this.capitalUrl +
-      //   "/returnCompensationBill/getReturnCompensationBills.do";
-      // axios
-      //   .get(url, {
-      //     params: {
-      //       CID: this.$store.getters.getCId, //公司id
-      //       startDate: ksTime, //开始日期
-      //       endDate: jsTime, //结束日期
-      //       state: this.myTypeCode, //确认书状态
-      //       number: 8, //一页几条
-      //       page: this.currentPage //页数
-      //     }
-      //   })
-        GetAllCompensation(obj)
-        .then(res => {
-          //this.loading = false;
-          this.allLists = res.data;
-          this.totalLists = res.count;
-          //获取总页数
-          this.totalPage = Math.ceil(this.totalLists / 8);
-          if (this.allLists.length == 0) {
-            Toast({
-              message: "暂无该状态退货赔偿书",
-              duration: 2000
-            });
-          } else {
-            for (let i = 0; i < this.allLists.length; i++) {
-              // this.allLists[i].payDate = this.exchangeTime(
-              //   this.allLists[i].payDate
-              // );
-              // this.allLists[i].createTs = this.exchangeTime(
-              //   this.allLists[i].createTs
-              // );
-              // this.allLists[i].submitTs = this.exchangeTime(
-              //   this.allLists[i].submitTs
-              // );
-              // this.allLists[i].reassureTs = this.exchangeTime(
-              //   this.allLists[i].reassureTs
-              // );
-              // this.allLists[i].erpProcessTs = this.exchangeTime(
-              //   this.allLists[i].erpProcessTs
-              // );
-              switch (this.allLists[i].STATE) {
-                case "APPROVED":
-                  this.allLists[i].STATE = "客户同意";
-                  continue;
-                case "CANCELED":
-                  this.allLists[i].STATE = "客户不同意";
-                  continue;
-                case "CUSTOMERAFFIRM":
-                  this.allLists[i].STATE = "客户确认中";
-                  continue;
-              }
+      GetAllCompensation(obj).then((res) => {
+        this.allLists = res.data;
+        this.totalLists = res.count;
+        //获取总页数
+        this.totalPage = Math.ceil(this.totalLists / 8);
+        if (this.allLists.length == 0) {
+          Toast({
+            message: "暂无该状态退货赔偿书",
+            duration: 2000,
+          });
+        } else {
+          for (let i = 0; i < this.allLists.length; i++) {
+            switch (this.allLists[i].STATE) {
+              case "APPROVED":
+                this.allLists[i].STATE = "客户同意";
+                continue;
+              case "CANCELED":
+                this.allLists[i].STATE = "客户不同意";
+                continue;
+              case "CUSTOMERAFFIRM":
+                this.allLists[i].STATE = "客户确认中";
+                continue;
             }
           }
-        });
+        }
+      });
     },
     // 时间戳转换为固定格式时间
     exchangeTime(time) {
@@ -315,8 +284,8 @@ export default {
         name: "tuihdetails",
         params: {
           id: this.allLists[index].ID,
-          state: this.allLists[index].STATE
-        }
+          state: this.allLists[index].STATE,
+        },
       });
     },
   },
@@ -325,7 +294,7 @@ export default {
     this.jsSet(time);
     this.ksSet(time);
     this.getList();
-  }
+  },
 };
 </script>
 
@@ -445,26 +414,5 @@ input {
   color: white;
   padding: 5px 15px;
   border-radius: 15px;
-}
-.fy-contain {
-  width: 100%;
-  height: 50px;
-  background: white;
-  position: fixed;
-  bottom: 0px;
-  border-top: 1px solid #e8e8e8;
-}
-
-.fy-bottom {
-  background: #f8f8f8;
-  position: absolute;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
-}
-
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
 }
 </style>

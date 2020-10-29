@@ -1088,17 +1088,15 @@
         </ul>
       </div>
       <!--底部分页-->
-      <div class="fy-contain">
-        <van-pagination
-          class="fy-bottom"
-          v-model="currentPage"
-          :page-count="totalPage"
-          :items-per-page="itemsPerPage"
-          :total-items="totalLists"
-          mode="simple"
-          @change="changePage"
-        />
-      </div>
+      <van-pagination
+        class="fy-bottom"
+        v-model="currentPage"
+        :page-count="totalPage"
+        :items-per-page="itemsPerPage"
+        :total-items="totalLists"
+        mode="simple"
+        @change="changePage"
+      />
     </van-popup>
     <div class="shop-btn" @click="resolveModify" v-if="tableStatus != 0">
       确认修改
@@ -2221,19 +2219,6 @@ export default {
   height: 30px;
   line-height: 30px;
   border: 1px solid #89cb81;
-}
-
-.fy-bottom {
-  border-top: 1px solid #d8d8d8;
-  background: #f8f8f8;
-  position: absolute;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
-}
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
 }
 .show-FG .van-cell-group {
   max-height: 100px;

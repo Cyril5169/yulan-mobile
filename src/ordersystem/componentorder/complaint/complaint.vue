@@ -4,20 +4,35 @@
     <div class="search">
       <ul class="ulhead" id="ulhead">
         <li class="licenter" @click="showks = true">
-          <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
+          <input
+            class="time time-ks"
+            type="text"
+            v-model="ksDataSet"
+            disabled
+          />
         </li>
         <li class="liright" @click="showjs = true">
-          <input class="time time-js" type="text" v-model="jsDataSet" disabled />
+          <input
+            class="time time-js"
+            type="text"
+            v-model="jsDataSet"
+            disabled
+          />
         </li>
         <li class="licenter" @click="showType = true">
           <input class="statusBar" type="text" v-model="myType" disabled />
         </li>
       </ul>
       <ul class="ulheadNew" id="ulheadNew">
-        <li >
-          <div style="height:31px;margin-top:7px" >
-            <van-cell-group style="height:31px;">
-               <input  class="searchInput" type="text" v-model="searchKey" placeholder="请输入提货单号" />
+        <li>
+          <div style="height: 31px; margin-top: 7px">
+            <van-cell-group style="height: 31px">
+              <input
+                class="searchInput"
+                type="text"
+                v-model="searchKey"
+                placeholder="请输入提货单号"
+              />
             </van-cell-group>
           </div>
         </li>
@@ -34,37 +49,39 @@
       <div
         class="singleData"
         @click="checkDetails(index)"
-        v-for="(item,index) in allLists"
+        v-for="(item, index) in allLists"
         :key="index"
       >
         <div class="single-title">
-          <span class="single-title-left">单据号：{{item.SALE_NO}}</span>
-          <span class="single-title-right">{{item.STATUS|statusTrans}}</span>
+          <span class="single-title-left">单据号：{{ item.SALE_NO }}</span>
+          <span class="single-title-right">{{
+            item.STATUS | statusTrans
+          }}</span>
         </div>
         <table>
           <tr>
             <td>客户代码</td>
-            <td>{{item.CUSTOMER_CODE}}</td>
+            <td>{{ item.CUSTOMER_CODE }}</td>
           </tr>
           <tr>
             <td>客户名称</td>
-            <td>{{item.CUSTOMER_NAME}}</td>
+            <td>{{ item.CUSTOMER_NAME }}</td>
           </tr>
           <tr>
             <td>物流单号</td>
-            <td>{{item.C_TRANSBILL}}</td>
+            <td>{{ item.C_TRANSBILL }}</td>
           </tr>
           <tr>
             <td>投诉类型</td>
-            <td>{{item.TYPE}}</td>
+            <td>{{ item.TYPE }}</td>
           </tr>
           <tr>
             <td>投诉内容</td>
-            <td>{{item.MEMO}}</td>
+            <td>{{ item.MEMO }}</td>
           </tr>
           <tr>
             <td>投诉时间</td>
-            <td>{{item.SUBMITTS}}</td>
+            <td>{{ item.SUBMITTS }}</td>
           </tr>
         </table>
       </div>
@@ -89,26 +106,29 @@
         type="date"
         :title="'选择时间'"
         @confirm="confirmTimejs"
-         @cancel="cancelTimejs"
+        @cancel="cancelTimejs"
       />
     </van-popup>
     <!--状态选择-->
     <van-popup v-model="showType" position="bottom">
-      <van-picker show-toolbar title="单据状态" :columns="statusArray" @confirm="onConfirmType"  @cancel="onCancelType"/>
+      <van-picker
+        show-toolbar
+        title="单据状态"
+        :columns="statusArray"
+        @confirm="onConfirmType"
+        @cancel="onCancelType"
+      />
     </van-popup>
     <!--底部分页-->
-    <div class="fy-contain">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        :items-per-page="itemsPerPage"
-        :total-items="totalLists"
-        mode="simple"
-        @change="changePage"
-      />
-    </div>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <van-pagination
+      class="fy-bottom"
+      v-model="currentPage"
+      :page-count="totalPage"
+      :items-per-page="itemsPerPage"
+      :total-items="totalLists"
+      mode="simple"
+      @change="changePage"
+    />
   </div>
 </template>
 
@@ -124,9 +144,8 @@ import {
   Picker,
   Pagination,
   Toast,
-  Loading,
   Field,
-  CellGroup
+  CellGroup,
 } from "vant";
 Vue.use(Field);
 
@@ -155,7 +174,6 @@ export default {
       //总页数
       totalPage: 0,
       allLists: [],
-      loading: false
     };
   },
   components: {
@@ -164,18 +182,17 @@ export default {
     [Popup.name]: Popup,
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
-    [Loading.name]: Loading,
     [Field.name]: Field,
-    [CellGroup.name]: CellGroup
+    [CellGroup.name]: CellGroup,
   },
   filters: {
-    statusTrans(value){
+    statusTrans(value) {
       switch (value) {
-        case  1:
+        case 1:
           return "未处理";
-        case  2:
+        case 2:
           return "已处理未评价";
-        case  3:
+        case 3:
           return "已处理已评价";
       }
     },
@@ -238,7 +255,6 @@ export default {
     //获取列表
     getList() {
       this.allLists = [];
-      this.loading = true;
       let ksTime;
       let jsTime;
       if (this.ksDataSet === "起始时间") {
@@ -252,17 +268,16 @@ export default {
         jsTime = this.jsDataSet + " 23:59:59";
       }
       let data = {
-        companyId:this.$store.getters.getCMId,//公司id
+        companyId: this.$store.getters.getCMId, //公司id
         cid: this.$store.getters.getCId, //用户id
         STATUS: this.myTypeCode,
         SEARCHKEY: this.searchKey,
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
         limit: 10, //限制数
-        page: this.currentPage //页数
+        page: this.currentPage, //页数
       };
-      GetAllComplaint(data).then(res => {
-        this.loading = false;
+      GetAllComplaint(data).then((res) => {
         if (res.count == 0) {
           return;
         }
@@ -273,7 +288,7 @@ export default {
         if (this.allLists.length == 0) {
           Toast({
             message: "暂无数据",
-            duration: 2000
+            duration: 2000,
           });
         } else {
         }
@@ -284,23 +299,20 @@ export default {
     },
     //查看详情
     checkDetails(index) {
-      if(this.allLists[index].STATUS!="2")
-      {
+      if (this.allLists[index].STATUS != "2") {
         this.$router.push({
-           name: "complaintDetail",
-           params: {
-              SID: this.allLists[index].SID, //单据号
-           }
+          name: "complaintDetail",
+          params: {
+            SID: this.allLists[index].SID, //单据号
+          },
         });
-      }
-      else
-      {
-           this.$router.push({
-           name: "addOrEditComplaint",
-           params: {
-              SID: this.allLists[index].SID, //单据号
-              STATUS: 2, //单据状态
-           }
+      } else {
+        this.$router.push({
+          name: "addOrEditComplaint",
+          params: {
+            SID: this.allLists[index].SID, //单据号
+            STATUS: 2, //单据状态
+          },
         });
       }
     },
@@ -310,8 +322,8 @@ export default {
         name: "addOrEditComplaint",
         params: {
           STATUS: 1,
-          from:'complaint'
-        }
+          from: "complaint",
+        },
       });
     },
     //重置
@@ -324,14 +336,14 @@ export default {
       this.jsData = "";
       this.jsSet(time); //结束时间
       this.searchKey = "";
-    }
+    },
   },
   created() {
     let time = new Date();
     this.jsSet(time);
     this.ksSet(time);
     this.getList();
-  }
+  },
 };
 </script>
 
@@ -354,10 +366,10 @@ export default {
   background: #89cb81;
   font-size: 40px;
 }
-.searchInput{
-  height:25px;
-  font-size:13px;
-  padding:5px;
+.searchInput {
+  height: 25px;
+  font-size: 13px;
+  padding: 5px;
   position: relative;
   top: -3px;
 }
@@ -366,7 +378,7 @@ export default {
   font-size: 13px;
   padding: 5px 20px;
   border-radius: 15px;
-  background: white; 
+  background: white;
   z-index: 99;
   position: relative;
   top: 3px;
@@ -509,26 +521,5 @@ input {
   color: white;
   padding: 5px 15px;
   border-radius: 15px;
-}
-.fy-contain {
-  width: 100%;
-  height: 50px;
-  background: white;
-  position: fixed;
-  bottom: 0px;
-  border-top: 1px solid #e8e8e8;
-}
-
-.fy-bottom {
-  background: #f8f8f8;
-  position: absolute;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
-}
-
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
 }
 </style>

@@ -14,11 +14,15 @@
       <div class="img" @click="back"></div>
     </div>
     <div class="search-result">
-      <div class="single-wall" v-for="(singleCurtain,index) in allCurtain" :key="index">
+      <div
+        class="single-wall"
+        v-for="(singleCurtain, index) in allCurtain"
+        :key="index"
+      >
         <table width="100%">
           <tr>
             <th>窗帘款式：</th>
-            <td>{{singleCurtain.itemNo}}</td>
+            <td>{{ singleCurtain.itemNo }}</td>
           </tr>
           <tr>
             <th width="90px">成品宽*高：</th>
@@ -33,7 +37,8 @@
                                 .replace('.', '$#$').replace(/\./g, '')
                                 .replace('$#$', '.')
                                 .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
-              /> ╳
+              />
+              ╳
               <input
                 v-model="singleCurtain.height"
                 type="number"
@@ -55,7 +60,7 @@
                 type="number"
                 class="curtain-width"
                 placeholder="0.00"
-                @change="checkNeed($event,index)"
+                @change="checkNeed($event, index)"
                 oninput="value=value.replace(/[^\d.]/g,'')
                                 .replace(/^\./g, '').replace(/\.{2,}/g, '.')
                                 .replace('.', '$#$').replace(/\./g, '')
@@ -64,14 +69,26 @@
               />
             </td>
             <td width="60px;" class="need-head">
-              <van-checkbox v-model="singleCurtain.isNeed" checked-color="#89cb81">需要</van-checkbox>
+              <van-checkbox
+                v-model="singleCurtain.isNeed"
+                checked-color="#89cb81"
+                >需要</van-checkbox
+              >
             </td>
           </tr>
           <tr @click="singleCurtain.showMultiple = true">
             <th>褶皱倍数：</th>
             <td>
-              <input class="select-multiple" disabled v-model="singleCurtain.multiple" />
-              <img style="width:15px;height:15px;" src="../assetsorder/more.png" alt />
+              <input
+                class="select-multiple"
+                disabled
+                v-model="singleCurtain.multiple"
+              />
+              <img
+                style="width: 15px; height: 15px"
+                src="../assetsorder/more.png"
+                alt
+              />
             </td>
           </tr>
           <tr @click="selecthd(index)">
@@ -80,9 +97,13 @@
               <input
                 class="select-multiple"
                 disabled
-                :value="changeActivi(singleCurtain.activityId,index)"
+                :value="changeActivi(singleCurtain.activityId, index)"
               />
-              <img style="width:15px;height:15px;" src="../assetsorder/more.png" alt />
+              <img
+                style="width: 15px; height: 15px"
+                src="../assetsorder/more.png"
+                alt
+              />
             </td>
           </tr>
           <tr>
@@ -92,7 +113,7 @@
                 class="location"
                 placeholder="选填"
                 v-model="singleCurtain.location"
-                @input="oninput($event,index)"
+                @input="oninput($event, index)"
               />
             </td>
           </tr>
@@ -103,43 +124,95 @@
           <van-popup v-model="singleCurtain.showMultiple">
             <van-radio-group v-model="singleCurtain.multiple">
               <van-cell-group>
-                <van-cell title="1.8" clickable @click="singleCurtain.multiple = '1.8' ">
+                <van-cell
+                  title="1.8"
+                  clickable
+                  @click="singleCurtain.multiple = '1.8'"
+                >
                   <van-radio name="1.8" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="1.9" clickable @click="singleCurtain.multiple = '1.9' ">
+                <van-cell
+                  title="1.9"
+                  clickable
+                  @click="singleCurtain.multiple = '1.9'"
+                >
                   <van-radio name="1.9" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="2.0" clickable @click="singleCurtain.multiple = '2.0' ">
+                <van-cell
+                  title="2.0"
+                  clickable
+                  @click="singleCurtain.multiple = '2.0'"
+                >
                   <van-radio name="2.0" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="2.1" clickable @click="singleCurtain.multiple = '2.1'">
+                <van-cell
+                  title="2.1"
+                  clickable
+                  @click="singleCurtain.multiple = '2.1'"
+                >
                   <van-radio name="2.1" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="2.2" clickable @click="singleCurtain.multiple = '2.2'">
+                <van-cell
+                  title="2.2"
+                  clickable
+                  @click="singleCurtain.multiple = '2.2'"
+                >
                   <van-radio name="2.2" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="2.3" clickable @click="singleCurtain.multiple = '2.3'">
+                <van-cell
+                  title="2.3"
+                  clickable
+                  @click="singleCurtain.multiple = '2.3'"
+                >
                   <van-radio name="2.3" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="2.4" clickable @click="singleCurtain.multiple = '2.4'">
+                <van-cell
+                  title="2.4"
+                  clickable
+                  @click="singleCurtain.multiple = '2.4'"
+                >
                   <van-radio name="2.4" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="2.5" clickable @click="singleCurtain.multiple = '2.5'">
+                <van-cell
+                  title="2.5"
+                  clickable
+                  @click="singleCurtain.multiple = '2.5'"
+                >
                   <van-radio name="2.5" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="2.6" clickable @click="singleCurtain.multiple = '2.6'">
+                <van-cell
+                  title="2.6"
+                  clickable
+                  @click="singleCurtain.multiple = '2.6'"
+                >
                   <van-radio name="2.6" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="2.7" clickable @click="singleCurtain.multiple = '2.7'">
+                <van-cell
+                  title="2.7"
+                  clickable
+                  @click="singleCurtain.multiple = '2.7'"
+                >
                   <van-radio name="2.7" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="2.8" clickable @click="singleCurtain.multiple = '2.8'">
+                <van-cell
+                  title="2.8"
+                  clickable
+                  @click="singleCurtain.multiple = '2.8'"
+                >
                   <van-radio name="2.8" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="2.9" clickable @click="singleCurtain.multiple = '2.9'">
+                <van-cell
+                  title="2.9"
+                  clickable
+                  @click="singleCurtain.multiple = '2.9'"
+                >
                   <van-radio name="2.9" checked-color="#89cb81" />
                 </van-cell>
-                <van-cell title="3.0" clickable @click="singleCurtain.multiple = '3.0'">
+                <van-cell
+                  title="3.0"
+                  clickable
+                  @click="singleCurtain.multiple = '3.0'"
+                >
                   <van-radio name="3.0" checked-color="#89cb81" />
                 </van-cell>
               </van-cell-group>
@@ -149,16 +222,16 @@
         <van-popup v-model="singleCurtain.showActivity">
           <van-radio-group v-model="singleCurtain.activityId">
             <van-cell-group>
-              <template v-for="(hdg,indexx) in activityOptions[index]">
+              <template v-for="(hdg, indexx) in activityOptions[index]">
                 <van-cell
-                  :key="indexx +'hdground' +  indexx"
+                  :key="indexx + 'hdground' + indexx"
                   clickable
-                  @click="selectthisHd(index,indexx)"
+                  @click="selectthisHd(index, indexx)"
                 >
-                  <div style="text-align:center">
-                    <span>{{hdg.label}}</span>
+                  <div style="text-align: center">
+                    <span>{{ hdg.label }}</span>
                     <van-radio
-                      style="display:inline-block"
+                      style="display: inline-block"
                       :name="hdg.value"
                       checked-color="#89cb81"
                     />
@@ -169,22 +242,17 @@
           </van-radio-group>
         </van-popup>
       </div>
-      <!--<div v-show="resN">-->
-      <!--暂无查询结果-->
-      <!--</div>-->
     </div>
     <!--底部分页-->
-    <div class="fy-contain" v-show="hidshow">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        :items-per-page="itemsPerPage"
-        :total-items="totalLists"
-        mode="simple"
-        @change="changePage"
-      />
-    </div>
+    <van-pagination
+      class="fy-bottom"
+      v-model="currentPage"
+      :page-count="totalPage"
+      :items-per-page="itemsPerPage"
+      :total-items="totalLists"
+      mode="simple"
+      @change="changePage"
+    />
   </div>
 </template>
 
@@ -236,7 +304,6 @@ export default {
       itemsPerPage: 10,
       //通过页数来判断change是执行哪个函数
       pageMark: 0,
-      hidshow: true, //显示或者隐藏footer
       activityGroup: [],
       activityOptions: [],
       isActivity: [],
@@ -653,17 +720,6 @@ export default {
   width: 300px;
   max-height: 300px;
   overflow: scroll;
-}
-.fy-bottom {
-  background: #f8f8f8;
-  position: absolute;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
-}
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
 }
 </style>
 <style>

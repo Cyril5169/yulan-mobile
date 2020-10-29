@@ -4,20 +4,35 @@
     <div class="search">
       <ul class="ulhead" id="ulhead">
         <li class="licenter" @click="showks = true">
-          <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
+          <input
+            class="time time-ks"
+            type="text"
+            v-model="ksDataSet"
+            disabled
+          />
         </li>
         <li class="liright" @click="showjs = true">
-          <input class="time time-js" type="text" v-model="jsDataSet" disabled />
+          <input
+            class="time time-js"
+            type="text"
+            v-model="jsDataSet"
+            disabled
+          />
         </li>
         <li class="licenter" @click="showType = true">
           <input class="statusBar" type="text" v-model="myType" disabled />
         </li>
       </ul>
       <ul class="ulheadNew" id="ulheadNew">
-        <li >
-          <div style="height:31px;margin-top:7px" >
-            <van-cell-group style="height:31px;">
-               <input  class="searchInput" type="text" v-model="searchKey" placeholder="请输入方案名称" />
+        <li>
+          <div style="height: 31px; margin-top: 7px">
+            <van-cell-group style="height: 31px">
+              <input
+                class="searchInput"
+                type="text"
+                v-model="searchKey"
+                placeholder="请输入方案名称"
+              />
             </van-cell-group>
           </div>
         </li>
@@ -34,33 +49,33 @@
       <div
         class="singleData"
         @click="checkDetails(index)"
-        v-for="(item,index) in allLists"
+        v-for="(item, index) in allLists"
         :key="index"
       >
         <div class="single-title">
-          <span class="single-title-left">单据号：{{item.ID}}</span>
-          <span class="single-title-right">{{item.STATUS}}</span>
+          <span class="single-title-left">单据号：{{ item.ID }}</span>
+          <span class="single-title-right">{{ item.STATUS }}</span>
         </div>
         <table>
           <tr>
             <td>提交时间：</td>
-            <td>{{item.SUBMIT_DATE}}</td>
+            <td>{{ item.SUBMIT_DATE }}</td>
           </tr>
           <tr>
             <td>经销商名称：</td>
-            <td>{{item.DISTRIBUTOR_NAME}}</td>
+            <td>{{ item.DISTRIBUTOR_NAME }}</td>
           </tr>
           <tr>
             <td>经销商代码：</td>
-            <td>{{item.DISTRIBUTOR_CODE}}</td>
+            <td>{{ item.DISTRIBUTOR_CODE }}</td>
           </tr>
           <tr>
             <td>联系人：</td>
-            <td>{{item.CUSTOMER_AGENT}}</td>
+            <td>{{ item.CUSTOMER_AGENT }}</td>
           </tr>
           <tr>
             <td>方案名称：</td>
-            <td>{{item.SOLUTION_NAME}}</td>
+            <td>{{ item.SOLUTION_NAME }}</td>
           </tr>
         </table>
       </div>
@@ -84,26 +99,29 @@
         type="date"
         :title="'选择时间'"
         @confirm="confirmTimejs"
-         @cancel="cancelTimejs"
+        @cancel="cancelTimejs"
       />
     </van-popup>
     <!--状态选择-->
     <van-popup v-model="showType" position="bottom">
-      <van-picker show-toolbar title="单据状态" :columns="statusArray" @confirm="onConfirmType"  @cancel="onCancelType"/>
+      <van-picker
+        show-toolbar
+        title="单据状态"
+        :columns="statusArray"
+        @confirm="onConfirmType"
+        @cancel="onCancelType"
+      />
     </van-popup>
     <!--底部分页-->
-    <div class="fy-contain">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        :items-per-page="itemsPerPage"
-        :total-items="totalLists"
-        mode="simple"
-        @change="changePage"
-      />
-    </div>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <van-pagination
+      class="fy-bottom"
+      v-model="currentPage"
+      :page-count="totalPage"
+      :items-per-page="itemsPerPage"
+      :total-items="totalLists"
+      mode="simple"
+      @change="changePage"
+    />
   </div>
 </template>
 
@@ -119,9 +137,8 @@ import {
   Picker,
   Pagination,
   Toast,
-  Loading,
   Field,
-  CellGroup
+  CellGroup,
 } from "vant";
 Vue.use(Field);
 
@@ -147,7 +164,7 @@ export default {
         "市场部通过",
         "广美未通过",
         "广美通过",
-        "设计图已出"
+        "设计图已出",
       ],
       //当前页数
       currentPage: 1,
@@ -158,7 +175,6 @@ export default {
       //总页数
       totalPage: 0,
       allLists: [],
-      loading: false
     };
   },
   components: {
@@ -167,12 +183,11 @@ export default {
     [Popup.name]: Popup,
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
-    [Loading.name]: Loading,
     [Field.name]: Field,
-    [CellGroup.name]: CellGroup
+    [CellGroup.name]: CellGroup,
   },
   methods: {
-        //开始时间选择
+    //开始时间选择
     confirmTimeks(value) {
       this.ksSet2(this.ksData);
       this.showks = false;
@@ -235,7 +250,6 @@ export default {
     //获取列表
     getList() {
       this.allLists = [];
-      this.loading = true;
       let ksTime;
       let jsTime;
       if (this.ksDataSet === "起始时间") {
@@ -249,18 +263,17 @@ export default {
         jsTime = this.jsDataSet + " 23:59:59";
       }
       let data = {
-        companyId:this.$store.getters.getCMId,//公司id
+        companyId: this.$store.getters.getCMId, //公司id
         cid: this.$store.getters.getCId, //客户id
         STATUS: this.myTypeCode,
         SEARCHKEY: this.searchKey,
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
         limit: 10, //限制数
-        page: this.currentPage //页数
+        page: this.currentPage, //页数
       };
       console.log(data);
-      GetAllData(data).then(res => {
-        this.loading = false;
+      GetAllData(data).then((res) => {
         if (res.count == 0) {
           return;
         }
@@ -271,7 +284,7 @@ export default {
         if (this.allLists.length == 0) {
           Toast({
             message: "暂无数据",
-            duration: 2000
+            duration: 2000,
           });
         } else {
           for (let i = 0; i < this.allLists.length; i++) {
@@ -308,8 +321,8 @@ export default {
         name: "lanjuDetail",
         params: {
           ID: this.allLists[index].ID, //单据号
-          data: this.allLists[0] //表头数据
-        }
+          data: this.allLists[0], //表头数据
+        },
       });
     },
     //重置
@@ -322,7 +335,7 @@ export default {
       this.jsData = "";
       this.jsSet(time); //结束时间
       this.searchKey = "";
-    }
+    },
   },
   created() {
     let time = new Date();
@@ -330,7 +343,7 @@ export default {
     this.ksSet(time);
     this.getList();
     console.log("lanju");
-  }
+  },
 };
 </script>
 
@@ -341,10 +354,10 @@ export default {
   position: relative;
   overflow: scroll;
 }
-.searchInput{
-  height:25px;
-  font-size:13px;
-  padding:5px;
+.searchInput {
+  height: 25px;
+  font-size: 13px;
+  padding: 5px;
   position: relative;
   top: -3px;
 }
@@ -353,7 +366,7 @@ export default {
   font-size: 13px;
   padding: 5px 20px;
   border-radius: 15px;
-  background: white; 
+  background: white;
   z-index: 99;
   position: relative;
   top: 3px;
@@ -508,26 +521,5 @@ input {
   color: white;
   padding: 5px 15px;
   border-radius: 15px;
-}
-.fy-contain {
-  width: 100%;
-  height: 50px;
-  background: white;
-  position: fixed;
-  bottom: 0px;
-  border-top: 1px solid #e8e8e8;
-}
-
-.fy-bottom {
-  background: #f8f8f8;
-  position: absolute;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
-}
-
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
 }
 </style>

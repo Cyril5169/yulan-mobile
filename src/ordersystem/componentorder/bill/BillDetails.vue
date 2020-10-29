@@ -1,21 +1,33 @@
 <template>
   <div>
-    <top msgtitle="对账单详情" greenBackground="true" @backclick="backclick"></top>
-    <div :class="{'content':true, 'content-full':billitem.customerCheckState =='待确认'}">
+    <top
+      msgtitle="对账单详情"
+      greenBackground="true"
+      @backclick="backclick"
+    ></top>
+    <div
+      :class="{
+        content: true,
+        'content-full': billitem.customerCheckState == '待确认',
+      }"
+    >
       <div class="bill-title">
         <div class="bill-title1">
           <ul>
             <li>
               <span>客户名称：</span>
-              <span class="title-sec">{{customerInfo.customerName}}</span>
+              <span class="title-sec">{{ customerInfo.customerName }}</span>
             </li>
             <li>
               <span>联系人/电话：</span>
-              <span class="title-sec">{{customerInfo.customerAgent}} {{customerInfo.officeTel}}</span>
+              <span class="title-sec"
+                >{{ customerInfo.customerAgent }}
+                {{ customerInfo.officeTel }}</span
+              >
             </li>
             <li>
               <span>传真：</span>
-              <span class="title-sec">{{customerInfo.fax}}</span>
+              <span class="title-sec">{{ customerInfo.fax }}</span>
             </li>
           </ul>
         </div>
@@ -23,15 +35,15 @@
           <ul>
             <li>
               <span>版本销售前5名：</span>
-              <span class="title-sec">{{billitem.verTop}}</span>
+              <span class="title-sec">{{ billitem.verTop }}</span>
             </li>
             <li>
               <span>本客户版本销售前5名：</span>
-              <span class="title-sec">{{billitem.ctmVerTop}}</span>
+              <span class="title-sec">{{ billitem.ctmVerTop }}</span>
             </li>
             <li>
               <span>备货单据号：</span>
-              <span class="title-sec">{{billitem.ctmBhBill}}</span>
+              <span class="title-sec">{{ billitem.ctmBhBill }}</span>
             </li>
           </ul>
         </div>
@@ -39,197 +51,215 @@
           <ul>
             <li>
               <span>实际发货总金额(本期/本年)：</span>
-              <span class="title-sec">{{billitem.fhjeMonth}}/{{billitem.consignmentMoney}}</span>
+              <span class="title-sec"
+                >{{ billitem.fhjeMonth }}/{{ billitem.consignmentMoney }}</span
+              >
             </li>
             <li>
               <span>实际收款金额(本期/本年)：</span>
-              <span class="title-sec">{{billitem.czskMonth}}/{{billitem.gatherMoneyFax}}</span>
+              <span class="title-sec"
+                >{{ billitem.czskMonth }}/{{ billitem.gatherMoneyFax }}</span
+              >
             </li>
             <li>
               <span>返利发货总金额(本期/本年)：</span>
-              <span class="title-sec">{{billitem.moneyFl}}/{{billitem.moneyFlTotal}}</span>
+              <span class="title-sec"
+                >{{ billitem.moneyFl }}/{{ billitem.moneyFlTotal }}</span
+              >
             </li>
             <li>
               <span>本期剩余返利：</span>
-              <span class="title-sec">{{billitem.moneyFl}}</span>
+              <span class="title-sec">{{ billitem.moneyFl }}</span>
             </li>
             <li>
               <span>备货总金额(本期/本年)：</span>
-              <span class="title-sec">{{billitem.moneyBh}}/{{billitem.moneyBhTotal}}</span>
+              <span class="title-sec"
+                >{{ billitem.moneyBh }}/{{ billitem.moneyBhTotal }}</span
+              >
             </li>
             <li>
               <span>运费总金额(本期/本年)：</span>
-              <span class="title-sec">{{billitem.freightMonth}}/{{billitem.freight}}</span>
+              <span class="title-sec"
+                >{{ billitem.freightMonth }}/{{ billitem.freight }}</span
+              >
             </li>
             <li>
               <span>应收款(期初/期末)：</span>
-              <span class="title-sec">{{billitem.qcczysk}}/{{billitem.czysk}}</span>
+              <span class="title-sec"
+                >{{ billitem.qcczysk }}/{{ billitem.czysk }}</span
+              >
             </li>
           </ul>
         </div>
       </div>
-      <div :class="{'details-list-title':true,'fix':isFixed}" id ref="scollctn">明细列表</div>
+      <div
+        :class="{ 'details-list-title': true, fix: isFixed }"
+        id
+        ref="scollctn"
+      >
+        明细列表
+      </div>
       <div class="alllists">
         <div
           class="singleItem"
-          v-for="(bill,index) in billDetailList"
+          v-for="(bill, index) in billDetailList"
           :key="index"
           @click="shipmentDetail(bill)"
         >
           <ul>
             <li>
               <span class="item-sec">日期：</span>
-              <span class="item-sec2">{{bill.dateOutStock}}</span>
+              <span class="item-sec2">{{ bill.dateOutStock }}</span>
             </li>
             <li>
               <span class="item-sec">单据号：</span>
-              <span class="item-sec2">{{bill.saleNo}}</span>
+              <span class="item-sec2">{{ bill.saleNo }}</span>
             </li>
             <li>
               <span class="item-sec">类别：</span>
-              <span class="item-sec2">{{bill.billNo | stateChange}}</span>
+              <span class="item-sec2">{{ bill.billNo | stateChange }}</span>
             </li>
             <li>
               <span class="item-sec">发货总额：</span>
-              <span class="item-sec2">{{bill.money}} (元)</span>
+              <span class="item-sec2">{{ bill.money }} (元)</span>
             </li>
             <li>
               <span class="item-sec">发货数量：</span>
-              <span class="item-sec2">{{bill.qty}}</span>
+              <span class="item-sec2">{{ bill.qty }}</span>
             </li>
             <li>
               <span class="item-sec">运费：</span>
-              <span class="item-sec2">{{bill.freight}} (元)</span>
+              <span class="item-sec2">{{ bill.freight }} (元)</span>
             </li>
             <li>
               <span class="item-sec">收款金额：</span>
-              <span class="item-sec2">{{bill.gatherMoneyFax}} (元)</span>
+              <span class="item-sec2">{{ bill.gatherMoneyFax }} (元)</span>
             </li>
             <li>
               <span class="item-sec">加收物流费：</span>
-              <span class="item-sec2">{{bill.transFlag | NYchange}}</span>
+              <span class="item-sec2">{{ bill.transFlag | NYchange }}</span>
             </li>
           </ul>
         </div>
-        <!--底部分页-->
-        <!--<div class="fy-contain">-->
-        <!--<van-pagination-->
-        <!--class="fy-bottom"-->
-        <!--v-model="currentPage"-->
-        <!--:page-count="totalPage"-->
-        <!--mode="simple"-->
-        <!--@change="changePage"-->
-        <!--/>-->
-        <!--</div>-->
       </div>
     </div>
 
-    <div class="bill-handle" v-if="billitem.customerCheckState =='待确认'">
+    <div class="bill-handle" v-if="billitem.customerCheckState == '待确认'">
       <span @click="comfirmBill('客户确认')">确认</span>
       <span @click="toShowBillBack">反馈</span>
     </div>
     <van-popup class="kc-next-content" v-model="showBillBack">
-        <textarea v-model="fankuiContent" placeholder="填写反馈内容" cols="33" rows="4" autofocus></textarea>
-        <div class="kc-next-btm2">
-          <span @click="showBillBack = false">返回</span>
-          <span @click="comfirmBill('客户反馈')">确认</span>
-        </div>
-      </van-popup>
-    <!--对账单详情-->
-    <van-popup v-model="showShipment" closeable style="width:80%;max-height:50%;">
-      <div class="shipment-title">
-        <span>{{THtitle}}</span>
+      <textarea
+        v-model="fankuiContent"
+        placeholder="填写反馈内容"
+        cols="33"
+        rows="4"
+        autofocus
+      ></textarea>
+      <div class="kc-next-btm2">
+        <span @click="showBillBack = false">返回</span>
+        <span @click="comfirmBill('客户反馈')">确认</span>
       </div>
-      <div v-if="whatType" style="width:95%;height:100%;margin:45px 5px 10px 5px;">
+    </van-popup>
+    <!--对账单详情-->
+    <van-popup
+      v-model="showShipment"
+      closeable
+      style="width: 80%; max-height: 50%"
+    >
+      <div class="shipment-title">
+        <span>{{ THtitle }}</span>
+      </div>
+      <div
+        v-if="whatType"
+        style="width: 95%; height: 100%; margin: 45px 5px 10px 5px"
+      >
         <table
-          style="width:100%; margin-bottom:8px;"
+          style="width: 100%; margin-bottom: 8px"
           border="1"
           cellspacing="0"
-          v-for="(item,index) in THtabledata"
+          v-for="(item, index) in THtabledata"
           :key="index"
         >
           <tr>
             <td width="40%">版本型号：</td>
-            <td>{{item.itemNo}}</td>
+            <td>{{ item.itemNo }}</td>
           </tr>
           <tr>
             <td>名称：</td>
-            <td>{{item.itemNote}}</td>
+            <td>{{ item.itemNote }}</td>
           </tr>
           <tr>
             <td>版本名称：</td>
-            <td>{{item.itemVersion}}</td>
+            <td>{{ item.itemVersion }}</td>
           </tr>
           <tr>
             <td>批号：</td>
-            <td>{{item.batchNo}}</td>
+            <td>{{ item.batchNo }}</td>
           </tr>
           <tr>
             <td>单价：</td>
-            <td>{{item.salePrice}}</td>
+            <td>{{ item.salePrice }}</td>
           </tr>
           <tr>
             <td>物流单价：</td>
-            <td>{{item.transPrice}}</td>
+            <td>{{ item.transPrice }}</td>
           </tr>
           <tr>
             <td>数量：</td>
-            <td>{{item.qtyDeliver}}</td>
+            <td>{{ item.qtyDeliver }}</td>
           </tr>
           <tr>
             <td>金额：</td>
-            <td>{{item.money}}</td>
+            <td>{{ item.money }}</td>
           </tr>
         </table>
       </div>
-      <div v-if="!whatType" style="width:95%;height:100%;margin:45px 5px 10px 5px;">
-        <table style="width:100%;" border="1" cellspacing="0">
+      <div
+        v-if="!whatType"
+        style="width: 95%; height: 100%; margin: 45px 5px 10px 5px"
+      >
+        <table style="width: 100%" border="1" cellspacing="0">
           <tr>
             <td>日期：</td>
-            <td>{{CZSK.dateOutStock}}</td>
+            <td>{{ CZSK.dateOutStock }}</td>
           </tr>
           <tr>
             <td>单据号：</td>
-            <td>{{THhead}}</td>
+            <td>{{ THhead }}</td>
           </tr>
           <tr>
             <td>收款金额：</td>
-            <td>{{CZSK.gatherMoneyFax}}</td>
+            <td>{{ CZSK.gatherMoneyFax }}</td>
           </tr>
           <tr>
             <td>备注：</td>
-            <td>{{CZSK.notes}}</td>
+            <td>{{ CZSK.notes }}</td>
           </tr>
         </table>
       </div>
     </van-popup>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { Loading, Pagination, Dialog, Popup, Toast } from "vant";
+import { Pagination, Dialog, Popup, Toast } from "vant";
 import top from "../../../components/Top";
 
 export default {
   name: "billdetails",
   components: {
     top,
-    [Loading.name]: Loading,
     [Pagination.name]: Pagination,
     [Popup.name]: Popup,
     [Toast.name]: Toast,
-    "van-dialog": Dialog
+    "van-dialog": Dialog,
   },
-  props: [
-    "customerInfo",
-    "billitem",
-  ],
+  props: ["customerInfo", "billitem"],
   data() {
     return {
       set: 9999,
-      loading: false,
       //customerInfo: this.$route.params.customerInfo, //对账单明细表头
       //billitem: this.$route.params.billitem, //对账单明细表头
       billDetailList: {}, //明细列表
@@ -244,7 +274,7 @@ export default {
       THtitle: "对账单明细",
       THwidth: "70%",
       THhead: "",
-      CZSK: []
+      CZSK: [],
     };
   },
   filters: {
@@ -259,7 +289,7 @@ export default {
       if (value == "TH") return "退货";
       if (value == "CJ") return "冲减";
       return value;
-    }
+    },
   },
   methods: {
     backclick() {
@@ -267,7 +297,6 @@ export default {
     },
     getBillLists() {
       this.billDetailList = [];
-      this.loading = true;
       let url =
         this.orderBaseUrl +
         "/customerBalance/getCustomerBalancePeriodDetailInfo.do";
@@ -276,10 +305,9 @@ export default {
         startDate: this.billitem.dateStart, //开始日期
         endDate: this.billitem.dateEnd, //结束日期
         limit: 9999,
-        page: 1
+        page: 1,
       };
-      axios.post(url, data).then(res => {
-        this.loading = false;
+      axios.post(url, data).then((res) => {
         this.billDetailList = res.data.customerBalancePeriodDetailList;
         for (let i = 0; i < this.billDetailList.length; i++) {
           this.billDetailList[i].dateOutStock = this.exchangeTime(
@@ -308,9 +336,9 @@ export default {
         cid: this.$store.getters.getCId,
         startDate: this.billitem.dateStart,
         customerCheckState: val, //客户状态
-        customerCheckComment: this.fankuiContent //反馈内容
+        customerCheckComment: this.fankuiContent, //反馈内容
       };
-      axios.post(url, data).then(res => {
+      axios.post(url, data).then((res) => {
         if (res.data.code == 0) {
           if (val == "客户确认") {
             Toast.success("状态提交成功");
@@ -360,23 +388,23 @@ export default {
           this.orderBaseUrl +
           "/customerBalance/getCustomerBalancePackDetail.do";
         let data = {
-          saleNO: item.saleNo
+          saleNO: item.saleNo,
         };
-        axios.post(url, data).then(res => {
+        axios.post(url, data).then((res) => {
           this.THtabledata = res.data.packDetailList;
           this.showShipment = true;
         });
       }
-    }
+    },
   },
   created() {
     this.getBillLists();
     //window.addEventListener("scroll", this.handleScroll, true);
   },
-  mounted() { },
-  destroyed(){
+  mounted() {},
+  destroyed() {
     this.$emit("detaildestroyed");
-  }
+  },
 };
 </script>
 
@@ -457,17 +485,6 @@ export default {
   float: right;
 }
 
-.fy-bottom {
-  border-top: 1px solid #d8d8d8;
-  border-bottom: 1px solid #d8d8d8;
-  background: #f8f8f8;
-  /*position: fixed;*/
-  width: 100%;
-  height: 40px;
-  /*bottom: 0;*/
-  color: white !important;
-}
-
 .bill-handle {
   position: fixed;
   bottom: 0;
@@ -492,15 +509,12 @@ export default {
   font-size: 13px;
 }
 
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
-}
 .kc-next-btm2 span {
   display: inline-block;
   margin: 15px 30px;
   padding: 10px 30px;
   border: 1px solid #ececec;
-  border-radius:5px;
+  border-radius: 5px;
 }
 .kc-next-content {
   width: 330px;
@@ -512,9 +526,9 @@ export default {
   margin-top: 15px;
   padding: 5px;
   font-size: 14px;
-  background-color:rgba(241,241,241,.98);
+  background-color: rgba(241, 241, 241, 0.98);
   border: 0;
-  border-radius:5px;
+  border-radius: 5px;
 }
 .shipment-title {
   width: 100%;

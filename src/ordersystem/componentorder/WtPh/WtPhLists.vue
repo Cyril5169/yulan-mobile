@@ -5,13 +5,23 @@
     <div class="search">
       <ul class="ulhead" id="ulhead">
         <li class="licenter" @click="showks = true">
-          <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
+          <input
+            class="time time-ks"
+            type="text"
+            v-model="ksDataSet"
+            disabled
+          />
         </li>
         <li>
           <span>至</span>
         </li>
         <li class="liright" @click="showjs = true">
-          <input class="time time-js" type="text" v-model="jsDataSet" disabled />
+          <input
+            class="time time-js"
+            type="text"
+            v-model="jsDataSet"
+            disabled
+          />
         </li>
         <li class="licenter" @click="showType = true">
           <input class="time time-ks" type="text" v-model="myType" disabled />
@@ -19,27 +29,32 @@
       </ul>
     </div>
     <div class="all-bank">
-      <div class="single-bank" @click.stop="checkWt(index)" v-for="(singleBank,index) in allLists" :key="index">
+      <div
+        class="single-bank"
+        @click.stop="checkWt(index)"
+        v-for="(singleBank, index) in allLists"
+        :key="index"
+      >
         <div class="single-title">
-          <span class="single-title-left">编号：{{singleBank.id}}</span>
-          <span class="single-title-right">{{singleBank.state}}</span>
+          <span class="single-title-left">编号：{{ singleBank.id }}</span>
+          <span class="single-title-right">{{ singleBank.state }}</span>
         </div>
         <table>
           <tr>
             <td>创建时间：</td>
-            <td>{{singleBank.createTs}}</td>
+            <td>{{ singleBank.createTs }}</td>
           </tr>
           <tr>
             <td>玉兰业务员：</td>
-            <td>{{singleBank.realName}}</td>
+            <td>{{ singleBank.realName }}</td>
           </tr>
           <tr>
             <td>联系电话：</td>
-            <td>{{singleBank.officeTel}}</td>
+            <td>{{ singleBank.officeTel }}</td>
           </tr>
           <tr>
             <td>图片数：</td>
-            <td>{{singleBank.imageCount}}</td>
+            <td>{{ singleBank.imageCount }}</td>
           </tr>
         </table>
         <!-- <span class="single-details" @click.stop="checkWt(index)">查看详情</span> -->
@@ -77,32 +92,22 @@
       />
     </van-popup>
     <!--底部分页-->
-    <div class="fy-contain">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        :items-per-page="itemsPerPage"
-        :total-items="totalLists"
-        mode="simple"
-        @change="changePage"
-      />
-    </div>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <van-pagination
+      class="fy-bottom"
+      v-model="currentPage"
+      :page-count="totalPage"
+      :items-per-page="itemsPerPage"
+      :total-items="totalLists"
+      mode="simple"
+      @change="changePage"
+    />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import {
-  DatetimePicker,
-  Popup,
-  Picker,
-  Pagination,
-  Toast,
-  Loading
-} from "vant";
+import { DatetimePicker, Popup, Picker, Pagination, Toast } from "vant";
 
 export default {
   name: "bank",
@@ -128,7 +133,6 @@ export default {
       //总页数
       totalPage: 0,
       allLists: [],
-      loading: false
     };
   },
   components: {
@@ -137,7 +141,6 @@ export default {
     [Popup.name]: Popup,
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
-    [Loading.name]: Loading
   },
   methods: {
     //开始时间选择
@@ -189,7 +192,6 @@ export default {
     //  获取列表
     getList() {
       this.allLists = [];
-      this.loading = true;
       if (this.myType == "已同意") {
         this.myTypeCode = "APPROVED";
       } else if (this.myType == "不同意") {
@@ -220,15 +222,14 @@ export default {
         endDate: jsTime, //结束日期
         state: this.myTypeCode, //确认书状态
         limit: 8, //页数
-        page: this.currentPage //一页几条
+        page: this.currentPage, //一页几条
       };
-      axios.post(url, data).then(res => {
-        this.loading = false;
+      axios.post(url, data).then((res) => {
         this.allLists = res.data.airbrushDesignerAssureList;
         if (this.allLists.length == 0) {
           Toast({
             message: "暂无委托喷绘书",
-            duration: 2000
+            duration: 2000,
           });
         } else {
           this.totalLists = this.allLists[0].total;
@@ -284,8 +285,8 @@ export default {
       this.$router.push({
         name: "wtdetails",
         params: {
-          data: this.allLists[index]
-        }
+          data: this.allLists[index],
+        },
       });
     },
     //  修改凭证
@@ -293,8 +294,8 @@ export default {
       this.$router.push({
         name: "wtdetails",
         params: {
-          data: this.allLists[index]
-        }
+          data: this.allLists[index],
+        },
       });
     },
     //  新建凭证
@@ -323,18 +324,18 @@ export default {
             // "erpProcessOp": null,//处理人
             state: "", //状态(SUBMITED（已提交）,PROCESED（已处理）,SENDBACK（退回）,CANCELED（作废）)
             payerAccount: "", //汇款人银行账号
-            imgUrl: "" //图片相对路径
-          }
-        }
+            imgUrl: "", //图片相对路径
+          },
+        },
       });
-    }
+    },
   },
   created() {
     let time = new Date();
     this.jsSet(time);
     this.ksSet(time);
     this.getList();
-  }
+  },
 };
 </script>
 
@@ -454,26 +455,5 @@ input {
   color: white;
   padding: 5px 15px;
   border-radius: 15px;
-}
-.fy-contain {
-  width: 100%;
-  height: 50px;
-  background: white;
-  position: fixed;
-  bottom: 0px;
-  border-top: 1px solid #e8e8e8;
-}
-
-.fy-bottom {
-  background: #f8f8f8;
-  position: absolute;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
-}
-
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
 }
 </style>

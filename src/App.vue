@@ -92,4 +92,17 @@ export default {
 input[type="checkbox"]:disabled {
   background-color: #edf2fc;
 }
+/* 底部分页 */
+.fy-bottom {
+  border-top: 1px solid #d8d8d8;
+  background: #f8f8f8;
+  position: fixed;
+  width: 100%;
+  height: 50px;
+  bottom: 0;
+  align-items: center;
+}
+.fy-bottom .van-pagination__item {
+  color: #89cb81;
+}
 </style>

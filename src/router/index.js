@@ -296,13 +296,13 @@ var router = new Router({
       component: SearchSoft,
       redirect: '/searchsoft/hbian',
       children: [
-        { path: '/searchsoft/bzhen', name: 'bzhen', component: SearchSoft, meta: {keepAlive: true} },
-        { path: '/searchsoft/ghua', name: 'ghua', component: SearchSoft, meta: {keepAlive: true} },
-        { path: '/searchsoft/guadai', name: 'guadai', component: SearchSoft, meta: {keepAlive: true} },
-        { path: '/searchsoft/hbian', name: 'hbian', component: SearchSoft, meta: {keepAlive: true} },
-        { path: '/searchsoft/mliao', name: 'mliao', component: SearchSoft, meta: {keepAlive: true} },
-        { path: '/searchsoft/qita', name: 'qita', component: SearchSoft, meta: {keepAlive: true} },
-        { path: '/searchsoft/taoci', name: 'taoci', component: SearchSoft, meta: {keepAlive: true} },
+        { path: '/searchsoft/bzhen', name: 'bzhen', component: SearchSoft, meta: { keepAlive: true } },
+        { path: '/searchsoft/ghua', name: 'ghua', component: SearchSoft, meta: { keepAlive: true } },
+        { path: '/searchsoft/guadai', name: 'guadai', component: SearchSoft, meta: { keepAlive: true } },
+        { path: '/searchsoft/hbian', name: 'hbian', component: SearchSoft, meta: { keepAlive: true } },
+        { path: '/searchsoft/mliao', name: 'mliao', component: SearchSoft, meta: { keepAlive: true } },
+        { path: '/searchsoft/qita', name: 'qita', component: SearchSoft, meta: { keepAlive: true } },
+        { path: '/searchsoft/taoci', name: 'taoci', component: SearchSoft, meta: { keepAlive: true } },
       ]
     },
     {
@@ -375,12 +375,7 @@ var router = new Router({
     {
       path: "/fillorder",
       name: 'fillorder',
-      component: FillOrder,
-      // meta: {
-      //   // isUseCache: false, // 这个字段的意思稍后再说
-      //   keepAlive: true // 通过此字段判断是否需要缓存当前组件
-      // }
-
+      component: FillOrder
     },
     {
       path: "/orderdetails/:find",
@@ -496,10 +491,7 @@ var router = new Router({
     {
       path: '/stockQuery',
       name: 'stockQuery',
-      component: StockQuery,
-      meta: {
-        keepAlive: true
-      }
+      component: StockQuery
     },
     {
       path: '/areaQuery',

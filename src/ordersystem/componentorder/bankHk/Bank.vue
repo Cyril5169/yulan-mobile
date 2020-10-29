@@ -20,44 +20,45 @@
       <div
         class="single-bank"
         @click="checkDetails(index)"
-        v-for="(singleBank,index) in allLists"
+        v-for="(singleBank, index) in allLists"
         :key="index"
       >
         <div class="single-title">
-          <span class="single-title-left">凭证单号：{{singleBank.id}}</span>
-          <span class="single-title-right">{{singleBank.state}}</span>
+          <span class="single-title-left">凭证单号：{{ singleBank.id }}</span>
+          <span class="single-title-right">{{ singleBank.state }}</span>
         </div>
         <table>
           <tr>
             <td>凭证时间：</td>
-            <td>{{singleBank.createTs}}</td>
+            <td>{{ singleBank.createTs }}</td>
           </tr>
           <tr>
             <td>收款银行：</td>
-            <td>{{singleBank.yulanBank}}</td>
+            <td>{{ singleBank.yulanBank }}</td>
           </tr>
           <tr>
             <td>付款(公司/人)：</td>
-            <td>{{singleBank.payerName}}</td>
+            <td>{{ singleBank.payerName }}</td>
           </tr>
           <tr>
             <td>付款账号：</td>
-            <td>{{singleBank.payerAccount}}</td>
+            <td>{{ singleBank.payerAccount }}</td>
           </tr>
           <tr>
             <td>汇款时间：</td>
-            <td>{{singleBank.payDate}}</td>
+            <td>{{ singleBank.payDate }}</td>
           </tr>
           <tr>
             <td>汇款金额：</td>
-            <td>{{singleBank.payAmount}}</td>
+            <td>{{ singleBank.payAmount }}</td>
           </tr>
         </table>
         <span
           v-show="singleBank.state === '退回'"
           class="single-details"
           @click.stop="editBank(index)"
-        >修改凭证</span>
+          >修改凭证</span
+        >
       </div>
     </div>
     <div class="createBank" @click="toCreateBank">+</div>
@@ -116,7 +117,7 @@ import {
   Picker,
   Pagination,
   Toast,
-  Loading
+  Loading,
 } from "vant";
 
 export default {
@@ -144,7 +145,7 @@ export default {
       totalPage: 0,
       allLists: [],
       loading: false,
-      chargeData: []
+      chargeData: [],
     };
   },
   components: {
@@ -153,15 +154,15 @@ export default {
     [Popup.name]: Popup,
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
-    [Loading.name]: Loading
+    [Loading.name]: Loading,
   },
   methods: {
     chargeQuery() {
       var data = {
         cid: this.$store.getters.getCId,
-        companyId: this.$store.getters.getCMId
+        companyId: this.$store.getters.getCMId,
       };
-      getCustomerInfo(data).then(res => {
+      getCustomerInfo(data).then((res) => {
         this.chargeData = res.data;
       });
     },
@@ -247,9 +248,9 @@ export default {
         beginTime: ksTime, //起始时间
         finishTime: jsTime, //结束时间
         limit: 8, //限制数
-        page: this.currentPage //页数
+        page: this.currentPage, //页数
       };
-      axios.post(url, data).then(res => {
+      axios.post(url, data).then((res) => {
         this.loading = false;
         this.totalLists = res.data.count;
         //获取总页数
@@ -258,7 +259,7 @@ export default {
         if (this.allLists.length == 0) {
           Toast({
             message: "暂无汇款凭证",
-            duration: 2000
+            duration: 2000,
           });
         } else {
           for (let i = 0; i < this.allLists.length; i++) {
@@ -313,8 +314,8 @@ export default {
         params: {
           id: this.allLists[index].id, //流水号
           state: this.allLists[index].state, //流水号
-          data: this.allLists[index]
-        }
+          data: this.allLists[index],
+        },
       });
     },
     //  修改凭证
@@ -324,8 +325,8 @@ export default {
         params: {
           id: this.allLists[index].id, //流水号
           state: this.allLists[index].state, //流水号
-          data: this.allLists[index]
-        }
+          data: this.allLists[index],
+        },
       });
     },
     //  新建凭证
@@ -354,11 +355,11 @@ export default {
             // "erpProcessOp": null,//处理人
             state: "", //状态(SUBMITED（已提交）,PROCESED（已处理）,SENDBACK（退回）,CANCELED（作废）)
             payerAccount: "", //汇款人银行账号
-            imgUrl: "" //图片相对路径
-          }
-        }
+            imgUrl: "", //图片相对路径
+          },
+        },
       });
-    }
+    },
   },
   created() {
     let time = new Date();
@@ -366,13 +367,12 @@ export default {
     this.ksSet(time);
     this.getList();
     this.chargeQuery();
-  }
+  },
 };
 </script>
 
 <style scoped>
 .bank {
-  position: relative;
   background-color: rgb(239, 239, 239);
 }
 .search-button {
@@ -487,18 +487,5 @@ input {
   color: white;
   padding: 5px 15px;
   border-radius: 15px;
-}
-.fy-bottom {
-  position: fixed;
-  background: #f8f8f8;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
-  border-top: 1px solid #e8e8e8;
-}
-
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
 }
 </style>

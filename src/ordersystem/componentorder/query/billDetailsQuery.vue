@@ -4,10 +4,14 @@
     <span class="search-button" @click="query()">查询</span>
     <div class="search">
       <ul class="ulhead" id="ulhead">
-        <div>客户名称：{{baseData.CUSTOMER_NAME}}</div>
+        <div>客户名称：{{ baseData.CUSTOMER_NAME }}</div>
         <div>
-          汇总金额：{{baseData.MONEYSUM}}元
-          <li class="licenter" style="margin-left:20px" @click="showType_1 = true">
+          汇总金额：{{ baseData.MONEYSUM }}元
+          <li
+            class="licenter"
+            style="margin-left: 20px"
+            @click="showType_1 = true"
+          >
             <input class="time" type="text" v-model="myStatus" disabled />
           </li>
         </div>
@@ -15,111 +19,134 @@
     </div>
 
     <div class="all-bank">
-      <div class="single-bank" v-for="(singleBank,index) in tableData" :key="index">
+      <div
+        class="single-bank"
+        v-for="(singleBank, index) in tableData"
+        :key="index"
+      >
         <div class="single-title">
-          <span class="single-title-left">提货单号：{{singleBank.SALE_NO}}</span>
-          <span class="single-title-right">{{singleBank.STATUS_ID|transStatus}}</span>
+          <span class="single-title-left"
+            >提货单号：{{ singleBank.SALE_NO }}</span
+          >
+          <span class="single-title-right">{{
+            singleBank.STATUS_ID | transStatus
+          }}</span>
         </div>
         <table>
           <tr>
             <td>订单号:</td>
-            <td>{{singleBank.CONTRACT_NO}}</td>
+            <td>{{ singleBank.CONTRACT_NO }}</td>
           </tr>
           <tr>
-            <td style="width:90px;">提货日期:</td>
-            <td>{{singleBank.DATE_OUT_STOCK|datatrans}}</td>
+            <td style="width: 90px">提货日期:</td>
+            <td>{{ singleBank.DATE_OUT_STOCK | datatrans }}</td>
           </tr>
           <tr>
             <td>类型:</td>
-            <td>{{singleBank.BILL_ID|transType}}</td>
+            <td>{{ singleBank.BILL_ID | transType }}</td>
           </tr>
           <tr>
             <td>金额:</td>
-            <td>{{singleBank.MONEY_SUM}}元</td>
+            <td>{{ singleBank.MONEY_SUM }}元</td>
           </tr>
         </table>
-        <span class="order-state" @click="toBillDetails(singleBank)">查看详情</span>
+        <span class="order-state" @click="toBillDetails(singleBank)"
+          >查看详情</span
+        >
       </div>
     </div>
     <!--提货单详情-->
-    <van-popup v-model="showDetail" position="bottom" closeable :style="{ height: '75%' }">
-      <van-panel title="提货单详情" style="font-size:14px">
-        <div style="width:90%;margin:0 auto">
-          <table style="width:100%;height:180px" class="table_2" border="1">
+    <van-popup
+      v-model="showDetail"
+      position="bottom"
+      closeable
+      :style="{ height: '75%' }"
+    >
+      <van-panel title="提货单详情" style="font-size: 14px">
+        <div style="width: 90%; margin: 0 auto">
+          <table style="width: 100%; height: 180px" class="table_2" border="1">
             <tr>
               <td>提货单:</td>
-              <td>{{tableDetail_1.SALE_NO}}</td>
+              <td>{{ tableDetail_1.SALE_NO }}</td>
             </tr>
             <tr>
               <td>开单日期:</td>
-              <td>{{tableDetail_1.BILL_DATE|datatrans}}</td>
+              <td>{{ tableDetail_1.BILL_DATE | datatrans }}</td>
             </tr>
             <tr>
               <td>状态:</td>
-              <td>{{tableDetail_1.STATUS_ID|transStatus}}</td>
+              <td>{{ tableDetail_1.STATUS_ID | transStatus }}</td>
             </tr>
             <tr>
               <td>合同号:</td>
-              <td>{{tableDetail_1.HTBM}}</td>
+              <td>{{ tableDetail_1.HTBM }}</td>
             </tr>
             <tr>
               <td>金额:</td>
-              <td>{{tableDetail_1.MONEY_SUM}}</td>
+              <td>{{ tableDetail_1.MONEY_SUM }}</td>
             </tr>
             <tr>
-              <td style="width:90px;">提货日期:</td>
-              <td>{{tableDetail_1.DATE_OUT_STOCK|datatrans}}</td>
+              <td style="width: 90px">提货日期:</td>
+              <td>{{ tableDetail_1.DATE_OUT_STOCK | datatrans }}</td>
             </tr>
             <tr>
               <td>客户:</td>
-              <td>{{tableDetail_1.CUSTOMER_NAME}}/联系人:{{tableDetail_1.LINKMAN}}</td>
+              <td>
+                {{ tableDetail_1.CUSTOMER_NAME }}/联系人:{{
+                  tableDetail_1.LINKMAN
+                }}
+              </td>
             </tr>
             <tr>
               <td>备注:</td>
-              <td>{{tableDetail_1.NOTES}}</td>
+              <td>{{ tableDetail_1.NOTES }}</td>
             </tr>
           </table>
-          <div class="single-bank" v-for="(detail,index) in tableDetail" :key="index">
+          <div
+            class="single-bank"
+            v-for="(detail, index) in tableDetail"
+            :key="index"
+          >
             <table>
               <tr>
-                <td style="width:90px;text-align:left">状态:</td>
-                <td>{{detail.STATUS_ID|transStatus}}</td>
+                <td style="width: 90px; text-align: left">状态:</td>
+                <td>{{ detail.STATUS_ID | transStatus }}</td>
               </tr>
               <tr>
-                <td style="width:90px;text-align:left">型号：</td>
-                <td>{{detail.ITEM_NO}}</td>
+                <td style="width: 90px; text-align: left">型号：</td>
+                <td>{{ detail.ITEM_NO }}</td>
               </tr>
               <tr>
-                <td style="width:90px;text-align:left">批次：</td>
-                <td>{{detail.BATCH_NO}}</td>
+                <td style="width: 90px; text-align: left">批次：</td>
+                <td>{{ detail.BATCH_NO }}</td>
               </tr>
               <tr>
-                <td style="width:90px;text-align:left">版本：</td>
-                <td>{{detail.PRODUCTVERSION_NAME}}</td>
+                <td style="width: 90px; text-align: left">版本：</td>
+                <td>{{ detail.PRODUCTVERSION_NAME }}</td>
               </tr>
               <tr>
-                <td style="width:90px;text-align:left">仓库：</td>
-                <td>{{detail.NOTE}}</td>
+                <td style="width: 90px; text-align: left">仓库：</td>
+                <td>{{ detail.NOTE }}</td>
               </tr>
               <!-- <tr>
                 <td style="width:90px;text-align:left">区位：</td>
                 <td>{{detail.AREA}}</td>
               </tr>-->
               <tr>
-                <td style="width:90px;text-align:left">发货数：</td>
-                <td>{{detail.QTY_DELIVER}}</td>
+                <td style="width: 90px; text-align: left">发货数：</td>
+                <td>{{ detail.QTY_DELIVER }}</td>
               </tr>
               <tr>
-                <td style="width:35%;text-align:left">物流单价：</td>
-                <td>{{detail.TRANS_PRICE}}</td>
+                <td style="width: 35%; text-align: left">物流单价：</td>
+                <td>{{ detail.TRANS_PRICE }}</td>
               </tr>
               <tr>
-                <td style="width:90px;text-align:left">单价:</td>
-                <td>{{detail.SALE_PRICE}}</td>
+                <td style="width: 90px; text-align: left">单价:</td>
+                <td>{{ detail.SALE_PRICE }}</td>
               </tr>
               <tr>
-                <td style="width:90px;text-align:left">金额:</td>
-                <td>{{detail.MONEY}}</td>
+                <td style="width: 90px; text-align: left">金额:</td>
+                <td>{{ detail.MONEY }}</td>
               </tr>
             </table>
             <hr />
@@ -138,33 +165,22 @@
       />
     </van-popup>
     <!--底部分页-->
-    <div class="fy-contain">
-      <van-pagination
-        class="fy-bottom"
-        v-model="currentPage"
-        :page-count="totalPage"
-        :items-per-page="itemsPerPage"
-        :total-items="totalLists"
-        mode="simple"
-        @change="changePage"
-      />
-    </div>
-    <van-loading class="loading" type="spinner" v-if="loading" color="black" />
+    <van-pagination
+      class="fy-bottom"
+      v-model="currentPage"
+      :page-count="totalPage"
+      :items-per-page="itemsPerPage"
+      :total-items="totalLists"
+      mode="simple"
+      @change="changePage"
+    />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import {
-  DatetimePicker,
-  Popup,
-  Picker,
-  Pagination,
-  Toast,
-  Loading,
-  Panel,
-} from "vant";
+import { DatetimePicker, Popup, Picker, Pagination, Toast, Panel } from "vant";
 import {
   getAreaCode,
   getDistrictByAreaCode,
@@ -195,7 +211,6 @@ export default {
       itemsPerPage: 8,
       //总页数
       totalPage: 0,
-      loading: false,
     };
   },
   components: {
@@ -204,7 +219,6 @@ export default {
     [Popup.name]: Popup,
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
-    [Loading.name]: Loading,
     [Panel.name]: Panel,
   },
   filters: {
@@ -480,26 +494,5 @@ input {
   color: white;
   padding: 5px 15px;
   border-radius: 15px;
-}
-.fy-contain {
-  width: 100%;
-  height: 50px;
-  background: white;
-  position: fixed;
-  bottom: 0px;
-  border-top: 1px solid #e8e8e8;
-}
-
-.fy-bottom {
-  background: #f8f8f8;
-  position: absolute;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  color: white !important;
-}
-
-.fy-bottom .van-pagination__item {
-  color: #89cb81;
 }
 </style>

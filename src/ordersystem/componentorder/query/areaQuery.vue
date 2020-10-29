@@ -12,11 +12,16 @@
             <input class="time_1" type="text" v-model="myDistrict" disabled />
           </span>
           <span @click="showType_3 = true">
-            <input class="time_1" type="text" v-model="myCustomerType" disabled />
+            <input
+              class="time_1"
+              type="text"
+              v-model="myCustomerType"
+              disabled
+            />
           </span>
         </div>
 
-        <div style="margin:-24px 0 0 10px;">
+        <div style="margin: -24px 0 0 10px">
           <van-search
             placeholder="客户筛选"
             v-model="customer_filter"
@@ -25,10 +30,11 @@
           />
           <van-button
             class="choose"
-            style="margin-left:30px;"
+            style="margin-left: 30px"
             @click="getCustomerDataList"
             round
-          >搜索客户</van-button>
+            >搜索客户</van-button
+          >
         </div>
         <hr />
         <div>
@@ -42,26 +48,33 @@
             <input type="text" v-model="myStatus" class="time_1" disabled />
           </span>
         </div>
-        <div style="margin:5px 0 0 10px;text-align:left;">
+        <div style="margin: 5px 0 0 10px; text-align: left">
           <van-button class="choose" @click="checkAll" round>全选</van-button>
           <van-button class="choose" @click="toggleAll" round>反选</van-button>
           <van-button class="choose" @click="clear" round>重置</van-button>
           <span
-            style="float:right;margin:15px 5px 0 0;font-size:12px;color:#909399;"
+            style="
+              float: right;
+              margin: 15px 5px 0 0;
+              font-size: 12px;
+              color: #909399;
+            "
             v-if="customerData.length"
-          >{{selectCustomer.length}}/{{customerData.length}}</span>
+            >{{ selectCustomer.length }}/{{ customerData.length }}</span
+          >
         </div>
       </ul>
     </div>
     <div class="queryData">
-      <div style="margin: 0 0 10px 10px;">
+      <div style="margin: 0 0 10px 10px">
         <van-checkbox-group v-model="selectCustomer" ref="checkboxGroup">
           <van-checkbox
-            style="text-align:left;margin-top:7px;font-size: 15px;"
+            style="text-align: left; margin-top: 7px; font-size: 15px"
             :name="customerData.CUSTOMER_CODE"
             v-for="customerData in customerData"
             :key="customerData.CUSTOMER_CODE"
-          >{{customerData.CUSTOMER_NAME}}</van-checkbox>
+            >{{ customerData.CUSTOMER_NAME }}</van-checkbox
+          >
         </van-checkbox-group>
       </div>
     </div>
@@ -130,23 +143,25 @@
     <van-popup
       v-model="showMoney"
       position="bottom"
-      :style="{ height: '75%' }"
+      :style="{ 'max-height': '75%' }"
       closeable
       close-icon="close"
     >
-      <div style="width:90%;margin:0 auto">
-        <div style="font-size:15px;color:blue;margin-top:30px">提货单金额汇总：{{sumOrderMoney}}元</div>
+      <div style="width: 90%; margin: 0 auto">
+        <div style="font-size: 15px; color: blue; margin-top: 30px">
+          提货单金额汇总：{{ sumOrderMoney }}元
+        </div>
         <div
           class="single-bank"
-          style="width:100%"
-          v-for="(singleBank,index) in customerOrderData"
+          style="width: 100%"
+          v-for="(singleBank, index) in customerOrderData"
           :key="index"
         >
-          <van-panel style="margin-top:10px">
-            <table style="font-size:14px;width:90%">
+          <van-panel style="margin-top: 10px">
+            <table style="font-size: 14px; width: 90%">
               <tr>
                 <td>客户名称：</td>
-                <td>{{singleBank.CUSTOMER_NAME}}</td>
+                <td>{{ singleBank.CUSTOMER_NAME }}</td>
               </tr>
               <tr>
                 <td>提货单号：</td>
@@ -154,44 +169,45 @@
                   <a
                     href="javascript:void(0);"
                     @click="getOrderDetail(singleBank)"
-                  >{{singleBank.SALE_NO}}</a>
+                    >{{ singleBank.SALE_NO }}</a
+                  >
                 </td>
               </tr>
               <tr>
                 <td>状态：</td>
-                <td>{{singleBank.STATUS_ID | transStatus}}</td>
+                <td>{{ singleBank.STATUS_ID | transStatus }}</td>
               </tr>
               <tr>
-                <td style="width:100px;">B2B订单号：</td>
-                <td>{{singleBank.CONTRACT_NO}}</td>
+                <td style="width: 100px">B2B订单号：</td>
+                <td>{{ singleBank.CONTRACT_NO }}</td>
               </tr>
               <tr>
                 <td>单据类型：</td>
-                <td>{{singleBank.BILL_ID | transType}}</td>
+                <td>{{ singleBank.BILL_ID | transType }}</td>
               </tr>
               <tr>
                 <td>开单日期：</td>
-                <td>{{singleBank.BILL_ID | datatrans}}</td>
+                <td>{{ singleBank.BILL_ID | datatrans }}</td>
               </tr>
               <tr>
                 <td>提货日期：</td>
-                <td>{{singleBank.DATE_OUT_STOCK | datatrans}}</td>
+                <td>{{ singleBank.DATE_OUT_STOCK | datatrans }}</td>
               </tr>
               <tr>
                 <td>金额：</td>
-                <td>{{singleBank.MONEY_SUM}}</td>
+                <td>{{ singleBank.MONEY_SUM }}</td>
               </tr>
               <tr>
                 <td>运输方式：</td>
-                <td>{{singleBank.TRANSTYPE_NAME}}</td>
+                <td>{{ singleBank.TRANSTYPE_NAME }}</td>
               </tr>
               <tr>
                 <td>运输单号：</td>
-                <td>{{singleBank.TRANS_ID}}</td>
+                <td>{{ singleBank.TRANS_ID }}</td>
               </tr>
               <tr>
                 <td>合同号：</td>
-                <td>{{singleBank.HTBM}}</td>
+                <td>{{ singleBank.HTBM }}</td>
               </tr>
             </table>
             <hr />
@@ -200,46 +216,56 @@
       </div>
     </van-popup>
 
-    <van-popup v-model="showDetail" position="bottom" closeable style="height:'75%'">
-      <van-panel title="提货单详情" style="font-size:14px">
-        <div style="width:90%;margin:0 auto">
-          <div class="single-bank" v-for="(detail,index) in tableDetail" :key="index">
+    <van-popup
+      v-model="showDetail"
+      position="bottom"
+      :style="{ 'max-height': '75%' }"
+      closeable
+      close-icon="close"
+    >
+      <van-panel title="提货单详情" style="font-size: 14px">
+        <div style="width: 90%; margin: 0 auto">
+          <div
+            class="single-bank"
+            v-for="(detail, index) in tableDetail"
+            :key="index"
+          >
             <table>
               <tr>
                 <td>状态:</td>
-                <td>{{detail.STATUS_ID|transStatus}}</td>
+                <td>{{ detail.STATUS_ID | transStatus }}</td>
               </tr>
               <tr>
                 <td>型号：</td>
-                <td>{{detail.ITEM_NO}}</td>
+                <td>{{ detail.ITEM_NO }}</td>
               </tr>
               <tr>
                 <td>批次：</td>
-                <td>{{detail.BATCH_NO}}</td>
+                <td>{{ detail.BATCH_NO }}</td>
               </tr>
               <tr>
                 <td>版本：</td>
-                <td>{{detail.PRODUCTVERSION_NAME}}</td>
+                <td>{{ detail.PRODUCTVERSION_NAME }}</td>
               </tr>
               <tr>
                 <td>仓库：</td>
-                <td>{{detail.NOTE}}</td>
+                <td>{{ detail.NOTE }}</td>
               </tr>
               <tr>
                 <td>发货数：</td>
-                <td>{{detail.QTY_DELIVER}}</td>
+                <td>{{ detail.QTY_DELIVER }}</td>
               </tr>
               <tr>
                 <td>物流单价：</td>
-                <td>{{detail.TRANS_PRICE}}</td>
+                <td>{{ detail.TRANS_PRICE }}</td>
               </tr>
               <tr>
                 <td>单价:</td>
-                <td>{{detail.SALE_PRICE}}</td>
+                <td>{{ detail.SALE_PRICE }}</td>
               </tr>
               <tr>
                 <td>金额:</td>
-                <td>{{detail.MONEY}}</td>
+                <td>{{ detail.MONEY }}</td>
               </tr>
             </table>
             <hr />
