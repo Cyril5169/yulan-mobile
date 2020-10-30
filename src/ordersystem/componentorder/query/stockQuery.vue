@@ -23,7 +23,7 @@
         v-for="(dormitory, index) in itemData"
         :key="index"
       >
-        <table>
+        <table style="width:100%">
           <tr>
             <td style="width: 75px">型号:</td>
             <td style="font-weight: bold">{{ dormitory.ITEM_NO }}</td>
@@ -128,7 +128,7 @@
             v-for="(item, index) in stockData"
             :key="index"
           >
-            <table>
+            <table style="width:100%">
               <tr>
                 <td>仓库名称:</td>
                 <td>{{ item.NOTE }}</td>
@@ -198,7 +198,7 @@
             v-for="(item, index) in allocateData"
             :key="index"
           >
-            <table>
+            <table style="width:100%">
               <tr>
                 <td>型号:</td>
                 <td>{{ item.ITEM_NO }}</td>
@@ -272,7 +272,7 @@ export default {
   name: "stockQuery",
   data() {
     return {
-      myItem: "NVP360603", //产品型号初始值
+      myItem: "", //产品型号初始值
       set: 90,
       ksData: "",
       ksDataSet: "", //  开始时间
@@ -651,7 +651,7 @@ export default {
         .then((res) => {
           this.itemData = res.data;
           this.count = res.count;
-          this.totalPage = Math.ceil(this.totalLists / this.pageSize);
+          this.totalPage = Math.ceil(this.totalLists / this.limit);
           if (this.count == 1) {
             this.KC_CP_SC(res.data[0]);
           }

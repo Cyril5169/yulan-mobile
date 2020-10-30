@@ -5,18 +5,18 @@
     <div class="search">
       <ul class="ulhead" id="ulhead">
         <div style="margin-top: -3px">
-          <span class="licenter" @click="(showType_1 = true), (loading = true)">
+          <span @click="(showType_1 = true), (loading = true)">
             <input class="time" type="text" v-model="getVersion" disabled />
           </span>
-          <span class="licenter">
+          <span>
             <input class="item_1" v-model="XH" placeholder="请输入型号" />
           </span>
         </div>
         <div style="margin-top: -7px">
-          <span class="licenter" @click="showType_4 = true">
+          <span @click="showType_4 = true">
             <input type="text" v-model="ksDataSet" class="time_2" disabled />
           </span>
-          <span class="licenter" @click="showType_5 = true">
+          <span @click="showType_5 = true">
             <input type="text" v-model="jsDataSet" class="time_1" disabled />
           </span>
           <van-button class="button" @click="clear" round>重置</van-button>

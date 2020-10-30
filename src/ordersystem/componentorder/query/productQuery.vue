@@ -27,7 +27,7 @@
     </ul>
     <div class="alllists">
       <div class="singleItem" v-for="(item, index) in productData" :key="index">
-        <table>
+        <table style="width:100%">
           <tr>
             <td>产品型号：</td>
             <td style="font-weight:bold;">{{ item.ITEM_NO }}</td>
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { Loading, Pagination, Popup, DatetimePicker } from "vant";
+import { Pagination, Popup, DatetimePicker } from "vant";
 import top from "../../../components/Top";
 import { GetProductStatus } from "@/api/itemInfoASP";
 
@@ -100,7 +100,6 @@ export default {
   name: "productQuery",
   components: {
     top,
-    [Loading.name]: Loading,
     [Pagination.name]: Pagination,
     [Popup.name]: Popup,
     [DatetimePicker.name]: DatetimePicker,

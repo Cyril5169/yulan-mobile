@@ -84,6 +84,7 @@ import OrderQuery from '@/ordersystem/componentorder/query/orderQuery'
 import SalesQuery from '@/ordersystem/componentorder/query/salesQuery'
 import OrderDetailsQuery from '@/ordersystem/componentorder/query/orderDetailsQuery'
 import productQuery from '@/ordersystem/componentorder/query/productQuery'
+import limitPriceQuery from '@/ordersystem/componentorder/query/limitPriceQuery'
 //兰居设计
 import lanjuDesign from '@/ordersystem/componentorder/lanju/lanjuDesign'
 import lanjuDetail from '@/ordersystem/componentorder/lanju/lanjuDetail'
@@ -97,9 +98,6 @@ import ImageShop from '@/ordersystem/componentorder/design/imageShop'
 import newRefund from '@/ordersystem/componentorder/newRefund/newRefund'
 import newRefundDetail from '@/ordersystem/componentorder/newRefund/newRefundDetail'
 import addOrEditRefund from '@/ordersystem/componentorder/newRefund/addOrEditRefund'
-
-
-
 
 Vue.use(Router)
 var router = new Router({
@@ -502,6 +500,11 @@ var router = new Router({
       path: '/productQuery',
       name: 'productQuery',
       component: productQuery
+    },
+    {
+      path: '/limitPriceQuery',
+      name: 'limitPriceQuery',
+      component: limitPriceQuery
     },
     {
       path: '/billDetailsQuery',

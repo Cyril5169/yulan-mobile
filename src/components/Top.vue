@@ -323,6 +323,11 @@ export default {
             path: "/customer",
           });
           break;
+        case 107:
+          this.$router.push({
+            path: "/customer",
+          });
+          break;
       }
     },
   },
@@ -549,6 +554,11 @@ export default {
     }
     if (this.top == 106) {
       this.msg = "生产状态查询";
+      let a = this.$refs.top;
+      a.className = "top-green";
+    }
+    if (this.top == 107) {
+      this.msg = "外销限价查询";
       let a = this.$refs.top;
       a.className = "top-green";
     }

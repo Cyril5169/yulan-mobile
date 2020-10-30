@@ -135,3 +135,11 @@ export function GetProductStatus(data, config = {}) {
         return Promise.reject(err);
     })
 }
+//获得外销限价
+export function GetLimitPriceByProVersion(data, config = {}) {
+    return post('/ITEM/GetLimitPriceByProVersion', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
