@@ -45,7 +45,7 @@
             <td>{{ item.UNIT_NAME }}</td>
           </tr>
           <tr>
-            <td>非普通出后贸易价:</td>
+            <td>非普通出口贸易价:</td>
             <td style="font-weight: bold">{{ item.PRICE_ADVISE_CK2 }}</td>
           </tr>
         </table>

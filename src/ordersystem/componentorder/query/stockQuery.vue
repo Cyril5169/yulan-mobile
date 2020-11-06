@@ -20,73 +20,74 @@
     <div class="alllists">
       <div
         class="singleItem"
-        v-for="(dormitory, index) in itemData"
+        v-for="(item, index) in itemData"
         :key="index"
+        @click="KC_CP_SC(item)"
       >
-        <table style="width:100%">
+        <table style="width: 100%">
           <tr>
             <td style="width: 75px">型号:</td>
-            <td style="font-weight: bold">{{ dormitory.ITEM_NO }}</td>
+            <td style="font-weight: bold">{{ item.ITEM_NO }}</td>
             <td style="width: 75px">墙纸规格:</td>
-            <td>{{ dormitory.PRODUCT_PAPER_ID | transPaper }}</td>
+            <td>{{ item.PRODUCT_PAPER_ID | transPaper }}</td>
           </tr>
           <tr>
             <td>毛重（kg）:</td>
-            <td>{{ dormitory.GROSS }}</td>
+            <td>{{ item.GROSS }}</td>
             <td>样版型号:</td>
-            <td>{{ dormitory.OLD_ITEM_NO }}</td>
+            <td>{{ item.OLD_ITEM_NO }}</td>
           </tr>
           <tr>
             <td>墙纸基材:</td>
-            <td>{{ dormitory.PROPERTY_TYPE_NAME }}</td>
+            <td>{{ item.PROPERTY_TYPE_NAME }}</td>
             <td>净重（kg）:</td>
-            <td>{{ dormitory.NET_WEIGHT }}</td>
+            <td>{{ item.NET_WEIGHT }}</td>
           </tr>
           <tr>
             <td>产品类别:</td>
-            <td>{{ dormitory.ITEM_TYPE_1 }}</td>
+            <td>{{ item.ITEM_TYPE_1 }}</td>
             <td>墙纸功能:</td>
-            <td>{{ dormitory.MARK_TYPE | transMark }}</td>
+            <td>{{ item.MARK_TYPE | transMark }}</td>
           </tr>
           <tr>
             <td>拼花:</td>
-            <td>{{ dormitory.DUIPIN_NOTE_1 }}</td>
+            <td>{{ item.DUIPIN_NOTE_1 }}</td>
             <td>品牌:</td>
-            <td>{{ dormitory.BRAND_NAME }}</td>
+            <td>{{ item.BRAND_NAME }}</td>
           </tr>
           <tr>
             <td>长度（mm）:</td>
-            <td>{{ dormitory.LENGTH }}</td>
+            <td>{{ item.LENGTH }}</td>
             <td>拼花尺寸:</td>
-            <td>{{ dormitory.DUIPIN_SIZE }}</td>
+            <td>{{ item.DUIPIN_SIZE }}</td>
           </tr>
           <tr>
             <td>最新版本号:</td>
-            <td>{{ dormitory.PRODUCTVERSION_NAME }}</td>
+            <td>{{ item.PRODUCTVERSION_NAME }}</td>
             <td>宽度（mm）:</td>
-            <td>{{ dormitory.WIDTH }}</td>
+            <td>{{ item.WIDTH }}</td>
           </tr>
           <tr>
             <td>图案:</td>
-            <td>{{ dormitory.PATTERN | transPattern }}</td>
+            <td>{{ item.PATTERN | transPattern }}</td>
             <td>自产代理:</td>
-            <td>{{ dormitory.GET_ID | transId }}</td>
+            <td>{{ item.GET_ID | transId }}</td>
           </tr>
           <tr>
             <td>规格:</td>
-            <td>{{ dormitory.GRADE }}</td>
+            <td>{{ item.GRADE }}</td>
             <td>颜色:</td>
-            <td>{{ dormitory.COLOUR | transColour }}</td>
+            <td>{{ item.COLOUR | transColour }}</td>
           </tr>
           <tr>
             <td>计量单位:</td>
-            <td>{{ dormitory.UNIT_NOTE_1 }}</td>
+            <td>{{ item.UNIT_NOTE_1 }}</td>
             <td>纸箱规格:</td>
-            <td>{{ dormitory.BOX_TYPE }}</td>
+            <td>{{ item.BOX_TYPE }}</td>
           </tr>
           <tr>
             <td>风格:</td>
-            <td>{{ dormitory.STYLE | transStyle }}</td>
+            <td>{{ item.STYLE | transStyle }}</td>
             <td>备注:</td>
             <td></td>
           </tr>
@@ -128,7 +129,7 @@
             v-for="(item, index) in stockData"
             :key="index"
           >
-            <table style="width:100%">
+            <table style="width: 100%">
               <tr>
                 <td>仓库名称:</td>
                 <td>{{ item.NOTE }}</td>
@@ -198,7 +199,7 @@
             v-for="(item, index) in allocateData"
             :key="index"
           >
-            <table style="width:100%">
+            <table style="width: 100%">
               <tr>
                 <td>型号:</td>
                 <td>{{ item.ITEM_NO }}</td>
@@ -226,6 +227,14 @@
               <tr>
                 <td>单据号:</td>
                 <td>{{ item.ORDER_ID }}</td>
+              </tr>
+              <tr>
+                <td>客户名称:</td>
+                <td>{{ item.CUSTOMER_NAME }}</td>
+              </tr>
+              <tr>
+                <td>预留人:</td>
+                <td>{{ item.NAME }}</td>
               </tr>
               <tr>
                 <td>预留日期:</td>
