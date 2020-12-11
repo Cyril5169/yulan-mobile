@@ -1,8 +1,38 @@
 <template>
   <div class="all-view">
     <top :top="set"></top>
-    <!-- <div class="monthSel" @click="selTime">{{thisyear}}/{{thismonth}}</div> -->
     <ul class="ulhead">
+      <li @click="showYearPick">
+        <input
+          class="time2 time-ks"
+          type="text"
+          v-model="yearDataSet"
+          disabled
+        />
+        <span>年任务查询</span>
+      </li>
+    </ul>
+    <div class="task-title" v-if="yearData">
+      <span style="color: orange"
+        >{{ yearDataSet }}年协议年任务:{{
+          yearData.ASSIGNMENTS ? yearData.ASSIGNMENTS : "无"
+        }}</span
+      >|
+      <span style="color: orange"
+        >{{ yearDataSet }}年实付总额:{{ yearData.ALL_SPEND }}</span
+      >|
+      <span style="color: orange"
+        >{{ yearDataSet }}年年任务完成差额:{{
+          (yearData.ASSIGNMENTS - yearData.ALL_SPEND) | dosageFilter
+        }}</span
+      ><span
+        v-if="yearData.ASSIGNMENTS - yearData.ALL_SPEND > 0"
+        style="color: red"
+        >(未完成)</span
+      >
+      <span v-else style="color: green">(已完成)</span>
+    </div>
+    <ul class="ulhead2">
       <li @click="showks = true">
         <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
       </li>
@@ -13,55 +43,67 @@
         <input class="time time-js" type="text" v-model="jsDataSet" disabled />
       </li>
       <li>
-        <span class="search-button" @click="taskSear()">查询</span>
+        <span class="search-button" @click="taskSearch()">查询</span>
       </li>
     </ul>
-    <div class="task-title" v-if="assignments">
-      <span>总月任务：{{assignments.ASSIGNMENTS}}元</span>
-      <span style="color:red;">总促销目标任务：{{assignments.ASSIGNMENTS_TARGET}}元</span>
-      <span style="color:red;">完成差额：{{assignments.assignmentsReduce}}元</span>
+    <div class="task-title2" v-if="assignments">
+      <span style="color: red"
+        >总促销目标任务：{{ assignments.ASSIGNMENTS_TARGET }}元</span
+      >| <span style="color: red">实付总额{{ totalPay }}</span
+      >|
+      <span style="color: red"
+        >完成差额：{{ assignments.assignmentsReduce }}元</span
+      >
+      <span style="color: red" v-if="assignments.assignmentsReduce > 0"
+        >(未完成)</span
+      >
+      <span style="color: green" v-else>(已完成)</span>
     </div>
     <div class="alllists" v-if="taskResult">
-      <div class="singleItem" v-for="(taskItem,index) in taskResult" :key="index">
+      <div
+        class="singleItem"
+        v-for="(taskItem, index) in taskResult"
+        :key="index"
+      >
         <table>
           <tr>
             <td>时间：</td>
-            <td>{{taskItem.WEB_TJ_TIME}}</td>
+            <td>{{ taskItem.WEB_TJ_TIME }}</td>
           </tr>
           <tr>
             <td>订单号：</td>
-            <td>{{taskItem.ORDER_NO}}</td>
+            <td>{{ taskItem.ORDER_NO }}</td>
           </tr>
           <tr>
             <td>订单金额：</td>
-            <td>{{taskItem.sumMoney}}（元）</td>
+            <td>{{ taskItem.sumMoney }}（元）</td>
           </tr>
           <tr>
             <td>年返利/月返利：</td>
-            <td>{{taskItem.ALLBACK_Y}}/{{taskItem.ALLBACK_M}}（元）</td>
+            <td>{{ taskItem.ALLBACK_Y }}/{{ taskItem.ALLBACK_M }}（元）</td>
           </tr>
           <tr>
             <td>实付金额：</td>
-            <td>{{taskItem.ALL_SPEND}}（元）</td>
+            <td>{{ taskItem.ALL_SPEND }}（元）</td>
           </tr>
           <tr>
             <td>返利金额：</td>
-            <td>{{taskItem.REBATE_MONEY}}（元）</td>
+            <td>{{ taskItem.REBATE_MONEY }}（元）</td>
           </tr>
           <tr>
             <td>备注：</td>
-            <td>{{taskItem.REBATE_NOTES}}</td>
+            <td>{{ taskItem.REBATE_NOTES }}</td>
           </tr>
         </table>
-        <span class="order-state">{{taskItem.STATUS_ID | transStatus}}</span>
+        <span class="order-state">{{ taskItem.STATUS_ID | transStatus }}</span>
       </div>
     </div>
-    <div class="total-bottom" v-if="taskResult.length>0">
-      <span>订单总金额:{{totalMoney}}元</span>
-      <span>年返利使用金额:{{totalRebateY}}元</span>
-      <span>月返利使用金额:{{totalRebateM}}元</span>
-      <span>实付总金额:{{totalPay}}元</span>
-      <span>返利总金额:{{totalRebateAll}}元</span>
+    <div class="total-bottom" v-if="taskResult.length > 0">
+      <span>订单总金额:{{ totalMoney }}元</span>
+      <span>年返利使用金额:{{ totalRebateY }}元</span>
+      <span>月返利使用金额:{{ totalRebateM }}元</span>
+      <span>实付总金额:{{ totalPay }}元</span>
+      <span>返利总金额:{{ totalRebateAll }}元</span>
     </div>
     <!--选择时间-->
     <van-popup v-model="showks" position="bottom">
@@ -76,7 +118,6 @@
     </van-popup>
     <van-popup v-model="showjs" position="bottom">
       <van-datetime-picker
-        class="reset"
         v-model="jsData"
         type="year-month"
         :formatter="formatter"
@@ -85,34 +126,43 @@
         @cancel="cancelTimejs"
       />
     </van-popup>
+    <van-popup v-model="showyear" position="bottom">
+      <van-picker
+        title="选择年"
+        :columns="yearColumns"
+        show-toolbar
+        @confirm="confirmYear"
+        @cancel="cancelYear"
+        ref="yearPicker"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import top from "../../components/Top";
-import { DatetimePicker, Popup } from "vant";
-import { GetTaskProgress } from "@/api/orderListASP";
+import { DatetimePicker, Popup, Picker } from "vant";
+import { GetTaskProgress, GetYearTaskProgress } from "@/api/orderListASP";
 
 export default {
   name: "tasksearch",
   components: {
     top,
     [DatetimePicker.name]: DatetimePicker,
-    [Popup.name]: Popup
+    [Popup.name]: Popup,
+    [Picker.name]: Picker,
   },
   data() {
     return {
       set: 29,
-      showtime: false,
-      currentDate: new Date(),
-      thisyear: new Date().getFullYear(),
-      thismonth: new Date().getMonth() + 1,
       taskResult: {},
       ksData: "",
       ksDataSet: "", //  开始时间
+      yearDataSet: new Date().getFullYear(),
       showks: false, //开始时间组件显示
       showjs: false, //结束时间组件显示
+      showyear: false,
       jsData: "",
       jsDataSet: "", //结束时间
       assignments: [],
@@ -120,11 +170,13 @@ export default {
       totalRebateY: 0,
       totalRebateM: 0,
       totalPay: 0,
-      totalRebateAll: 0
+      totalRebateAll: 0,
+      yearColumns: [],
+      yearData: [],
     };
   },
   filters: {
-    transStatus: function(value) {
+    transStatus: function (value) {
       switch (value) {
         case "0":
           return "窗帘待审核";
@@ -154,7 +206,7 @@ export default {
           return "已完成";
           break;
       }
-    }
+    },
   },
   methods: {
     //开始时间选择
@@ -172,6 +224,14 @@ export default {
     },
     cancelTimejs() {
       this.showjs = false;
+    },
+    confirmYear(value) {
+      this.yearDataSet = value;
+      this.searchByYear();
+      this.showyear = false;
+    },
+    cancelYear() {
+      this.showyear = false;
     },
     //初始化结束时间
     jsSet(time) {
@@ -201,26 +261,30 @@ export default {
       }
       return value;
     },
-    taskSear() {
+    taskSearch() {
       this.taskResult = {};
       if (!this.jsDataSet && !this.jsDataSet) return;
       let year = this.ksDataSet.slice(0, 4);
       let endYear = this.jsDataSet.slice(0, 4);
       let month = this.ksDataSet.slice(5, 7);
       let endMonth = this.jsDataSet.slice(5, 7);
-      // if (this.thismonth < 10) {
-      //   this.thismonth = "0" + this.thismonth;
-      // }
-      // let url = this.orderBaseUrl + "/assignments/getAssignments.do";
+      //2020.12.07新需求，不允许跨年
+      if (year != endYear) {
+        Toast({
+          duration: 2000,
+          message: "不能跨年，只能选择同一年度月份查询",
+        });
+        return;
+      }
       let data = {
         companyId: this.$store.getters.getCMId, //客户号
         year: year, //年份
         endYear: endYear,
         month: month, //月份
-        endMonth: endMonth
+        endMonth: endMonth,
       };
       //axios.post(url, data).then(res => {
-      GetTaskProgress(data).then(res => {
+      GetTaskProgress(data).then((res) => {
         let zoom = res.data[0].orders;
         let reduce = 0;
         for (let i = 0; i < zoom.length; i++) {
@@ -258,26 +322,32 @@ export default {
         }
       });
     },
-    //时间选择
-    selTime() {
-      this.showtime = true;
+    searchByYear() {
+      this.yearData = [];
+      GetYearTaskProgress({
+        year: this.yearDataSet,
+        cid: this.$store.getters.getCId,
+      }).then((res) => {
+        this.yearData = res.data[0];
+      });
     },
-    confirmTime(val) {
-      this.showtime = false;
-      this.thismonth = val.getMonth() + 1;
-      this.thisyear = val.getFullYear();
-      this.taskSear();
+    showYearPick() {
+      this.showyear = true;
+      this.$nextTick(() => {
+        this.$refs.yearPicker.setColumnValue(0, this.yearDataSet);
+      });
     },
-    cancelTime() {
-      this.showtime = false;
-    }
   },
-  created() {
+  mounted() {
+    for (var i = 1; i <= 85; i++) {
+      this.yearColumns.push(2015 + i);
+    }
     let time = new Date();
     this.jsSet(time);
     this.ksSet(time);
-    this.taskSear();
-  }
+    this.taskSearch();
+    this.searchByYear();
+  },
 };
 </script>
 
@@ -285,12 +355,64 @@ export default {
 .ulhead {
   position: fixed;
   top: 50px;
-  line-height:37px;
+  line-height: 37px;
   width: 100%;
   height: 37px;
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
   font-size: 15px;
 }
+.ulhead2 {
+  position: fixed;
+  top: 110px;
+  line-height: 37px;
+  width: 100%;
+  height: 37px;
+  background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
+  font-size: 15px;
+}
+
+.task-title {
+  position: fixed;
+  top: 87px;
+  height: 30px;
+  line-height: 30px;
+  width: 100%;
+  display: -webkit-box;
+  white-space: nowrap;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: #ffffff;
+  border-bottom: 1px solid #dedede;
+  font-size: 11px;
+}
+
+.task-title2 {
+  position: fixed;
+  top: 147px;
+  height: 30px;
+  line-height: 30px;
+  width: 100%;
+  display: -webkit-box;
+  white-space: nowrap;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: #ffffff;
+  border-bottom: 1px solid #dedede;
+  font-size: 11px;
+}
+
+.task-title span {
+  margin: 0 2px;
+  width: 70px;
+}
+
+.task-title2 span {
+  margin: 0 2px;
+  width: 70px;
+}
+
 ul {
   margin: 0;
   padding: 0;
@@ -313,6 +435,21 @@ li {
   background-image: url("../assetsorder/time-zk.png");
   background-repeat: no-repeat;
   background-position-x: 80px;
+  background-position-y: 1vw;
+  background-size: 15px;
+}
+.time2 {
+  width: 50px;
+  height: 20px;
+  line-height: 20px;
+  background-color: hsl(0, 0%, 100%);
+  font-size: 13px;
+  border: none;
+  padding-left: 15px;
+  text-align: left;
+  background-image: url("../assetsorder/time-zk.png");
+  background-repeat: no-repeat;
+  background-position-x: 50px;
   background-position-y: 1vw;
   background-size: 15px;
 }
@@ -348,30 +485,9 @@ li {
   width: 280px;
   border-radius: 5px;
 }
-
-.task-title {
-  position: fixed;
-  top: 87px;
-  height: 30px;
-  line-height: 30px;
-  width: 100%;
-  display: -webkit-box;
-  white-space: nowrap;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  background: #ffffff;
-  border-bottom: 1px solid #dedede;
-  font-size: 11px;
-}
-
-.task-title span {
-  margin: 0 2px;
-  width: 70px;
-}
 .alllists {
   position: fixed;
-  top: 117px;
+  top: 187px;
   bottom: 30px;
   width: 100%;
   background: #f8f8f8;
