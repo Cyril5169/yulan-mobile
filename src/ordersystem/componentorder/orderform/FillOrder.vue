@@ -144,7 +144,7 @@
               <span
                 class="good-num"
                 v-if="!product.quantity"
-              >{{product.width}} * {{product.height}}(长*宽)</span>
+              >{{product.width}} * {{product.height}}(宽*高)</span>
               <span v-if="showPrice" class="price">单价：￥{{product.price}}</span>
               <span v-else class="price">***</span>
             </div>
