@@ -13,24 +13,25 @@
       </li>
     </ul>
     <div class="task-title" v-if="yearData">
-      <span style="color: orange"
+      <span style="color: red"
         >{{ yearDataSet }}年协议年任务:{{
           yearData.ASSIGNMENTS ? yearData.ASSIGNMENTS : "无"
         }}</span
       >|
-      <span style="color: orange"
+      <span style="color: red"
         >{{ yearDataSet }}年实付总额:{{ yearData.ALL_SPEND }}</span
       >|
-      <span style="color: orange"
+      <span style="color: red"
         >{{ yearDataSet }}年年任务完成差额:{{
           (yearData.ASSIGNMENTS - yearData.ALL_SPEND) | dosageFilter
-        }}</span
-      ><span
-        v-if="yearData.ASSIGNMENTS - yearData.ALL_SPEND > 0"
-        style="color: red"
-        >(未完成)</span
+        }}
+        <span
+          v-if="yearData.ASSIGNMENTS - yearData.ALL_SPEND > 0"
+          style="color: red"
+          >(未完成)</span
+        >
+        <span v-else style="color: green">(已完成)</span></span
       >
-      <span v-else style="color: green">(已完成)</span>
     </div>
     <ul class="ulhead2">
       <li @click="showks = true">
@@ -52,12 +53,13 @@
       >| <span style="color: red">实付总额{{ totalPay }}</span
       >|
       <span style="color: red"
-        >完成差额：{{ assignments.assignmentsReduce }}元</span
+        >完成差额：{{ assignments.assignmentsReduce }}元<span
+          style="color: red"
+          v-if="assignments.assignmentsReduce > 0"
+          >(未完成)</span
+        >
+        <span style="color: green" v-else>(已完成)</span></span
       >
-      <span style="color: red" v-if="assignments.assignmentsReduce > 0"
-        >(未完成)</span
-      >
-      <span style="color: green" v-else>(已完成)</span>
     </div>
     <div class="alllists" v-if="taskResult">
       <div
@@ -99,10 +101,10 @@
       </div>
     </div>
     <div class="total-bottom" v-if="taskResult.length > 0">
-      <span>订单总金额:{{ totalMoney }}元</span>
-      <span>年返利使用金额:{{ totalRebateY }}元</span>
-      <span>月返利使用金额:{{ totalRebateM }}元</span>
-      <span>实付总金额:{{ totalPay }}元</span>
+      <span>订单总金额:{{ totalMoney }}元</span>|
+      <span>年返利使用金额:{{ totalRebateY }}元</span>|
+      <span>月返利使用金额:{{ totalRebateM }}元</span>|
+      <span>实付总金额:{{ totalPay }}元</span>|
       <span>返利总金额:{{ totalRebateAll }}元</span>
     </div>
     <!--选择时间-->
@@ -355,62 +357,54 @@ export default {
 .ulhead {
   position: fixed;
   top: 50px;
-  line-height: 37px;
   width: 100%;
-  height: 37px;
+  height: 35px;
+  line-height: 35px;
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
   font-size: 15px;
 }
 .ulhead2 {
   position: fixed;
-  top: 110px;
-  line-height: 37px;
+  top: 115px;
   width: 100%;
-  height: 37px;
+  height: 35px;
+  line-height: 35px;
   background: -webkit-linear-gradient(left, #f2f2f2, #e1e1e1);
   font-size: 15px;
 }
 
 .task-title {
   position: fixed;
-  top: 87px;
+  top: 85px;
   height: 30px;
-  line-height: 30px;
   width: 100%;
-  display: -webkit-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
   white-space: nowrap;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
   background: #ffffff;
-  border-bottom: 1px solid #dedede;
   font-size: 11px;
 }
 
 .task-title2 {
   position: fixed;
-  top: 147px;
+  top: 150px;
   height: 30px;
-  line-height: 30px;
   width: 100%;
-  display: -webkit-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
   white-space: nowrap;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
   background: #ffffff;
-  border-bottom: 1px solid #dedede;
   font-size: 11px;
 }
 
 .task-title span {
   margin: 0 2px;
-  width: 70px;
 }
 
 .task-title2 span {
   margin: 0 2px;
-  width: 70px;
 }
 
 ul {
@@ -487,7 +481,7 @@ li {
 }
 .alllists {
   position: fixed;
-  top: 187px;
+  top: 180px;
   bottom: 30px;
   width: 100%;
   background: #f8f8f8;
@@ -516,14 +510,13 @@ li {
   padding: 5px;
   height: 30px;
   width: 100%;
-  display: -webkit-box;
-  white-space: nowrap;
   background: #89cb81;
   font-size: 11px;
   color: white;
   display: flex;
   flex-wrap: wrap;
   justify-content: left;
+  white-space: nowrap;
 }
 .total-bottom span {
   margin: 0 3px;
