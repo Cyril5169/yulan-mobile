@@ -1,15 +1,20 @@
 <template>
   <div class="order-details">
-    <top :top="set" :from="from" @backclick="backclick2" :isPopup="btnShow!=undefined && !btnShow"></top>
+    <top
+      :top="set"
+      :from="from"
+      @backclick="backclick2"
+      :isPopup="btnShow != undefined && !btnShow"
+    ></top>
     <div class="banner">
       <div class="address">
         <img class="address-icon" src="../../assetsorder/address.png" alt />
         <div class="address-contain">
           <div class="contct">
-            <span>{{oneOrder.WL_CONTACTS}}</span>
-            <span>{{oneOrder.WL_TEL}}</span>
+            <span>{{ oneOrder.WL_CONTACTS }}</span>
+            <span>{{ oneOrder.WL_TEL }}</span>
           </div>
-          <div class="address-text">{{oneOrder.ALL_ADDRESS}}</div>
+          <div class="address-text">{{ oneOrder.ALL_ADDRESS }}</div>
         </div>
       </div>
     </div>
@@ -17,11 +22,11 @@
       <table>
         <tr>
           <th>订单号：</th>
-          <td>{{oneOrder.ORDER_NO}}</td>
+          <td>{{ oneOrder.ORDER_NO }}</td>
         </tr>
         <tr>
           <th>下单时间：</th>
-          <td>{{oneOrder.DATE_CRE}}</td>
+          <td>{{ oneOrder.DATE_CRE }}</td>
         </tr>
       </table>
     </div>
@@ -33,11 +38,11 @@
         </tr>
         <tr>
           <th>订货乙方：</th>
-          <td>{{realName}}</td>
+          <td>{{ realName }}</td>
         </tr>
         <tr>
           <th>经办人：</th>
-          <td>{{oneOrder.LINKPERSON}}({{oneOrder.TELEPHONE}})</td>
+          <td>{{ oneOrder.LINKPERSON }}({{ oneOrder.TELEPHONE }})</td>
         </tr>
       </table>
     </div>
@@ -45,16 +50,16 @@
       <table>
         <tr>
           <th>购买人：</th>
-          <td>{{oneOrder.BUYUSER}}({{ oneOrder.BUYUSERPHONE }})</td>
+          <td>{{ oneOrder.BUYUSER }}({{ oneOrder.BUYUSERPHONE }})</td>
         </tr>
         <tr>
           <th>购买人地址：</th>
-          <td>{{oneOrder.BUYUSER_ADDRESS}}</td>
+          <td>{{ oneOrder.BUYUSER_ADDRESS }}</td>
         </tr>
         <tr v-if="oneOrder.BUYUSER_PICTURE">
           <th>购买凭证：</th>
           <td>
-            <u style="color:#4994df;" @click="showPic = true">查看购买凭证</u>
+            <u style="color: #4994df" @click="showPic = true">查看购买凭证</u>
           </td>
         </tr>
       </table>
@@ -67,28 +72,33 @@
         </tr>
         <tr v-if="oneOrder.PACKING_NOTE">
           <th>分包备注：</th>
-          <td>{{oneOrder.PACKING_NOTE}}</td>
+          <td>{{ oneOrder.PACKING_NOTE }}</td>
         </tr>
         <tr>
           <th>备注：</th>
-          <td>{{oneOrder.NOTES}}</td>
+          <td>{{ oneOrder.NOTES }}</td>
         </tr>
         <tr>
           <th>玉兰处理说明：</th>
-          <td>{{oneOrder.YULAN_NOTES}}</td>
+          <td>{{ oneOrder.YULAN_NOTES }}</td>
         </tr>
       </table>
     </div>
-    <div style="margin-bottom:5px;">
+    <div style="margin-bottom: 5px">
       <van-collapse v-model="activeName">
-        <van-collapse-item name="1" style="position:relative;text-align:left;">
+        <van-collapse-item
+          name="1"
+          style="position: relative; text-align: left"
+        >
           <div slot="title">
             <van-icon name="todo-list-o" />
-            <span style="margin-left:3px;font-size:14.5px;font-weight: bold;">处理记录</span>
+            <span style="margin-left: 3px; font-size: 14.5px; font-weight: bold"
+              >处理记录</span
+            >
           </div>
           <div class="orderRecord">
             <table>
-              <tr v-for="(record,index) in operationRecords" :key="index">
+              <tr v-for="(record, index) in operationRecords" :key="index">
                 <span v-html="record.OPERATION_NOTE"></span>
               </tr>
             </table>
@@ -102,61 +112,71 @@
       </div>
       <div
         class="good-contain"
-        v-for="(good,index) in oneOrder.ORDERBODY"
+        v-for="(good, index) in oneOrder.ORDERBODY"
         :key="index"
-        @click="checkCurtain(good,index)"
+        @click="checkCurtain(good, index)"
       >
         <div class="good-item1">
           <span>
-            {{good.ITEM_NO}} {{good.NOTE}}
-            <span
-              v-if="good.checkStatus"
-              style="color:red;"
-            >({{good.checkStatus}})</span>
+            {{ good.ITEM_NO }} {{ good.NOTE }}
+            <span v-if="good.checkStatus" style="color: red"
+              >({{ good.checkStatus }})</span
+            >
           </span>
-          <span style="float:right;">数量：{{good.QTY_REQUIRED}}{{good.UNIT}}</span>
-          <span v-if="showPrice" style="float:right;margin-right:5px;">单价：￥{{good.UNIT_PRICE}}</span>
-          <span v-else style="float:right;margin-right:5px;">***</span>
+          <span style="float: right"
+            >数量：{{ good.QTY_REQUIRED }}{{ good.UNIT }}</span
+          >
+          <span v-if="showPrice" style="float: right; margin-right: 5px"
+            >单价：￥{{ good.UNIT_PRICE }}</span
+          >
+          <span v-else style="float: right; margin-right: 5px">***</span>
         </div>
         <div class="good-item2">
           <span>活动类型</span>
-          <span class="hd-after">{{good.PROMOTION}}</span>
+          <span class="hd-after">{{ good.PROMOTION }}</span>
         </div>
         <div class="good-item2">
           <span>折后金额</span>
-          <span class="hd-after" v-if="showPrice">￥{{good.FINAL_COST}}</span>
+          <span class="hd-after" v-if="showPrice">￥{{ good.FINAL_COST }}</span>
           <span class="hd-after" v-else>￥***</span>
         </div>
         <div class="good-item2" v-if="!isX">
           <span>发货说明</span>
-          <span class="hd-after">{{good.productTip}}</span>
+          <span class="hd-after">{{ good.productTip }}</span>
         </div>
         <div class="good-item2">
           <span>备注</span>
-          <span class="good-num">{{good.NOTES}}</span>
+          <span class="good-num">{{ good.NOTES }}</span>
         </div>
         <div class="good-item2" v-if="isX">
           <span>兰居备注</span>
-          <span class="good-num">{{good.LJ_SUGGESTION}}</span>
+          <span class="good-num">{{ good.LJ_SUGGESTION }}</span>
         </div>
-        <div style="margin-left: 10px;" v-if="good.checkStatus">
-          <span style="color:red;">修改后的价格以实际提交时为准</span>
+        <div style="margin-left: 10px" v-if="good.checkStatus">
+          <span style="color: red">修改后的价格以实际提交时为准</span>
         </div>
         <!-- 判断是否有出货详情 -->
-        <div class="good-item2" v-if="good.packDetailId!=0">
+        <div class="good-item2" v-if="good.packDetailId != 0">
           <span
             class="edit-bank-xg"
-            style="float:right;"
+            style="float: right"
             @click="addRefundRecord(good)"
             v-if="btnShow == undefined || btnShow == true"
-          >售 后</span>
+            >售 后</span
+          >
           <span
             class="edit-bank-ts"
-            style="float:right;"
+            style="float: right"
             @click="complaints_1(good)"
             v-if="btnShow == undefined || btnShow == true"
-          >投 诉</span>
-          <span class="edit-bank-ch" style="float:right;" @click="shipmentDetail(good)">出货详情</span>
+            >投 诉</span
+          >
+          <span
+            class="edit-bank-ch"
+            style="float: right"
+            @click="shipmentDetail(good)"
+            >出货详情</span
+          >
         </div>
       </div>
     </div>
@@ -164,47 +184,76 @@
       <table>
         <tr>
           <th>年返利使用金额：</th>
-          <td v-if="showPrice">￥{{oneOrder.ALLBACK_M + oneOrder.ALLBACK_Y}}</td>
+          <td v-if="showPrice">
+            ￥{{ oneOrder.ALLBACK_M + oneOrder.ALLBACK_Y }}
+          </td>
           <td v-else>***</td>
         </tr>
         <tr>
           <th>应付金额：</th>
-          <td v-if="showPrice">￥{{oneOrder.ALL_SPEND}}</td>
+          <td v-if="showPrice">￥{{ oneOrder.ALL_SPEND }}</td>
           <td v-else>***</td>
         </tr>
       </table>
       <div class="total">
         <span>应付总额：</span>
-        <span v-if="showPrice" class="total-amount">￥{{oneOrder.ALL_SPEND}}</span>
+        <span v-if="showPrice" class="total-amount"
+          >￥{{ oneOrder.ALL_SPEND }}</span
+        >
         <span v-else class="total-amount">***</span>
       </div>
     </div>
     <div class="bottom-nav" v-show="notpayBottom">
       <span
         @click="cancelOrder"
-        v-if="oneOrder.STATUS_ID == 5 ||
-                oneOrder.STATUS_ID == 6 ||
-                oneOrder.STATUS_ID == 0 ||
-                (oneOrder.STATUS_ID == 1 &&
-                  oneOrder.CURTAIN_STATUS_ID !== '' &&
-                  oneOrder.CURTAIN_STATUS_ID == 0) && (btnShow == undefined || btnShow == true)"
-      >作废订单</span>
+        v-if="
+          oneOrder.STATUS_ID == 5 ||
+          oneOrder.STATUS_ID == 6 ||
+          oneOrder.STATUS_ID == 0 ||
+          (oneOrder.STATUS_ID == 1 &&
+            oneOrder.CURTAIN_STATUS_ID !== '' &&
+            oneOrder.CURTAIN_STATUS_ID == 0 &&
+            (btnShow == undefined || btnShow == true))
+        "
+        >作废订单</span
+      >
       <span
         @click="tjOrder"
         class="success-btn"
         v-if="oneOrder.STATUS_ID == 5 || oneOrder.STATUS_ID == 6"
-      >提交订单</span>
+        >提交订单</span
+      >
       <span
         @click="summitCurtain"
         class="success-btn"
-        v-if="(oneOrder.CURTAIN_STATUS_ID == 0 || oneOrder.CURTAIN_STATUS_ID == 4) && oneOrder.STATUS_ID == 0"
-      >提交订单</span>
-      <span @click="_defeat" class="fail-btn" v-if="oneOrder.CURTAIN_STATUS_ID == 2">退回兰居修改</span>
-      <span @click="_pass" class="success-btn" v-if="oneOrder.CURTAIN_STATUS_ID == 2">确认兰居修改</span>
-      <span @click="LjExamine" class="success-btn" v-if="oneOrder.CURTAIN_STATUS_ID == 1">确认修改</span>
+        v-if="
+          (oneOrder.CURTAIN_STATUS_ID == 0 ||
+            oneOrder.CURTAIN_STATUS_ID == 4) &&
+          oneOrder.STATUS_ID == 0
+        "
+        >提交订单</span
+      >
+      <span
+        @click="_defeat"
+        class="fail-btn"
+        v-if="oneOrder.CURTAIN_STATUS_ID == 2"
+        >退回兰居修改</span
+      >
+      <span
+        @click="_pass"
+        class="success-btn"
+        v-if="oneOrder.CURTAIN_STATUS_ID == 2"
+        >确认兰居修改</span
+      >
+      <span
+        @click="LjExamine"
+        class="success-btn"
+        v-if="oneOrder.CURTAIN_STATUS_ID == 1"
+        >确认修改</span
+      >
     </div>
     <van-popup
-      style="width:100%;height:100%;"
+      style="width: 100%; height: 100%"
       v-model="showCurtainDetail"
       v-if="showCurtainDetail"
       transition="slide"
@@ -212,72 +261,105 @@
     >
       <detailCurtain
         :curtainData="curtainData"
-        :tableStatus="btnShow == undefined? tableStatus : 0"
+        :tableStatus="btnShow == undefined ? tableStatus : 0"
         @backclick="backclick"
         @getChangeData="getChangeData"
       ></detailCurtain>
     </van-popup>
     <van-image-preview v-model="showPic" :images="imgSrc"></van-image-preview>
 
-    <van-popup v-model="showShipment" closeable style="width:80%">
+    <van-popup v-model="showShipment" closeable style="width: 80%">
       <div class="shipment-title">
         <span>出货详情</span>
       </div>
-      <div style="width:95%;height:100%;margin:35px 5px 10px 5px;">
+      <div style="width: 95%; height: 100%; margin: 35px 5px 10px 5px">
         <table
-          style="width:100%;"
+          style="width: 100%"
           border="1"
           cellspacing="0"
-          v-for="(item,index) in shipData"
+          v-for="(item, index) in shipData"
           :key="index"
         >
           <tr>
             <td width="40%">提货单号：</td>
-            <td>{{item.SALE_NO}}</td>
+            <td>{{ item.SALE_NO }}</td>
           </tr>
           <tr>
             <td>数量：</td>
-            <td>{{item.QTY_DELIVER}}</td>
+            <td>{{ item.QTY_DELIVER }}</td>
           </tr>
           <tr>
             <td>批号：</td>
-            <td>{{item.BATCH_NO}}</td>
+            <td>{{ item.BATCH_NO }}</td>
           </tr>
           <tr>
             <td>出货情况：</td>
-            <td v-if="item.DATE_OUT_STOCK==''||item.DATE_OUT_STOCK=='9999/12/31 00:00:00'">代发货</td>
+            <td
+              v-if="
+                item.DATE_OUT_STOCK == '' ||
+                item.DATE_OUT_STOCK == '9999/12/31 00:00:00'
+              "
+            >
+              代发货
+            </td>
             <td v-else>已发货</td>
           </tr>
           <tr>
             <td>发货日期：</td>
-            <td>{{item.DATE_OUT_STOCK}}</td>
+            <td>{{ item.DATE_OUT_STOCK }}</td>
           </tr>
           <tr>
             <td>加收物流费：</td>
-            <td>{{item.FREIGHT}}</td>
+            <td>{{ item.FREIGHT }}</td>
           </tr>
           <tr>
             <td>物流公司：</td>
-            <td>{{item.TRANSCOMPANY}}</td>
+            <td>{{ item.TRANSCOMPANY }}</td>
           </tr>
           <tr>
             <td>物流单号：</td>
             <td>
-              <a href="javascript:void(0);" @click="transDetail(item.TRANS_ID)">{{item.TRANS_ID}}</a>
+              <a
+                href="javascript:void(0);"
+                @click="transDetail(item.TRANS_ID)"
+                >{{ item.TRANS_ID }}</a
+              >
             </td>
           </tr>
         </table>
       </div>
     </van-popup>
-    <van-popup v-model="showTrans" closeable style="width:90%;height:85%;overflow:hidden;">
+    <van-popup
+      v-model="showTrans"
+      closeable
+      style="width: 90%; height: 85%; overflow: hidden"
+    >
       <div
-        style="position: absolute;top:0;left:0;right:18px;height:30px;line-height:30px;vertical-align:center;z-index:10000;background:#3481ed;color:#fff"
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 18px;
+          height: 30px;
+          line-height: 30px;
+          vertical-align: center;
+          z-index: 10000;
+          background: #3481ed;
+          color: #fff;
+        "
       >
         <span>物流详情</span>
       </div>
       <iframe
         :src="transUrl"
-        style="position: absolute;top:0;left:0;width:100%;height:100%;z-index:9999;"
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 9999;
+        "
         frameborder="0"
       ></iframe>
     </van-popup>
@@ -437,6 +519,7 @@ export default {
       };
       //axios.post(orderUrl, data).then((data) => {
       getOrderDetails({ orderNo: this.orderNo }).then((res) => {
+        console.log(res)
         this.oneOrder = res.data[0];
         if (this.oneOrder.BUYUSER_PICTURE) {
           var list = this.oneOrder.BUYUSER_PICTURE.split(";");
@@ -539,10 +622,9 @@ export default {
                   }).then(() => {});
                   return;
                 }
-                if (
-                  new Date(res.data.DATE_END) < new Date() ||
-                  res.data.USE_ID == "0"
-                ) {
+                var dateEnd = new Date(res.data.DATE_END);
+                dateEnd = dateEnd.setDate(dateEnd.getDate() + 1);
+                if (new Date(dateEnd) < new Date() || res.data.USE_ID == "0") {
                   Dialog.alert({
                     message: `活动‘${this.oneOrder.ORDERBODY[i].PROMOTION}’已过期，请删除订单后重新下单`,
                   }).then(() => {});

@@ -6,7 +6,7 @@
         <div class="orderType">
           <van-tabs v-model="activeOrderType" @change="onOrderTypeChange">
             <van-tab
-              v-for="(item,index) in orderType"
+              v-for="(item, index) in orderType"
               :title="item.text"
               :name="item.code"
               :key="index"
@@ -21,7 +21,7 @@
             border
           >
             <van-tab
-              v-for="(item,index) in statusType"
+              v-for="(item, index) in statusType"
               :title="item.text"
               :name="item.type"
               :key="index"
@@ -41,13 +41,23 @@
         <div class="ulhead">
           <ul>
             <li class="licenter" @click="showks = true">
-              <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
+              <input
+                class="time time-ks"
+                type="text"
+                v-model="ksDataSet"
+                disabled
+              />
             </li>
             <li>
               <span>至</span>
             </li>
             <li class="liright" @click="showjs = true">
-              <input class="time time-js" type="text" v-model="jsDataSet" disabled />
+              <input
+                class="time time-js"
+                type="text"
+                v-model="jsDataSet"
+                disabled
+              />
             </li>
 
             <li>
@@ -55,8 +65,15 @@
             </li>
           </ul>
           <div class="search-input-ct">
-            <input type="text" class="search-input" v-model="xhInput" placeholder="输入订单型号" />
-            <span class="status-input" @click="showStatusPicker = true">{{myOrderStatusText}}</span>
+            <input
+              type="text"
+              class="search-input"
+              v-model="xhInput"
+              placeholder="输入订单型号"
+            />
+            <span class="status-input" @click="showStatusPicker = true">{{
+              myOrderStatusText
+            }}</span>
           </div>
         </div>
       </div>
@@ -71,10 +88,14 @@
           :error-text="errorText"
           @load="onLoad"
         >
-          <div class="single-order" v-for="(orderList,index) in orderLists" :key="index">
+          <div
+            class="single-order"
+            v-for="(orderList, index) in orderLists"
+            :key="index"
+          >
             <div class="nav">
               <div class="wall-icon"></div>
-              <span class="title">订单号:{{orderList.ORDER_NO}}</span>
+              <span class="title">订单号:{{ orderList.ORDER_NO }}</span>
               <span class="state">
                 {{ orderList.STATUS_ID | transStatus
                 }}{{ orderList.CURTAIN_STATUS_ID | curtainStatus }}
@@ -88,57 +109,82 @@
                   <th width="30%">数量</th>
                   <th width="30%">应付金额</th>
                 </tr>
-                <tr v-for="(product,inndex) in orderList.ORDERBODY" :key="inndex">
-                  <td v-if="product.packDetailId == 0">{{product.ITEM_NO}}</td>
+                <tr
+                  v-for="(product, inndex) in orderList.ORDERBODY"
+                  :key="inndex"
+                >
+                  <td v-if="product.packDetailId == 0">
+                    {{ product.ITEM_NO }}
+                  </td>
                   <td v-else>
                     <a
                       href="javascript:void(0);"
                       @click="shipmentDetail(product)"
-                    >{{product.ITEM_NO}}</a>
+                      >{{ product.ITEM_NO }}</a
+                    >
                   </td>
-                  <td v-if="showPrice">￥{{product.UNIT_PRICE}}</td>
+                  <td v-if="showPrice">￥{{ product.UNIT_PRICE }}</td>
                   <td v-else>***</td>
-                  <td>{{product.QTY_REQUIRED}}</td>
-                  <td v-if="showPrice">￥{{product.FINAL_COST}}</td>
+                  <td>{{ product.QTY_REQUIRED }}</td>
+                  <td v-if="showPrice">￥{{ product.FINAL_COST }}</td>
                   <td v-else>***</td>
                 </tr>
               </table>
             </div>
             <div class="good-accout">
-              <span>共件{{orderList.ORDERBODY.length}}商品</span>
-              <span v-if="showPrice" class="allhj">合计：￥{{orderList.ALL_SPEND}}元</span>
+              <span>共件{{ orderList.ORDERBODY.length }}商品</span>
+              <span v-if="showPrice" class="allhj"
+                >合计：￥{{ orderList.ALL_SPEND }}元</span
+              >
               <span v-else class="allhj">合计：***元</span>
             </div>
             <span
-              v-bind:class="{'detail-button-showstatus':orderList.showStatus,'detail-button':!orderList.showStatus}"
+              v-bind:class="{
+                'detail-button-showstatus': orderList.showStatus,
+                'detail-button': !orderList.showStatus,
+              }"
               @click.stop="toOrderDetails(index)"
-            >查看详情</span>
+              >查看详情</span
+            >
             <!--欠款待提交（提交的话需要做库存判断）-->
             <!--欠款可提交（提交的话不用库存判断）-->
             <div class="next-do" v-if="orderList.showStatus">
               <span
-                v-if="orderList.STATUS_ID == 5 ||
-                orderList.STATUS_ID == 6 ||
-                orderList.STATUS_ID == 0 ||
-                (orderList.STATUS_ID == 1 &&
-                  orderList.CURTAIN_STATUS_ID !== '' &&
-                  orderList.CURTAIN_STATUS_ID == 0)"
+                v-if="
+                  orderList.STATUS_ID == 5 ||
+                  orderList.STATUS_ID == 6 ||
+                  orderList.STATUS_ID == 0 ||
+                  (orderList.STATUS_ID == 1 &&
+                    orderList.CURTAIN_STATUS_ID !== '' &&
+                    orderList.CURTAIN_STATUS_ID == 0)
+                "
                 @click="cancelOrder(orderList.ORDER_NO)"
-              >作废订单</span>
+                >作废订单</span
+              >
               <span
-                v-if="orderList.STATUS_ID == 3 && orderList.ORDER_NO.slice(0, 1) == 'X'"
+                v-if="
+                  orderList.STATUS_ID == 3 &&
+                  orderList.ORDER_NO.slice(0, 1) == 'X'
+                "
                 @click="copyCart(orderList.ORDER_NO)"
-              >退回购物车</span>
+                >退回购物车</span
+              >
               <span
                 class="to-pay"
                 v-if="orderList.STATUS_ID == 5 || orderList.STATUS_ID == 6"
                 @click="tjOrder(orderList)"
-              >提交订单</span>
+                >提交订单</span
+              >
               <span
                 class="to-pay"
-                v-if="(orderList.CURTAIN_STATUS_ID == 0 || orderList.CURTAIN_STATUS_ID == 4) && orderList.STATUS_ID == 0"
+                v-if="
+                  (orderList.CURTAIN_STATUS_ID == 0 ||
+                    orderList.CURTAIN_STATUS_ID == 4) &&
+                  orderList.STATUS_ID == 0
+                "
                 @click="summitCurtain(orderList)"
-              >提交订单</span>
+                >提交订单</span
+              >
             </div>
           </div>
         </van-list>
@@ -170,71 +216,104 @@
         show-toolbar
         title="订单状态"
         :columns="myOrderStatusColumns"
-        @cancel="showStatusPicker=false"
+        @cancel="showStatusPicker = false"
         @confirm="onConfirmStatu"
       />
     </van-popup>
 
     <!--出货详情-->
-    <van-popup v-model="showShipment" closeable style="width:80%">
+    <van-popup v-model="showShipment" closeable style="width: 80%">
       <div class="shipment-title">
         <span>出货详情</span>
       </div>
-      <div style="width:95%;height:100%;margin:35px 5px 10px 5px;">
+      <div style="width: 95%; height: 100%; margin: 35px 5px 10px 5px">
         <table
-          style="width:100%;"
+          style="width: 100%"
           border="1"
           cellspacing="0"
-          v-for="(item,index) in shipData"
+          v-for="(item, index) in shipData"
           :key="index"
         >
           <tr>
             <td width="40%">提货单号：</td>
-            <td>{{item.SALE_NO}}</td>
+            <td>{{ item.SALE_NO }}</td>
           </tr>
           <tr>
             <td>数量：</td>
-            <td>{{item.QTY_DELIVER}}</td>
+            <td>{{ item.QTY_DELIVER }}</td>
           </tr>
           <tr>
             <td>批号：</td>
-            <td>{{item.BATCH_NO}}</td>
+            <td>{{ item.BATCH_NO }}</td>
           </tr>
           <tr>
             <td>出货情况：</td>
-            <td v-if="item.DATE_OUT_STOCK==''||item.DATE_OUT_STOCK=='9999/12/31 00:00:00'">代发货</td>
+            <td
+              v-if="
+                item.DATE_OUT_STOCK == '' ||
+                item.DATE_OUT_STOCK == '9999/12/31 00:00:00'
+              "
+            >
+              代发货
+            </td>
             <td v-else>已发货</td>
           </tr>
           <tr>
             <td>发货日期：</td>
-            <td>{{item.DATE_OUT_STOCK}}</td>
+            <td>{{ item.DATE_OUT_STOCK }}</td>
           </tr>
           <tr>
             <td>加收物流费：</td>
-            <td>{{item.FREIGHT}}</td>
+            <td>{{ item.FREIGHT }}</td>
           </tr>
           <tr>
             <td>物流公司：</td>
-            <td>{{item.TRANSCOMPANY}}</td>
+            <td>{{ item.TRANSCOMPANY }}</td>
           </tr>
           <tr>
             <td>物流单号：</td>
             <td>
-              <a href="javascript:void(0);" @click="transDetail(item.TRANS_ID)">{{item.TRANS_ID}}</a>
+              <a
+                href="javascript:void(0);"
+                @click="transDetail(item.TRANS_ID)"
+                >{{ item.TRANS_ID }}</a
+              >
             </td>
           </tr>
         </table>
       </div>
     </van-popup>
-    <van-popup v-model="showTrans" closeable style="width:90%;height:85%;overflow:hidden;">
+    <van-popup
+      v-model="showTrans"
+      closeable
+      style="width: 90%; height: 85%; overflow: hidden"
+    >
       <div
-        style="position: absolute;top:0;left:0;right:18px;height:30px;line-height:30px;vertical-align:center;z-index:10000;background:#3481ed;color:#fff"
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 18px;
+          height: 30px;
+          line-height: 30px;
+          vertical-align: center;
+          z-index: 10000;
+          background: #3481ed;
+          color: #fff;
+        "
       >
         <span>物流详情</span>
       </div>
       <iframe
         :src="transUrl"
-        style="position: absolute;top:0;left:0;width:100%;height:100%;z-index:9999;"
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 9999;
+        "
         frameborder="0"
       ></iframe>
     </van-popup>
@@ -252,7 +331,7 @@ import {
   Tab,
   Tabs,
   List,
-  Dialog
+  Dialog,
 } from "vant";
 import {
   getAllOrders,
@@ -262,7 +341,7 @@ import {
   getPackDetailInfo,
   GetPromotionByType,
   GetPromotionByTypeAndId,
-  GetOrderUseRebate
+  GetOrderUseRebate,
 } from "@/api/orderListASP";
 import top from "../../../components/Top";
 import "../../assetsorder/actionsheet.css";
@@ -281,11 +360,11 @@ export default {
     [Tab.name]: Tab,
     [List.name]: List,
     [Tabs.name]: Tabs,
-    [Dialog.name]: Dialog
+    [Dialog.name]: Dialog,
   },
   data() {
     return {
-      isShowButton_index : 0,
+      isShowButton_index: 0,
       ellipsis: false,
       url: "http://106.14.159.244:8080/yulan-order",
       loading: false,
@@ -312,7 +391,7 @@ export default {
         { type: 1, text: "窗帘审核订单" },
         { type: 2, text: "生效订单" },
         { type: 3, text: "已作废" },
-        { type: 4, text: "全部" }
+        { type: 4, text: "全部" },
       ],
       //活动的statusType的索引
       activeStatusTypeIndex: 0,
@@ -331,7 +410,7 @@ export default {
         { type: 2, text: "已受理", status: "2" },
         { type: 2, text: "部分发货", status: "4" },
         { type: 2, text: "已完成", status: "7" },
-        { type: 3, text: "已作废", status: "3" }
+        { type: 3, text: "已作废", status: "3" },
       ],
       showStatusPicker: false,
       myOrderStatusColumns: [
@@ -340,14 +419,14 @@ export default {
         "余额不足待提交",
         "余额不足可提交",
         "待确认",
-        "待修改"
+        "待修改",
       ],
       myOrderStatusText: "全部",
       orderType: [
         { text: "全部产品", code: "" },
         { text: "墙纸配套类", code: "W" },
         { text: "软装", code: "Y" },
-        { text: "窗帘", code: "X" }
+        { text: "窗帘", code: "X" },
       ],
       activeOrderType: 0,
       showType: false,
@@ -378,7 +457,7 @@ export default {
       showShipment: false,
       shipData: [],
       showTrans: false,
-      transUrl: "https://m.kuaidi100.com/result.jsp?nu=038464072671"
+      transUrl: "https://m.kuaidi100.com/result.jsp?nu=038464072671",
     };
   },
   filters: {
@@ -431,7 +510,7 @@ export default {
           return "已通过";
           break;
       }
-    }
+    },
   },
   methods: {
     confirmTimeks(value) {
@@ -495,7 +574,7 @@ export default {
       current_date = this.ksData.getDate();
       current_month = this.ksData.getMonth() + 1;
       current_year = this.ksData.getFullYear();
-       this.ksDataSet = current_year + "-" + current_month + "-" + current_date;//实际时间
+      this.ksDataSet = current_year + "-" + current_month + "-" + current_date; //实际时间
     },
     //结束时间设置
     jsSet(time) {
@@ -515,13 +594,13 @@ export default {
       if (this.activeStatusTypeIndex == 4) {
         this.myStatu = [];
         this.myOrderStatusColumns = [];
-        this.orderStatus.forEach(item => {
+        this.orderStatus.forEach((item) => {
           this.myOrderStatusColumns.push(item.text);
         });
       } else {
         this.myStatu = [];
         this.myOrderStatusColumns = ["全部"];
-        this.orderStatus.forEach(item => {
+        this.orderStatus.forEach((item) => {
           if (this.activeStatusTypeIndex == item.type) {
             this.myStatu.push(item.status);
             this.myOrderStatusColumns.push(item.text);
@@ -533,7 +612,7 @@ export default {
     back() {
       window.vTop = null;
       this.$router.push({
-        path: "/customer"
+        path: "/customer",
       });
     },
     onLoad(config) {
@@ -549,17 +628,17 @@ export default {
           find: this.xhInput,
           beginTime: this.ksDataSet + " 00:00:00",
           finishTime: this.jsDataSet + " 23:59:59",
-          orderType: this.myTypeCode
+          orderType: this.myTypeCode,
         };
         getAllOrders(data, { loading: loading })
-          .then(data => {
+          .then((data) => {
             this.totalLists = data.count;
             //获取总页数
             this.totalPage = Math.ceil(data.count / 5);
             for (let i = 0; i < data.data.length; i++) {
               this.orderLists.push(data.data[i]);
             }
-            this.orderLists.sort(function(a, b) {
+            this.orderLists.sort(function (a, b) {
               return a.DATE_CRE > b.DATE_CRE ? -1 : 1;
             });
             this.loadingText =
@@ -595,7 +674,7 @@ export default {
               }
             }
           })
-          .catch(err => {
+          .catch((err) => {
             this.loading = false;
             this.error = true;
           });
@@ -617,8 +696,8 @@ export default {
         params: {
           state_id: this.statusExchange(this.orderLists[index].STATUS_ID), //订单状态（（可传空串，空串表示全部状态） --1提交、12-接收、2--受理、3--作废、--5欠款待提交、--6欠款可提交、--7已完成）
           find: this.orderLists[index].ORDER_NO, //查找订单号，可模糊查找（可传空串，获取全部
-          from: "myorder"
-        }
+          from: "myorder",
+        },
       });
     },
     //出货详情
@@ -626,8 +705,8 @@ export default {
       getPackDetailInfo({
         orderNo: item.ORDER_NO,
         lineNo: item.LINE_NO,
-        itemNo: item.ITEM_NO
-      }).then(res => {
+        itemNo: item.ITEM_NO,
+      }).then((res) => {
         this.shipData = res.data[0].packDetails;
         this.showShipment = true;
       });
@@ -687,23 +766,23 @@ export default {
     },
     cancelOrder(orderNo) {
       Dialog.confirm({
-        message: "是否确认作废订单"
+        message: "是否确认作废订单",
       })
         .then(() => {
           cancelOrderNew({
             cid: this.$store.getters.getCId,
-            orderNo: orderNo
-          }).then(res => {
+            orderNo: orderNo,
+          }).then((res) => {
             Dialog.confirm({
-              message: "作废成功，是否退回数据到购物车"
+              message: "作废成功，是否退回数据到购物车",
             })
               .then(() => {
                 copyCartItem({
-                  orderNo: orderNo
-                }).then(res => {
+                  orderNo: orderNo,
+                }).then((res) => {
                   Toast({
                     duration: 1000,
-                    message: "复制成功，请到购物车中查看"
+                    message: "复制成功，请到购物车中查看",
                   });
                 });
               })
@@ -717,15 +796,15 @@ export default {
     },
     copyCart(orderNo) {
       Dialog.confirm({
-        message: "是否退回数据到购物车"
+        message: "是否退回数据到购物车",
       })
         .then(() => {
           copyCartItem({
-            orderNo: orderNo
-          }).then(res => {
+            orderNo: orderNo,
+          }).then((res) => {
             Toast({
               duration: 1000,
-              message: "复制成功，请到购物车中查看"
+              message: "复制成功，请到购物车中查看",
             });
           });
         })
@@ -737,9 +816,9 @@ export default {
       let monUrl = this.orderBaseUrl + "/order/getResidemoney.do";
       let mondata = {
         cid: this.$store.getters.getCId,
-        companyId: this.$store.getters.getCMId //登录客户号
+        companyId: this.$store.getters.getCMId, //登录客户号
       };
-      axios.post(monUrl, mondata).then(async val => {
+      axios.post(monUrl, mondata).then(async (val) => {
         if (val.data.data >= item.ALL_SPEND) {
           if (item.STATUS_ID == 5 || item.STATUS_ID == 6) {
             for (var i = 0; i < item.ORDERBODY.length; i++) {
@@ -747,20 +826,19 @@ export default {
                 var res = await GetPromotionByTypeAndId({
                   proType: item.ORDERBODY[i].PROMOTION_TYPE,
                   pId: item.ORDERBODY[i].P_ID,
-                  cid: this.$store.getters.getCId
+                  cid: this.$store.getters.getCId,
                 });
                 if (!res.data) {
                   Dialog.alert({
-                    message: `活动‘${item.ORDERBODY[i].PROMOTION}’不存在`
+                    message: `活动‘${item.ORDERBODY[i].PROMOTION}’不存在`,
                   }).then(() => {});
                   return;
                 }
-                if (
-                  new Date(res.data.DATE_END) < new Date() ||
-                  res.data.USE_ID == "0"
-                ) {
+                var dateEnd = new Date(res.data.DATE_END);
+                dateEnd = dateEnd.setDate(dateEnd.getDate() + 1);
+                if (new Date(dateEnd) < new Date() || res.data.USE_ID == "0") {
                   Dialog.alert({
-                    message: `活动‘${item.ORDERBODY[i].PROMOTION}’已过期，请删除订单后重新下单`
+                    message: `活动‘${item.ORDERBODY[i].PROMOTION}’已过期，请删除订单后重新下单`,
                   }).then(() => {});
                   return;
                 }
@@ -771,18 +849,18 @@ export default {
               ) {
                 var res = await GetOrderUseRebate({
                   orderNo: item.ORDERBODY[i].ORDER_NO,
-                  lineNo: item.ORDERBODY[i].LINE_NO
+                  lineNo: item.ORDERBODY[i].LINE_NO,
                 });
                 if (res.data.length == 0) {
                   Dialog.alert({
-                    message: "优惠券不存在"
+                    message: "优惠券不存在",
                   }).then(() => {});
                   return;
                 }
                 for (var j = 0; j < res.data.length; j++) {
                   if (new Date(res.data[j].DATE_END) < new Date()) {
                     Dialog.alert({
-                      message: "优惠券已过期，请删除订单后重新下单"
+                      message: "优惠券已过期，请删除订单后重新下单",
                     }).then(() => {});
                     return;
                   }
@@ -793,7 +871,7 @@ export default {
           }
         } else {
           Dialog.alert({
-            message: "余额不足,提交失败"
+            message: "余额不足,提交失败",
           }).then(() => {});
         }
       });
@@ -803,23 +881,21 @@ export default {
       let orderURL = this.orderBaseUrl + "/order/putAgainOrder.do";
       let orderData = {
         cid: this.$store.getters.getCId, //登录客户号
-        orderNo: orderNo //订单号
+        orderNo: orderNo, //订单号
       };
-      axios.post(orderURL, orderData).then(res => {
+      axios.post(orderURL, orderData).then((res) => {
         if (res.data.code == 0) {
           Toast({
             duration: 1000,
-            message: "订单提交成功"
+            message: "订单提交成功",
           });
           var recordData = {
             ORDER_NO: this.$route.params.find,
             OPERATION_PERSON: this.$store.getters.getCId,
-            OPERATION_NAME: "重新提交"
+            OPERATION_NAME: "重新提交",
           };
           InsertOperationRecord(recordData); //插入操作记录
-          this.$router.push({
-            path: "/myorder"
-          });
+          this.orderSearch();
         }
       });
     },
@@ -833,8 +909,10 @@ export default {
         transCookies[i].activityId = orderBody[i].curtains[0].activityId;
         transCookies[i].quantity = orderBody[i].QTY_REQUIRED;
         var price = 0;
-        for(let j = 0;j< orderBody[i].curtains.length;j++){
-          price += (orderBody[i].curtains[j].price.mul(orderBody[i].curtains[j].dosage));
+        for (let j = 0; j < orderBody[i].curtains.length; j++) {
+          price += orderBody[i].curtains[j].price.mul(
+            orderBody[i].curtains[j].dosage
+          );
         }
         transCookies[i].price = price;
         transCookies[i].splitShipment = orderBody[i].PART_SEND_ID;
@@ -848,21 +926,21 @@ export default {
         name: "fillorder",
         params: {
           isX: true,
-          from: "myorder"
-        }
+          from: "myorder",
+        },
       });
-    }
+    },
   },
   computed: {
     filteredProduct() {
-      return this.orderLists.filter(orderList => {
+      return this.orderLists.filter((orderList) => {
         return orderList.ORDER_NO.match(this.xhInput);
       });
     },
     showPrice() {
       if (this.$store.state.info.data)
         return this.$store.getters.getIsManage != "0";
-    }
+    },
   },
   created() {
     let time = new Date();
@@ -902,14 +980,14 @@ export default {
     if (window.vTop == this) window.vTop = null;
   },
   watch: {
-    showHeight: function() {
+    showHeight: function () {
       if (this.docmHeight > this.showHeight) {
         this.hidshow = false;
       } else {
         this.hidshow = true;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
