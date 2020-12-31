@@ -330,32 +330,32 @@ export default {
       this.submitHead.ITEM_MAX_INDEX = 1;
       this.submitHead.SALE_NO = this.submit.SALE_NO;
       this.submitHead.ORDER_NO = this.submit.orderNo;
-      //   InsertCompensation({ head: this.submitHead, details: this.submit })
-      //         .then(res => {
-      //             UpdateState({
-      //               id: res.data.ID,
-      //               state: "SUBMITTED"
-      //             })
-      //               .then(res => {
-      //                   if (res.code == 0) {
-      //                       Toast({
-      //                          message: "提交成功",
-      //                          duration: 1000
-      //                      });
-      //                   } else {
-      //                       Toast({
-      //                          message: "提交失败",
-      //                          duration: 1000
-      //                      });
-      //                   }
-      //               })
-      //         });
-      //  this.$router.push({
-      //     name: "orderdetails",
-      //     params:{
-      //       find:this.ORDER_NO
-      //     }
-      //  });
+      InsertCompensation({ head: this.submitHead, details: this.submit }).then(
+        (res) => {
+          UpdateState({
+            id: res.data.ID,
+            state: "SUBMITTED",
+          }).then((res) => {
+            if (res.code == 0) {
+              Toast({
+                message: "提交成功",
+                duration: 1000,
+              });
+            } else {
+              Toast({
+                message: "提交失败",
+                duration: 1000,
+              });
+            }
+          });
+        }
+      );
+      this.$router.push({
+        name: "orderdetails",
+        params: {
+          find: this.ORDER_NO,
+        },
+      });
     },
     //如果产品名称为空,则返回一个值
     productVersionTrans(val) {
