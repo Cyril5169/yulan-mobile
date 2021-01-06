@@ -105,13 +105,13 @@
         <div class="box" id="bank" v-show="acc1">
           <p>
             <span style="color:red">*</span>汇款银行：
-            <input type="text" v-model="bank1" @keyup="input3" name="bank1" />
+            <input type="text" v-model="bank1" @keyup="input3" oninput="value=value.replace(/[^\d]/g,'')" name="bank1" />
           </p>
         </div>
         <div class="box" id="bank" v-show="acc2">
           <p>
             <span style="color:red">*</span>汇款银行：
-            <input type="text" v-model="bank2" @keyup="input4" name="bank2" />
+            <input type="text" v-model="bank2" @keyup="input4" oninput="value=value.replace(/[^\d]/g,'')" name="bank2" />
           </p>
         </div>
         <div class="box" id="number" v-show="acc1">
