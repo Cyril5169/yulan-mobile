@@ -2,11 +2,6 @@
   <div class="banner">
     <div class="left-arrow" @click="back"></div>
     <p class="top-p">{{title}}</p>
-    <!-- <div class="option-img" @click="Sidebar"></div> -->
-    <!-- <p class="welcome">欢迎,</p>
-    <p class="customer-name">{{customer}}</p> -->
-    <!-- <div class="suona-img"></div>
-    <p class="notice">{{notice}}</p>-->
   </div>
 </template>
 
@@ -33,13 +28,6 @@ export default {
   },
   mounted() {
     window.vTop = this;
-
-    // if (this.$store.state.info.data.realName.length >= 7) {
-    //   document.getElementsByClassName('customer-name')[0].style.fontSize = "25px"
-    // }
-    // if (this.$store.state.info.data.realName.length >= 10) {
-    //   document.getElementsByClassName('customer-name')[0].style.fontSize = "18px"
-    // }
   },
   destroyed(){
     if(window.vTop==this)
@@ -47,25 +35,7 @@ export default {
   },
   methods: {
     Sidebar() {
-      // console.log(this.IsSidebarOut);
       var client = document.getElementsByClassName('client')[0]
-      // this.$http.post ('/customerInfo/getCustomerInfo.do',{
-      //     "CID": "C15056"
-      //   })
-      // .then(res => {
-      //   console.log(res)
-      // },error => {
-      //   console.log(error)
-      // })
-      // this.$http({
-      //   methods:"post",
-      //   url:"/customerInfo/getCustomerInfo.do",
-      //   params:{
-      //     "CID": "C15056"
-      //   }
-      // }).then(res => {
-      //   console.log(res);
-      // })
 
       if (this.IsSidebarOut == false) {
         client.classList.remove('noactive-option');

@@ -356,7 +356,7 @@ export default {
     rgb(253, 128, 67) 50%,
     rgb(253, 168, 77) 100%
   );
-  -webkit-background-clip: text;
+  /* -webkit-background-clip: text; */
   -webkit-text-fill-color: transparent;
   font-size: 40px;
   font-weight: bold;

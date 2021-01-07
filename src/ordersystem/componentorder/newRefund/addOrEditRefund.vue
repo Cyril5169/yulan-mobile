@@ -378,7 +378,6 @@ export default {
       this.submitHead.ITEM_MAX_INDEX = 1;
       this.submitHead.SALE_NO = this.submit.SALE_NO;
       this.submitHead.ORDER_NO = this.submit.orderNo;
-      console.log(this.submit)
       // InsertCompensation({ head: this.submitHead, details: this.submit }).then(
       //   (res) => {
       //     UpdateState({

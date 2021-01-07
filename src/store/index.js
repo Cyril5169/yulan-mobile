@@ -163,16 +163,6 @@ export default new Vuex.Store({
       state.menuTreeList = [];
       state.menuTreeListFlatten = [];
     }
-    //中断请求
-    // pushToken (state, payload) {
-    //   state.cancelTokenArr.push(payload.cancelToken)
-    // },
-    // clearToken ({ cancelTokenArr }) {
-    //   cancelTokenArr.forEach(item => {
-    //     console.log(item,'路由跳转取消请求')
-    //   })
-    //   cancelTokenArr = []
-    // }
   },
   plugins: [createPersistedState()]
 })
