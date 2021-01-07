@@ -110,7 +110,7 @@
         <button ref="save" disabled>保存</button>
       </div>-->
       <div class="save2">
-        <button ref="submit" @click="sendData2">保存并提交</button>
+        <button ref="submit" @click="sendData">保存并提交</button>
       </div>
     </div>
     <iosselect2 v-on:listen3="listenmore2" v-on:listen4="listenselect2" v-show="more2"></iosselect2>
@@ -184,7 +184,6 @@ export default {
       tpath: "",
       thirdWarn: false,
       lp: 0,
-      cnm: "",
       more: false,
       more2: false,
       options: " ",
@@ -276,18 +275,14 @@ export default {
         if (this.checkbox2) {
           this.preferedbrand =
             "√玉兰（墙纸类产品）√玉兰·兰居尚品（软装类产品）";
-          this.cnm = "Y";
         } else {
           this.preferedbrand = "√玉兰（墙纸类产品）";
-          this.cnm = "Y";
         }
       } else {
         if (this.checkbox2) {
           this.preferedbrand = "√玉兰·兰居尚品（软装类产品）";
-          this.cnm = "Y";
         } else {
           this.preferedbrand = "";
-          this.cnm = "N";
         }
       }
     },
@@ -296,18 +291,14 @@ export default {
         if (this.checkbox1) {
           this.preferedbrand =
             "√玉兰（墙纸类产品）√玉兰·兰居尚品（软装类产品）";
-          this.cnm = "Y";
         } else {
           this.preferedbrand = "√玉兰·兰居尚品（软装类产品）";
-          this.cnm = "Y";
         }
       } else {
         if (this.checkbox1) {
           this.preferedbrand = "√玉兰（墙纸类产品）";
-          this.cnm = "Y";
         } else {
           this.preferedbrand = "";
-          this.cnm = "N";
         }
       }
     },
@@ -513,11 +504,9 @@ export default {
     },
     input1(data) {
       this.nowbrand = data;
-      this.a = "Y";
     },
     input2(data) {
       this.square = Number(data);
-      this.b = "Y";
     },
     input3(data) {
       this.phone = data;
@@ -741,15 +730,14 @@ export default {
         if (res.data.code == 0 || res.data.data != null) {
           var alldata = res.data.data;
           this.name = alldata.cname;
-          var c = alldata.invoiceType;
-          if (c == "不开发票") {
+          if (alldata.invoiceType == "不开发票") {
             this.item = 1;
-          } else if (c == "增值税专用发票") {
+          } else if (alldata.invoiceType == "增值税专用发票") {
             this.item = 3;
           } else {
             this.item = 2;
           }
-          if (c == "电子普通发票") {
+          if (alldata.invoiceType == "电子普通发票") {
             this.remailNum = 1;
           } else {
             this.remailNum = 0;
@@ -869,30 +857,6 @@ export default {
         }
       });
     },
-    // getdata2() {
-    //   let url = "/customerInfo/getCustomerInfo.do";
-    //   let data = {
-    //     CID: this.CID
-    //   };
-    //   this.$http.post(url, data).then(res => {
-    //     if (res.data.code == 0 || res.data.data != null) {
-    //       var alldata = res.data.data;
-    //       this.Taxaddress = alldata.invAddress;
-    //       this.Taxphone = alldata.invTelephone;
-    //       this.Taxbank = alldata.invBankname;
-    //       this.Taxbanknumber = alldata.invBanmaccount;
-    //       this.date = alldata.file2BusinesslicenseEnd;
-    //       // this.preferedbrand = alldata.preferedbrand;
-    //       // if(this.preferedbrand == "" || this.preferedbrand == null){
-    //       //   this.cnm = "N"
-    //       // }else{
-    //       //   this.cnm = "Y"
-    //       // }
-    //     } else if (res.data.code === 1 || res.data.data == null) {
-    //       console.log("不存在");
-    //     }
-    //   });
-    // },
     enter() {
       Dialog.confirm({
         message: "确认资料卡"
@@ -942,26 +906,11 @@ export default {
       });
     },
     changeSubmit() {
-      if (this.nowbrand == null || this.nowbrand == "") {
-        this.a = "N";
-      } else {
-        this.a = "Y";
-      }
       // if(this.tax == null || this.tax == ""){
       //   this.p = "N"
       // }else{
       //   this.p = "Y"
       // }
-      // if (this.square == null || this.square == "") {
-      //   this.b = "N";
-      // } else {
-      //   this.b = "Y";
-      // }
-      if (this.phone == null || this.phone == "") {
-        this.c = "N";
-      } else {
-        this.c = "Y";
-      }
       if (this.fax == null || this.fax == "") {
         this.e = "N";
       } else {
@@ -1121,11 +1070,10 @@ export default {
         }
       }
       if (
-        this.a == "Y" &&
-        this.b == "Y" &&
-        this.c == "Y" &&
-        this.d == "Y" &&
-        this.cnm == "Y"
+        (this.nowbrand != null && this.nowbrand != "") && //主营
+        (this.phone != null && this.phone != "") && //手机
+        this.d == "Y" && 
+        this.preferedbrand != "" //意向
       ) {
         this.doSub1 = "Y";
       } else {
@@ -1259,76 +1207,6 @@ export default {
         }
       }
     },
-    sendData1() {
-      this.foreverDate();
-      this.changeSubmit();
-      if (this.doSub1 == "Y" && this.doSub5 == "Y" && this.doSub4 == "Y") {
-        this.doSub = "Y";
-      } else {
-        this.doSub = "N";
-      }
-      // this.doSub = "Y"
-      switch (this.doSub) {
-        case "Y":
-          if (this.pubValue == "有公司") {
-            this.location1 = this.location;
-          }
-          if (this.pubValue == "无公司") {
-            this.location2 = this.location;
-          }
-          if (this.pubValue == "个人") {
-            this.location2 = this.location;
-          }
-          let url1 = "/customerInfo/updateCustomerInfo.do";
-          let data1 = {
-            cid: this.companyId,
-            contractyear: this.contractyear,
-            preferedbrand: this.preferedbrand,
-            currentProduct: this.nowbrand,
-            invoiceType: this.tax,
-            isGeneraltaxpayer: this.taxPerson,
-            shopArea: this.square,
-            juridicPersonHandset: this.phone,
-            recipeTargetMb: this.remail,
-            qq: this.qq,
-            xFax: this.fax,
-            xEmail: this.email,
-            xZipCode: this.zip,
-            faxWl: this.faxwl,
-            zipCodeWl: this.zipwl,
-            busientType: this.busType,
-            hasPublicAccount: this.judgevalue,
-            privateAccountAuthed: this.spouse,
-            account1Bank: this.account1Bank,
-            account1: this.account1,
-            account1Location: this.location1,
-            account2Bank: this.account2Bank,
-            account2: this.account2,
-            account2Location: this.location2,
-            customerentitytypex: this.index,
-            file1Idcard: this.authFileImage1,
-            file1Op: this.time1,
-            file1IdcardNo: this.CIDnumber,
-            file2Businesslicense: this.authFileImage3,
-            file2BusinesslicenseNo: this.busNumber,
-            file4GtqcNo: this.taxNumber,
-            file2BusinesslicenseEnd: this.date,
-            file2BusinesslicenseNoend: this.forever,
-            file2Op: this.time3,
-            file4Gtqc: this.authFileImage4,
-            file4Op: this.time4,
-            file5IdcardBg: this.authFileImage2,
-            file5Op: this.time2
-          };
-          this.$http.post(url1, data1).then(res => {
-            alert("保存成功");
-          });
-          break;
-        case "N":
-          alert("资料填写不完整");
-          break;
-      }
-    },
     trueSend() {
       if (this.pubValue == "有公司") {
         this.location1 = this.location;
@@ -1399,7 +1277,7 @@ export default {
         path: "/success1"
       });
     },
-    sendData2() {
+    sendData() {
       if (this.pubValue == "有公司") {
         this.location1 = this.location;
         if (this.location1 == "" || this.location1 == null) {
@@ -1426,19 +1304,19 @@ export default {
       }
       this.foreverDate();
       this.changeSubmit();
-      // if (this.proxy == 0) {
-      //   if (this.lp == 1) {
-      //     this.doSub7 = "N";
-      //   }
-      //   if (this.lp == 0) {
-      //     this.doSub7 = "Y";
-      //   }
-      // }
+      if (this.proxy == 0) {
+        if (this.lp == 1) {
+          this.doSub7 = "N";
+        }
+        if (this.lp == 0) {
+          this.doSub7 = "Y";
+        }
+      }
       if (
         this.loc == 1 &&
         this.doSub1 == "Y" &&
-        this.doSub5 == "Y" &&
         this.doSub4 == "Y" &&
+        this.doSub5 == "Y" &&
         this.doSub6 == "Y" &&
         this.doSub7 == "Y"
       ) {
