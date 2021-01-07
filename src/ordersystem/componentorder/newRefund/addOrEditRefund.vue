@@ -88,6 +88,19 @@
             v-model="submit.NOTES"
           />
         </div>
+        <div>
+          <span class="left">上传相关附件：<span style="color: red">*</span></span>
+        </div>
+        <div style="height:60px;line-height:60px;">
+          <van-uploader
+            class="left"
+            v-model="submit.fileList"
+            :after-read="onRead"
+            accept="image/*,audio/*,application/*,.txt"
+            preview-size="60"
+            multiple
+          />
+        </div>
       </div>
     </div>
     <div class="edit-bank">
@@ -134,12 +147,12 @@
 import top from "../../../components/Top";
 import axios from "axios";
 import {
-  digitUppercase,
   GetCompensationById,
   getReturnInfoApp,
   InsertCompensation,
   UpdateState,
 } from "@/api/newRefundASP";
+import { NewUploadFiles } from "@/api/paymentASP";
 import { getPackDetailInfo } from "@/api/orderListASP";
 import {
   Popup,
@@ -150,7 +163,6 @@ import {
   DatetimePicker,
   Uploader,
   Button,
-  Rate,
 } from "vant";
 export default {
   name: "addOrEditRefund",
@@ -158,7 +170,7 @@ export default {
     top,
     [Popup.name]: Popup,
     [Dialog.name]: Dialog,
-    [Rate.name]: Rate,
+    [Uploader.name]: Uploader,
   },
   data() {
     return {
@@ -170,7 +182,7 @@ export default {
       SALE_NO: "", //提货单号
       submit: [], //明细表数据RTCB_ITEM
       submitHead: [], //表头数据RETURNCOMPENSATIONBILL
-      CID: this.$store.getters.getCMId, //客户编号
+      CID: this.$store.getters.getCId, //客户编号
       CNAME: this.$store.getters.getrealName, //客户姓名
       companyId: this.$store.getters.getCMId, //公司账号
       companyName: "", //公司名
@@ -178,6 +190,9 @@ export default {
       myType: "请输入投诉类型", //类型选择栏绑定数据
       ORDER_NO: this.$route.params.partInfo.ORDER_NO,
       zongshuliang: "",
+      dateStamp: "",
+      dateString: "",
+      fileList: [],
     };
   },
   filters: {
@@ -290,6 +305,18 @@ export default {
         this.submit.PRODUCTION_VERSION = res2.data[0].PRODUCTVERSION_NAME;
       }
     },
+    onRead(file, detail) {
+      let content = file.file;
+      let data = new FormData();
+      data.append("file", content);
+      data.append("CID", this.companyId);
+      data.append("dateStamp", this.dateStamp);
+      data.append("dateString", this.dateString);
+      data.append("type", "customer");
+      NewUploadFiles(data).then(res=>{
+        this.fileList[detail.index] = res.data;
+      })
+    },
     //新增售后记录提交
     _addRefundSubmit() {
       //判断是否填完所有信息
@@ -320,6 +347,27 @@ export default {
         });
         return;
       }
+      //附件
+      if (this.submit.fileList.length == 0) {
+        Toast({
+          message: "请上传相关附件",
+          duration: 1000,
+        });
+        return;
+      }
+      for (let j = 0; j < this.submit.fileList.length; j++) {
+        this.submit.ATTACHMENT_FILE +=
+          "/Files/RTCB_ITEM/" +
+          this.companyId +
+          "/" +
+          this.dateStamp +
+          "/" +
+          this.fileList[j] +
+          ";";
+      }
+      this.submit.ATTACHMENT_FILE_FOLDER =
+        "/Files/RTCB_ITEM/" + this.companyId + "/" + this.dateStamp;
+
       this.submit.ITEM_INDEX = 1;
       this.submitHead.ERP_CREATOR = this.CID;
       this.submitHead.ERP_CREATORNAME = this.CNAME;
@@ -330,32 +378,33 @@ export default {
       this.submitHead.ITEM_MAX_INDEX = 1;
       this.submitHead.SALE_NO = this.submit.SALE_NO;
       this.submitHead.ORDER_NO = this.submit.orderNo;
-      InsertCompensation({ head: this.submitHead, details: this.submit }).then(
-        (res) => {
-          UpdateState({
-            id: res.data.ID,
-            state: "SUBMITTED",
-          }).then((res) => {
-            if (res.code == 0) {
-              Toast({
-                message: "提交成功",
-                duration: 1000,
-              });
-            } else {
-              Toast({
-                message: "提交失败",
-                duration: 1000,
-              });
-            }
-          });
-        }
-      );
-      this.$router.push({
-        name: "orderdetails",
-        params: {
-          find: this.ORDER_NO,
-        },
-      });
+      console.log(this.submit)
+      // InsertCompensation({ head: this.submitHead, details: this.submit }).then(
+      //   (res) => {
+      //     UpdateState({
+      //       id: res.data.ID,
+      //       state: "SUBMITTED",
+      //     }).then((res) => {
+      //       if (res.code == 0) {
+      //         Toast({
+      //           message: "提交成功",
+      //           duration: 1000,
+      //         });
+      //       } else {
+      //         Toast({
+      //           message: "提交失败",
+      //           duration: 1000,
+      //         });
+      //       }
+      //     });
+      //   }
+      // );
+      // this.$router.push({
+      //   name: "orderdetails",
+      //   params: {
+      //     find: this.ORDER_NO,
+      //   },
+      // });
     },
     //如果产品名称为空,则返回一个值
     productVersionTrans(val) {
@@ -365,9 +414,25 @@ export default {
         return val;
       }
     },
+    GetNowDate() {
+      var date = new Date();
+      var year = date.getFullYear();
+      var month = (date.getMonth() + 1).toString();
+      var day = date.getDate().toString();
+      if (month.length == 1) {
+        month = "0" + month;
+      }
+      if (day.length == 1) {
+        day = "0" + day;
+      }
+      var dateTime = year + "-" + month + "-" + day;
+      this.dateString = dateTime;
+      this.dateStamp = date.getTime();
+    },
   },
   created() {
     this.from = this.$route.params.from;
+    this.GetNowDate();
     this.addRefundRecord();
   },
 };

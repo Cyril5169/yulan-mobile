@@ -26,7 +26,6 @@
 
 <script>
 import Protocol from "./Protocol";
-// import sidebar from '../utils/move492.js'
 import { bus } from "../utils/eventBus.js";
 import { Icon, NoticeBar } from "vant";
 import { getNewNotification } from "@/api/notificationASP";

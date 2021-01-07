@@ -1104,6 +1104,7 @@ input {
 }
 .search-button {
   display: inline-block;
+  color: #a0cb8d;
   width: 80px;
   font-size: 14px;
   background-color: #fff;

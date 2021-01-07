@@ -462,7 +462,6 @@ export default {
     },
     //新增售后赔偿单
     addRefundRecord(good) {
-      console.log(good);
       this.$router.push({
         name: "addOrEditRefund",
         params: {
@@ -519,7 +518,6 @@ export default {
       };
       //axios.post(orderUrl, data).then((data) => {
       getOrderDetails({ orderNo: this.orderNo }).then((res) => {
-        console.log(res)
         this.oneOrder = res.data[0];
         if (this.oneOrder.BUYUSER_PICTURE) {
           var list = this.oneOrder.BUYUSER_PICTURE.split(";");

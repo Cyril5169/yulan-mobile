@@ -88,3 +88,11 @@ export function UpdateState(data, config = {}) {
         return Promise.reject(err);
     })
 }
+//上传附件
+export function NewUploadFiles(data, config = {}) {
+    return post('/RETURNCOMPENSATIONBILL/NewUploadFiles', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}

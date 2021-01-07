@@ -12,10 +12,7 @@
 
 <script>
 import Protocol from './Protocol'
-// import sidebar from '../utils/move492.js'
 import { bus } from '../utils/eventBus.js';
-// import Salesman from './Salesman'
-// import axios from '../axios'
 
 export default {
   name: 'Banner',
