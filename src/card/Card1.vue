@@ -180,7 +180,6 @@
 <script>
 import { bus } from "../utils/eventBus.js";
 export default {
-  // props:['noIt'],
   data() {
     return {
       phone: " ",
@@ -208,65 +207,6 @@ export default {
       contractyear: this.$store.state.year
     };
   },
-  created() {
-    // bus.$on("no", (data) => {
-    //   var noIt = data;
-    //   if(noIt == 0){
-    //     this.radiocheck6 = true;
-    //     this.radiocheck4 = false;
-    //     this.radiocheck5 = false;
-    //     this.radiocheck1 = false;
-    //     this.radiocheck2 = false;
-    //     this.radiocheck3 = false;
-    //     this.goTo = false;
-    //   }
-    // })
-    // bus.$on("yes", (e) => {
-    //   var yesIt = e;
-    //   if(yesIt == 1){
-    //     this.radiocheck6 = false;
-    //     this.radiocheck5 = true;
-    //     this.radiocheck4 = true;
-    //     this.goTo = true;
-    //   }
-    // })
-    // bus.$on("changeTax", (data) => {
-    //   this.getTax = data
-    //   console.log(this.getTax)        //先不改着
-    // })
-  },
-  // activated(){
-  //   bus.$on("no", (data) => {
-  //     var noIt = data;
-  //     if(noIt == 0){
-  //       this.radiocheck6 = true;
-  //       this.radiocheck4 = false;
-  //       this.radiocheck5 = false;
-  //       this.radiocheck1 = false;
-  //       this.radiocheck2 = false;
-  //       this.radiocheck3 = false;
-  //       this.goTo = false;
-  //     }
-  //   });
-  //   bus.$on("yes", (e) => {
-  //     var yesIt = e;
-  //     if(yesIt == 1){
-  //       this.radiocheck6 = false;
-  //       this.radiocheck5 = true;
-  //       this.radiocheck4 = true;
-  //       this.goTo = true;
-  //     }
-  //   });
-  //   this.getData();
-  //     setTimeout(function(){
-  //       var radio = document.getElementsByName("invoice");
-  //       for(var i=0; i<radio.length; i++){
-  //         if(radio[i].checked) {
-  //           // console.log(radio[i].value)
-  //         }
-  //       }
-  //     },1000)  //取值的时候有延迟，要等上面数据拿完才显示true
-  // },
   computed: {
     CID() {
       if (this.$store.state.info.data.type != "ECWEB") {
