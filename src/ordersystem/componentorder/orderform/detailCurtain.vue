@@ -353,7 +353,7 @@
                                 .replace(/^\./g, '').replace(/\.{2,}/g, '.')
                                 .replace('.', '$#$').replace(/\./g, '')
                                 .replace('$#$', '.')
-                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 2)"
+                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
                       />
                       <span v-else>{{ liantou.dosage }}</span>
                       <span>{{ liantou.unit }}</span>
@@ -806,7 +806,7 @@
                                 .replace(/^\./g, '').replace(/\.{2,}/g, '.')
                                 .replace('.', '$#$').replace(/\./g, '')
                                 .replace('$#$', '.')
-                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 2)"
+                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
                       />
                       <span v-else>{{ liantou.dosage }}</span>
                       <span>{{ liantou.unit }}</span>
@@ -1009,7 +1009,7 @@
                                 .replace(/^\./g, '').replace(/\.{2,}/g, '.')
                                 .replace('.', '$#$').replace(/\./g, '')
                                 .replace('$#$', '.')
-                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 2)"
+                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
                       />
                       <span v-else>{{ liantou.dosage }}</span>
                       <span>{{ liantou.unit }}</span>
@@ -1107,7 +1107,7 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import { GetDosageAll, GetDosageByNo } from "@/api/itemInfoASP";
+import { GetDosageByNo } from "@/api/itemInfoASP";
 import { GetPromotionsById } from "@/api/orderListASP";
 import {
   Search,
@@ -1430,8 +1430,9 @@ export default {
       //axios.post(url, data).then(res => {
       GetDosageByNo(obj).then((res) => {
         var keys;
-        if (itemType == "lt") keys = Math.round(res.data[0].dosage * 100) / 100;
-        else keys = Math.round(res.data[0].dosage * 10) / 10;
+        // if (itemType == "lt") keys = Math.round(res.data[0].dosage * 100) / 100;
+        // else keys = Math.round(res.data[0].dosage * 10) / 10;
+        keys = Math.round(res.data[0].dosage * 100) / 100;
         if (this.productType == "XHB") {
           data[index].dosage = keys;
         } else if (this.productType == "ML") {
@@ -1528,9 +1529,10 @@ export default {
         };
         GetDosageByNo(obj).then((res) => {
           var keys;
-          if (this.itemType == "lt")
-            keys = Math.round(res.data[0].dosage * 100) / 100;
-          else keys = Math.round(res.data[0].dosage * 10) / 10;
+          // if (this.itemType == "lt")
+          //   keys = Math.round(res.data[0].dosage * 100) / 100;
+          // else keys = Math.round(res.data[0].dosage * 10) / 10;
+          keys = Math.round(res.data[0].dosage * 100) / 100;
           if (this.productType == "XHB") {
             data[this.index].dosage = keys;
           } else if (this.productType == "ML") {

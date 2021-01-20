@@ -358,7 +358,7 @@
                                 .replace(/^\./g, '').replace(/\.{2,}/g, '.')
                                 .replace('.', '$#$').replace(/\./g, '')
                                 .replace('$#$', '.')
-                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 2)"
+                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
                       />
                       <span v-else>{{ liantou.dosage }}</span>
                       <span>{{ liantou.unit }}</span>
@@ -800,7 +800,7 @@
                                 .replace(/^\./g, '').replace(/\.{2,}/g, '.')
                                 .replace('.', '$#$').replace(/\./g, '')
                                 .replace('$#$', '.')
-                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 2)"
+                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
                       />
                       <span v-else>{{ liantou.dosage }}</span>
                       <span>{{ liantou.unit }}</span>
@@ -1001,7 +1001,7 @@
                                 .replace(/^\./g, '').replace(/\.{2,}/g, '.')
                                 .replace('.', '$#$').replace(/\./g, '')
                                 .replace('$#$', '.')
-                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 2)"
+                                .slice(0,value.indexOf('.') === -1? value.length: value.indexOf('.') + 3)"
                       />
                       <span v-else>{{ liantou.dosage }}</span>
                       <span>{{ liantou.unit }}</span>
@@ -1466,19 +1466,19 @@ export default {
                 this.$set(
                   itemLists[i],
                   "dosage",
-                  Math.round(res.data.LCB * 10) / 10
+                  Math.round(res.data.LCB * 100) / 100
                 );
               } else if (itemLists[i].itemMLGY.productType == "XHB") {
                 this.$set(
                   itemLists[i],
                   "dosage",
-                  Math.round(res.data.XHBls * 10) / 10
+                  Math.round(res.data.XHBls * 100) / 100
                 );
               } else {
                 this.$set(
                   itemLists[i],
                   "dosage",
-                  Math.round(res.data.ls * 10) / 10
+                  Math.round(res.data.ls * 100) / 100
                 );
               }
               //制造说明
@@ -1495,7 +1495,7 @@ export default {
               this.$set(
                 itemLists[i],
                 "dosage",
-                Math.round(res.data.sha * 10) / 10
+                Math.round(res.data.sha * 100) / 100
               );
               //制造说明
               if (itemLists[i].itemMLGY.productType == "ML") {
@@ -1507,7 +1507,7 @@ export default {
               this.$set(
                 itemLists[i],
                 "dosage",
-                Math.round(res.data.pjb * 10) / 10
+                Math.round(res.data.pjb * 100) / 100
               );
               this.pjb.push(itemLists[i]);
             }
@@ -1608,8 +1608,9 @@ export default {
       //axios.post(url, data).then(res => {
       GetDosageByNo(obj).then((res) => {
         var keys;
-        if (itemType == "lt") keys = Math.round(res.data[0].dosage * 100) / 100;
-        else keys = Math.round(res.data[0].dosage * 10) / 10;
+        // if (itemType == "lt") keys = Math.round(res.data[0].dosage * 100) / 100;
+        // else keys = Math.round(res.data[0].dosage * 10) / 10;
+        keys = Math.round(res.data[0].dosage * 100) / 100;
         if (this.productType == "XHB") {
           data[index].dosage = keys;
         } else if (this.productType == "ML") {
@@ -1700,9 +1701,10 @@ export default {
         };
         GetDosageByNo(obj).then((res) => {
           var keys;
-          if (this.itemType == "lt")
-            keys = Math.round(res.data[0].dosage * 100) / 100;
-          else keys = Math.round(res.data[0].dosage * 10) / 10;
+          // if (this.itemType == "lt")
+          //   keys = Math.round(res.data[0].dosage * 100) / 100;
+          // else keys = Math.round(res.data[0].dosage * 10) / 10;
+          keys = Math.round(res.data[0].dosage * 100) / 100;
           if (this.productType == "XHB") {
             data[this.index].dosage = keys;
           } else if (this.productType == "ML") {
