@@ -7,37 +7,17 @@
       <van-pull-refresh style="min-height: 450px;" v-model="isLoading" @refresh="searchCartList">
         <div class="single-product" v-for="(group, index) in cartlist" :key="index">
           <div class="category-title">
-            <input
-              type="checkbox"
-              :value="group"
-              v-model="checkGroupModel"
-              class="qiang"
-              @change.stop="pickGroup(group, index)"
-              :disabled="checkActiviyEffect(group) && !showManage"
-            />
+            <input type="checkbox" :value="group" v-model="checkGroupModel" class="qiang" @change.stop="pickGroup(group, index)"
+              :disabled="checkActiviyEffect(group) && !showManage" />
             <span class="type">
-              {{ group.productGroupType ? group.productGroupType : "无产品" }}
-              -
-              {{
-              group.activityGroupType ? group.activityGroupType : "Z"
-              }}组
+              {{ group.productGroupType ? group.productGroupType : "无产品" }}-{{group.activityGroupType ? group.activityGroupType : "Z"}}组
             </span>
             <span class="huodong">{{ group.cid }}</span>
           </div>
-          <div
-            class="details-content"
-            v-for="(product, inndex) in group.curtainCartItems"
-            :key="inndex"
-          >
-            <input
-              type="checkbox"
-              :value="product"
-              v-model="checkBoxModel"
-              class="checkbox"
-              @change.stop="pickOne(product, index, inndex)"
-              :disabled="product.curtainLists[product.unNullNum]
-                      .curtainCommodities[0].activityEffective === false"
-            />
+          <div class="details-content" v-for="(product, inndex) in group.curtainCartItems" :key="inndex">
+            <input type="checkbox" :value="product" v-model="checkBoxModel" class="checkbox"
+              @change.stop="pickOne(product, index, inndex)" :disabled="product.curtainLists[product.unNullNum]
+                      .curtainCommodities[0].activityEffective === false" />
             <div style="width:100%;height:100%" @click="wallDetails(product)">
               <table>
                 <tr>
@@ -77,22 +57,16 @@
                 <tr>
                   <th>活动：</th>
                   <td>
-                    <span
-                      style="color: red;"
-                      v-if="
+                    <span style="color: red;" v-if="
                         product.curtainLists[product.unNullNum]
                           .curtainCommodities[0].activityEffective === false
-                      "
-                    >(过期活动)</span>
+                      ">(过期活动)</span>
                     {{ product.activity }}
                   </td>
                 </tr>
                 <tr>
                   <th>小计：</th>
-                  <td
-                    class="price"
-                    v-if="showPrice"
-                  >￥{{ product.count * product.price | dosageFilter}}</td>
+                  <td class="price" v-if="showPrice">￥{{ product.count * product.price | dosageFilter}}</td>
                   <td class="price" v-else-if="!showPrice">***</td>
                 </tr>
                 <tr v-if="product.activity != '不参与活动'">
@@ -125,38 +99,26 @@
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import { Stepper, Checkbox, CheckboxGroup } from "vant";
-import { Dialog, Toast, Loading, PullRefresh } from "vant";
-import { GetCartItem } from "@/api/shopASP";
+import { Dialog, Toast, PullRefresh } from "vant";
+import { GetCartItem, DeleteCartItems } from "@/api/shopASP";
 
 export default {
   name: "wallcart",
   components: {
     top,
-    [Stepper.name]: Stepper,
-    [Checkbox.name]: Checkbox,
-    [CheckboxGroup.name]: CheckboxGroup,
     [Dialog.name]: Dialog,
     [Toast.name]: Toast,
-    [Loading.name]: Loading,
     [PullRefresh.name]: PullRefresh,
   },
   data() {
     return {
-      // url:this.$store.getters.geturl,
-      url: "http://106.14.159.244:8080/yulan-order",
       set: 15,
       //购买数量
       value: 10,
-      //复选框
-      singleChecked: false,
-      //全选
-      allp: false,
       //管理购物车中的商品
       manage: "管理",
       //是否切换为管理购物车
       showManage: false,
-      allCartList: {},
       //购物车列表
       cartlist: this.$store.getters.getCartlist.curtain,
       //存储勾选商品id
@@ -167,12 +129,6 @@ export default {
       thisGroup: "",
       //合计
       total: "",
-      //删除的购物车id集合
-      deleteList: [],
-      //选中的产品组别
-      productType: "",
-      //需要传给结算页面的商品信息
-      productMsg: {},
       loading: false,
       isLoading: false,
       showPrice: this.$store.getters.getIsManage != "0",
@@ -320,31 +276,29 @@ export default {
       GetCartItem({
         cid: this.$store.getters.getCId,
         commodityType: "curtain",
-      })
-        .then((res) => {
-          this.checkBoxModel = [];
-          this.checkGroupModel = [];
-          this.thisGroup = "";
-          var data = res.data;
-          for (let i = 0; i < data.length; ) {
-            if (data[i].curtainCartItems.length == 0) {
-              data.splice(i, 1);
-            } else {
-              i++;
-            }
+      }).then((res) => {
+        this.checkBoxModel = [];
+        this.checkGroupModel = [];
+        this.thisGroup = "";
+        var data = res.data;
+        for (let i = 0; i < data.length;) {
+          if (data[i].curtainCartItems.length == 0) {
+            data.splice(i, 1);
+          } else {
+            i++;
           }
-          var allData = this.$store.state.allCart;
-          allData.curtain = data;
-          //添加到购物车列表全局变量
-          this.$store.commit("setcart", allData);
-          this.$root.$emit("refreshTip");
-          return data;
-        })
-        .then((cartdata) => {
-          this.cartlist = cartdata;
-          this.isLoading = false;
-          this.loading = false;
-        });
+        }
+        var allData = this.$store.state.allCart;
+        allData.curtain = data;
+        //添加到购物车列表全局变量
+        this.$store.commit("setcart", allData);
+        this.$root.$emit("refreshTip");
+        return data;
+      }).then((cartdata) => {
+        this.cartlist = cartdata;
+        this.isLoading = false;
+        this.loading = false;
+      });
     },
     //购物车删除
     deleteCart() {
@@ -354,27 +308,23 @@ export default {
           message: "无选择产品",
         });
       } else {
-        let deleteUrl = this.orderBaseUrl + "/cart/deleteCartItems.do";
-        this.deleteList = [];
+        var data = [];
         for (var i = 0; i < this.checkBoxModel.length; i++) {
-          this.deleteList.push(this.checkBoxModel[i].cartItemId);
+          data.push(this.checkBoxModel[i].cartItemId);
         }
-        let data = this.checkBoxModel;
-        axios.post(deleteUrl, this.deleteList).then((data) => {
-          if (data.data.code == 0) {
-            //重新请求一次购物车列表
-            this.cartlist = [];
-            this.searchCartList();
-            Toast({
-              duration: 1000,
-              message: "删除成功",
-            });
-            this.checkGroupModel = [];
-            this.checkBoxModel = [];
-            this.thisGroup = "";
-            this.manageCompleted();
-            this.$root.$emit("refreshTip");
-          }
+        DeleteCartItems({ cartItemIds: data }).then((data) => {
+          //重新请求一次购物车列表
+          this.cartlist = [];
+          this.searchCartList();
+          Toast({
+            duration: 1000,
+            message: "删除成功",
+          });
+          this.checkGroupModel = [];
+          this.checkBoxModel = [];
+          this.thisGroup = "";
+          this.manageCompleted();
+          this.$root.$emit("refreshTip");
         });
       }
     },

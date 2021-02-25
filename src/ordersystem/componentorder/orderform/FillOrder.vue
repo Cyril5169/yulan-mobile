@@ -6,10 +6,10 @@
         <img class="add-icon" src="../../assetsorder/address.png" alt />
         <div class="add-contain">
           <div class="contct">
-            <span>{{address.name}}</span>
-            <span>{{address.tel}}</span>
+            <span>{{ address.name }}</span>
+            <span>{{ address.tel }}</span>
           </div>
-          <div class="address-text">{{address.address}}</div>
+          <div class="address-text">{{ address.address }}</div>
         </div>
         <img class="more" src="../../assetsorder/more.png" alt />
       </div>
@@ -17,7 +17,7 @@
         <table class="order-item">
           <tr class="delivery" @click="showDelivery = true">
             <td class="left">配送方式</td>
-            <td class="right">{{deliveryType}}</td>
+            <td class="right">{{ deliveryType }}</td>
             <td>
               <img class="more-right" src="../../assetsorder/more.png" alt />
             </td>
@@ -27,13 +27,7 @@
           <tr class="delivery">
             <td class="left" ref="WLbeizhu">物流公司</td>
             <td class="right">
-              <input
-                class="delivery-mark"
-                v-model="deliveryBei"
-                placeholder="其他物流需填写物流公司"
-                :disabled="delInput"
-                type="text"
-              />
+              <input class="delivery-mark" v-model="deliveryBei" placeholder="其他物流需填写物流公司" :disabled="delInput" type="text" />
             </td>
           </tr>
         </table>
@@ -49,11 +43,16 @@
             </td>
           </tr>
         </table>-->
-        <div style="margin-top:5px;">
-          <div
-            style="text-align:left;font-size:14px;color:#4994df;background:white;padding-left:20px;"
-            @click="onShowAddress"
-          >管理购买用户信息 ></div>
+        <div style="margin-top: 5px">
+          <div style="
+              text-align: left;
+              font-size: 14px;
+              color: #4994df;
+              background: white;
+              padding-left: 20px;
+            " @click="onShowAddress">
+            管理购买用户信息 >
+          </div>
           <table class="order-item">
             <tr class="delivery">
               <td class="left">用户姓名</td>
@@ -75,13 +74,7 @@
           <tr class="delivery">
             <td class="left">选择地区</td>
             <td class="right">
-              <input
-                class="delivery-mark"
-                v-model="selLocation"
-                @click="iosselect"
-                placeholder="选择省/市/县"
-                readonly
-              />
+              <input class="delivery-mark" v-model="selLocation" @click="iosselect" placeholder="选择省/市/县" readonly />
             </td>
           </tr>
         </table>
@@ -89,12 +82,7 @@
           <tr class="delivery">
             <td class="left">详细地址</td>
             <td class="right">
-              <input
-                class="delivery-mark"
-                v-model="buyUserPostAddress"
-                placeholder="请填写详细地址"
-                type="text"
-              />
+              <input class="delivery-mark" v-model="buyUserPostAddress" placeholder="请填写详细地址" type="text" />
             </td>
           </tr>
         </table>
@@ -102,13 +90,7 @@
           <tr class="delivery">
             <td class="left">上传购买凭证</td>
             <td class="right">
-              <van-uploader
-                v-model="fileList"
-                :after-read="onRead"
-                accept="image/*"
-                preview-size="60"
-                multiple
-              />
+              <van-uploader v-model="fileList" :after-read="onRead" accept="image/*" preview-size="60" multiple />
             </td>
           </tr>
         </table>
@@ -124,54 +106,44 @@
           <tr class="delivery">
             <td class="left">工程报备单号</td>
             <td class="right">
-              <input
-                class="delivery-mark"
-                v-model="gongchenhao"
-                placeholder="请填写工程报备单号"
-                type="text"
-              />
+              <input class="delivery-mark" v-model="gongchenhao" placeholder="请填写工程报备单号" type="text" />
             </td>
           </tr>
         </table>
         <div class="product">
-          <div class="good-contain" v-for="(product,index) in allProduct" :key="index">
+          <div class="good-contain" v-for="(product, index) in allProduct" :key="index">
             <div class="good-item1">
-              <span>型号：{{product.item.itemNo}}</span>
-              <span
-                class="good-num"
-                v-if="product.quantity"
-              >数量：{{product.quantity}} {{product.unit}}</span>
-              <span
-                class="good-num"
-                v-if="!product.quantity"
-              >{{product.width}} * {{product.height}}(宽*高)</span>
-              <span v-if="showPrice" class="price">单价：￥{{product.price}}</span>
+              <span>型号：{{ product.item.itemNo }}</span>
+              <span class="good-num" v-if="product.quantity">数量：{{ product.quantity }} {{ product.unit }}</span>
+              <span class="good-num" v-if="!product.quantity">{{ product.width }} * {{ product.height }}(宽*高)</span>
+              <span v-if="showPrice" class="price">单价：￥{{ product.price }}</span>
               <span v-else class="price">***</span>
             </div>
             <div class="good-item2">
-              <span>活动：{{product.newactivityId}}</span>
+              <span>活动：{{ product.newactivityId }}</span>
             </div>
             <div class="good-item3">
               <span>折后金额</span>
-              <span v-if="showPrice" class="hd-after">{{product.promotionCost}}</span>
+              <span v-if="showPrice" class="hd-after">{{
+                product.promotionCost
+              }}</span>
               <span v-else class="hd-after">-***</span>
             </div>
             <div class="good-item3">
               <span>年返利券</span>
-              <span v-if="showPrice" class="hd-after">-{{product.yCoupon}}</span>
+              <span v-if="showPrice" class="hd-after">-{{ product.yCoupon }}</span>
               <span v-else class="hd-after">-***</span>
             </div>
             <div class="good-item4">
               <span>月返利券</span>
-              <span v-if="showPrice" class="hd-after">-{{product.mCoupon}}</span>
+              <span v-if="showPrice" class="hd-after">-{{ product.mCoupon }}</span>
               <span v-else class="hd-after">-***</span>
             </div>
             <div class="good-item4">
               <span>应付金额</span>
-              <span
-                v-if="showPrice"
-                class="hd-after"
-              >{{product.promotionCost - product.mCoupon - product.yCoupon}}</span>
+              <span v-if="showPrice" class="hd-after">{{
+                product.promotionCost - product.mCoupon - product.yCoupon
+              }}</span>
               <span v-else class="hd-after">***</span>
             </div>
           </div>
@@ -179,7 +151,7 @@
         <table class="order-item1">
           <tr class="delivery" @click="isshowCoupon">
             <td class="left">返利券</td>
-            <td class="right">{{myCoupon}}</td>
+            <td class="right">{{ myCoupon }}</td>
             <td>
               <img class="more-right" src="../../assetsorder/more.png" alt v-show="haveCoupn" />
             </td>
@@ -189,14 +161,14 @@
           <tr class="delivery">
             <td class="left">折后总金额</td>
             <td class="right">
-              <span v-if="showPrice">￥{{totalPrice}}</span>
+              <span v-if="showPrice">￥{{ totalPrice }}</span>
               <span v-else>***</span>
             </td>
           </tr>
           <tr class="delivery">
             <td class="left">总返利</td>
             <td class="right">
-              <span v-if="showPrice">￥{{backPrice}}</span>
+              <span v-if="showPrice">￥{{ backPrice }}</span>
               <span v-else>***</span>
             </td>
           </tr>
@@ -204,33 +176,23 @@
       </div>
     </div>
     <div class="bottom-nav" v-show="hidshow">
-      <van-submit-bar
-        v-if="showPrice"
-        :price="allSpend * 100"
-        button-text="提交订单"
-        label="应付总金额："
-        @submit="wantoSubmit"
-      />
-      <van-submit-bar v-else button-text="提交订单" @submit="wantoSubmit" />
+      <van-submit-bar v-if="showPrice" :price="allSpend * 100" button-text="提交订单" label="应付总金额：" @submit="onSubmitOrder" />
+      <van-submit-bar v-else button-text="提交订单" @submit="onSubmitOrder" />
     </div>
     <!--物流选择-->
     <van-popup v-model="showDelivery">
       <van-radio-group v-model="deliveryType">
         <van-cell-group>
           <van-cell clickable @click="comfirmDelivery('普通物流(运费由甲方支付)')">
-            <div style="text-align:center;">
+            <div style="text-align: center">
               <span>普通物流(运费由甲方支付)</span>
-              <van-radio style="display:inline-block" name="普通物流(运费由甲方支付)" checked-color="#89cb81" />
+              <van-radio style="display: inline-block" name="普通物流(运费由甲方支付)" checked-color="#89cb81" />
             </div>
           </van-cell>
           <van-cell clickable @click="comfirmDelivery('其他(运费由乙方支付)*备注')">
-            <div style="text-align:center;">
+            <div style="text-align: center">
               <span>其他(运费由乙方支付)*备注</span>
-              <van-radio
-                style="display:inline-block"
-                name="其他(运费由乙方支付)*备注"
-                checked-color="#89cb81"
-              />
+              <van-radio style="display: inline-block" name="其他(运费由乙方支付)*备注" checked-color="#89cb81" />
             </div>
           </van-cell>
         </van-cell-group>
@@ -241,25 +203,21 @@
       <van-radio-group v-model="packingNote">
         <van-cell-group>
           <van-cell clickable @click="confirmPackingNote('不分包')">
-            <div style="text-align:center;">
+            <div style="text-align: center">
               <span>不分包</span>
-              <van-radio style="display:inline-block" name="不分包" checked-color="#89cb81" />
+              <van-radio style="display: inline-block" name="不分包" checked-color="#89cb81" />
             </div>
           </van-cell>
           <van-cell clickable @click="confirmPackingNote('同型号不分包，不同型号分包')">
-            <div style="text-align:center;">
+            <div style="text-align: center">
               <span>同型号不分包，不同型号分包</span>
-              <van-radio
-                style="display:inline-block;margin-top:10px;"
-                name="同型号不分包，不同型号分包"
-                checked-color="#89cb81"
-              />
+              <van-radio style="display: inline-block; margin-top: 10px" name="同型号不分包，不同型号分包" checked-color="#89cb81" />
             </div>
           </van-cell>
           <van-cell clickable @click="confirmPackingNote('全部分包')">
-            <div style="text-align:center;">
+            <div style="text-align: center">
               <span>全部分包</span>
-              <van-radio style="display:inline-block" name="全部分包" checked-color="#89cb81" />
+              <van-radio style="display: inline-block" name="全部分包" checked-color="#89cb81" />
             </div>
           </van-cell>
         </van-cell-group>
@@ -271,20 +229,22 @@
         <img class="backCoupon" @click="noselectCoupon" src="../../assetsorder/back.png" alt />
         <span>我的优惠券</span>
       </div>
-      <div v-for="(coupon,index) in couponLists" class="allCouponItem" :key="index">
+      <div v-for="(coupon, index) in couponLists" class="allCouponItem" :key="index">
         <div class="coupon-item" v-if="canUseConpon(coupon)">
           <div class="coupon-top">
-            <div class="coupon-notes">{{coupon.notes}}</div>
-            <div class="coupon-allmoney">总面值{{coupon.rebateMoney}}元</div>
-            <div class="quanhao">券号：{{coupon.id}}</div>
+            <div class="coupon-notes">{{ coupon.notes }}</div>
+            <div class="coupon-allmoney">总面值{{ coupon.rebateMoney }}元</div>
+            <div class="quanhao">券号：{{ coupon.id }}</div>
           </div>
           <div class="coupon-content">
             <div>
               <span class="coupon-remian">余额：￥</span>
-              <span class="remian-money">{{coupon.rebateMoneyOver}}</span>
+              <span class="remian-money">{{ coupon.rebateMoneyOver }}</span>
             </div>
-            <div class="coupon-yxq">有效期：{{coupon.dateStart}}至{{coupon.dateEnd}}</div>
-            <div class="coupon-sy">适用：{{coupon.application}}</div>
+            <div class="coupon-yxq">
+              有效期：{{ coupon.dateStart }}至{{ coupon.dateEnd }}
+            </div>
+            <div class="coupon-sy">适用：{{ coupon.application }}</div>
             <input type="checkbox" :value="coupon" v-model="couponBox" class="couponbox" />
           </div>
           <div class="coupon-more">
@@ -294,24 +254,30 @@
         </div>
         <div class="coupon-item2" v-else>
           <div class="coupon-top">
-            <div class="coupon-notes">{{coupon.notes}}</div>
-            <div class="coupon-allmoney">总面值{{coupon.rebateMoney}}元</div>
-            <div class="quanhao">券号：{{coupon.id}}</div>
+            <div class="coupon-notes">{{ coupon.notes }}</div>
+            <div class="coupon-allmoney">总面值{{ coupon.rebateMoney }}元</div>
+            <div class="quanhao">券号：{{ coupon.id }}</div>
           </div>
           <div class="coupon-content">
             <div>
               <span class="coupon-remian2">余额：￥</span>
-              <span v-if="showPrice" class="remian-money2">{{coupon.rebateMoneyOver}}</span>
+              <span v-if="showPrice" class="remian-money2">{{
+                coupon.rebateMoneyOver
+              }}</span>
               <span v-else class="remian-money2">***</span>
             </div>
-            <div class="coupon-yxq2">有效期：{{coupon.dateStart}}至{{coupon.dateEnd}}</div>
-            <div class="coupon-sy">适用：{{coupon.application}}</div>
+            <div class="coupon-yxq2">
+              有效期：{{ coupon.dateStart }}至{{ coupon.dateEnd }}
+            </div>
+            <div class="coupon-sy">适用：{{ coupon.application }}</div>
           </div>
           <div class="coupon-more">
             <span @click="UseRecord(coupon.id)">查看使用记录>></span>
             <span @click="couponRecord(coupon.id)">查看返利记录>></span>
           </div>
-          <div style="margin-top:50px;">由于活动："{{ canNotUseActivity(coupon) }}"，该优惠券无法使用</div>
+          <div style="margin-top: 50px">
+            由于活动："{{ canNotUseActivity(coupon) }}"，该优惠券无法使用
+          </div>
         </div>
       </div>
       <div class="confirmCoupon" @click="backCoupon">确认</div>
@@ -319,35 +285,30 @@
     <!--优惠券使用记录-->
     <van-popup v-model="showUseCouponRecord" class="youhuiquan" position="right">
       <div class="coupon-title">
-        <img
-          class="backCoupon"
-          @click="showUseCouponRecord = false"
-          src="../../assetsorder/back.png"
-          alt
-        />
+        <img class="backCoupon" @click="showUseCouponRecord = false" src="../../assetsorder/back.png" alt />
         <span>优惠券使用记录</span>
       </div>
-      <div class="all-record" style="margin-top: 30px;">
+      <div class="all-record" style="margin-top: 30px">
         <div class="record-title">
-          <span style="margin-left:10px;">累计使用金额：{{accMoney}}元</span>
+          <span style="margin-left: 10px">累计使用金额：{{ accMoney }}元</span>
         </div>
-        <div class="singleRecord" v-for="(couponRecord,index) in allCouponRecord" :key="index">
+        <div class="singleRecord" v-for="(couponRecord, index) in allCouponRecord" :key="index">
           <table>
             <tr>
               <td>订单号</td>
-              <td>{{couponRecord.ORDER_NO}}</td>
+              <td>{{ couponRecord.ORDER_NO }}</td>
             </tr>
             <tr>
               <td>订单商品型号</td>
-              <td>{{couponRecord.ITEM_NO}}</td>
+              <td>{{ couponRecord.ITEM_NO }}</td>
             </tr>
             <tr>
               <td>使用记录</td>
-              <td>{{couponRecord.DATE_USE | datatrans}}</td>
+              <td>{{ couponRecord.DATE_USE | datatrans }}</td>
             </tr>
             <tr>
               <td>备注</td>
-              <td>{{couponRecord.NOTES}}</td>
+              <td>{{ couponRecord.NOTES }}</td>
             </tr>
             <!--<tr>-->
             <!--<td>使用金额</td>-->
@@ -355,7 +316,7 @@
             <!--</tr>-->
           </table>
           <div class="use-amount">
-            <span v-if="showPrice">使用金额：{{couponRecord.REBATE_MONEY}}</span>
+            <span v-if="showPrice">使用金额：{{ couponRecord.REBATE_MONEY }}</span>
             <span v-else>使用金额：***</span>
           </div>
         </div>
@@ -364,139 +325,79 @@
     <!--优惠券返利记录-->
     <van-popup v-model="showCouponRecord" class="youhuiquan" position="right">
       <div class="coupon-title">
-        <img
-          class="backCoupon"
-          @click="showCouponRecord = false"
-          src="../../assetsorder/back.png"
-          alt
-        />
+        <img class="backCoupon" @click="showCouponRecord = false" src="../../assetsorder/back.png" alt />
         <span>优惠券返利记录</span>
       </div>
       <div class="all-record">
-        <div class="singleRecord" v-for="(couponRecord,index) in allflRecord" :key="index">
+        <div class="singleRecord" v-for="(couponRecord, index) in allflRecord" :key="index">
           <table>
             <tr>
               <td>优惠券类型</td>
-              <td>{{couponRecord.rebateType}}</td>
+              <td>{{ couponRecord.rebateType }}</td>
             </tr>
             <tr>
               <td>创建日期</td>
-              <td>{{couponRecord.dateCre}}</td>
+              <td>{{ couponRecord.dateCre }}</td>
             </tr>
             <tr>
               <td>有效期</td>
-              <td>{{couponRecord.dateStart}}至{{couponRecord.dateEnd}}</td>
+              <td>{{ couponRecord.dateStart }}至{{ couponRecord.dateEnd }}</td>
             </tr>
             <tr>
               <td>备注说明</td>
-              <td>{{couponRecord.notes}}</td>
+              <td>{{ couponRecord.notes }}</td>
             </tr>
           </table>
           <div class="use-amount">
-            <span>返利金额：{{couponRecord.returnMoney}}</span>
+            <span>返利金额：{{ couponRecord.returnMoney }}</span>
           </div>
         </div>
       </div>
     </van-popup>
     <!-- <van-loading class="loading" type="spinner" v-if="loading" color="black" /> -->
     <!--选择收货地址-->
-    <van-popup
-      style="width:100%;height:100%;"
-      v-model="showAddress"
-      v-if="showAddress"
-      position="right"
-    >
+    <van-popup style="width: 100%; height: 100%" v-model="showAddress" v-if="showAddress" position="right">
       <div class="coupon-title">
-        <img class="backCoupon" @click="showAddress=false" src="../../assetsorder/back.png" alt />
+        <img class="backCoupon" @click="showAddress = false" src="../../assetsorder/back.png" alt />
         <span>我的收货地址</span>
       </div>
       <div class="all-address">
-        <van-address-list
-          id="dress-list"
-          v-model="address.id"
-          :list="allAddress"
-          @add="onAddAddress"
-          @edit="onEditAddress"
-          @select="onSelectAddress"
-        />
+        <van-address-list id="dress-list" v-model="address.id" :list="allAddress" @add="onAddAddress" @edit="onEditAddress"
+          @select="onSelectAddress" />
       </div>
     </van-popup>
     <!--新增收货地址-->
-    <van-popup
-      style="width:100%;height:100%;"
-      v-model="showAddressAdd"
-      v-if="showAddressAdd"
-      position="right"
-    >
+    <van-popup style="width: 100%; height: 100%" v-model="showAddressAdd" v-if="showAddressAdd" position="right">
       <newAddress @backclick="backclick" @refreshAddress="refreshAddress"></newAddress>
     </van-popup>
     <!--修改收货地址-->
-    <van-popup
-      style="width:100%;height:100%;"
-      v-model="showAddressEdit"
-      v-if="showAddressEdit"
-      position="right"
-    >
-      <addressEdit
-        @backclick="backclick"
-        @refreshAddress="refreshAddress"
-        :initAddress="initAddress"
-      ></addressEdit>
+    <van-popup style="width: 100%; height: 100%" v-model="showAddressEdit" v-if="showAddressEdit" position="right">
+      <addressEdit @backclick="backclick" @refreshAddress="refreshAddress" :initAddress="initAddress"></addressEdit>
     </van-popup>
 
-    <van-popup
-      style="width:100%;height:100%;"
-      v-model="showBuyserAddress"
-      v-if="showBuyserAddress"
-      position="right"
-    >
+    <van-popup style="width: 100%; height: 100%" v-model="showBuyserAddress" v-if="showBuyserAddress" position="right">
       <div class="coupon-title">
-        <img
-          class="backCoupon"
-          @click="showBuyserAddress=false"
-          src="../../assetsorder/back.png"
-          alt
-        />
+        <img class="backCoupon" @click="showBuyserAddress = false" src="../../assetsorder/back.png" alt />
         <span>管理购买人地址</span>
       </div>
       <div class="all-address">
-        <van-address-list
-          id="dress-list"
-          v-model="selAddress.id"
-          :list="allBuyserAddress"
-          @add="onAddAddress2"
-          @edit="onEditAddress2"
-          @select="onSelectAddress2"
-        />
+        <van-address-list id="dress-list" v-model="selAddress.id" :list="allBuyserAddress" @add="onAddAddress2"
+          @edit="onEditAddress2" @select="onSelectAddress2" />
       </div>
     </van-popup>
     <iosselect2 v-on:listen3="listenmore" v-on:listen4="listenselect" v-show="showLocation"></iosselect2>
-    <van-popup
-      style="width:100%;height:100%;"
-      v-model="showBuyserAddressAdd"
-      v-if="showBuyserAddressAdd"
-      position="right"
-    >
+    <van-popup style="width: 100%; height: 100%" v-model="showBuyserAddressAdd" v-if="showBuyserAddressAdd" position="right">
       <buyserNewAddress @backclick="backclick" @refreshAddress="refreshAddress2"></buyserNewAddress>
     </van-popup>
-    <van-popup
-      style="width:100%;height:100%;"
-      v-model="showBuyserAddressEdit"
-      v-if="showBuyserAddressEdit"
-      position="right"
-    >
-      <buyserEditAddress
-        @backclick="backclick"
-        @refreshAddress="refreshAddress2"
-        :initAddress="initBuyserAddress"
-      ></buyserEditAddress>
+    <van-popup style="width: 100%; height: 100%" v-model="showBuyserAddressEdit" v-if="showBuyserAddressEdit" position="right">
+      <buyserEditAddress @backclick="backclick" @refreshAddress="refreshAddress2" :initAddress="initBuyserAddress">
+      </buyserEditAddress>
     </van-popup>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import qs from "qs";
 import {
   SubmitBar,
   Toast,
@@ -522,6 +423,7 @@ import {
   UploadBuyUserFiles,
   GetBuyUserInfo,
   GetPromotionByTypeAndId,
+  getResideMonery,
 } from "@/api/orderListASP";
 import newAddress from "./NewAddress";
 import buyserNewAddress from "./buyserNewAddress";
@@ -652,6 +554,7 @@ export default {
       loading: false,
       accMoney: 0,
       isX: false, //是否窗帘订单
+      isN: false,//新窗帘
       orderNo: "",
       fileList: [],
       arrearsFlag: "",
@@ -732,49 +635,10 @@ export default {
         });
       }
     },
-    wantoSubmit() {
-      if (this.arrearsFlag == "N" || this.allSpend == 0) {
-        this.onSubmitOrder();
-      } else {
-        this.enoughMony();
-      }
-    },
-    //订单提交余额判断
-    enoughMony() {
-      let monUrl = this.orderBaseUrl + "/order/getResidemoney.do";
-      let mondata = {
-        companyId: this.$store.getters.getCMId,
-      };
-      axios.post(monUrl, mondata).then((val) => {
-        if (val.data.data >= Math.round(this.allSpend.mul(100)) / 100) {
-          this.onSubmitOrder();
-        } else {
-          Dialog.confirm({
-            message: "余额不足，是否继续提交？",
-            closeOnClickOverlay: true,
-            confirmButtonText: "提交",
-            cancelButtonText: "返回",
-          })
-            .then(() => {
-              this.onSubmitOrder();
-              // on confirm
-            })
-            .catch(() => {
-              // on cancel
-              Toast({
-                duration: 1000,
-                message: "取消提交订单",
-              });
-            });
-        }
-      });
-    },
     splitAddress2() {
-      var address = `${this.buyUserArea1 ? this.buyUserArea1 : ""}${
-        this.buyUserArea2 ? this.buyUserArea2 : ""
-      }${this.buyUserArea3 ? this.buyUserArea3 : ""}${
-        this.buyUserPostAddress ? this.buyUserPostAddress : ""
-      }`;
+      var address = `${this.buyUserArea1 ? this.buyUserArea1 : ""}${this.buyUserArea2 ? this.buyUserArea2 : ""
+        }${this.buyUserArea3 ? this.buyUserArea3 : ""}${this.buyUserPostAddress ? this.buyUserPostAddress : ""
+        }`;
       return address;
     },
     onSubmitOrder() {
@@ -842,6 +706,9 @@ export default {
       this.productList = [];
       for (let i = 0; i < this.allProduct.length; i++) {
         let singleProduct = {};
+        singleProduct.ancaoHeight = this.allProduct[i].ancaoHeight
+          ? this.allProduct[i].ancaoHeight
+          : 0;
         singleProduct.curtainWidth = this.allProduct[i].width;
         singleProduct.curtainHeight = this.allProduct[i].height;
         singleProduct.curtainHeight2 = this.allProduct[i].falseShadeHigh
@@ -944,45 +811,56 @@ export default {
       };
       if (this.isX) {
         //窗帘提交
-        orderSettlement(data)
-          .then((data) => {
-            Toast({
-              duration: 2000,
-              message: "提交订单成功",
-            });
-            this.$router.push({
-              name: "myorder",
-              params: {
-                refresh: true,
-              },
-            });
-          })
-          .catch((res) => {
+        orderSettlement(data).then((res) => {
+          if (res.msg) {
             Toast({
               duration: 2000,
               message: res.msg,
             });
+          } else {
+            Toast({
+              duration: 1000,
+              message: "提交订单成功",
+            });
+          }
+          this.$router.push({
+            name: "myorder",
+            params: {
+              refresh: true,
+            },
           });
+        }).catch((res) => {
+          Toast({
+            duration: 2000,
+            message: res.msg,
+          });
+        });
       } else {
-        normalOrderSettlement(data)
-          .then((data) => {
-            Toast({
-              duration: 2000,
-              message: "提交订单成功",
-            });
-            this.$router.push({
-              name: "myorder",
-              params: {
-                refresh: true,
-              },
-            });
-          })
-          .catch((res) => {
+        //墙纸软装提交
+        normalOrderSettlement(data).then((res) => {
+          if (res.msg) {
             Toast({
               duration: 2000,
               message: res.msg,
             });
+          } else {
+            Toast({
+              duration: 1000,
+              message: "提交订单成功",
+            });
+          }
+          this.$router.push({
+            name: "myorder",
+            params: {
+              refresh: true,
+            },
           });
+        }).catch((res) => {
+          Toast({
+            duration: 2000,
+            message: res.msg,
+          });
+        });
       }
     },
     //生成订单后删除购物车的信息
@@ -1133,7 +1011,7 @@ export default {
       }
       let orderUrl = this.orderBaseUrl + "/order/showRebate.do";
       let data = {
-        product_group_tpye: this.allProduct[0].item.groupType,
+        product_group_tpye: this.isN ? "EE" : this.allProduct[0].item.groupType,
         promotion_cost: this.totalPrice,
         // "cid": "C01613",
         cid: this.$store.getters.getCId,
@@ -1514,8 +1392,8 @@ export default {
           this.allProduct[i].quantity
             ? this.allProduct[i].quantity
             : this.dosageFilter(
-                this.allProduct[i].width.mul(this.allProduct[i].height)
-              )
+              this.allProduct[i].width.mul(this.allProduct[i].height)
+            )
         );
         this.$set(
           this.allProduct[i],
@@ -1610,6 +1488,7 @@ export default {
   },
   created() {
     if (this.$route.params.isX) this.isX = this.$route.params.isX;
+    if (this.$route.params.isN) this.isN = this.$route.params.isN;
     if (
       this.allProduct[0].item.groupType == "B" ||
       this.allProduct[0].item.groupType == "B1"

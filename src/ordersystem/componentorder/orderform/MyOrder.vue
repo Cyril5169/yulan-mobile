@@ -5,27 +5,12 @@
       <div class="content-top">
         <div class="orderType">
           <van-tabs v-model="activeOrderType" @change="onOrderTypeChange">
-            <van-tab
-              v-for="(item, index) in orderType"
-              :title="item.text"
-              :name="item.code"
-              :key="index"
-            ></van-tab>
+            <van-tab v-for="(item, index) in orderType" :title="item.text" :name="item.code" :key="index"></van-tab>
           </van-tabs>
         </div>
         <div class="orderType">
-          <van-tabs
-            v-model="activeStatusTypeIndex"
-            @change="onStatusTypeChange"
-            :ellipsis="ellipsis"
-            border
-          >
-            <van-tab
-              v-for="(item, index) in statusType"
-              :title="item.text"
-              :name="item.type"
-              :key="index"
-            ></van-tab>
+          <van-tabs v-model="activeStatusTypeIndex" @change="onStatusTypeChange" :ellipsis="ellipsis" border>
+            <van-tab v-for="(item, index) in statusType" :title="item.text" :name="item.type" :key="index"></van-tab>
           </van-tabs>
         </div>
         <!-- <div class="nav-status" ref="nav">
@@ -41,23 +26,13 @@
         <div class="ulhead">
           <ul>
             <li class="licenter" @click="showks = true">
-              <input
-                class="time time-ks"
-                type="text"
-                v-model="ksDataSet"
-                disabled
-              />
+              <input class="time time-ks" type="text" v-model="ksDataSet" disabled />
             </li>
             <li>
               <span>至</span>
             </li>
             <li class="liright" @click="showjs = true">
-              <input
-                class="time time-js"
-                type="text"
-                v-model="jsDataSet"
-                disabled
-              />
+              <input class="time time-js" type="text" v-model="jsDataSet" disabled />
             </li>
 
             <li>
@@ -65,12 +40,7 @@
             </li>
           </ul>
           <div class="search-input-ct">
-            <input
-              type="text"
-              class="search-input"
-              v-model="xhInput"
-              placeholder="输入订单型号"
-            />
+            <input type="text" class="search-input" v-model="xhInput" placeholder="输入订单型号" />
             <span class="status-input" @click="showStatusPicker = true">{{
               myOrderStatusText
             }}</span>
@@ -79,20 +49,9 @@
       </div>
 
       <div class="orders">
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          :finished-text="finishedText"
-          :loading-text="loadingText"
-          :error.sync="error"
-          :error-text="errorText"
-          @load="onLoad"
-        >
-          <div
-            class="single-order"
-            v-for="(orderList, index) in orderLists"
-            :key="index"
-          >
+        <van-list v-model="loading" :finished="finished" :finished-text="finishedText" :loading-text="loadingText"
+          :error.sync="error" :error-text="errorText" @load="onLoad">
+          <div class="single-order" v-for="(orderList, index) in orderLists" :key="index">
             <div class="nav">
               <div class="wall-icon"></div>
               <span class="title">订单号:{{ orderList.ORDER_NO }}</span>
@@ -109,19 +68,12 @@
                   <th width="30%">数量</th>
                   <th width="30%">应付金额</th>
                 </tr>
-                <tr
-                  v-for="(product, inndex) in orderList.ORDERBODY"
-                  :key="inndex"
-                >
+                <tr v-for="(product, inndex) in orderList.ORDERBODY" :key="inndex">
                   <td v-if="product.packDetailId == 0">
                     {{ product.ITEM_NO }}
                   </td>
                   <td v-else>
-                    <a
-                      href="javascript:void(0);"
-                      @click="shipmentDetail(product)"
-                      >{{ product.ITEM_NO }}</a
-                    >
+                    <a href="javascript:void(0);" @click="shipmentDetail(product)">{{ product.ITEM_NO }}</a>
                   </td>
                   <td v-if="showPrice">￥{{ product.UNIT_PRICE }}</td>
                   <td v-else>***</td>
@@ -133,58 +85,40 @@
             </div>
             <div class="good-accout">
               <span>共件{{ orderList.ORDERBODY.length }}商品</span>
-              <span v-if="showPrice" class="allhj"
-                >合计：￥{{ orderList.ALL_SPEND }}元</span
-              >
+              <span v-if="showPrice" class="allhj">合计：￥{{ orderList.ALL_SPEND }}元</span>
               <span v-else class="allhj">合计：***元</span>
             </div>
-            <span
-              v-bind:class="{
+            <span v-bind:class="{
                 'detail-button-showstatus': orderList.showStatus,
                 'detail-button': !orderList.showStatus,
-              }"
-              @click.stop="toOrderDetails(index)"
-              >查看详情</span
-            >
+              }" @click.stop="toOrderDetails(index)">查看详情</span>
             <!--欠款待提交（提交的话需要做库存判断）-->
             <!--欠款可提交（提交的话不用库存判断）-->
             <div class="next-do" v-if="orderList.showStatus">
-              <span
-                v-if="
+              <span v-if="
                   orderList.STATUS_ID == 5 ||
                   orderList.STATUS_ID == 6 ||
                   orderList.STATUS_ID == 0 ||
                   (orderList.STATUS_ID == 1 &&
                     orderList.CURTAIN_STATUS_ID !== '' &&
                     orderList.CURTAIN_STATUS_ID == 0)
-                "
-                @click="cancelOrder(orderList.ORDER_NO)"
-                >作废订单</span
-              >
-              <span
-                v-if="
+                " @click="cancelOrder(orderList.ORDER_NO)">作废订单</span>
+              <span v-if="
                   orderList.STATUS_ID == 3 &&
-                  orderList.ORDER_NO.slice(0, 1) == 'X'
-                "
-                @click="copyCart(orderList.ORDER_NO)"
-                >退回购物车</span
-              >
-              <span
-                class="to-pay"
-                v-if="orderList.STATUS_ID == 5 || orderList.STATUS_ID == 6"
-                @click="tjOrder(orderList)"
-                >提交订单</span
-              >
-              <span
-                class="to-pay"
-                v-if="
+                  (orderList.ORDER_NO.slice(0, 1) == 'X' || orderList.ORDER_NO.slice(0, 1) == 'Y')
+                " @click="copyCart(orderList.ORDER_NO)">退回购物车</span>
+              <span class="to-pay" v-if="orderList.STATUS_ID == 5 || orderList.STATUS_ID == 6"
+                @click="tjOrder(orderList)">提交订单</span>
+              <span class="to-pay" v-if="
                   (orderList.CURTAIN_STATUS_ID == 0 ||
                     orderList.CURTAIN_STATUS_ID == 4) &&
-                  orderList.STATUS_ID == 0
-                "
-                @click="summitCurtain(orderList)"
-                >提交订单</span
-              >
+                  orderList.STATUS_ID == 0 && orderList.ORDER_NO.slice(0, 1) == 'X'
+                " @click="summitCurtain(orderList)">提交订单</span>
+                <span class="to-pay" v-if="
+                  (orderList.CURTAIN_STATUS_ID == 0 ||
+                    orderList.CURTAIN_STATUS_ID == 4) &&
+                  orderList.STATUS_ID == 0 && orderList.ORDER_NO.slice(0, 1) == 'N'
+                " @click="summitNewCurtain(orderList)">提交订单</span>
             </div>
           </div>
         </van-list>
@@ -192,33 +126,16 @@
     </div>
     <!--时间选择-->
     <van-popup v-model="showks" position="bottom">
-      <van-datetime-picker
-        v-model="ksData"
-        type="date"
-        title="开始时间"
-        @confirm="confirmTimeks"
-        @cancel="cancelTimeks"
-      />
+      <van-datetime-picker v-model="ksData" type="date" title="开始时间" @confirm="confirmTimeks" @cancel="cancelTimeks" />
     </van-popup>
     <van-popup v-model="showjs" position="bottom">
-      <van-datetime-picker
-        class="reset"
-        v-model="jsData"
-        type="date"
-        title="结束时间"
-        @confirm="confirmTimejs"
-        @cancel="cancelTimejs"
-      />
+      <van-datetime-picker class="reset" v-model="jsData" type="date" title="结束时间" @confirm="confirmTimejs"
+        @cancel="cancelTimejs" />
     </van-popup>
     <!--订单状态选择-->
     <van-popup v-model="showStatusPicker" position="bottom">
-      <van-picker
-        show-toolbar
-        title="订单状态"
-        :columns="myOrderStatusColumns"
-        @cancel="showStatusPicker = false"
-        @confirm="onConfirmStatu"
-      />
+      <van-picker show-toolbar title="订单状态" :columns="myOrderStatusColumns" @cancel="showStatusPicker = false"
+        @confirm="onConfirmStatu" />
     </van-popup>
 
     <!--出货详情-->
@@ -227,13 +144,7 @@
         <span>出货详情</span>
       </div>
       <div style="width: 95%; height: 100%; margin: 35px 5px 10px 5px">
-        <table
-          style="width: 100%"
-          border="1"
-          cellspacing="0"
-          v-for="(item, index) in shipData"
-          :key="index"
-        >
+        <table style="width: 100%" border="1" cellspacing="0" v-for="(item, index) in shipData" :key="index">
           <tr>
             <td width="40%">提货单号：</td>
             <td>{{ item.SALE_NO }}</td>
@@ -248,12 +159,10 @@
           </tr>
           <tr>
             <td>出货情况：</td>
-            <td
-              v-if="
+            <td v-if="
                 item.DATE_OUT_STOCK == '' ||
                 item.DATE_OUT_STOCK == '9999/12/31 00:00:00'
-              "
-            >
+              ">
               代发货
             </td>
             <td v-else>已发货</td>
@@ -273,23 +182,14 @@
           <tr>
             <td>物流单号：</td>
             <td>
-              <a
-                href="javascript:void(0);"
-                @click="transDetail(item.TRANS_ID)"
-                >{{ item.TRANS_ID }}</a
-              >
+              <a href="javascript:void(0);" @click="transDetail(item.TRANS_ID)">{{ item.TRANS_ID }}</a>
             </td>
           </tr>
         </table>
       </div>
     </van-popup>
-    <van-popup
-      v-model="showTrans"
-      closeable
-      style="width: 90%; height: 85%; overflow: hidden"
-    >
-      <div
-        style="
+    <van-popup v-model="showTrans" closeable style="width: 90%; height: 85%; overflow: hidden">
+      <div style="
           position: absolute;
           top: 0;
           left: 0;
@@ -300,22 +200,17 @@
           z-index: 10000;
           background: #3481ed;
           color: #fff;
-        "
-      >
+        ">
         <span>物流详情</span>
       </div>
-      <iframe
-        :src="transUrl"
-        style="
+      <iframe :src="transUrl" style="
           position: absolute;
           top: 0;
           left: 0;
           width: 100%;
           height: 100%;
           z-index: 9999;
-        "
-        frameborder="0"
-      ></iframe>
+        " frameborder="0"></iframe>
     </van-popup>
   </div>
 </template>
@@ -335,13 +230,13 @@ import {
 } from "vant";
 import {
   getAllOrders,
-  InsertOperationRecord,
   cancelOrderNew,
   copyCartItem,
   getPackDetailInfo,
   GetPromotionByType,
   GetPromotionByTypeAndId,
   GetOrderUseRebate,
+  settlementAgain
 } from "@/api/orderListASP";
 import top from "../../../components/Top";
 import "../../assetsorder/actionsheet.css";
@@ -773,20 +668,27 @@ export default {
             cid: this.$store.getters.getCId,
             orderNo: orderNo,
           }).then((res) => {
-            Dialog.confirm({
-              message: "作废成功，是否退回数据到购物车",
-            })
-              .then(() => {
-                copyCartItem({
-                  orderNo: orderNo,
-                }).then((res) => {
-                  Toast({
-                    duration: 1000,
-                    message: "复制成功，请到购物车中查看",
-                  });
-                });
+            if (orderNo.slice(0, 1) == "X" || orderNo.slice(0, 1) == "N") {
+              Dialog.confirm({
+                message: "作废成功，是否退回数据到购物车",
               })
-              .catch(() => {});
+                .then(() => {
+                  copyCartItem({
+                    orderNo: orderNo,
+                  }).then((res) => {
+                    Toast({
+                      duration: 1000,
+                      message: "复制成功，请到购物车中查看",
+                    });
+                  });
+                })
+                .catch(() => { });
+            } else {
+              Toast({
+                duration: 1000,
+                message: "作废成功",
+              });
+            }
             this.orderSearch();
           });
         })
@@ -808,95 +710,24 @@ export default {
             });
           });
         })
-        .catch(() => {});
+        .catch(() => { });
     },
     //再次提交订单时的余额判断
     tjOrder(item) {
-      //余额查询
-      let monUrl = this.orderBaseUrl + "/order/getResidemoney.do";
-      let mondata = {
-        cid: this.$store.getters.getCId,
-        companyId: this.$store.getters.getCMId, //登录客户号
-      };
-      axios.post(monUrl, mondata).then(async (val) => {
-        if (val.data.data >= item.ALL_SPEND) {
-          if (item.STATUS_ID == 5 || item.STATUS_ID == 6) {
-            for (var i = 0; i < item.ORDERBODY.length; i++) {
-              if (item.ORDERBODY[i].PROMOTION_TYPE) {
-                var res = await GetPromotionByTypeAndId({
-                  proType: item.ORDERBODY[i].PROMOTION_TYPE,
-                  pId: item.ORDERBODY[i].P_ID,
-                  cid: this.$store.getters.getCId,
-                });
-                if (!res.data) {
-                  Dialog.alert({
-                    message: `活动‘${item.ORDERBODY[i].PROMOTION}’不存在`,
-                  }).then(() => {});
-                  return;
-                }
-                var dateEnd = new Date(res.data.DATE_END);
-                dateEnd = dateEnd.setDate(dateEnd.getDate() + 1);
-                if (new Date(dateEnd) < new Date() || res.data.USE_ID == "0") {
-                  Dialog.alert({
-                    message: `活动‘${item.ORDERBODY[i].PROMOTION}’已过期，请删除订单后重新下单`,
-                  }).then(() => {});
-                  return;
-                }
-              }
-              if (
-                item.ORDERBODY[i].BACK_Y > 0 ||
-                item.ORDERBODY[i].BACK_M > 0
-              ) {
-                var res = await GetOrderUseRebate({
-                  orderNo: item.ORDERBODY[i].ORDER_NO,
-                  lineNo: item.ORDERBODY[i].LINE_NO,
-                });
-                if (res.data.length == 0) {
-                  Dialog.alert({
-                    message: "优惠券不存在",
-                  }).then(() => {});
-                  return;
-                }
-                for (var j = 0; j < res.data.length; j++) {
-                  if (new Date(res.data[j].DATE_END) < new Date()) {
-                    Dialog.alert({
-                      message: "优惠券已过期，请删除订单后重新下单",
-                    }).then(() => {});
-                    return;
-                  }
-                }
-              }
-            }
-            this.onSubmitOrder(item.ORDER_NO);
-          }
-        } else {
-          Dialog.alert({
-            message: "余额不足,提交失败",
-          }).then(() => {});
-        }
-      });
-    },
-    //订单提交
-    onSubmitOrder(orderNo) {
-      let orderURL = this.orderBaseUrl + "/order/putAgainOrder.do";
-      let orderData = {
+      settlementAgain({
         cid: this.$store.getters.getCId, //登录客户号
-        orderNo: orderNo, //订单号
-      };
-      axios.post(orderURL, orderData).then((res) => {
-        if (res.data.code == 0) {
-          Toast({
-            duration: 1000,
-            message: "订单提交成功",
-          });
-          var recordData = {
-            ORDER_NO: this.$route.params.find,
-            OPERATION_PERSON: this.$store.getters.getCId,
-            OPERATION_NAME: "重新提交",
-          };
-          InsertOperationRecord(recordData); //插入操作记录
-          this.orderSearch();
-        }
+        orderNo: item.ORDER_NO, //订单号
+      }).then((res) => {
+        Toast({
+          duration: 1000,
+          message: "订单提交成功",
+        });
+        this.orderSearch();
+      }).catch((res) => {
+        Toast({
+          duration: 2000,
+          message: "提交失败！" + res.msg,
+        });
       });
     },
     summitCurtain(orderHead) {
@@ -929,6 +760,52 @@ export default {
           from: "myorder",
         },
       });
+    },
+    summitNewCurtain(orderHead){
+      let orderBody = orderHead.ORDERBODY;
+      let transCookies = [];
+      for (let i = 0; i < orderBody.length; i++) {
+        transCookies[i] = new Object();
+        transCookies[i].orderNumber = orderBody[i].ORDER_NO;
+        transCookies[i].lineNo = orderBody[i].LINE_NO;
+        transCookies[i].activityId = orderBody[i].curtains[0].activityId;
+        transCookies[i].quantity = orderBody[i].QTY_REQUIRED;
+        var price = 0;
+        for (let j = 0; j < orderBody[i].curtains.length; j++) {
+          price += this.oneTotal(orderBody[i].curtains[j]);
+        }
+        transCookies[i].price = price;
+        transCookies[i].splitShipment = orderBody[i].PART_SEND_ID;
+        transCookies[i].newactivityId = orderBody[i].PROMOTION;
+        transCookies[i].unit = orderBody[i].UNIT;
+        transCookies[i].item = orderBody[i].item;
+      }
+      this.$store.commit("setOrderProduct", transCookies);
+      this.$store.commit("setOrderHead", orderHead);
+      this.$router.push({
+        name: "fillorder",
+        params: {
+          isX: true,
+          isN: true,
+          from: "myorder",
+        },
+      });
+    },
+    //一个子件的总价
+    oneTotal(row) {
+      var price = 0;
+      if (row.DOSAGE) {
+        price = row.PRICE;
+        //最小下单量 帘头1.帘身，窗纱4
+        var DOSAGE = row.DOSAGE;
+        if (row.NC_PART_TYPECODE == 'LT' && DOSAGE < 1) {
+          DOSAGE = 1;
+        } else if ((row.NC_PART_TYPECODE == 'LS' || row.NC_PART_TYPECODE == 'CS') && DOSAGE < 4) {
+          DOSAGE = 4;
+        }
+        price = price.mul(DOSAGE)
+      }
+      return price;
     },
   },
   computed: {

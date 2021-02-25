@@ -152,7 +152,7 @@ import {
   getPackDetailsBySaleNo,
 } from "@/api/areaInfoASP";
 import { getOrderByAreaCustomer } from "@/api/orderInfoASP";
-import { getCustomerInfo } from "@/api/orderListASP";
+import { getCustomerInfo, getResideMonery } from "@/api/orderListASP";
 import OrderDetails from "../orderform/OrderDetails";
 
 export default {
@@ -261,14 +261,13 @@ export default {
     },
     //客户详情
     async customer_info(val) {
-      let mlUrl_1 = this.orderBaseUrl + "/order/getResidemoney.do";
       let mlUrl_2 = this.orderBaseUrl + "/order/findRebate.do";
       var data = {
         cid: "",
         companyId: val.COMPANY_ID,
       };
-      var res1 = await axios.post(mlUrl_1, data);
-      this.moneySituation = res1.data.data;
+      var res1 = await getResideMonery({companyId: val.COMPANY_ID});
+      this.moneySituation = res1.data;
       var res2 = await axios.post(mlUrl_2, data);
       this.couponData = res2.data.data;
       this.couponData = this.couponData.filter(

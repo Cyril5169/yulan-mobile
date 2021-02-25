@@ -1,5 +1,4 @@
 <template>
-  <!--参考淘宝购物车-->
   <div class="wall-cart">
     <span class="manage" v-if="!showManage" @click="manageCart">管理</span>
     <span class="manage-completed" v-if="showManage" @click="manageCompleted">完成</span>
@@ -7,34 +6,16 @@
       <van-pull-refresh style="min-height: 450px;" v-model="isLoading" @refresh="searchCartList">
         <div class="single-product" v-for="(group, index) in cartlist" :key="index">
           <div class="category-title">
-            <input
-              type="checkbox"
-              :value="group"
-              v-model="checkGroupModel"
-              class="qiang"
-              @change.stop="pickGroup(group, index)"
-              :disabled="checkActiviyEffect(group) && !showManage"
-            />
+            <input type="checkbox" :value="group" v-model="checkGroupModel" class="qiang" @change.stop="pickGroup(group, index)"
+              :disabled="checkActiviyEffect(group) && !showManage" />
             <span class="type">
-              {{
-              group.productGroupType ? group.productGroupType : "无产品"
-              }}
-              -
-              {{
-              group.activityGroupType ? group.activityGroupType : "Z"
-              }}组
+              {{group.productGroupType ? group.productGroupType : "无产品"}}-{{group.activityGroupType ? group.activityGroupType : "Z"}}组
             </span>
             <span class="huodong">{{ group.cid }}</span>
           </div>
           <div class="details-content" v-for="(product, inndex) in group.commodities" :key="inndex">
-            <input
-              type="checkbox"
-              :value="product"
-              v-model="checkBoxModel"
-              class="checkbox"
-              @change.stop="pickOne(product, index, inndex)"
-              :disabled="checkActiviyEffect2(product) && !showManage"
-            />
+            <input type="checkbox" :value="product" v-model="checkBoxModel" class="checkbox"
+              @change.stop="pickOne(product, index, inndex)" :disabled="checkActiviyEffect2(product) && !showManage" />
             <div style="width:100%;height:100%" @click="wallDetails(product)">
               <table>
                 <tr>
@@ -76,17 +57,13 @@
             <div class="product-num">
               <span class v-if="product.quantity">
                 数量：{{ product.quantity }}{{ product.unit }}
-                <div
-                  style="color: red;"
-                  v-if="product.quantity < product.item.minimumPurchase"
-                >(最小起购数量{{product.item.minimumPurchase}})</div>
+                <div style="color: red;" v-if="product.quantity < product.item.minimumPurchase">
+                  (最小起购数量{{product.item.minimumPurchase}})</div>
               </span>
               <span class v-if="!product.quantity">
                 数量：{{ product.width }}*{{ product.height }}
-                <div
-                  style="color: red;"
-                  v-if="product.width*product.height < product.item.minimumPurchase"
-                >(最小起购数量{{product.item.minimumPurchase}})</div>平方米
+                <div style="color: red;" v-if="product.width*product.height < product.item.minimumPurchase">
+                  (最小起购数量{{product.item.minimumPurchase}})</div>平方米
               </span>
             </div>
           </div>
@@ -106,45 +83,32 @@
         <span class="delete-cart" @click="deleteCart">删除</span>
       </div>
     </div>
-    <!-- <van-loading class="loading" type="spinner" v-if="loading" color="black" /> -->
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import top from "../../../components/Top";
-import { Stepper, Checkbox, CheckboxGroup } from "vant";
-import { Dialog, Toast, Loading, PullRefresh } from "vant";
-import { GetCartItem } from "@/api/shopASP";
+import { Dialog, Toast, PullRefresh } from "vant";
+import { GetCartItem, DeleteCommodities } from "@/api/shopASP";
 
 export default {
   name: "wallcart",
   components: {
     top,
-    [Stepper.name]: Stepper,
-    [Checkbox.name]: Checkbox,
-    [CheckboxGroup.name]: CheckboxGroup,
     [Dialog.name]: Dialog,
     [Toast.name]: Toast,
-    [Loading.name]: Loading,
     [PullRefresh.name]: PullRefresh,
   },
   data() {
     return {
-      // url:this.$store.getters.geturl,
-      url: "http://106.14.159.244:8080/yulan-order",
       set: 15,
       //购买数量
       value: 10,
-      //复选框
-      singleChecked: false,
-      //全选
-      allp: false,
       //管理购物车中的商品
       manage: "管理",
       //是否切换为管理购物车
       showManage: false,
-      allCartList: {},
       //购物车列表
       cartlist: this.$store.getters.getCartlist.soft,
       //存储勾选商品id
@@ -155,16 +119,9 @@ export default {
       thisGroup: "",
       //合计
       total: "",
-      //删除的购物车id集合
-      deleteList: [],
-      //选中的产品组别
-      productType: "",
-      //需要传给结算页面的商品信息
-      productMsg: {},
-      //价格隐藏字段
-      showPrice: null,
       loading: false,
       isLoading: false,
+      showPrice: this.$store.getters.getIsManage != "0",
     };
   },
   methods: {
@@ -290,8 +247,8 @@ export default {
         return true;
       } else {
         let val = product.quantity
-            ? product.quantity
-            : product.width.mul(product.height);
+          ? product.quantity
+          : product.width.mul(product.height);
         if (val < product.item.minimumPurchase) {
           return true;
         } else {
@@ -329,51 +286,46 @@ export default {
       GetCartItem({
         cid: this.$store.getters.getCId,
         commodityType: "soft",
-      })
-        .then((res) => {
-          this.checkBoxModel = [];
-          this.checkGroupModel = [];
-          this.thisGroup = "";
-          var data = res.data;
-          for (let i = 0; i < data.length; ) {
-            if (data[i].commodities.length == 0) {
-              data.splice(i, 1);
+      }).then((res) => {
+        this.checkBoxModel = [];
+        this.checkGroupModel = [];
+        this.thisGroup = "";
+        var data = res.data;
+        for (let i = 0; i < data.length;) {
+          if (data[i].commodities.length == 0) {
+            data.splice(i, 1);
+          } else {
+            i++;
+          }
+        }
+        var allData = this.$store.state.allCart;
+        allData.soft = data;
+        //添加到购物车列表全局变量
+        this.$store.commit("setcart", allData);
+        this.$root.$emit("refreshTip");
+        return data;
+      }).then((cartdata) => {
+        for (let i = 0; i < cartdata.length; i++) {
+          for (let j = 0; j < cartdata[i].commodities.length; j++) {
+            if (!cartdata[i].commodities[j].activityId) {
+              cartdata[i].commodities[j].newactivityId = "";
             } else {
-              i++;
+              cartdata[i].commodities[j].newactivityId =
+                cartdata[i].commodities[j].activityName;
+            }
+            if (cartdata[i].commodities[j].splitShipment == 0) {
+              cartdata[i].commodities[j].newsplitShipment = "等生产";
+            } else if (cartdata[i].commodities[j].splitShipment == 1) {
+              cartdata[i].commodities[j].newsplitShipment = "分批出货";
+            } else {
+              cartdata[i].commodities[j].newsplitShipment = "--";
             }
           }
-          var allData = this.$store.state.allCart;
-          allData.soft = data;
-          //添加到购物车列表全局变量
-          this.$store.commit("setcart", allData);
-          this.$root.$emit("refreshTip");
-          return data;
-        })
-        .then((cartdata) => {
-          for (let i = 0; i < cartdata.length; i++) {
-            for (let j = 0; j < cartdata[i].commodities.length; j++) {
-              if (!cartdata[i].commodities[j].activityId) {
-                cartdata[i].commodities[j].newactivityId = "";
-              } else {
-                cartdata[i].commodities[j].newactivityId =
-                  cartdata[i].commodities[j].activityName;
-              }
-              if (cartdata[i].commodities[j].splitShipment == 0) {
-                cartdata[i].commodities[j].newsplitShipment = "等生产";
-              } else if (cartdata[i].commodities[j].splitShipment == 1) {
-                cartdata[i].commodities[j].newsplitShipment = "分批出货";
-              } else {
-                cartdata[i].commodities[j].newsplitShipment = "--";
-              }
-              //增加一个产品组字段
-              // cartdata[i].commodities[j].newProductType =
-              //   cartdata[i].productGroupType;
-            }
-          }
-          this.cartlist = cartdata;
-          this.isLoading = false;
-          this.loading = false;
-        });
+        }
+        this.cartlist = cartdata;
+        this.isLoading = false;
+        this.loading = false;
+      });
     },
     //购物车删除
     deleteCart() {
@@ -383,36 +335,24 @@ export default {
           message: "无选择产品",
         });
       } else {
-        let deleteUrl = this.orderBaseUrl + "/cart/deleteCommodities.do";
-        this.deleteList = [];
+        var data = [];
         for (var i = 0; i < this.checkBoxModel.length; i++) {
-          this.deleteList.push(this.checkBoxModel[i].id);
+          data.push(this.checkBoxModel[i].id);
         }
-        let data = this.checkBoxModel;
-        axios.post(deleteUrl, this.deleteList).then((data) => {
-          if (data.data.code == 0) {
-            //重新请求一次购物车列表
-            this.cartlist = [];
-            this.searchCartList();
-            Toast({
-              duration: 1000,
-              message: "删除成功",
-            });
-            this.checkGroupModel = [];
-            this.checkBoxModel = [];
-            this.thisGroup = "";
-            this.manageCompleted();
-            this.$root.$emit("refreshTip");
-          }
+        DeleteCommodities({ commodityIds: data }).then((res) => {
+          //重新请求一次购物车列表
+          this.cartlist = [];
+          this.searchCartList();
+          Toast({
+            duration: 1000,
+            message: "删除成功",
+          });
+          this.checkGroupModel = [];
+          this.checkBoxModel = [];
+          this.thisGroup = "";
+          this.manageCompleted();
+          this.$root.$emit("refreshTip");
         });
-      }
-    },
-    //价格是否隐藏
-    isShowPrice() {
-      if (this.$store.getters.getIsManage == "0") {
-        this.showPrice = false;
-      } else {
-        this.showPrice = true;
       }
     },
     calculatePromotionPrice(data) {
@@ -464,7 +404,6 @@ export default {
     },
   },
   activated() {
-    this.isShowPrice();
     this.cartlist = [];
     this.searchCartList();
   },

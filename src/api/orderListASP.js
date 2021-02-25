@@ -79,6 +79,14 @@ export function cancelOrderNew(data, config = {}) {
         return Promise.reject(err);
     })
 }
+//修改订单状态
+export function updateCurtainOrderStatus(data, config = {}) {
+    return post('/CTM_ORDER/updateCurtainOrderStatus', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
 //优惠券使用记录
 export function getUseRecord(data, config = {}) {
     return post('/SAL_REBATE_CERTIFICATE_RECORD/getUseRecord', data, config).then((res) => {
@@ -237,6 +245,23 @@ export function DeleteBuyUser(data, config = {}) {
 
 export function GetOrderAndTaskByCustomer(data, config = {}) {
     return post('/CTM_ORDER/GetOrderAndTaskByCustomer', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+
+//用户余额
+export function getResideMonery(data, config = {}) {
+    return post('/CTM_ORDER/getResideMonery', data, config).then((res) => {
+        return Promise.resolve(res);
+    }).catch((err) => {
+        return Promise.reject(err);
+    })
+}
+//重新提交
+export function settlementAgain(data, config = {}) {
+    return post('/CTM_ORDER/settlementAgain', data, config).then((res) => {
         return Promise.resolve(res);
     }).catch((err) => {
         return Promise.reject(err);

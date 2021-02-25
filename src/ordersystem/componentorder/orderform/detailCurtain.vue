@@ -1267,6 +1267,7 @@ export default {
           this.ls[i].choose = this.chooseBig[index];
         }
         this.chooseBig[2] = this.chooseBig[index];
+        //勾选掉帘身时也同时不要帘身配布
         this.changeLink("lspb", 2);
       } else if (type == "sha") {
         for (var i = 0; i < this.sha.length; i++) {
@@ -1833,7 +1834,7 @@ export default {
       );
     },
     oneTotal(row) {
-      var price = this.dosageFilter(this.calculatePromotionPrice(row));
+      var price = this.calculatePromotionPrice(row);
       if (row.dosage == undefined) row.dosage = 0;
       return price.mul(row.dosage);
     },
